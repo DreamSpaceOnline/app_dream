@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{62210FC3-021C-4F94-A494-F781BBE87A2C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dream.Space.Playground</RootNamespace>
+    <AssemblyName>Dream.Space.Playground</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\packages\Autofac.4.0.0\lib\net451\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IPlaygroundService.cs" />
+    <Compile Include="Models\ChartUpdateMode.cs" />
+    <Compile Include="Models\PlaygroundChartModel.cs" />
+    <Compile Include="Models\StrategyRulesCalculator.cs" />
+    <Compile Include="Models\StrategyRuleResult.cs" />
+    <Compile Include="Models\StrategyRuleSetResult.cs" />
+    <Compile Include="PlaygroundProcessor.cs" />
+    <Compile Include="Models\ChartModel.cs" />
+    <Compile Include="Models\CommpanyChartData.cs" />
+    <Compile Include="Models\HistoricalQuotes.cs" />
+    <Compile Include="Models\IndicatorChartData.cs" />
+    <Compile Include="Models\PlaygroundModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dream.Space.Cache\Dream.Space.Cache.csproj">
+      <Project>{a37d9d98-8d82-4786-9163-a0d16b524c1d}</Project>
+      <Name>Dream.Space.Cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Calculators\Dream.Space.Calculators.csproj">
+      <Project>{3e257fc8-37ef-4bb5-bdfd-977bd3754a2c}</Project>
+      <Name>Dream.Space.Calculators</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Data\Dream.Space.Data.csproj">
+      <Project>{eb10172d-559a-4e59-bc95-eee805f1a19b}</Project>
+      <Name>Dream.Space.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Indicators\Dream.Space.Indicators.csproj">
+      <Project>{d3dd96e0-079e-4a28-acc3-aa5b2ea39c01}</Project>
+      <Name>Dream.Space.Indicators</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Reader\Dream.Space.Reader.csproj">
+      <Project>{3d49dde8-e00e-429c-9f3b-cfe2db6e2de5}</Project>
+      <Name>Dream.Space.Reader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Stock\Dream.Space.Stock.csproj">
+      <Project>{eb65cea0-bc6f-4b02-beb3-2571d1edf06c}</Project>
+      <Name>Dream.Space.Stock</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

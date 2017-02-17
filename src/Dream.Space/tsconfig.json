@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es5",
+    "module": "amd",
+    "declaration": false,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    // Update this to es2017 in the next release of the VS2015 TypeScript plugin
+    "lib": ["es2016", "dom"]
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "./src/**/*.ts",
+    "./test/**/*.ts",
+    "./typings/**/*.d.ts",
+    "./custom_typings/**/*.d.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": false
+  }
+}

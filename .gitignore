@@ -1,0 +1,47 @@
+*.7z
+*.cache
+*.log
+*.orig
+*.orig
+*.sublime-workspace
+*.suo
+*.user
+*.zip
+*_NCrunch*
+*.ncrunch*
+*_ReSharper*
+*.css
+*.min.css
+.paket/paket.exe
+.vs
+bin
+logs
+node_modules
+bower_components
+obj
+out
+
+# Do not include actual packages as they will be extracted either on dev or on build system.
+packages/
+
+coverage/
+
+# Do not include these specfic configuration files as they will be generated
+src/*/[W|w]eb.config
+src/*/[A|a]pp.config
+src/*/appSettings.config
+src/*/[C|c]onnectionstrings.config
+
+# Protactor functional test project
+src/*/.vscode/
+screenshots
+
+logs
+src/*/nCrunchTemp*
+src/JustEat.TopPlacement.ManagementWeb/aurelia_project/**/*.js
+src/JustEat.TopPlacement.ManagementWeb/aurelia_project/**/*.js.map
+src/JustEat.TopPlacement.ManagementWeb/src/**/*.js
+src/JustEat.TopPlacement.ManagementWeb/src/**/*.js.map
+src/JustEat.TopPlacement.ManagementWeb/test/**/*.js
+!src/JustEat.TopPlacement.ManagementWeb/test/aurelia-karma.js
+src/JustEat.TopPlacement.ManagementWeb/test/**/*.js.map

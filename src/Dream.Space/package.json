@@ -1,0 +1,63 @@
+{
+  "name": "dreamspace",
+  "description": "An Aurelia client application.",
+  "version": "0.1.0",
+  "repository": {
+    "type": "???",
+    "url": "???"
+  },
+  "scripts": {
+    "build-dev": "node_modules/.bin/au build --env dev",
+    "build-prod": "node_modules/.bin/au build --env prod"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "aurelia-animator-css": "^1.0.0",
+    "aurelia-bootstrapper": "^1.0.0",
+    "aurelia-dialog": "^1.0.0-beta.3.0.1",
+    "aurelia-validation": "^1.0.0-beta.1.0.1",
+    "bluebird": "^3.4.1",
+    "bootstrap": "^3.3.7",
+    "requirejs": "^2.3.2",
+    "text": "github:requirejs/text#latest"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@types/jasmine": "^2.5.41",
+    "@types/node": "^7.0.4",
+    "@types/whatwg-fetch": "^0.0.33",
+    "@types/whatwg-streams": "^0.0.2",
+    "@types/toastr": "^2.1.32",
+    "@types/jquery": "^2.0.40",
+    "aurelia-cli": "^0.24.0",
+    "aurelia-fetch-client": "^1.1.0",
+    "aurelia-testing": "^1.0.0-beta.2.0.0",
+    "aurelia-tools": "^0.2.2",
+    "node-sass": "^4.5.0",
+    "connect-history-api-fallback": "^1.2.0",
+    "event-stream": "^3.3.3",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-changed-in-place": "^2.0.3",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^2.0.0-alpha",
+    "gulp-typescript": "^2.13.6",
+    "html-minifier": "^3.2.3",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-typescript-preprocessor": "^0.2.1",
+    "minimatch": "^3.0.2",
+    "through2": "^2.0.1",
+    "typescript": "^2.1.5",
+    "uglify-js": "^2.6.3",
+    "vinyl-fs": "^2.4.3",
+    "moment": "^2.17.1",
+    "toastr": "^2.1.2",
+    "jquery": "^3.1.1"
+  }
+}
