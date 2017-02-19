@@ -242,6 +242,103 @@ define('services/article-service',["require", "exports", "tslib", "aurelia-frame
     exports.ArticleCategoryInfo = ArticleCategoryInfo;
 });
 
+define('services/user-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
+    "use strict";
+    var UserService = (function () {
+        function UserService(http) {
+            this.http = http;
+        }
+        UserService.prototype.initialize = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response, _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("account/user")];
+                        case 1:
+                            response = _b.sent();
+                            _a = this;
+                            return [4 /*yield*/, response.json()];
+                        case 2:
+                            _a.user = _b.sent();
+                            return [2 /*return*/, this.user];
+                    }
+                });
+            });
+        };
+        UserService.prototype.login = function (username, password) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var loginRequest, response, result;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            loginRequest = {
+                                Email: username,
+                                Password: password,
+                                RememberMe: true
+                            };
+                            return [4 /*yield*/, this.http.fetch("account/login", { method: 'post', body: aurelia_fetch_client_1.json(loginRequest) })];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2:
+                            result = _a.sent();
+                            if (result.status === 0) {
+                                this.user = result.user;
+                            }
+                            return [2 /*return*/, this.user];
+                    }
+                });
+            });
+        };
+        UserService.prototype.logout = function () {
+            return this.http.fetch("account/logout", {
+                method: 'post'
+            })
+                .then(function (response) {
+                return response.json();
+            });
+        };
+        UserService.prototype.update = function (user) {
+            var _this = this;
+            var updateRequest = {
+                Username: user.username,
+                FirstName: user.firstName
+            };
+            return this.http.fetch("account/update", {
+                method: 'put',
+                body: aurelia_fetch_client_1.json(updateRequest)
+            })
+                .then(function (response) {
+                return response.json()
+                    .then(function (result) {
+                    if (result.status === 0) {
+                        _this.user = result.user;
+                    }
+                    return result.status;
+                });
+            });
+        };
+        return UserService;
+    }());
+    UserService = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
+    ], UserService);
+    exports.UserService = UserService;
+    var UserInfo = (function () {
+        function UserInfo() {
+        }
+        return UserInfo;
+    }());
+    exports.UserInfo = UserInfo;
+    var LoginResponse = (function () {
+        function LoginResponse() {
+        }
+        return LoginResponse;
+    }());
+    exports.LoginResponse = LoginResponse;
+});
+
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><h1 class=\"main-header\">${message}</h1></template>"; });
 define('text!app.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url(\"/fonts/glyphicons-halflings-regular.eot\");\n  src: url(\"/fonts/glyphicons-halflings-regular.eot?#iefix\") format(\"embedded-opentype\"), url(\"/fonts/glyphicons-halflings-regular.woff\") format(\"woff\"), url(\"/fonts/glyphicons-halflings-regular.ttf\") format(\"truetype\"), url(\"/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular\") format(\"svg\"); }\n"; });
 //# sourceMappingURL=app-bundle.js.map
