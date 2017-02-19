@@ -7,7 +7,8 @@ namespace Dream.Space
         public static void ConfigureBundle()
         {
             BundleTable.Bundles.Add(new StyleBundle("~/Content/styles")
-                .Include("~/Content/bootstrap.min.css"));
+                .Include("~/Content/bootstrap.css")
+                .Include("~/Content/toastr.css"));
 
             BundleTable.EnableOptimizations = true;
         }
