@@ -354,7 +354,6 @@
     <Folder Include="Content\images\" />
     <Folder Include="Infrastructure\Publishers\" />
     <Folder Include="src\components\user\" />
-    <Folder Include="src\infrastructure\settings\" />
     <Folder Include="src\resources\attributes\" />
     <Folder Include="src\resources\binding-behaviors\" />
     <Folder Include="src\resources\elements\" />
@@ -388,6 +387,8 @@
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\environment.ts" />
+    <TypeScriptCompile Include="src\infrastructure\error-interceptor.ts" />
+    <TypeScriptCompile Include="src\infrastructure\event-emitter.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\resources\index.ts" />
     <TypeScriptCompile Include="src\services\article-service.ts" />
