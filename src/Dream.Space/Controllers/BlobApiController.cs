@@ -4,6 +4,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Autofac;
 using Dream.Space.Data.Services;
+using Dream.Space.Infrastructure.IoC;
 
 namespace Dream.Space.Controllers
 {
@@ -19,7 +20,7 @@ namespace Dream.Space.Controllers
 
         public BlobApiController()
         {
-            _storage = IoC.IoCContainer.Instance.Container.Resolve<IArticleStorageService>();
+            _storage = IoCContainer.Instance.Container.Resolve<IArticleStorageService>();
         }
 
         [HttpPost]

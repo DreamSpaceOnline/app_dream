@@ -2,7 +2,7 @@ define('app',["require", "exports"], function (require, exports) {
     "use strict";
     var App = (function () {
         function App() {
-            this.message = 'Hello World!';
+            this.message = 'Hello World 2!';
         }
         return App;
     }());
@@ -19,7 +19,55 @@ define('environment',["require", "exports"], function (require, exports) {
     exports.default = settings;
 });
 
-define('main',["require", "exports", "aurelia-fetch-client", "./environment"], function (require, exports, aurelia_fetch_client_1, environment_1) {
+define('infrastructure/event-emitter',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
+    "use strict";
+    var EventEmitter = (function () {
+        function EventEmitter(eventAggregator) {
+            this.eventAggregator = eventAggregator;
+        }
+        EventEmitter.prototype.publish = function (eventType, data) {
+            this.eventAggregator.publish(eventType, data);
+        };
+        EventEmitter.prototype.subscribe = function (eventType, handler) {
+            return this.eventAggregator.subscribe(eventType, handler);
+        };
+        return EventEmitter;
+    }());
+    EventEmitter = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+    ], EventEmitter);
+    exports.EventEmitter = EventEmitter;
+});
+
+define('infrastructure/error-interceptor',["require", "exports", "tslib", "aurelia-framework", "./event-emitter"], function (require, exports, tslib_1, aurelia_framework_1, event_emitter_1) {
+    "use strict";
+    var ErrorInterceptor = (function () {
+        function ErrorInterceptor(eventEmitter) {
+            this.eventEmitter = eventEmitter;
+        }
+        ErrorInterceptor.prototype.response = function (response) {
+            if (response.status >= 500) {
+                var message = "Received " + response.status + " " + response.url;
+                this.eventEmitter.publish("ServerError", { message: message });
+            }
+            if (response.status === 401) {
+                window.location.href = "/";
+            }
+            if (response.status === 403) {
+            }
+            return response;
+        };
+        return ErrorInterceptor;
+    }());
+    ErrorInterceptor = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
+    ], ErrorInterceptor);
+    exports.ErrorInterceptor = ErrorInterceptor;
+});
+
+define('main',["require", "exports", "aurelia-fetch-client", "./environment", "./infrastructure/error-interceptor"], function (require, exports, aurelia_fetch_client_1, environment_1, error_interceptor_1) {
     "use strict";
     Promise.config({
         warnings: {
@@ -28,29 +76,31 @@ define('main',["require", "exports", "aurelia-fetch-client", "./environment"], f
     });
     function configure(aurelia) {
         var httpClient = aurelia.container.get(aurelia_fetch_client_1.HttpClient);
+        var errorInterceptor = aurelia.container.get(error_interceptor_1.ErrorInterceptor);
         httpClient.configure(function (config) {
             config
                 .useStandardConfiguration()
-                .withBaseUrl('api/')
-                .withInterceptor({
-                request: function (request) {
-                    return request;
-                },
-                response: function (response) {
-                    return response;
-                }
-            });
+                .withBaseUrl("api/")
+                .withInterceptor(errorInterceptor);
         });
         aurelia.use
             .standardConfiguration()
-            .feature('resources');
+            .feature("resources");
         if (environment_1.default.debug) {
             aurelia.use.developmentLogging();
         }
         if (environment_1.default.testing) {
-            aurelia.use.plugin('aurelia-testing');
+            aurelia.use.plugin("aurelia-testing");
         }
         aurelia.start().then(function () { return aurelia.setRoot(); });
+    }
+    exports.configure = configure;
+});
+
+define('resources/index',["require", "exports"], function (require, exports) {
+    "use strict";
+    function configure(config) {
+        config.globalResources([]);
     }
     exports.configure = configure;
 });
@@ -190,14 +240,6 @@ define('services/article-service',["require", "exports", "tslib", "aurelia-frame
         return ArticleCategoryInfo;
     }());
     exports.ArticleCategoryInfo = ArticleCategoryInfo;
-});
-
-define('resources/index',["require", "exports"], function (require, exports) {
-    "use strict";
-    function configure(config) {
-        config.globalResources([]);
-    }
-    exports.configure = configure;
 });
 
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><h1 class=\"main-header\">${message}</h1></template>"; });

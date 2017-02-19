@@ -1,7 +1,7 @@
 ﻿using System.Web.Http;
 using Autofac.Integration.WebApi;
 using Dream.Space.Attributes;
-using Dream.Space.IoC;
+using Dream.Space.Infrastructure.IoC;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;

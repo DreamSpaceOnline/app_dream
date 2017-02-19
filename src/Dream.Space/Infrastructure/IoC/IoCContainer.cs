@@ -10,13 +10,14 @@ using Dream.Space.Data;
 using Dream.Space.Data.Azure;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
+using Dream.Space.Infrastructure.Settings;
 using Dream.Space.Playground;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Validators;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Yahoo.Client;
 
-namespace Dream.Space.IoC
+namespace Dream.Space.Infrastructure.IoC
 {
     public class IoCContainer
     {
@@ -61,6 +62,8 @@ namespace Dream.Space.IoC
 
         public void RegisterServices(ContainerBuilder builder)
         {
+            builder.RegisterType<AppSettingsWrapper>().As<IAppSettings>();
+
             builder.RegisterType<CompanyRepository>().As<ICompanyRepository>().InstancePerDependency();
             builder.RegisterType<ArticleRepository>().As<IArticleRepository>().InstancePerDependency();
             builder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerDependency();

@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build-dev": "node_modules/.bin/au build --env dev",
-    "build-prod": "node_modules/.bin/au build --env prod"
+    "build-prod": "node_modules/.bin/au build --env prod",
+    "watch": "node_modules/.bin/au run --env dev --watch"
   },
   "license": "MIT",
   "dependencies": {

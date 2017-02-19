@@ -271,12 +271,10 @@
     <Content Include="aurelia_project\tasks\build.json" />
     <Content Include="aurelia_project\tasks\run.json" />
     <Content Include="aurelia_project\tasks\test.json" />
-    <Content Include="Scripts\app-bundle.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Scripts\vendor-bundle.js" />
     <Content Include="src\styles\_fonts.scss" />
     <Content Include="package.json" />
     <Content Include="packages.config" />
@@ -347,6 +345,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\images\" />
     <Folder Include="Infrastructure\Publishers\" />
+    <Folder Include="Scripts\" />
     <Folder Include="src\components\user\" />
     <Folder Include="src\resources\attributes\" />
     <Folder Include="src\resources\binding-behaviors\" />

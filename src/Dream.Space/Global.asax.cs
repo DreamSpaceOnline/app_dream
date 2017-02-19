@@ -2,7 +2,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Dream.Space.IoC;
+using Dream.Space.Infrastructure.IoC;
 using NLog;
 
 namespace Dream.Space

@@ -6,6 +6,7 @@ using System.Web.Http.Description;
 using Autofac;
 using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Services;
+using Dream.Space.Infrastructure.IoC;
 using Dream.Space.Models.Articles;
 using Newtonsoft.Json;
 
@@ -24,7 +25,7 @@ namespace Dream.Space.Controllers
 
         public ArticlesApiController()
         {
-            _service = IoC.IoCContainer.Instance.Container.Resolve<IArticleService>();
+            _service = IoCContainer.Instance.Container.Resolve<IArticleService>();
         }
 
         [HttpGet]
