@@ -11,14 +11,15 @@ define('app',["require", "exports"], function (require, exports) {
 
 define('environment',["require", "exports"], function (require, exports) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = {
+    var settings = {
         debug: true,
         testing: true
     };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = settings;
 });
 
-define('main',["require", "exports", "./environment"], function (require, exports, environment_1) {
+define('main',["require", "exports", "aurelia-fetch-client", "./environment"], function (require, exports, aurelia_fetch_client_1, environment_1) {
     "use strict";
     Promise.config({
         warnings: {
@@ -26,6 +27,20 @@ define('main',["require", "exports", "./environment"], function (require, export
         }
     });
     function configure(aurelia) {
+        var httpClient = aurelia.container.get(aurelia_fetch_client_1.HttpClient);
+        httpClient.configure(function (config) {
+            config
+                .useStandardConfiguration()
+                .withBaseUrl('api/')
+                .withInterceptor({
+                request: function (request) {
+                    return request;
+                },
+                response: function (response) {
+                    return response;
+                }
+            });
+        });
         aurelia.use
             .standardConfiguration()
             .feature('resources');
@@ -40,39 +55,151 @@ define('main',["require", "exports", "./environment"], function (require, export
     exports.configure = configure;
 });
 
-define('auction/auction',["require", "exports"], function (require, exports) {
+define('services/article-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
     "use strict";
-    var Auction = (function () {
-        function Auction() {
-            this.outcode = 'Some cool area';
+    var ArticleService = (function () {
+        function ArticleService(http) {
+            this.http = http;
         }
-        return Auction;
+        ArticleService.prototype.getArticle = function (id) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/" + id)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        ArticleService.prototype.deleteArticle = function (id) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/" + id, { method: 'delete' })];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        ArticleService.prototype.getArticleByUrl = function (categotyId, articleUrl) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/url/" + categotyId + "/" + articleUrl)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        ArticleService.prototype.getSection = function (url) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/section/" + url)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        ArticleService.prototype.getCategories = function (sectionId) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/categories/" + sectionId)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        ArticleService.prototype.getCategory = function (categoryUrl) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/category/" + categoryUrl)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        ArticleService.prototype.getFeatured = function (categoryId) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("article/" + categoryId + "/featured")];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
+        return ArticleService;
     }());
-    exports.Auction = Auction;
-});
-
-define('commission-auction/commission-auction',["require", "exports"], function (require, exports) {
-    "use strict";
-    var CommissionAuction = (function () {
-        function CommissionAuction() {
-            this.outcode = 'Some cool commission auction area';
+    ArticleService = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
+    ], ArticleService);
+    exports.ArticleService = ArticleService;
+    var ArticleInfo = (function () {
+        function ArticleInfo() {
         }
-        return CommissionAuction;
+        return ArticleInfo;
     }());
-    exports.CommissionAuction = CommissionAuction;
+    exports.ArticleInfo = ArticleInfo;
+    var ArticleSectionInfo = (function () {
+        function ArticleSectionInfo() {
+        }
+        return ArticleSectionInfo;
+    }());
+    exports.ArticleSectionInfo = ArticleSectionInfo;
+    var ArticleCategory = (function () {
+        function ArticleCategory() {
+        }
+        return ArticleCategory;
+    }());
+    exports.ArticleCategory = ArticleCategory;
+    var ArticleCategoryInfo = (function () {
+        function ArticleCategoryInfo() {
+        }
+        return ArticleCategoryInfo;
+    }());
+    exports.ArticleCategoryInfo = ArticleCategoryInfo;
 });
 
 define('resources/index',["require", "exports"], function (require, exports) {
     "use strict";
     function configure(config) {
+        config.globalResources([]);
     }
     exports.configure = configure;
 });
 
-define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><require from=\"./auction/auction\"></require><require from=\"./commission-auction/commission-auction\"></require><h1 class=\"main-header\">${message}</h1><auction></auction><commission-auction></commission-auction></template>"; });
-define('text!commission-auction/commission-auction.html', ['module'], function(module) { module.exports = "<template class=\"commission-auction\"><require from=\"./commission-auction.css\"></require><h2 class=\"outcode\">Your outcode is ${outcode}</h2></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><h1 class=\"main-header\">${message}</h1></template>"; });
 define('text!app.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url(\"/fonts/glyphicons-halflings-regular.eot\");\n  src: url(\"/fonts/glyphicons-halflings-regular.eot?#iefix\") format(\"embedded-opentype\"), url(\"/fonts/glyphicons-halflings-regular.woff\") format(\"woff\"), url(\"/fonts/glyphicons-halflings-regular.ttf\") format(\"truetype\"), url(\"/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular\") format(\"svg\"); }\n"; });
-define('text!commission-auction/commission-auction.css', ['module'], function(module) { module.exports = ".commission-auction .outcode {\n  color: grey; }\n"; });
-define('text!auction/auction.html', ['module'], function(module) { module.exports = "<template class=\"auction\"><require from=\"./auction.css\"></require><h2 class=\"outcode\">Your outcode is ${outcode}</h2></template>"; });
-define('text!auction/auction.css', ['module'], function(module) { module.exports = ".auction .outcode {\n  color: pink; }\n"; });
 //# sourceMappingURL=app-bundle.js.map

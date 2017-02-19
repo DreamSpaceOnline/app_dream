@@ -1,11 +1,12 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { HttpClient, json } from 'aurelia-fetch-client';
+import { HttpClient } from "aurelia-fetch-client";
 
 @autoinject
 export class ArticleService {
 
     constructor(private http: HttpClient) {
     }
+
 
     async getArticle(id: number) : Promise<ArticleInfo> {
         const response = await this.http.fetch("article/" + id);
@@ -42,15 +43,6 @@ export class ArticleService {
         return await response.json();
     }   
 
-    async getArticles(categoryId: number) : Promise<> {
-        return this.http.fetch("article/" + categoryId + "/all")
-            .then(response => {
-                return response.json();
-            })
-            .catch(error => {
-                return this.handleError(error, "getArticles");
-            });
-    }
 }
 
 export class ArticleInfo {

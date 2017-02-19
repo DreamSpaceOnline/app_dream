@@ -1,4 +1,6 @@
-export default {
-  debug: false,
-  testing: false
+const settings: EnvironmentSettings = {
+    debug: false,
+    testing: false
 };
+
+export default settings;

@@ -369,6 +369,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="aurelia_project\environments\dev.ts" />
+    <TypeScriptCompile Include="aurelia_project\environments\environment.d.ts" />
     <TypeScriptCompile Include="aurelia_project\environments\prod.ts" />
     <TypeScriptCompile Include="aurelia_project\environments\stage.ts" />
     <TypeScriptCompile Include="aurelia_project\generators\attribute.ts" />
@@ -384,6 +385,7 @@
     <TypeScriptCompile Include="aurelia_project\tasks\test.ts" />
     <TypeScriptCompile Include="aurelia_project\tasks\transpile.ts" />
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
+    <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\environment.ts" />
     <TypeScriptCompile Include="src\main.ts" />
