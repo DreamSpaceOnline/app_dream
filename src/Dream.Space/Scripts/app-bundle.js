@@ -67,7 +67,7 @@ define('infrastructure/error-interceptor',["require", "exports", "tslib", "aurel
     exports.ErrorInterceptor = ErrorInterceptor;
 });
 
-define('main',["require", "exports", "aurelia-fetch-client", "./environment", "./infrastructure/error-interceptor"], function (require, exports, aurelia_fetch_client_1, environment_1, error_interceptor_1) {
+define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environment", "./infrastructure/error-interceptor", "./services/user-service"], function (require, exports, tslib_1, aurelia_fetch_client_1, environment_1, error_interceptor_1, user_service_1) {
     "use strict";
     Promise.config({
         warnings: {
@@ -75,24 +75,38 @@ define('main',["require", "exports", "aurelia-fetch-client", "./environment", ".
         }
     });
     function configure(aurelia) {
-        var httpClient = aurelia.container.get(aurelia_fetch_client_1.HttpClient);
-        var errorInterceptor = aurelia.container.get(error_interceptor_1.ErrorInterceptor);
-        httpClient.configure(function (config) {
-            config
-                .useStandardConfiguration()
-                .withBaseUrl("api/")
-                .withInterceptor(errorInterceptor);
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var httpClient, errorInterceptor, userService;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        httpClient = aurelia.container.get(aurelia_fetch_client_1.HttpClient);
+                        errorInterceptor = aurelia.container.get(error_interceptor_1.ErrorInterceptor);
+                        httpClient.configure(function (config) {
+                            config
+                                .useStandardConfiguration()
+                                .withBaseUrl("api/")
+                                .withInterceptor(errorInterceptor);
+                        });
+                        userService = aurelia.container.get(user_service_1.UserService);
+                        return [4 /*yield*/, userService.initialize()];
+                    case 1:
+                        _a.sent();
+                        aurelia.use
+                            .standardConfiguration()
+                            .instance('User', userService)
+                            .feature("resources");
+                        if (environment_1.default.debug) {
+                            aurelia.use.developmentLogging();
+                        }
+                        if (environment_1.default.testing) {
+                            aurelia.use.plugin("aurelia-testing");
+                        }
+                        aurelia.start().then(function () { return aurelia.setRoot(); });
+                        return [2 /*return*/];
+                }
+            });
         });
-        aurelia.use
-            .standardConfiguration()
-            .feature("resources");
-        if (environment_1.default.debug) {
-            aurelia.use.developmentLogging();
-        }
-        if (environment_1.default.testing) {
-            aurelia.use.plugin("aurelia-testing");
-        }
-        aurelia.start().then(function () { return aurelia.setRoot(); });
     }
     exports.configure = configure;
 });
@@ -291,30 +305,45 @@ define('services/user-service',["require", "exports", "tslib", "aurelia-framewor
             });
         };
         UserService.prototype.logout = function () {
-            return this.http.fetch("account/logout", {
-                method: 'post'
-            })
-                .then(function (response) {
-                return response.json();
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("account/logout", {
+                                method: 'post'
+                            })];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
             });
         };
         UserService.prototype.update = function (user) {
-            var _this = this;
-            var updateRequest = {
-                Username: user.username,
-                FirstName: user.firstName
-            };
-            return this.http.fetch("account/update", {
-                method: 'put',
-                body: aurelia_fetch_client_1.json(updateRequest)
-            })
-                .then(function (response) {
-                return response.json()
-                    .then(function (result) {
-                    if (result.status === 0) {
-                        _this.user = result.user;
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var updateRequest, response, result;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            updateRequest = {
+                                Username: user.username,
+                                FirstName: user.firstName
+                            };
+                            return [4 /*yield*/, this.http.fetch("account/update", {
+                                    method: "put",
+                                    body: aurelia_fetch_client_1.json(updateRequest)
+                                })];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2:
+                            result = _a.sent();
+                            if (result.status === 0) {
+                                this.user = result.user;
+                            }
+                            return [2 /*return*/, result.status];
                     }
-                    return result.status;
                 });
             });
         };
@@ -337,6 +366,12 @@ define('services/user-service',["require", "exports", "tslib", "aurelia-framewor
         return LoginResponse;
     }());
     exports.LoginResponse = LoginResponse;
+    var UserUpdateResponse = (function () {
+        function UserUpdateResponse() {
+        }
+        return UserUpdateResponse;
+    }());
+    exports.UserUpdateResponse = UserUpdateResponse;
 });
 
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><h1 class=\"main-header\">${message}</h1></template>"; });

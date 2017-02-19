@@ -2,6 +2,7 @@ import { HttpClient } from "aurelia-fetch-client";
 import { Aurelia } from "aurelia-framework"
 import environment from "./environment";
 import { ErrorInterceptor } from "./infrastructure/error-interceptor";
+import { UserService } from "./services/user-service";
 
 (<any>Promise).config({
   warnings: {
@@ -9,7 +10,8 @@ import { ErrorInterceptor } from "./infrastructure/error-interceptor";
   }
 });
 
-export function configure(aurelia: Aurelia) {
+export async function configure(aurelia: Aurelia) {
+
     const httpClient = aurelia.container.get(HttpClient) as HttpClient;
     const errorInterceptor = aurelia.container.get(ErrorInterceptor) as ErrorInterceptor;
 
@@ -20,9 +22,12 @@ export function configure(aurelia: Aurelia) {
             .withInterceptor(errorInterceptor);
     });
 
+    const userService = aurelia.container.get(UserService) as UserService;
+    await userService.initialize();
 
     aurelia.use
         .standardConfiguration()
+        .instance('User', userService)
         .feature("resources");
 
   if (environment.debug) {
