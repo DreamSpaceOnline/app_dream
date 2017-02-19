@@ -1,5 +1,5 @@
 {
-  "name": "Dream.Space",
+  "name": "JustEat.TopPlacement.ManagementWeb",
   "type": "project:application",
   "platform": {
     "id": "web",
@@ -12,6 +12,7 @@
     "fileExtension": ".ts",
     "dtsSource": [
       "./node_modules/@types/**/*.d.ts",
+      "./aurelia_project/environments/environment.d.ts",
       "./custom_typings/**/*.d.ts"
     ],
     "source": "src/**/*.ts"
@@ -93,11 +94,7 @@
           "node_modules/requirejs/require.js"
         ],
         "dependencies": [
-          {
-            "name": "jquery",
-            "path": "../node_modules/jquery/dist",
-            "main": "jquery.min"
-          },
+          "jquery",
           {
             "name": "bootstrap",
             "path": "../node_modules/bootstrap/dist/js",
@@ -132,6 +129,7 @@
           "aurelia-templating-binding",
           "toastr",
           "moment",
+          "tslib",
           "text",
           {
             "name": "aurelia-validation",
