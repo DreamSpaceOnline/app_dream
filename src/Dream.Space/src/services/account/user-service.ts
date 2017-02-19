@@ -1,5 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
+import {UserInfo, LoginResponse, UserUpdateResponse } from "./user-models";
 
 @autoinject
 export class UserService {
@@ -66,18 +67,3 @@ export class UserService {
 
 }
 
-export class UserInfo {
-    username: string;
-    firstName:string;
-}
-
-export class LoginResponse {
-    user: UserInfo;
-    status: number;
-    isAuthenticated: boolean;
-}
-
-export class UserUpdateResponse {
-    status: number;
-    user: UserInfo;
-}

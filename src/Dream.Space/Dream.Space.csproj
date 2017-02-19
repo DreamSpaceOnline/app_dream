@@ -384,8 +384,9 @@
     <TypeScriptCompile Include="src\infrastructure\event-emitter.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\resources\index.ts" />
-    <TypeScriptCompile Include="src\services\article-service.ts" />
-    <TypeScriptCompile Include="src\services\user-service.ts" />
+    <TypeScriptCompile Include="src\services\articles\article-service.ts" />
+    <TypeScriptCompile Include="src\services\account\user-models.ts" />
+    <TypeScriptCompile Include="src\services\account\user-service.ts" />
     <TypeScriptCompile Include="test\unit\app.spec.ts" />
     <TypeScriptCompile Include="test\unit\setup.ts" />
   </ItemGroup>

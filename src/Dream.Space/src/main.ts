@@ -2,7 +2,7 @@ import { HttpClient } from "aurelia-fetch-client";
 import { Aurelia } from "aurelia-framework"
 import environment from "./environment";
 import { ErrorInterceptor } from "./infrastructure/error-interceptor";
-import { UserService } from "./services/user-service";
+import { UserService } from "./services/account/user-service";
 
 (<any>Promise).config({
   warnings: {
