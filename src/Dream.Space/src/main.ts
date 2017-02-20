@@ -2,7 +2,9 @@ import { HttpClient } from "aurelia-fetch-client";
 import { Aurelia } from "aurelia-framework"
 import environment from "./environment";
 import { ErrorInterceptor } from "./infrastructure/error-interceptor";
-import { UserService } from "./services/account/user-service";
+import { AccountService } from "./services/account/account-service";
+import { SettingsService } from "./services/settings/settings-service";
+
 
 (<any>Promise).config({
   warnings: {
@@ -22,21 +24,33 @@ export async function configure(aurelia: Aurelia) {
             .withInterceptor(errorInterceptor);
     });
 
-    const userService = aurelia.container.get(UserService) as UserService;
-    await userService.initialize();
+    const account = aurelia.container.get(AccountService) as AccountService;
+    await account.initialize();
+
+    const settings = aurelia.container.get(SettingsService) as SettingsService;
+    await settings.initialize();
 
     aurelia.use
         .standardConfiguration()
-        .instance('User', userService)
-        .feature("resources");
+        .instance("Account", account)
+        .instance("Settings", settings)
+        .feature("resources")
+        .plugin('aurelia-dialog',
+            config => {
+                config.useDefaults();
+                config.settings.lock = false;
+                config.settings.enableEscClose = true;
+            })
+        .plugin('aurelia-validation');
 
-  if (environment.debug) {
-    aurelia.use.developmentLogging();
-  }
 
-  if (environment.testing) {
-    aurelia.use.plugin("aurelia-testing");
-  }
+    if (environment.debug) {
+        aurelia.use.developmentLogging();
+    }
 
-  aurelia.start().then(() => aurelia.setRoot());
+    if (environment.testing) {
+        aurelia.use.plugin("aurelia-testing");
+    }
+
+    aurelia.start().then(() => aurelia.setRoot());
 }

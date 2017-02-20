@@ -1,4 +1,10 @@
 <template>
     <require from="./app.css"></require>
-    <h1 class="main-header">${message}</h1>
+    <require from="./components/header/dream-header"></require>
+    <require from="./components/footer/dream-footer"></require>
+
+    <dream-header router.bind="router"></dream-header>
+    <router-view></router-view>
+
+    <dream-footer></dream-footer>
 </template>

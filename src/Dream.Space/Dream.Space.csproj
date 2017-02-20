@@ -275,14 +275,23 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="src\styles\_fonts.scss" />
+    <Content Include="src\components\footer\dream-footer.html" />
+    <Content Include="src\components\header\dream-header.html" />
     <Content Include="package.json" />
     <Content Include="packages.config" />
-    <None Include="src\app.scss" />
     <Content Include="src\app.html" />
+    <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
+    <Content Include="src\components\studies\category-nav\category-nav.html" />
+    <Content Include="src\components\studies\navigation.html" />
+    <Content Include="src\components\studies\study.html" />
+    <Content Include="src\components\user\login.html" />
+    <Content Include="src\components\user\navigation.html" />
     <Content Include="test\aurelia-karma.js" />
     <Content Include="Web.config" />
     <Content Include="tsconfig.json" />
+    <Content Include="src\components\header\dream-header.less" />
+    <Content Include="src\styles\_variables.less" />
+    <Content Include="src\styles\_fonts.less" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -346,18 +355,15 @@
     <Folder Include="Content\images\" />
     <Folder Include="Infrastructure\Publishers\" />
     <Folder Include="Scripts\" />
-    <Folder Include="src\components\user\" />
+    <Folder Include="src\components\nav-menu\side-nav\" />
+    <Folder Include="src\components\nav-menu\sub-nav\" />
     <Folder Include="src\resources\attributes\" />
     <Folder Include="src\resources\binding-behaviors\" />
-    <Folder Include="src\resources\elements\" />
     <Folder Include="src\resources\value-converters\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\machineKey.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="src\styles\_variables.scss" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="aurelia_project\environments\dev.ts" />
@@ -379,14 +385,29 @@
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
+    <TypeScriptCompile Include="src\components\header\dream-header.ts" />
+    <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
+    <TypeScriptCompile Include="src\components\studies\category-nav\category-nav.ts" />
+    <TypeScriptCompile Include="src\components\studies\navigation.ts" />
+    <TypeScriptCompile Include="src\components\studies\study.ts" />
+    <TypeScriptCompile Include="src\components\user\login.ts" />
+    <TypeScriptCompile Include="src\components\user\navigation.ts" />
     <TypeScriptCompile Include="src\environment.ts" />
+    <TypeScriptCompile Include="src\form-validation\bootstrap-form-renderer.ts" />
     <TypeScriptCompile Include="src\infrastructure\error-interceptor.ts" />
     <TypeScriptCompile Include="src\infrastructure\event-emitter.ts" />
     <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\resources\elements\article-parts\article-events.ts" />
     <TypeScriptCompile Include="src\resources\index.ts" />
+    <TypeScriptCompile Include="src\services\articles\article-models.ts" />
     <TypeScriptCompile Include="src\services\articles\article-service.ts" />
-    <TypeScriptCompile Include="src\services\account\user-models.ts" />
-    <TypeScriptCompile Include="src\services\account\user-service.ts" />
+    <TypeScriptCompile Include="src\services\account\account-models.ts" />
+    <TypeScriptCompile Include="src\services\account\account-service.ts" />
+    <TypeScriptCompile Include="src\services\file-storage\storage-service.ts" />
+    <TypeScriptCompile Include="src\services\indicator\indicator-models.ts" />
+    <TypeScriptCompile Include="src\services\indicator\indicator-service.ts" />
+    <TypeScriptCompile Include="src\services\settings\settings-service.ts" />
     <TypeScriptCompile Include="test\unit\app.spec.ts" />
     <TypeScriptCompile Include="test\unit\setup.ts" />
   </ItemGroup>
@@ -422,6 +443,27 @@
       <Project>{eb65cea0-bc6f-4b02-beb3-2571d1edf06c}</Project>
       <Name>Dream.Space.Stock</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\app.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\footer\dream-footer.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\nav-menu\main-nav\main-nav.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\studies\category-nav\category-nav.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\_sub-nav.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\_body.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\common.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
