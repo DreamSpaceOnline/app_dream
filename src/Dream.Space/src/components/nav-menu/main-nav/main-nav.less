@@ -1,0 +1,63 @@
+﻿@import "../../../styles/_variables";
+
+main-nav {
+    //visibility: hidden;
+    @media (min-width: 768px) {
+        .navbar-nav {
+            float:none;
+        }
+    }
+    .main-nav-items {
+
+        background-color: @main-nav-bg;
+    }
+    ul.nav {
+        li {
+            float: left;
+            padding: 0;
+            position: relative;
+            margin-left: 1px;
+            &:first-child {
+                margin-left: 0;
+            }
+
+            a {
+                position: relative;
+                padding: 0 20px;
+                text-align: center;
+                font: 14px/40px 'Istok Web';
+                text-transform: uppercase;
+                background: transparent;
+                color: @font-color;
+                -webkit-transition: all 0.35s ease;
+                transition: all 0.35s ease;
+            }
+            &:hover {
+                a {
+                    background: rgba(226, 32, 4, 0.38);
+                }
+            }
+            &.active {
+                a {
+                    color: #ffffff;
+                    background: @link-color;
+                }
+            }            
+
+        }
+    }
+
+    nav.navbar {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 14px 0;
+        min-height: 0;
+        border-color: #e7e7e7;
+
+        ul.navbar-nav {
+            top: 5px;
+        }
+    }
+
+}

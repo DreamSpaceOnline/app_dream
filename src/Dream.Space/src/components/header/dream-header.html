@@ -1,0 +1,26 @@
+﻿<template>
+    <require from="./dream-header.css"></require>
+
+    <div class="container">
+        <div class="navbar-brand">
+
+            <img class="logo" src="/content/images/logo.png" />
+            <a first-letter-span href="/">Dream Space</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li role="presentation" class="dropdown" if.bind="isAuthenticated === true">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    ${userContext.user.firstName} <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href.bind="loginUrl">Account</a></li>
+                    <li><a click.delegate="logout()">Logout</a></li>
+                </ul>
+            </li>
+            <li if.bind="isAuthenticated !== true">
+                <a href.bind="loginUrl">Login</a>
+            </li>
+        </ul>
+    </div>
+</template>
