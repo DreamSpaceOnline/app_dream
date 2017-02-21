@@ -1,11 +1,10 @@
 ﻿import * as toastr from "toastr";
 import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { Router } from "aurelia-router";
+import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 
 
 import { Navigation } from './navigation'
-import articleEvents from "../../resources/elements/article-parts/article-events";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import {ArticleService} from "../../services/articles/article-service";
 import {BootstrapFormRenderer} from "../../form-validation/bootstrap-form-renderer";
@@ -23,6 +22,7 @@ export class Study {
     article: ArticleInfo;
     category: ArticleCategoryInfo;
     articles: ArticleInfo[];
+    originalArticle: ArticleInfo;
 
     constructor(
         private eventAggregator: EventAggregator,
@@ -37,15 +37,14 @@ export class Study {
 
         this.subscriptions = [];
         this.editMode = false;
-        this.article = {};
-        this.category = {};
     }
 
-    activate(params, routeconfig, navigationInstruction) {
+    activate(params, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
 
+        this.articleUrl = routeconfig.name;
         this.articleUrl = "default";
-
+        
         if (!params.category) {
             params.category = "default";
         }
@@ -70,20 +69,20 @@ export class Study {
         if (this.category && this.category.categoryId > 0) {
             this.navigation.selectMenuItem(this.category.url);
 
-            this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl)
-                .then(result => {
-                    this.article = result;
-                    this.setEditMode(false);
-                    this.loadArticles(this.category.categoryId);
-                });
-
+            let result =  await this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl);
+            if(result.articleId > 0) {
+                this.article = result;
+                this.setEditMode(false);
+                
+                await this.loadArticles(this.category.categoryId);
+            }
         }
     }
 
     setEditMode(editMode) {
         this.editMode = editMode;
         this.navigation.menu.editMode = editMode;
-        this.eventAggregator.publish(this.articleEvents.subscribed.onEditModeChanged, editMode);
+        this.eventAggregator.publish("article-edit-mode-changed", editMode);
     }
 
     startEdit() {
@@ -91,10 +90,10 @@ export class Study {
 
         this.setEditMode(true);
 
-        this.validationRules = ValidationRules
-            .ensure(u => u.title).displayName('Strategy name').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure(u => u.summary).displayName('Summary').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure(u => u.url).displayName('Strategy url').required().withMessage(`\${$displayName} cannot be blank.`)
+        ValidationRules
+            .ensure((u:ArticleInfo) => u.title).displayName('Strategy name').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u:ArticleInfo) => u.summary).displayName('Summary').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u:ArticleInfo) => u.url).displayName('Strategy url').required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.article);
 
     }
@@ -118,11 +117,13 @@ export class Study {
             articleId: 0,
             categoryId: this.category.categoryId,
             isFeatured: false,
-            isDeleted: false,
+            deleted: false,
             title: "New Article",
             url: "new-article",
-            orderId: this.maxOrderId(this.articles) + 1,
-            blocks: []
+            blocks: [],
+            summary: "",
+            editMode: false,
+            selected: false
         };
 
         this.startEdit();
@@ -133,7 +134,7 @@ export class Study {
         let self = this;
 
         if (this.articles && this.articles.length > 0) {
-            this.articles.forEach(function (item) {
+            this.articles.forEach(item => {
                 item.selected = item.articleId === self.article.articleId;
             });
         }
@@ -147,20 +148,11 @@ export class Study {
         }
     }
 
-    deleteArticle() {
-        let self = this;
-
+    async deleteArticle() {
         if (this.article && this.article.articleId > 0) {
-            this.articleService.deleteArticle(this.article.articleId)
-                .then(response => {
-                    toastr.success('Article deleted successfully', 'Article Deleted');
-                    self.setEditMode(false);
-                    self.router.navigate('/studies');
-                })
-                .catch(error => {
-                    toastr.error('Failed to delete article', 'Delete Failed');
-                });
-
+            await this.articleService.deleteArticle(this.article.articleId);
+        } else {
+            toastr.warning('Article is not selected', 'Delete Failed');
         }
     }
 
@@ -179,9 +171,6 @@ export class Study {
                 } else {
                     toastr.warning('Please correct validation errors.', 'Validation Errors');
                 }
-            })
-            .catch(error => {
-                this.handleError(error);
             });
     }
 
@@ -195,22 +184,14 @@ export class Study {
         }
     }
 
-    saveArticle() {
-
-        let self = this;
+    async saveArticle() {
         this.setEditMode(false);
 
-        this.articleService.saveArticle(this.article)
-            .then(data => {
+        let a = await this.articleService.saveArticle(this.article)
+        if(a.url && a.url.length > 0) {
+            toastr.success(`Article staved successfully!`, 'Strategy saved');
+            this.navigateToArticle(a.url);
+        }
 
-                toastr.success(`Article staved successfully!`, 'Strategy saved');
-                self.navigateToArticle(this.article.url);
-            })
-            .catch(error => {
-                this.setEditMode(true);
-                toastr.error(`Failed to save article!`, 'Application Error');
-            });
     }
-
 }
-

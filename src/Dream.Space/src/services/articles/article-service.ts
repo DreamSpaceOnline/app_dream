@@ -1,5 +1,5 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { HttpClient } from "aurelia-fetch-client";
+import { HttpClient, json } from "aurelia-fetch-client";
 import {ArticleInfo, ArticleSectionInfo, ArticleCategory, ArticleCategoryInfo } from "./article-models";
 
 @autoinject
@@ -48,6 +48,14 @@ export class ArticleService {
         let response = await this.http.fetch("article/" + categoryId + "/all");
         return await response.json();
 
+    }
+
+    async saveArticle(article: ArticleInfo) : Promise<ArticleInfo>  {
+        let response = await  this.http.fetch('article', {
+            method: 'post',
+            body:json(article)
+        });
+        return await response.json();
     }
 }
 

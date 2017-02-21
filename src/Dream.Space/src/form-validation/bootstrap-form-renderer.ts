@@ -1,5 +1,4 @@
 ﻿import {
-    ValidationRenderer,
     RenderInstruction,
     ValidateResult
 } from 'aurelia-validation';
