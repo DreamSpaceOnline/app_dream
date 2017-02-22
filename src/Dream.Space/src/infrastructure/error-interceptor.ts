@@ -26,4 +26,10 @@ export class ErrorInterceptor implements Interceptor {
         return response;
     }
 
+    request(request: Request) {
+        let message = `${request.url}`;
+            this.eventEmitter.publish("ServerError", { message: message });
+            return request;
+    }
+
 }

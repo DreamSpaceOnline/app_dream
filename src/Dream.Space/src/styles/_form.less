@@ -1,0 +1,62 @@
+﻿
+@import '_variables';
+
+.form-group {
+    margin-bottom: 14px;
+
+    label {
+        font-weight: 500;
+    }
+
+    &.has-error {
+        label {
+            color: @font-color
+        }
+        
+        input {
+            border-color: @border-color-input-error;
+        }
+        
+        span.help-block {
+            margin-left: 18px;
+            color: @font-color-error;
+            display: inline-block;
+            margin-bottom: 0;
+
+            &.validation-message {
+                font-weight: 500;
+                margin-left: 15px;
+            }
+        }
+
+        .input-group-addon {
+            border-color: @border-color-input-error;
+            border-right: none;
+            color: @font-color;
+            background-color: @bg-color-input-readonly;
+        }
+    }
+
+    .input-group-addon {
+        border-color: @border-color-input;
+        border-radius:2px;
+    }
+}
+
+.form-control {
+    border-radius:2px;
+    box-shadow: none;
+    border-color: @border-color-input;
+    height: 38px;
+    padding: 6px 15px;
+    color: @font-color-input;
+}
+
+select.form-control {
+    padding: 6px 10px;
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: @bg-color-input-readonly;
+    opacity: 1;
+}

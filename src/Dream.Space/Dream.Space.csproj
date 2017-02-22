@@ -286,6 +286,7 @@
     <Content Include="src\components\studies\study.html" />
     <Content Include="src\components\user\login.html" />
     <Content Include="src\components\user\navigation.html" />
+    <Content Include="src\dialogs\login\user-login.html" />
     <Content Include="test\aurelia-karma.js" />
     <Content Include="Web.config" />
     <Content Include="tsconfig.json" />
@@ -392,8 +393,10 @@
     <TypeScriptCompile Include="src\components\studies\study.ts" />
     <TypeScriptCompile Include="src\components\user\login.ts" />
     <TypeScriptCompile Include="src\components\user\navigation.ts" />
+    <TypeScriptCompile Include="src\dialogs\login\user-login.ts" />
     <TypeScriptCompile Include="src\environment.ts" />
     <TypeScriptCompile Include="src\form-validation\bootstrap-form-renderer.ts" />
+    <TypeScriptCompile Include="src\form-validation\custom-validation-rules.ts" />
     <TypeScriptCompile Include="src\infrastructure\error-interceptor.ts" />
     <TypeScriptCompile Include="src\infrastructure\event-emitter.ts" />
     <TypeScriptCompile Include="src\main.ts" />
@@ -487,6 +490,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\styles\_page.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\_dialog.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\dialogs\login\user-login.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\_form.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -36,12 +36,7 @@ export class AccountService {
     }
 
     async logout() {
-        let response = await this.http.fetch("account/logout",
-        {
-            method: 'post'
-        });
-
-        return await response.json();
+        await this.http.fetch("account/logout", { method: 'post' });
     }
 
     async update(user: UserInfo): Promise<UserUpdateResponse> {

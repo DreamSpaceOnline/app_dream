@@ -23,6 +23,15 @@ namespace Dream.Space.Controllers
             _storage = IoCContainer.Instance.Container.Resolve<IArticleStorageService>();
         }
 
+        [HttpGet]
+        [Route("monitor")]
+        [ResponseType(typeof(string))]
+        public IHttpActionResult test()
+        {
+
+            return Ok("Monitoring");
+        }
+
         [HttpPost]
         [Route("upload")]
         [ResponseType(typeof(string))]

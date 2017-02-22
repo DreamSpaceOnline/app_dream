@@ -68,16 +68,12 @@ define('services/account/account-service',["require", "exports", "tslib", "aurel
         };
         AccountService.prototype.logout = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("account/logout", {
-                                method: 'post'
-                            })];
+                        case 0: return [4 /*yield*/, this.http.fetch("account/logout", { method: 'post' })];
                         case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
+                            _a.sent();
+                            return [2 /*return*/];
                     }
                 });
             });
@@ -388,7 +384,23 @@ define('infrastructure/error-interceptor',["require", "exports", "tslib", "aurel
     exports.ErrorInterceptor = ErrorInterceptor;
 });
 
-define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environment", "./infrastructure/error-interceptor", "./services/account/account-service", "./services/settings/settings-service"], function (require, exports, tslib_1, aurelia_fetch_client_1, environment_1, error_interceptor_1, account_service_1, settings_service_1) {
+define('form-validation/custom-validation-rules',["require", "exports", "aurelia-validation", "moment"], function (require, exports, aurelia_validation_1, moment) {
+    "use strict";
+    var CustomValidationRules = (function () {
+        function CustomValidationRules() {
+        }
+        CustomValidationRules.prototype.register = function () {
+            aurelia_validation_1.ValidationRules.customRule('Date-DD/MM/YYYY', function (value) {
+                var d = new Date(moment(value, 'D/M/YYYY', true).format());
+                return value === null || value === undefined || value.trim() === '' || !isNaN(d.getTime());
+            }, "${$displayName} must be in format (DD/MM/YYYY).");
+        };
+        return CustomValidationRules;
+    }());
+    exports.CustomValidationRules = CustomValidationRules;
+});
+
+define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environment", "./infrastructure/error-interceptor", "./services/account/account-service", "./services/settings/settings-service", "./form-validation/custom-validation-rules"], function (require, exports, tslib_1, aurelia_fetch_client_1, environment_1, error_interceptor_1, account_service_1, settings_service_1, custom_validation_rules_1) {
     "use strict";
     Promise.config({
         warnings: {
@@ -397,10 +409,12 @@ define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environ
     });
     function configure(aurelia) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var httpClient, errorInterceptor, account, settings;
+            var validationRules, httpClient, errorInterceptor, account, settings;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        validationRules = aurelia.container.get(custom_validation_rules_1.CustomValidationRules);
+                        validationRules.register();
                         httpClient = aurelia.container.get(aurelia_fetch_client_1.HttpClient);
                         errorInterceptor = aurelia.container.get(error_interceptor_1.ErrorInterceptor);
                         httpClient.configure(function (config) {
@@ -533,11 +547,84 @@ define('components/footer/dream-footer',["require", "exports"], function (requir
     exports.DreamFooter = DreamFooter;
 });
 
-define('components/header/dream-header',["require", "exports", "tslib", "aurelia-framework", "aurelia-router", "../../services/account/account-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1, account_service_1) {
+define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-framework", "aurelia-dialog", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "../../services/account/account-service", "aurelia-binding"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_dialog_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, aurelia_binding_1) {
+    "use strict";
+    var UserLogin = (function () {
+        function UserLogin(controller, validation, account, bindingEngine) {
+            this.controller = controller;
+            this.validation = validation;
+            this.account = account;
+            this.bindingEngine = bindingEngine;
+            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
+            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
+        }
+        UserLogin.prototype.attached = function () {
+            var _this = this;
+            this.subscriptions = [];
+            this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, 'email').subscribe(function () { return _this.onChange(); }));
+            this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, 'password').subscribe(function () { return _this.onChange(); }));
+        };
+        UserLogin.prototype.detached = function () {
+            if (this.subscriptions.length > 0) {
+                this.subscriptions.forEach(function (subscription) {
+                    subscription.dispose();
+                });
+            }
+        };
+        UserLogin.prototype.onChange = function () {
+            this.loginFailed = false;
+        };
+        UserLogin.prototype.activate = function (model) {
+            this.model = model;
+            aurelia_validation_1.ValidationRules
+                .ensure(function (m) { return m.email; }).displayName('Email').required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (m) { return m.password; }).displayName('Password').required().withMessage("${$displayName} cannot be blank.")
+                .on(this.model);
+        };
+        UserLogin.prototype.tryLogin = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.validation.validate()];
+                        case 1:
+                            if (!(_a.sent()).valid) return [3 /*break*/, 3];
+                            return [4 /*yield*/, this.account.login(this.model.email, this.model.password)];
+                        case 2:
+                            response = _a.sent();
+                            if (response.status === "success") {
+                                this.controller.ok(this.model);
+                            }
+                            else {
+                                this.loginFailed = true;
+                            }
+                            _a.label = 3;
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return UserLogin;
+    }());
+    UserLogin = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [aurelia_dialog_1.DialogController, aurelia_validation_1.ValidationController, account_service_1.AccountService, aurelia_binding_1.BindingEngine])
+    ], UserLogin);
+    exports.UserLogin = UserLogin;
+    var UserLoginModel = (function () {
+        function UserLoginModel() {
+        }
+        return UserLoginModel;
+    }());
+    exports.UserLoginModel = UserLoginModel;
+});
+
+define('components/header/dream-header',["require", "exports", "tslib", "aurelia-framework", "aurelia-router", "aurelia-dialog", "../../services/account/account-service", "../../dialogs/login/user-login"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1, aurelia_dialog_1, account_service_1, user_login_1) {
     "use strict";
     var DreamHeader = (function () {
-        function DreamHeader(account) {
+        function DreamHeader(account, dialogService) {
             this.account = account;
+            this.dialogService = dialogService;
             this.user = this.account.currentUser;
         }
         DreamHeader.prototype.attached = function () {
@@ -557,6 +644,24 @@ define('components/header/dream-header',["require", "exports", "tslib", "aurelia
                 });
             });
         };
+        DreamHeader.prototype.login = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var model, response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            model = new user_login_1.UserLoginModel();
+                            return [4 /*yield*/, this.dialogService.open({ viewModel: user_login_1.UserLogin, model: model })];
+                        case 1:
+                            response = _a.sent();
+                            if (!response.wasCancelled) {
+                                window.location.reload();
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
         return DreamHeader;
     }());
     tslib_1.__decorate([
@@ -565,7 +670,7 @@ define('components/header/dream-header',["require", "exports", "tslib", "aurelia
     ], DreamHeader.prototype, "router", void 0);
     DreamHeader = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_dialog_1.DialogService])
     ], DreamHeader);
     exports.DreamHeader = DreamHeader;
 });
@@ -3075,33 +3180,753 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
     exports.ValidationRules = ValidationRules;
 });
 
+define('aurelia-dialog/ai-dialog',['exports', 'aurelia-templating'], function (exports, _aureliaTemplating) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.AiDialog = undefined;
+
+  
+
+  var _dec, _dec2, _class;
+
+  var AiDialog = exports.AiDialog = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <slot></slot>\n  </template>\n'), _dec(_class = _dec2(_class = function AiDialog() {
+    
+  }) || _class) || _class);
+});
+define('aurelia-dialog/ai-dialog-header',['exports', 'aurelia-templating', './dialog-controller'], function (exports, _aureliaTemplating, _dialogController) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.AiDialogHeader = undefined;
+
+  
+
+  var _dec, _dec2, _class, _class2, _temp;
+
+  var AiDialogHeader = exports.AiDialogHeader = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog-header'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <button type="button" class="dialog-close" aria-label="Close" if.bind="!controller.settings.lock" click.trigger="controller.cancel()">\n      <span aria-hidden="true">&times;</span>\n    </button>\n\n    <div class="dialog-header-content">\n      <slot></slot>\n    </div>\n  </template>\n'), _dec(_class = _dec2(_class = (_temp = _class2 = function AiDialogHeader(controller) {
+    
+
+    this.controller = controller;
+  }, _class2.inject = [_dialogController.DialogController], _temp)) || _class) || _class);
+});
+define('aurelia-dialog/dialog-controller',['exports', './lifecycle', './dialog-result'], function (exports, _lifecycle, _dialogResult) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.DialogController = undefined;
+
+  
+
+  var DialogController = exports.DialogController = function () {
+    function DialogController(renderer, settings, resolve, reject) {
+      
+
+      this.renderer = renderer;
+      this.settings = settings;
+      this._resolve = resolve;
+      this._reject = reject;
+    }
+
+    DialogController.prototype.ok = function ok(output) {
+      return this.close(true, output);
+    };
+
+    DialogController.prototype.cancel = function cancel(output) {
+      return this.close(false, output);
+    };
+
+    DialogController.prototype.error = function error(message) {
+      var _this = this;
+
+      return (0, _lifecycle.invokeLifecycle)(this.viewModel, 'deactivate').then(function () {
+        return _this.renderer.hideDialog(_this);
+      }).then(function () {
+        _this.controller.unbind();
+        _this._reject(message);
+      });
+    };
+
+    DialogController.prototype.close = function close(ok, output) {
+      var _this2 = this;
+
+      if (this._closePromise) {
+        return this._closePromise;
+      }
+
+      this._closePromise = (0, _lifecycle.invokeLifecycle)(this.viewModel, 'canDeactivate').then(function (canDeactivate) {
+        if (canDeactivate) {
+          return (0, _lifecycle.invokeLifecycle)(_this2.viewModel, 'deactivate').then(function () {
+            return _this2.renderer.hideDialog(_this2);
+          }).then(function () {
+            var result = new _dialogResult.DialogResult(!ok, output);
+            _this2.controller.unbind();
+            _this2._resolve(result);
+            return result;
+          });
+        }
+
+        _this2._closePromise = undefined;
+      }, function (e) {
+        _this2._closePromise = undefined;
+        return Promise.reject(e);
+      });
+
+      return this._closePromise;
+    };
+
+    return DialogController;
+  }();
+});
+define('aurelia-dialog/lifecycle',['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.invokeLifecycle = invokeLifecycle;
+  function invokeLifecycle(instance, name, model) {
+    if (typeof instance[name] === 'function') {
+      var result = instance[name](model);
+
+      if (result instanceof Promise) {
+        return result;
+      }
+
+      if (result !== null && result !== undefined) {
+        return Promise.resolve(result);
+      }
+
+      return Promise.resolve(true);
+    }
+
+    return Promise.resolve(true);
+  }
+});
+define('aurelia-dialog/dialog-result',["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  
+
+  var DialogResult = exports.DialogResult = function DialogResult(cancelled, output) {
+    
+
+    this.wasCancelled = false;
+
+    this.wasCancelled = cancelled;
+    this.output = output;
+  };
+});
+define('aurelia-dialog/ai-dialog-body',['exports', 'aurelia-templating'], function (exports, _aureliaTemplating) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.AiDialogBody = undefined;
+
+  
+
+  var _dec, _dec2, _class;
+
+  var AiDialogBody = exports.AiDialogBody = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog-body'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <slot></slot>\n  </template>\n'), _dec(_class = _dec2(_class = function AiDialogBody() {
+    
+  }) || _class) || _class);
+});
+define('aurelia-dialog/ai-dialog-footer',['exports', 'aurelia-templating', './dialog-controller'], function (exports, _aureliaTemplating, _dialogController) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.AiDialogFooter = undefined;
+
+  function _initDefineProp(target, property, descriptor, context) {
+    if (!descriptor) return;
+    Object.defineProperty(target, property, {
+      enumerable: descriptor.enumerable,
+      configurable: descriptor.configurable,
+      writable: descriptor.writable,
+      value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+    });
+  }
+
+  
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+    var desc = {};
+    Object['ke' + 'ys'](descriptor).forEach(function (key) {
+      desc[key] = descriptor[key];
+    });
+    desc.enumerable = !!desc.enumerable;
+    desc.configurable = !!desc.configurable;
+
+    if ('value' in desc || desc.initializer) {
+      desc.writable = true;
+    }
+
+    desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+      return decorator(target, property, desc) || desc;
+    }, desc);
+
+    if (context && desc.initializer !== void 0) {
+      desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+      desc.initializer = undefined;
+    }
+
+    if (desc.initializer === void 0) {
+      Object['define' + 'Property'](target, property, desc);
+      desc = null;
+    }
+
+    return desc;
+  }
+
+  function _initializerWarningHelper(descriptor, context) {
+    throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+  }
+
+  var _dec, _dec2, _class, _desc, _value, _class2, _descriptor, _descriptor2, _class3, _temp;
+
+  var AiDialogFooter = exports.AiDialogFooter = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog-footer'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <slot></slot>\n\n    <template if.bind="buttons.length > 0">\n      <button type="button" class="btn btn-default" repeat.for="button of buttons" click.trigger="close(button)">${button}</button>\n    </template>\n  </template>\n'), _dec(_class = _dec2(_class = (_class2 = (_temp = _class3 = function () {
+    function AiDialogFooter(controller) {
+      
+
+      _initDefineProp(this, 'buttons', _descriptor, this);
+
+      _initDefineProp(this, 'useDefaultButtons', _descriptor2, this);
+
+      this.controller = controller;
+    }
+
+    AiDialogFooter.prototype.close = function close(buttonValue) {
+      if (AiDialogFooter.isCancelButton(buttonValue)) {
+        this.controller.cancel(buttonValue);
+      } else {
+        this.controller.ok(buttonValue);
+      }
+    };
+
+    AiDialogFooter.prototype.useDefaultButtonsChanged = function useDefaultButtonsChanged(newValue) {
+      if (newValue) {
+        this.buttons = ['Cancel', 'Ok'];
+      }
+    };
+
+    AiDialogFooter.isCancelButton = function isCancelButton(value) {
+      return value === 'Cancel';
+    };
+
+    return AiDialogFooter;
+  }(), _class3.inject = [_dialogController.DialogController], _temp), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'buttons', [_aureliaTemplating.bindable], {
+    enumerable: true,
+    initializer: function initializer() {
+      return [];
+    }
+  }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'useDefaultButtons', [_aureliaTemplating.bindable], {
+    enumerable: true,
+    initializer: function initializer() {
+      return false;
+    }
+  })), _class2)) || _class) || _class);
+});
+define('aurelia-dialog/attach-focus',['exports', 'aurelia-templating'], function (exports, _aureliaTemplating) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.AttachFocus = undefined;
+
+  
+
+  var _dec, _class, _class2, _temp;
+
+  var AttachFocus = exports.AttachFocus = (_dec = (0, _aureliaTemplating.customAttribute)('attach-focus'), _dec(_class = (_temp = _class2 = function () {
+    function AttachFocus(element) {
+      
+
+      this.value = true;
+
+      this.element = element;
+    }
+
+    AttachFocus.prototype.attached = function attached() {
+      if (this.value && this.value !== 'false') {
+        this.element.focus();
+      }
+    };
+
+    AttachFocus.prototype.valueChanged = function valueChanged(newValue) {
+      this.value = newValue;
+    };
+
+    return AttachFocus;
+  }(), _class2.inject = [Element], _temp)) || _class);
+});
+define('aurelia-dialog/dialog-configuration',['exports', './renderer', './dialog-renderer', './dialog-options', 'aurelia-pal'], function (exports, _renderer, _dialogRenderer, _dialogOptions, _aureliaPal) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.DialogConfiguration = undefined;
+
+  
+
+  var defaultRenderer = _dialogRenderer.DialogRenderer;
+
+  var resources = {
+    'ai-dialog': './ai-dialog',
+    'ai-dialog-header': './ai-dialog-header',
+    'ai-dialog-body': './ai-dialog-body',
+    'ai-dialog-footer': './ai-dialog-footer',
+    'attach-focus': './attach-focus'
+  };
+
+  var defaultCSSText = 'ai-dialog-container,ai-dialog-overlay{position:fixed;top:0;right:0;bottom:0;left:0}ai-dialog-overlay{opacity:0}ai-dialog-overlay.active{opacity:1}ai-dialog-container{display:block;transition:opacity .2s linear;opacity:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch}ai-dialog-container.active{opacity:1}ai-dialog-container>div{padding:30px}ai-dialog-container>div>div{display:block;min-width:300px;width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;height:-moz-fit-content;height:-webkit-fit-content;height:fit-content;margin:auto}ai-dialog-container,ai-dialog-container>div,ai-dialog-container>div>div{outline:0}ai-dialog{display:table;box-shadow:0 5px 15px rgba(0,0,0,.5);border:1px solid rgba(0,0,0,.2);border-radius:5px;padding:3;min-width:300px;width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;height:-moz-fit-content;height:-webkit-fit-content;height:fit-content;margin:auto;border-image-source:initial;border-image-slice:initial;border-image-width:initial;border-image-outset:initial;border-image-repeat:initial;background:#fff}ai-dialog>ai-dialog-header{display:block;padding:16px;border-bottom:1px solid #e5e5e5}ai-dialog>ai-dialog-header>button{float:right;border:none;display:block;width:32px;height:32px;background:0 0;font-size:22px;line-height:16px;margin:-14px -16px 0 0;padding:0;cursor:pointer}ai-dialog>ai-dialog-body{display:block;padding:16px}ai-dialog>ai-dialog-footer{display:block;padding:6px;border-top:1px solid #e5e5e5;text-align:right}ai-dialog>ai-dialog-footer button{color:#333;background-color:#fff;padding:6px 12px;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;background-image:none;border:1px solid #ccc;border-radius:4px;margin:5px 0 5px 5px}ai-dialog>ai-dialog-footer button:disabled{cursor:default;opacity:.45}ai-dialog>ai-dialog-footer button:hover:enabled{color:#333;background-color:#e6e6e6;border-color:#adadad}.ai-dialog-open{overflow:hidden}';
+
+  var DialogConfiguration = exports.DialogConfiguration = function () {
+    function DialogConfiguration(aurelia) {
+      
+
+      this.aurelia = aurelia;
+      this.settings = _dialogOptions.dialogOptions;
+      this.resources = [];
+      this.cssText = defaultCSSText;
+      this.renderer = defaultRenderer;
+    }
+
+    DialogConfiguration.prototype.useDefaults = function useDefaults() {
+      return this.useRenderer(defaultRenderer).useCSS(defaultCSSText).useStandardResources();
+    };
+
+    DialogConfiguration.prototype.useStandardResources = function useStandardResources() {
+      return this.useResource('ai-dialog').useResource('ai-dialog-header').useResource('ai-dialog-body').useResource('ai-dialog-footer').useResource('attach-focus');
+    };
+
+    DialogConfiguration.prototype.useResource = function useResource(resourceName) {
+      this.resources.push(resourceName);
+      return this;
+    };
+
+    DialogConfiguration.prototype.useRenderer = function useRenderer(renderer, settings) {
+      this.renderer = renderer;
+      this.settings = Object.assign(this.settings, settings || {});
+      return this;
+    };
+
+    DialogConfiguration.prototype.useCSS = function useCSS(cssText) {
+      this.cssText = cssText;
+      return this;
+    };
+
+    DialogConfiguration.prototype._apply = function _apply() {
+      var _this = this;
+
+      this.aurelia.transient(_renderer.Renderer, this.renderer);
+      this.resources.forEach(function (resourceName) {
+        return _this.aurelia.globalResources(resources[resourceName]);
+      });
+
+      if (this.cssText) {
+        _aureliaPal.DOM.injectStyles(this.cssText);
+      }
+    };
+
+    return DialogConfiguration;
+  }();
+});
+define('aurelia-dialog/renderer',['exports'], function (exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  
+
+  var Renderer = exports.Renderer = function () {
+    function Renderer() {
+      
+    }
+
+    Renderer.prototype.getDialogContainer = function getDialogContainer() {
+      throw new Error('DialogRenderer must implement getDialogContainer().');
+    };
+
+    Renderer.prototype.showDialog = function showDialog(dialogController) {
+      throw new Error('DialogRenderer must implement showDialog().');
+    };
+
+    Renderer.prototype.hideDialog = function hideDialog(dialogController) {
+      throw new Error('DialogRenderer must implement hideDialog().');
+    };
+
+    return Renderer;
+  }();
+});
+define('aurelia-dialog/dialog-renderer',['exports', 'aurelia-pal', 'aurelia-dependency-injection'], function (exports, _aureliaPal, _aureliaDependencyInjection) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.DialogRenderer = undefined;
+
+  
+
+  var _dec, _class;
+
+  var containerTagName = 'ai-dialog-container';
+  var overlayTagName = 'ai-dialog-overlay';
+  var transitionEvent = function () {
+    var transition = null;
+
+    return function () {
+      if (transition) return transition;
+
+      var t = void 0;
+      var el = _aureliaPal.DOM.createElement('fakeelement');
+      var transitions = {
+        'transition': 'transitionend',
+        'OTransition': 'oTransitionEnd',
+        'MozTransition': 'transitionend',
+        'WebkitTransition': 'webkitTransitionEnd'
+      };
+      for (t in transitions) {
+        if (el.style[t] !== undefined) {
+          transition = transitions[t];
+          return transition;
+        }
+      }
+    };
+  }();
+
+  var DialogRenderer = exports.DialogRenderer = (_dec = (0, _aureliaDependencyInjection.transient)(), _dec(_class = function () {
+    function DialogRenderer() {
+      var _this = this;
+
+      
+
+      this._escapeKeyEventHandler = function (e) {
+        if (e.keyCode === 27) {
+          var top = _this._dialogControllers[_this._dialogControllers.length - 1];
+          if (top && top.settings.lock !== true) {
+            top.cancel();
+          }
+        }
+      };
+    }
+
+    DialogRenderer.prototype.getDialogContainer = function getDialogContainer() {
+      return _aureliaPal.DOM.createElement('div');
+    };
+
+    DialogRenderer.prototype.showDialog = function showDialog(dialogController) {
+      var _this2 = this;
+
+      var settings = dialogController.settings;
+      var body = _aureliaPal.DOM.querySelectorAll('body')[0];
+      var wrapper = document.createElement('div');
+
+      this.modalOverlay = _aureliaPal.DOM.createElement(overlayTagName);
+      this.modalContainer = _aureliaPal.DOM.createElement(containerTagName);
+      this.anchor = dialogController.slot.anchor;
+      wrapper.appendChild(this.anchor);
+      this.modalContainer.appendChild(wrapper);
+
+      this.stopPropagation = function (e) {
+        e._aureliaDialogHostClicked = true;
+      };
+      this.closeModalClick = function (e) {
+        if (!settings.lock && !e._aureliaDialogHostClicked) {
+          dialogController.cancel();
+        } else {
+          return false;
+        }
+      };
+
+      dialogController.centerDialog = function () {
+        if (settings.centerHorizontalOnly) return;
+        centerDialog(_this2.modalContainer);
+      };
+
+      this.modalOverlay.style.zIndex = settings.startingZIndex;
+      this.modalContainer.style.zIndex = settings.startingZIndex;
+
+      var lastContainer = Array.from(body.querySelectorAll(containerTagName)).pop();
+
+      if (lastContainer) {
+        lastContainer.parentNode.insertBefore(this.modalContainer, lastContainer.nextSibling);
+        lastContainer.parentNode.insertBefore(this.modalOverlay, lastContainer.nextSibling);
+      } else {
+        body.insertBefore(this.modalContainer, body.firstChild);
+        body.insertBefore(this.modalOverlay, body.firstChild);
+      }
+
+      if (!this._dialogControllers.length) {
+        _aureliaPal.DOM.addEventListener('keyup', this._escapeKeyEventHandler);
+      }
+
+      this._dialogControllers.push(dialogController);
+
+      dialogController.slot.attached();
+
+      if (typeof settings.position === 'function') {
+        settings.position(this.modalContainer, this.modalOverlay);
+      } else {
+        dialogController.centerDialog();
+      }
+
+      this.modalContainer.addEventListener('click', this.closeModalClick);
+      this.anchor.addEventListener('click', this.stopPropagation);
+
+      return new Promise(function (resolve) {
+        var renderer = _this2;
+        if (settings.ignoreTransitions) {
+          resolve();
+        } else {
+          _this2.modalContainer.addEventListener(transitionEvent(), onTransitionEnd);
+        }
+
+        _this2.modalOverlay.classList.add('active');
+        _this2.modalContainer.classList.add('active');
+        body.classList.add('ai-dialog-open');
+
+        function onTransitionEnd(e) {
+          if (e.target !== renderer.modalContainer) {
+            return;
+          }
+          renderer.modalContainer.removeEventListener(transitionEvent(), onTransitionEnd);
+          resolve();
+        }
+      });
+    };
+
+    DialogRenderer.prototype.hideDialog = function hideDialog(dialogController) {
+      var _this3 = this;
+
+      var settings = dialogController.settings;
+      var body = _aureliaPal.DOM.querySelectorAll('body')[0];
+
+      this.modalContainer.removeEventListener('click', this.closeModalClick);
+      this.anchor.removeEventListener('click', this.stopPropagation);
+
+      var i = this._dialogControllers.indexOf(dialogController);
+      if (i !== -1) {
+        this._dialogControllers.splice(i, 1);
+      }
+
+      if (!this._dialogControllers.length) {
+        _aureliaPal.DOM.removeEventListener('keyup', this._escapeKeyEventHandler);
+      }
+
+      return new Promise(function (resolve) {
+        var renderer = _this3;
+        if (settings.ignoreTransitions) {
+          resolve();
+        } else {
+          _this3.modalContainer.addEventListener(transitionEvent(), onTransitionEnd);
+        }
+
+        _this3.modalOverlay.classList.remove('active');
+        _this3.modalContainer.classList.remove('active');
+
+        function onTransitionEnd() {
+          renderer.modalContainer.removeEventListener(transitionEvent(), onTransitionEnd);
+          resolve();
+        }
+      }).then(function () {
+        body.removeChild(_this3.modalOverlay);
+        body.removeChild(_this3.modalContainer);
+        dialogController.slot.detached();
+
+        if (!_this3._dialogControllers.length) {
+          body.classList.remove('ai-dialog-open');
+        }
+
+        return Promise.resolve();
+      });
+    };
+
+    return DialogRenderer;
+  }()) || _class);
+
+
+  DialogRenderer.prototype._dialogControllers = [];
+
+  function centerDialog(modalContainer) {
+    var child = modalContainer.children[0];
+    var vh = Math.max(_aureliaPal.DOM.querySelectorAll('html')[0].clientHeight, window.innerHeight || 0);
+
+    child.style.marginTop = Math.max((vh - child.offsetHeight) / 2, 30) + 'px';
+    child.style.marginBottom = Math.max((vh - child.offsetHeight) / 2, 30) + 'px';
+  }
+});
+define('aurelia-dialog/dialog-options',["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var dialogOptions = exports.dialogOptions = {
+    lock: true,
+    centerHorizontalOnly: false,
+    startingZIndex: 1000,
+    ignoreTransitions: false
+  };
+});
+define('aurelia-dialog/dialog-service',['exports', 'aurelia-metadata', 'aurelia-dependency-injection', 'aurelia-templating', './dialog-controller', './renderer', './lifecycle', './dialog-result', './dialog-options'], function (exports, _aureliaMetadata, _aureliaDependencyInjection, _aureliaTemplating, _dialogController, _renderer, _lifecycle, _dialogResult, _dialogOptions) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.DialogService = undefined;
+
+  
+
+  var _class, _temp;
+
+  var DialogService = exports.DialogService = (_temp = _class = function () {
+    function DialogService(container, compositionEngine) {
+      
+
+      this.container = container;
+      this.compositionEngine = compositionEngine;
+      this.controllers = [];
+      this.hasActiveDialog = false;
+    }
+
+    DialogService.prototype.open = function open(settings) {
+      return this.openAndYieldController(settings).then(function (controller) {
+        return controller.result;
+      });
+    };
+
+    DialogService.prototype.openAndYieldController = function openAndYieldController(settings) {
+      var _this = this;
+
+      var childContainer = this.container.createChild();
+      var dialogController = void 0;
+      var promise = new Promise(function (resolve, reject) {
+        dialogController = new _dialogController.DialogController(childContainer.get(_renderer.Renderer), _createSettings(settings), resolve, reject);
+      });
+      childContainer.registerInstance(_dialogController.DialogController, dialogController);
+      dialogController.result = promise;
+      dialogController.result.then(function () {
+        _removeController(_this, dialogController);
+      }, function () {
+        _removeController(_this, dialogController);
+      });
+      return _openDialog(this, childContainer, dialogController).then(function () {
+        return dialogController;
+      });
+    };
+
+    return DialogService;
+  }(), _class.inject = [_aureliaDependencyInjection.Container, _aureliaTemplating.CompositionEngine], _temp);
+
+
+  function _createSettings(settings) {
+    settings = Object.assign({}, _dialogOptions.dialogOptions, settings);
+    settings.startingZIndex = _dialogOptions.dialogOptions.startingZIndex;
+    return settings;
+  }
+
+  function _openDialog(service, childContainer, dialogController) {
+    var host = dialogController.renderer.getDialogContainer();
+    var instruction = {
+      container: service.container,
+      childContainer: childContainer,
+      model: dialogController.settings.model,
+      view: dialogController.settings.view,
+      viewModel: dialogController.settings.viewModel,
+      viewSlot: new _aureliaTemplating.ViewSlot(host, true),
+      host: host
+    };
+
+    return _getViewModel(instruction, service.compositionEngine).then(function (returnedInstruction) {
+      dialogController.viewModel = returnedInstruction.viewModel;
+      dialogController.slot = returnedInstruction.viewSlot;
+
+      return (0, _lifecycle.invokeLifecycle)(dialogController.viewModel, 'canActivate', dialogController.settings.model).then(function (canActivate) {
+        if (canActivate) {
+          return service.compositionEngine.compose(returnedInstruction).then(function (controller) {
+            service.controllers.push(dialogController);
+            service.hasActiveDialog = !!service.controllers.length;
+            dialogController.controller = controller;
+            dialogController.view = controller.view;
+
+            return dialogController.renderer.showDialog(dialogController);
+          });
+        }
+      });
+    });
+  }
+
+  function _getViewModel(instruction, compositionEngine) {
+    if (typeof instruction.viewModel === 'function') {
+      instruction.viewModel = _aureliaMetadata.Origin.get(instruction.viewModel).moduleId;
+    }
+
+    if (typeof instruction.viewModel === 'string') {
+      return compositionEngine.ensureViewModel(instruction);
+    }
+
+    return Promise.resolve(instruction);
+  }
+
+  function _removeController(service, controller) {
+    var i = service.controllers.indexOf(controller);
+    if (i !== -1) {
+      service.controllers.splice(i, 1);
+      service.hasActiveDialog = !!service.controllers.length;
+    }
+  }
+});
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><require from=\"./components/header/dream-header\"></require><require from=\"./components/footer/dream-footer\"></require><dream-header router.bind=\"router\"></dream-header><router-view></router-view><dream-footer></dream-footer></template>"; });
 define('text!components/footer/dream-footer.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-footer.css\"></require></template>"; });
-define('text!components/header/dream-header.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-header.css\"></require><div class=\"container\"><div class=\"navbar-brand\"><img class=\"logo\" src=\"/content/images/logo.png\"> <a first-letter-span href=\"/\">Dream Space</a></div><ul class=\"nav navbar-nav navbar-right\"><li role=\"presentation\" class=\"dropdown\" if.bind=\"isAuthenticated === true\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> ${userContext.user.firstName} <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href.bind=\"loginUrl\">Account</a></li><li><a click.delegate=\"logout()\">Logout</a></li></ul></li><li if.bind=\"isAuthenticated !== true\"><a href.bind=\"loginUrl\">Login</a></li></ul></div></template>"; });
+define('text!components/header/dream-header.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-header.css\"></require><div class=\"container\"><div class=\"navbar-brand\"><img class=\"logo\" src=\"/content/images/logo.png\"> <a first-letter-span href=\"/\">Dream Space</a></div><ul class=\"nav navbar-nav navbar-right\"><li role=\"presentation\" class=\"dropdown\" if.bind=\"isAuthenticated === true\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> ${user.firstName} <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href.bind=\"loginUrl\">Account</a></li><li><a click.delegate=\"logout()\">Logout</a></li></ul></li><li if.bind=\"isAuthenticated !== true\"><a click.delegate=\"login()\">Login</a></li></ul></div></template>"; });
 define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-nav/category-nav\"></require><category-nav menu.bind=\"menu\"></category-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/studies/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/categories\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"article.blocks\"></article-parts></div></div><div class=\"col-md-4\"><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
-define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg_.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 13px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts {\n  padding: 0 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
+define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg_.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  height: 38px;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 13px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts {\n  padding: 0 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!components/user/login.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
 define('text!components/user/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/nav-menu/main-nav/main-nav.html', ['module'], function(module) { module.exports = "<template><require from=\"./main-nav.css\"></require><div class=\"container\"><div class=\"main-nav-items\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></div></div></template>"; });
+define('text!styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg_.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  height: 38px;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 13px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts {\n  padding: 0 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!components/studies/category-nav/category-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of menu.items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"$parent.getUrl(item)\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg_.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 13px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts {\n  padding: 0 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
-define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"part.editMode !== true\" class=\"${part.headingType}\">${part.text}</span></template>"; });
 define('text!styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 13px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts {\n  padding: 0 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
+define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"part.editMode !== true\" class=\"${part.headingType}\">${part.text}</span></template>"; });
 define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"part.editMode !== true\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
+define('text!styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg_.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!part.editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
 define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
-define('text!styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg_.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"part.editMode !== true\">${part.text}</p></template>"; });
-define('text!styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
+define('text!styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
 define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" if.bind=\"part.type === 'Paragraph'\"></article-part-paragraph><article-part-heading part.bind=\"part\" if.bind=\"part.type === 'Heading'\"></article-part-heading><article-part-image part.bind=\"part\" if.bind=\"part.type === 'Image'\"></article-part-image><article-part-list part.bind=\"part\" if.bind=\"part.type === 'List'\"></article-part-list><article-part-new part.bind=\"part\" if.bind=\"part.type === 'Unset'\"></article-part-new><article-part-actions part.bind=\"part\" if.bind=\"part.type !== 'Unset'\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode === true\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
+define('text!styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
+define('text!styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  height: 38px;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n"; });
 define('text!styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
 define('text!styles/_sub-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!styles/_variables.css', ['module'], function(module) { module.exports = ""; });
 define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = ""; });
 define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
 define('text!components/studies/study.css', ['module'], function(module) { module.exports = ""; });
+define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!components/nav-menu/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
 define('text!components/studies/category-nav/category-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 //# sourceMappingURL=app-bundle.js.map

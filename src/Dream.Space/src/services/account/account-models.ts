@@ -6,10 +6,12 @@
 
 export class LoginResponse {
     user: UserInfo;
-    status: number;
+    status: LoginResponseType;
 }
 
 export class UserUpdateResponse {
     status: number;
     user: UserInfo;
 }
+
+export type LoginResponseType = "success" | "requiresVerification";

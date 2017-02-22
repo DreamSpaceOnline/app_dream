@@ -1,7 +1,9 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { Router } from "aurelia-router";
+import { DialogService } from 'aurelia-dialog';
 import {AccountService} from "../../services/account/account-service";
 import {UserInfo} from "../../services/account/account-models";
+import {UserLogin, UserLoginModel } from "../../dialogs/login/user-login";
 
 @autoinject
 export class DreamHeader {
@@ -11,7 +13,7 @@ export class DreamHeader {
     loginUrl: string;
 
 
-    constructor(private account: AccountService) {
+    constructor(private account: AccountService, private dialogService: DialogService) {
         this.user = this.account.currentUser;
     }
 
@@ -26,4 +28,11 @@ export class DreamHeader {
         window.location.href = "/";
     }
 
+    async login() {
+        const model = new UserLoginModel();
+        const response = await this.dialogService.open({ viewModel: UserLogin, model: model });
+        if (!response.wasCancelled) {
+            window.location.reload();
+        }
+    }
 }

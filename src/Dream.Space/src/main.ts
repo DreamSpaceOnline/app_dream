@@ -4,8 +4,7 @@ import environment from "./environment";
 import { ErrorInterceptor } from "./infrastructure/error-interceptor";
 import { AccountService } from "./services/account/account-service";
 import { SettingsService } from "./services/settings/settings-service";
-
-
+import {CustomValidationRules} from "./form-validation/custom-validation-rules";
 (<any>Promise).config({
   warnings: {
     wForgottenReturn: false
@@ -13,6 +12,9 @@ import { SettingsService } from "./services/settings/settings-service";
 });
 
 export async function configure(aurelia: Aurelia) {
+
+    const validationRules = aurelia.container.get(CustomValidationRules) as CustomValidationRules;
+    validationRules.register();
 
     const httpClient = aurelia.container.get(HttpClient) as HttpClient;
     const errorInterceptor = aurelia.container.get(ErrorInterceptor) as ErrorInterceptor;
