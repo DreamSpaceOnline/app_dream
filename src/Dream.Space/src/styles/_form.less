@@ -60,3 +60,117 @@ select.form-control {
     background-color: @bg-color-input-readonly;
     opacity: 1;
 }
+
+
+
+.form-control {
+    font-size:14px;
+    border-radius:0;
+    box-shadow: none;
+    color:rgba(0, 0, 0, 0.82);
+    border: 1px solid rgba(204, 204, 204, 0.36);
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    cursor: default;
+    background-color: @input-bg-readonly;
+    color:rgba(0, 0, 0, 0.82);
+    box-shadow: none;
+    border: 1px solid rgba(204, 204, 204, 0.36);
+}
+
+p.form-control {
+    height: 32px;
+}
+
+.input-group {
+    .form-control {
+        //border: 1px solid @btn-default-border-color;
+    }
+}
+
+form {
+    margin-bottom: 10px;
+
+    .form-actions {
+        text-align: right;
+        border-top: 1px solid @h3-color;
+        padding-top:10px;
+        margin-left: 15px;
+    }
+
+    label {
+        font-weight: normal;
+        font-family: 'Roboto', sans-serif;
+        font-size: 13px;
+        color:rgba(0, 0, 0, 0.55);
+        margin-bottom:-2px;
+        margin-left:2px;
+
+        input[type="file"] {
+            position: fixed;
+            top: -1000px;
+        }
+    }
+
+    .form-group {
+
+        .form-actions {
+            text-align: right;
+            border: 0;
+            padding-top:0px;
+
+            .btn {
+                padding: 2px 10px;
+            }
+        }
+
+        .file {
+            background-color: @input-bg-readonly;
+            border: 1px solid @solid-border-color;
+
+            label {
+                margin-left: -2px;
+            }
+            span {
+                margin-top: 5px;
+                float: right;
+                margin-right:10px;
+            }
+
+        }
+
+        label {
+            &.btn {
+                padding-top: 6px;
+            }
+        }
+    }
+
+    textarea {
+        &.html {
+            font-family: monospace;
+        }
+    }
+    .validation-summary-error {
+        color: @font-color-error;
+        .glyphicon {
+            font-size: 18px;
+            position:relative;
+        }
+        .col-xs-1 {
+            width: 20px;
+        }
+        ul {
+            padding-left:0;
+            li {
+                list-style: none;
+            }
+        }
+    }
+
+    fieldset {
+        margin-bottom: 15px;
+    }
+
+}

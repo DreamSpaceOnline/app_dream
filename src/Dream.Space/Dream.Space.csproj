@@ -275,13 +275,15 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="src\components\categories\categories.html" />
+    <Content Include="src\components\categories\navigation.html" />
     <Content Include="src\components\footer\dream-footer.html" />
     <Content Include="src\components\header\dream-header.html" />
     <Content Include="package.json" />
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
-    <Content Include="src\components\studies\category-nav\category-nav.html" />
+    <Content Include="src\components\nav-menu\category-nav\category-nav.html" />
     <Content Include="src\components\studies\navigation.html" />
     <Content Include="src\components\studies\study.html" />
     <Content Include="src\components\user\login.html" />
@@ -385,10 +387,12 @@
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\components\categories\categories.ts" />
+    <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
-    <TypeScriptCompile Include="src\components\studies\category-nav\category-nav.ts" />
+    <TypeScriptCompile Include="src\components\nav-menu\category-nav\category-nav.ts" />
     <TypeScriptCompile Include="src\components\studies\navigation.ts" />
     <TypeScriptCompile Include="src\components\studies\study.ts" />
     <TypeScriptCompile Include="src\components\user\login.ts" />
@@ -455,7 +459,7 @@
     <Content Include="src\components\nav-menu\main-nav\main-nav.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\components\studies\category-nav\category-nav.less" />
+    <Content Include="src\components\nav-menu\category-nav\category-nav.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\styles\_sub-nav.less" />
@@ -499,6 +503,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\styles\_form.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\categories\categories.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
