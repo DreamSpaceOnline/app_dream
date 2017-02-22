@@ -359,7 +359,6 @@
     <Folder Include="src\components\nav-menu\sub-nav\" />
     <Folder Include="src\resources\attributes\" />
     <Folder Include="src\resources\binding-behaviors\" />
-    <Folder Include="src\resources\value-converters\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +478,15 @@
     <TypeScriptCompile Include="src\resources\elements\article-parts\article-part-new.ts" />
     <Content Include="src\resources\elements\article-parts\article-part-paragraph.html" />
     <TypeScriptCompile Include="src\resources\elements\article-parts\article-part-paragraph.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\studies\study.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\_article.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\styles\_page.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

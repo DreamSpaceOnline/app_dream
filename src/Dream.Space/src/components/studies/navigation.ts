@@ -9,12 +9,12 @@ export class Navigation {
 
     router: Router;
     section: SectionInfo;
-    menus: MenuNavigationItem [];
+    //menus: MenuNavigationItem [];
     menu: MenuNavigationItem;
     
     constructor(private articleService: ArticleService, private settings: SettingsService) {
         this.section = this.settings.getStudiesSection();
-        this.menus = [];
+        //this.menus = [];
 
         this.menu = {
             editMode: false,
@@ -29,7 +29,7 @@ export class Navigation {
     async loadCategories(sectionId) {
         let categories = await this.articleService.getCategories(sectionId);
         this.menu.items = categories;
-        this.menus.push(this.menu);
+        //this.menus.push(this.menu);
     }
 
     configureRouter(config, router: Router) {

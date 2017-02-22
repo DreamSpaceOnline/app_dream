@@ -1,6 +1,8 @@
 ﻿<template>
-
-    <compose repeat.for="menu of menus" model.bind="menu" view-model="./categories/sub-navigation"></compose>
+    <require from="./category-nav/category-nav"></require>
+    
+    <category-nav  menu.bind="menu"></category-nav>
+    <!--<compose repeat.for="menu of menus" model.bind="menu" view-model="./categories/sub-navigation"></compose>-->
 
     <div class="container page-content">
         <router-view></router-view>

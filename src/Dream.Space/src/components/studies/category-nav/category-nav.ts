@@ -1,13 +1,16 @@
-﻿import {MenuNavigationItem} from "../navigation";
+﻿import { bindable } from "aurelia-framework";
+import {MenuNavigationItem} from "../navigation";
 
 export class CategoryNav {
+
+    @bindable menu: MenuNavigationItem;
+    categoriesUrl: string;
 
     constructor() {
         this.categoriesUrl = "";
     }
 
-    activate(menu: MenuNavigationItem) {
-        this.menu = menu;
+    menuChanged() {
         this.categoriesUrl = this.menu.section.url + "/categories/" + this.menu.section.sectionId;
     }
 
@@ -15,6 +18,4 @@ export class CategoryNav {
         return "" + this.menu.section.url + "/" + menuItem.url;
     }
 
-    categoriesUrl: string;
-    menu: MenuNavigationItem;
 }
