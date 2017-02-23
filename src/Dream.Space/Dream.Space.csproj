@@ -409,10 +409,20 @@
     <TypeScriptCompile Include="src\services\articles\article-service.ts" />
     <TypeScriptCompile Include="src\services\account\account-models.ts" />
     <TypeScriptCompile Include="src\services\account\account-service.ts" />
+    <TypeScriptCompile Include="src\services\company\company-models.ts" />
+    <TypeScriptCompile Include="src\services\company\company-service.ts" />
     <TypeScriptCompile Include="src\services\file-storage\storage-service.ts" />
     <TypeScriptCompile Include="src\services\indicator\indicator-models.ts" />
     <TypeScriptCompile Include="src\services\indicator\indicator-service.ts" />
+    <TypeScriptCompile Include="src\services\playground\playground-models.ts" />
+    <TypeScriptCompile Include="src\services\playground\playground-service.ts" />
+    <TypeScriptCompile Include="src\services\rule\rule-models.ts" />
+    <TypeScriptCompile Include="src\services\rule\rule-service.ts" />
+    <TypeScriptCompile Include="src\services\rule\rule-set-service.ts" />
     <TypeScriptCompile Include="src\services\settings\settings-service.ts" />
+    <TypeScriptCompile Include="src\services\stock\stock-service.ts" />
+    <TypeScriptCompile Include="src\services\strategies\strategy-models.ts" />
+    <TypeScriptCompile Include="src\services\strategies\strategy-service.ts" />
     <TypeScriptCompile Include="test\unit\app.spec.ts" />
     <TypeScriptCompile Include="test\unit\setup.ts" />
   </ItemGroup>

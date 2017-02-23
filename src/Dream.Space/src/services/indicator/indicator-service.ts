@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from 'aurelia-fetch-client';
-import {IndicatorCore, IndicatorInfo } from "./indicator-models";
+import {IndicatorCore, IndicatorInfo, QuotePeriod } from "./indicator-models";
 
 @autoinject
 export class IndicatorService {
@@ -18,23 +18,23 @@ export class IndicatorService {
         return await response.json();
     }
 
-    async getIndicator(id) : Promise<IndicatorInfo> {
+    async getIndicator(id: number) : Promise<IndicatorInfo> {
 
         let response = await this.http.fetch('indicator/' + id, { method: 'get' });
         return await response.json();
     }
 
-    async getIndicatorsForPeriod(period): Promise<IndicatorInfo[]> {
+    async getIndicatorsForPeriod(period: QuotePeriod): Promise<IndicatorInfo[]> {
 
         let response = await this.http.fetch('indicator/' + period + '/all', { method: 'get' });
         return await response.json();
     }
 
-    async deleteIndicator(id) {
+    async deleteIndicator(id: number) {
         await this.http.fetch("indicator/" + id, { method: 'delete' });
     }
 
-    async saveIndicator(indicator): Promise<IndicatorInfo>{
+    async saveIndicator(indicator: IndicatorInfo): Promise<IndicatorInfo>{
         let response = await this.http.fetch("indicator",
         {
             method: 'post',

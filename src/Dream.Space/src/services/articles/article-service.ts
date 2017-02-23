@@ -44,7 +44,7 @@ export class ArticleService {
         return await response.json();
     }   
 
-    async getArticles(categoryId): Promise<ArticleInfo[]>{
+    async getArticles(categoryId: number): Promise<ArticleInfo[]>{
         let response = await this.http.fetch("article/" + categoryId + "/all");
         return await response.json();
 
