@@ -1,6 +1,7 @@
 import {FrameworkConfiguration} from 'aurelia-framework';
 
 export function configure(config: FrameworkConfiguration) {
+
     config.globalResources([
         "./value-converters/blob-to-url",
         "./value-converters/filelist-to-array"
@@ -16,6 +17,20 @@ export function configure(config: FrameworkConfiguration) {
         "./elements/article-parts/article-part-new"
     ]);
 
+    config.globalResources([
+        "./elements/rule/rule",
+        "./elements/rule-set/rule-set",
+        "./elements/rule-set/rule-set-item"
+    ]);
+
+    config.globalResources([
+        "./elements/strategy/strategy-admin",
+        "./elements/strategy/strategy-navigation",
+        "./elements/strategy/side-navigation",
+        "./elements/strategy/strategy-rule-set"
+    ]);
+
+    config.globalResources(["./elements/indicator/indicator"]);
     config.globalResources(["./elements/company/company-details"]);
 
 }

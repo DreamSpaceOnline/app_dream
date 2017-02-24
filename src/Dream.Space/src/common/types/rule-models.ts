@@ -22,7 +22,7 @@ export class RuleInfo {
 }
 
 
-export interface RuleSetInfo {
+export class RuleSetInfo {
     rules: RuleModel[];
     period: QuotePeriod;
     ruleSetId: number;
@@ -31,17 +31,27 @@ export interface RuleSetInfo {
     description: string;
 }
 
-export interface RuleModel {
+export class RuleModel {
     ruleId: number;
     name: string;
-    deleted: boolean;
+    deleted?: boolean;
     description: string;
     ruleSetId: number;
-    orderId: number;
+    orderId?: number;
+    expanded?: boolean;
+    deleteMode?: boolean;
+
+    constructor() {
+        this.deleted = false;
+        this.expanded = false;
+        this.deleteMode = false;
+        this.orderId = 0;
+    }
+
 }
 
 
-export interface StrategyRuleSetInfo {
+export class StrategyRuleSetInfo {
     strategyId: number;
     strategyActive: boolean;
     ruleSetId: number;
@@ -50,4 +60,13 @@ export interface StrategyRuleSetInfo {
     ruleSetPeriod: QuotePeriod;
     ruleSetOrderId: number;
     ruleSetOptional: boolean;
+
+    expanded?: boolean;
+    deleteMode?: boolean;
+
+    constructor() {
+        this.expanded = false;
+        this.deleteMode = false;
+    }
+
 }

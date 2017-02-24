@@ -3,16 +3,18 @@ import { HttpClient } from 'aurelia-fetch-client';
 import { SectionInfo } from "../common/types/article-models";
 import { IndicatorCore } from "../common/types/indicator-models";
 import { IndicatorService } from "./indicator-service";
+import {EnumValues, IdName } from "../common/helpers/enum-helper";
+import {QuotePeriod} from "../common/types/enums";
 
 @autoinject
 export class SettingsService {
 
     sections: SectionInfo[];
-    periods: {}[];
+    periods: IdName[];
     initialized: boolean;
     homePage: string;
     indicators: IndicatorCore[];
-    defaultPeriod: {};
+    defaultPeriod: IdName;
 
 
     constructor(private http: HttpClient, private indicatorService: IndicatorService) {
@@ -22,11 +24,7 @@ export class SettingsService {
         this.homePage = 'studies';
         this.indicators = [];
 
-        this.periods = [
-            { id: 0, name: 'Daily', url: 'daily' },
-            { id: 1, name: 'Weekly', url: 'weekly' }
-        ];
-
+        this.periods = EnumValues.getQuotePeriods();
         this.defaultPeriod = this.periods[0];
     }
 
@@ -37,7 +35,7 @@ export class SettingsService {
         return null;
     }
 
-    getSection(sectionId) {
+    getSection(sectionId: number) {
         if (this.initialized) {
             return this.sections.find(s => s.sectionId === sectionId);
         }
@@ -52,7 +50,7 @@ export class SettingsService {
         this.initialized = true;
     }
 
-    getIndicators(period) {
+    getIndicators(period: QuotePeriod) {
         return this.indicators.filter(indicator => indicator.period === period);
     }
 

@@ -2,12 +2,18 @@
 import { StrategyRuleSetInfo } from "./rule-models";
 import { ArticleBlockInfo } from "./article-models";
 
-export interface StrategySummary {
+export class StrategySummary {
     active: boolean;
     url: string;
     summary: string;
     strategyId: number;
     title: string;
+
+    selected?: boolean;
+
+    constructor() {
+        this.selected = false;
+    }
 }
 
 export interface StrategyInfo {
