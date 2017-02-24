@@ -1,8 +1,8 @@
 ﻿import * as toastr from "toastr";
 import { autoinject, bindable } from "aurelia-framework";
 import { Router } from 'aurelia-router';
-import {StrategyService} from "../../services/strategy-service";
-import {StrategySummary} from "../../common/types/strategy-models";
+import {StrategySummary} from "../../../common/types/strategy-models";
+import {StrategyService} from "../../../services/strategy-service";
 
 @autoinject
 export class SideNavigation {

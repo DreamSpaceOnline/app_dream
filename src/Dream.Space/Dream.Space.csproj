@@ -257,6 +257,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\images\emma_bg.jpg" />
+    <Content Include="Content\images\logo.png" />
     <Content Include="Content\toastr.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -289,16 +291,17 @@
     <Content Include="src\components\studies\study.html" />
     <Content Include="src\components\user\login.html" />
     <Content Include="src\components\user\navigation.html" />
+    <Content Include="src\components\user\profile.html" />
     <Content Include="src\dialogs\login\user-login.html" />
     <Content Include="src\resources\elements\company\company-details.html" />
     <Content Include="src\resources\elements\indicator\indicator.html" />
     <Content Include="src\resources\elements\rule-set\rule-set-item.html" />
     <Content Include="src\resources\elements\rule-set\rule-set.html" />
     <Content Include="src\resources\elements\rule\rule.html" />
-    <Content Include="src\resources\strategy\side-navigation.html" />
-    <Content Include="src\resources\strategy\strategy-admin.html" />
-    <Content Include="src\resources\strategy\strategy-navigation.html" />
-    <Content Include="src\resources\strategy\strategy-rule-set.html" />
+    <Content Include="src\resources\elements\strategy\side-navigation.html" />
+    <Content Include="src\resources\elements\strategy\strategy-admin.html" />
+    <Content Include="src\resources\elements\strategy\strategy-navigation.html" />
+    <Content Include="src\resources\elements\strategy\strategy-rule-set.html" />
     <Content Include="test\aurelia-karma.js" />
     <Content Include="Web.config" />
     <Content Include="tsconfig.json" />
@@ -365,7 +368,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\images\" />
     <Folder Include="Infrastructure\Publishers\" />
     <Folder Include="Scripts\" />
     <Folder Include="src\components\nav-menu\side-nav\" />
@@ -408,6 +410,7 @@
     <TypeScriptCompile Include="src\components\studies\study.ts" />
     <TypeScriptCompile Include="src\components\user\login.ts" />
     <TypeScriptCompile Include="src\components\user\navigation.ts" />
+    <TypeScriptCompile Include="src\components\user\profile.ts" />
     <TypeScriptCompile Include="src\dialogs\login\user-login.ts" />
     <TypeScriptCompile Include="src\environment.ts" />
     <TypeScriptCompile Include="src\form-validation\bootstrap-form-renderer.ts" />
@@ -423,10 +426,10 @@
     <TypeScriptCompile Include="src\resources\elements\rule\rule.ts" />
     <TypeScriptCompile Include="src\resources\index.ts" />
     <TypeScriptCompile Include="src\common\types\article-models.ts" />
-    <TypeScriptCompile Include="src\resources\strategy\side-navigation.ts" />
-    <TypeScriptCompile Include="src\resources\strategy\strategy-admin.ts" />
-    <TypeScriptCompile Include="src\resources\strategy\strategy-navigation.ts" />
-    <TypeScriptCompile Include="src\resources\strategy\strategy-rule-set.ts" />
+    <TypeScriptCompile Include="src\resources\elements\strategy\side-navigation.ts" />
+    <TypeScriptCompile Include="src\resources\elements\strategy\strategy-admin.ts" />
+    <TypeScriptCompile Include="src\resources\elements\strategy\strategy-navigation.ts" />
+    <TypeScriptCompile Include="src\resources\elements\strategy\strategy-rule-set.ts" />
     <TypeScriptCompile Include="src\services\article-service.ts" />
     <TypeScriptCompile Include="src\common\types\account-models.ts" />
     <TypeScriptCompile Include="src\services\account-service.ts" />

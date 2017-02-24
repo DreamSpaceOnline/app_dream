@@ -1,5 +1,5 @@
 ﻿import { autoinject } from "aurelia-framework";
-import {AccountService} from "../../services/account-service";
+import {AccountService} from "../../../services/account-service";
 
 @autoinject
 export class StrategyAdmin {

@@ -1,8 +1,8 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import {SettingsService} from "../../services/settings-service";
-import {IdName} from "../../common/helpers/enum-helper";
-import {StrategyRuleSetInfo} from "../../common/types/rule-models";
+import {StrategyRuleSetInfo} from "../../../common/types/rule-models";
+import {IdName} from "../../../common/helpers/enum-helper";
+import {SettingsService} from "../../../services/settings-service";
 
 @autoinject
 

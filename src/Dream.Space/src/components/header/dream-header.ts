@@ -20,7 +20,7 @@ export class DreamHeader {
     attached() {
         this.isAuthenticated = this.user.isAuthenticated;
 
-        this.loginUrl = this.router.generate("user") + '/view';
+        this.loginUrl = this.router.generate("user") + '/profile';
     }
 
     async logout() {
