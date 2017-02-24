@@ -1,6 +1,6 @@
 import {bindable, autoinject} from 'aurelia-framework';
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {ArticleBlockInfo } from "../../../services/articles/article-models";
+import {ArticleBlockInfo} from "../../../common/types/article-models";
 
 @autoinject
 export class ArticlePartList {

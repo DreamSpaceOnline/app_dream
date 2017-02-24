@@ -1,4 +1,6 @@
-﻿export interface ArticleInfo {
+﻿import { ArticleBlockType, ArticleBlockAction, HeadingType } from "./enums";
+
+export interface ArticleInfo {
     title:string;
     summary: string;
     url: string;
@@ -42,6 +44,3 @@ export interface ArticleBlockInfo {
     items?:{text: string, valid: boolean}[];
 }
 
-export type ArticleBlockType = "Paragraph" | "Heading" | "Image" | "List" | "Unset";
-export type ArticleBlockAction = "Remove" | "MoveUp" | "MoveDown" | "Unset";
-export type HeadingType = 'H1'|'H2'|'H3'|'H4'|'H5';

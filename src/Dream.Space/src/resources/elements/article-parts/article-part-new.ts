@@ -1,5 +1,6 @@
 import {bindable} from "aurelia-framework";
-import {ArticleBlockInfo, ArticleBlockType, ArticleBlockAction } from "../../../services/articles/article-models";
+import {ArticleBlockInfo} from "../../../common/types/article-models";
+import { ArticleBlockType, ArticleBlockAction } from "../../../common/types/enums";
 
 export class ArticlePartNew {
     @bindable part: ArticleBlockInfo;
@@ -12,7 +13,7 @@ export class ArticlePartNew {
     constructor () {
         this.partTypes = ["Paragraph" , "Heading" , "Image" , "List"];
 
-        this.canAdd = false;
+        this.canAdd = false;§
         this.selectedType = "Unset";
     }
 

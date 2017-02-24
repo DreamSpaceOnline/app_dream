@@ -1,10 +1,12 @@
-﻿export interface IndicatorCore {
+﻿import { QuotePeriod } from "./enums";
+
+export interface IndicatorCore {
     name: string;
     id: number;
     period: QuotePeriod;
 }
 
-export interface IndicatorInfo {
+export class IndicatorInfo {
     indicatorId: number;
     name: string;
     description: string;
@@ -16,7 +18,3 @@ export interface IndicatorInfo {
     chartColor: string;
 }
 
-export enum QuotePeriod {
-    Daily = 0,
-    Weekly = 1
-}

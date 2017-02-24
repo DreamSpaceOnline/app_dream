@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
-import {UserInfo, LoginResponse, UserUpdateResponse } from "./account-models";
+import {UserInfo, LoginResponse, UserUpdateResponse } from "../common/types/account-models";
 
 @autoinject
 export class AccountService {

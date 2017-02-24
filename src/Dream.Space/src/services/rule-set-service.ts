@@ -1,7 +1,7 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
-import {QuotePeriod} from "../indicator/indicator-models";
-import {RuleSetInfo, StrategyRuleSetInfo } from "./rule-models";
+import { RuleSetInfo, StrategyRuleSetInfo } from "../common/types/rule-models";
+import { QuotePeriod } from "../common/types/enums";
 
 @autoinject
 export class RuleSetService {

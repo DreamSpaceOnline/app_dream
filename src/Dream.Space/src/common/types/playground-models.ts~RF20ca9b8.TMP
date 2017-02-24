@@ -34,11 +34,3 @@ export interface IndicatorValue {
     value: number;
 }
 
-export enum ChartUpdateMode {
-    Reset = 0,
-    Insert = 1,
-    Append = 2
-}
-
-export type ChartUpdateModeName = "Reset" | "Insert" | "Append";
-export type ChartTypeName = "line" | "ohlc" | "candlestick" | "Column" | "area"

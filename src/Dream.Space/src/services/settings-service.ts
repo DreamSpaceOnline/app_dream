@@ -1,8 +1,8 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient } from 'aurelia-fetch-client';
-import {IndicatorService} from "../indicator/indicator-service";
-import {SectionInfo} from "../articles/article-models";
-import {IndicatorCore} from "../indicator/indicator-models";
+import { SectionInfo } from "../common/types/article-models";
+import { IndicatorCore } from "../common/types/indicator-models";
+import { IndicatorService } from "./indicator-service";
 
 @autoinject
 export class SettingsService {

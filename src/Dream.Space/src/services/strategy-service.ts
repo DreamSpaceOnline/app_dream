@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from 'aurelia-fetch-client';
-import {StrategySummary, StrategyInfo, StrategyEntity } from "./strategy-models";
+import { StrategySummary, StrategyInfo, StrategyEntity } from "../common/types/strategy-models";
 
 @autoinject
 export class StrategyService {

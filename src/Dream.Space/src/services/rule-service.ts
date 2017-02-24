@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
-import {RuleInfo} from "./rule-models";
+import { RuleInfo } from "../common/types/rule-models";
 
 @autoinject
 export class RuleService {

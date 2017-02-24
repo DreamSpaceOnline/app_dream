@@ -1,29 +1,26 @@
 ﻿
 import { autoinject } from "aurelia-framework";
-//import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
-import {ArticleService} from "../../services/articles/article-service";
 import { ValidationController, validateTrigger } from "aurelia-validation"
-import * as Accountservice from "../../services/account/account-service";
 import * as Bootstrapformrenderer from "../../form-validation/bootstrap-form-renderer";
-import {SettingsService} from "../../services/settings/settings-service";
-import {SectionInfo, ArticleCategory } from "../../services/articles/article-models";
+import {SectionInfo, ArticleCategory } from "../../common/types/article-models";
+import {ArticleService} from "../../services/article-service";
+import {SettingsService} from "../../services/settings-service";
+import {AccountService} from "../../services/account-service";
 
 @autoinject
 export class Categories {
 
     powerUser: boolean;
     editMode: boolean;
-    //subscriptions: Subscription[];
     section: SectionInfo;
     sectionId: number;
     categories: ArticleCategory[];
     sections: SectionInfo[];
 
     constructor(
-        //private eventAggregator: EventAggregator,
         private articleService: ArticleService,
         private settings: SettingsService,
-        private account: Accountservice.AccountService,
+        private account: AccountService,
         private validation: ValidationController
     ) {
 
@@ -31,7 +28,6 @@ export class Categories {
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new Bootstrapformrenderer.BootstrapFormRenderer());
 
-        //this.subscriptions = [];
         this.editMode = false;
         this.categories = [];
         this.sections = this.settings.sections;

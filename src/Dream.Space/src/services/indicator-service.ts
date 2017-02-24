@@ -1,6 +1,7 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from 'aurelia-fetch-client';
-import {IndicatorCore, IndicatorInfo, QuotePeriod } from "./indicator-models";
+import {IndicatorCore, IndicatorInfo } from "../common/types/indicator-models";
+import {QuotePeriod} from "../common/types/enums";
 
 @autoinject
 export class IndicatorService {

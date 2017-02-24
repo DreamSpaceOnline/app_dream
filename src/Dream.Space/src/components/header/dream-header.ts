@@ -1,9 +1,9 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { Router } from "aurelia-router";
 import { DialogService } from 'aurelia-dialog';
-import {AccountService} from "../../services/account/account-service";
-import {UserInfo} from "../../services/account/account-models";
+import {AccountService} from "../../services/account-service";
 import {UserLogin, UserLoginModel } from "../../dialogs/login/user-login";
+import {UserInfo} from "../../common/types/account-models";
 
 @autoinject
 export class DreamHeader {

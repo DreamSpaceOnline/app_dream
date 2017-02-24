@@ -1,6 +1,6 @@
 import {autoinject, bindable } from "aurelia-framework";
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {ArticleBlockInfo } from "../../../services/articles/article-models";
+import {ArticleBlockInfo} from "../../../common/types/article-models";
 
 @autoinject()
 export class ArticlePartParagraph {
@@ -17,7 +17,7 @@ export class ArticlePartParagraph {
             this.part.text = '';
         }
 
-        this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, 'text')
+        this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, "text")
             .subscribe(() => this.onChange()));
 
         this.validate();

@@ -1,6 +1,6 @@
 ﻿
-import * as Rulemodels from "../rule/rule-models";
-import * as Articlemodels from "../articles/article-models";
+import { StrategyRuleSetInfo } from "./rule-models";
+import { ArticleBlockInfo } from "./article-models";
 
 export interface StrategySummary {
     active: boolean;
@@ -11,8 +11,8 @@ export interface StrategySummary {
 }
 
 export interface StrategyInfo {
-    ruleSets: Rulemodels.StrategyRuleSetInfo[];
-    blocks: Articlemodels.ArticleBlockInfo[];
+    ruleSets: StrategyRuleSetInfo[];
+    blocks: ArticleBlockInfo[];
     strategyId: number;
     title: string;
     deleted: boolean;

@@ -27,6 +27,11 @@ export interface CompanyHeader {
     filtered: boolean;
 }
 
-export interface QuoteInfo {
-
+export class QuoteInfo {
+    open: number;
+    close: number;
+    high: number;
+    low: number;
+    value: number;
+    date: Date;
 }

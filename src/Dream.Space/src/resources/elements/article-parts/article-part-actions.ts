@@ -1,5 +1,5 @@
 import {bindable} from "aurelia-framework";
-import {ArticleBlockInfo} from "../../../services/articles/article-models";
+import {ArticleBlockInfo} from "../../../common/types/article-models";
 
 export class ArticlePartActions {
     @bindable part: ArticleBlockInfo;

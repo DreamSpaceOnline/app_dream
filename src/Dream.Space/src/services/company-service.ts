@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
-import {CompanyInfo, CompanyHeader } from "./company-models";
+import {CompanyInfo, CompanyHeader } from "../common/types/company-models";
 
 @autoinject
 export class CompanyService {

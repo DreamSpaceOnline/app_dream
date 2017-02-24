@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
-import {ArticleInfo, ArticleSectionInfo, ArticleCategory, ArticleCategoryInfo } from "./article-models";
+import  {ArticleInfo, ArticleSectionInfo, ArticleCategory, ArticleCategoryInfo } from "../common/types/article-models";
 
 @autoinject
 export class ArticleService {

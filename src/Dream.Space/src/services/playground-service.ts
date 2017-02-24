@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient } from "aurelia-fetch-client";
-import {PlaygroundInfo} from "./playground-models";
+import { PlaygroundInfo } from "../common/types/playground-models";
 
 @autoinject
 export class PlaygroundService {

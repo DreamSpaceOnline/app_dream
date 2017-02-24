@@ -1,7 +1,7 @@
-import {autoinject, bindable} from "aurelia-framework";
-import {BindingEngine, Disposable} from 'aurelia-binding';
-
-import {ArticleBlockInfo, HeadingType} from "../../../services/articles/article-models";
+import { autoinject, bindable } from "aurelia-framework";
+import { BindingEngine, Disposable } from 'aurelia-binding';
+import { ArticleBlockInfo } from "../../../common/types/article-models";
+import { HeadingType } from "../../../common/types/enums";
 
 @autoinject
 export class ArticlePartHeading {

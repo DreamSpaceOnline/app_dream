@@ -6,10 +6,10 @@ import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 
 import { Navigation } from './navigation'
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
-import {ArticleService} from "../../services/articles/article-service";
+import {ArticleService} from "../../services/article-service";
 import {BootstrapFormRenderer} from "../../form-validation/bootstrap-form-renderer";
-import {AccountService} from "../../services/account/account-service";
-import {ArticleInfo, ArticleCategoryInfo } from "../../services/articles/article-models";
+import {AccountService} from "../../services/account-service";
+import {ArticleInfo, ArticleCategoryInfo } from "../../common/types/article-models";
 
 @autoinject
 export class Study {

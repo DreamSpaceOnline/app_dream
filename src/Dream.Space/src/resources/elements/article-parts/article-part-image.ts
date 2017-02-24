@@ -1,9 +1,8 @@
 import * as toastr from "toastr";
 import {bindable, autoinject} from 'aurelia-framework';
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {StorageService} from "../../../services/file-storage/storage-service";
-import {ArticleBlockInfo } from "../../../services/articles/article-models";
-
+import {StorageService} from "../../../services/storage-service";
+import {ArticleBlockInfo} from "../../../common/types/article-models";
 
 @autoinject
 export class ArticlePartImage {
@@ -19,16 +18,16 @@ export class ArticlePartImage {
 
     attached() {
         if (!this.part.imageUrl) {
-            this.part.imageUrl = '';
+            this.part.imageUrl = "";
         }
         if (!this.part.text) {
-            this.part.text = '';
+            this.part.text = "";
         }
 
-        this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, 'imageUrl')
+        this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, "imageUrl")
             .subscribe(() => this.validate()));
 
-        this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, 'text')
+        this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, "text")
             .subscribe(() => this.validate()));
 
         this.validate();
@@ -36,7 +35,7 @@ export class ArticlePartImage {
 
     detached() {
         if (this.subscriptions.length > 0) {
-            this.subscriptions.forEach(function(subscription) {
+            this.subscriptions.forEach(subscription => {
                 subscription.dispose();
             });
         }
@@ -56,7 +55,7 @@ export class ArticlePartImage {
 
     async uploadImage() {
         if (this.selectedFiles.length > 0) {
-            toastr.warning('Uploading selected file', 'Uploading...');
+            toastr.warning("Uploading selected file", "Uploading...");
 
             let reader = new FileReader();
             let file = this.selectedFiles.item(0);

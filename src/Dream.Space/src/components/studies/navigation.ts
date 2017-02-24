@@ -1,8 +1,8 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router } from "aurelia-router";
-import {ArticleService} from "../../services/articles/article-service";
-import {SettingsService} from "../../services/settings/settings-service";
-import {SectionInfo, ArticleCategory } from "../../services/articles/article-models";
+import {ArticleService} from "../../services/article-service";
+import {SettingsService} from "../../services/settings-service";
+import {SectionInfo, ArticleCategory } from "../../common/types/article-models";
 
 @autoinject
 export class Navigation {

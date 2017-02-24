@@ -1,4 +1,6 @@
-﻿export class UserInfo {
+﻿import { LoginResponseType } from "./enums";
+
+export class UserInfo {
     username: string;
     firstName: string;
     isAuthenticated: boolean;
@@ -14,4 +16,3 @@ export class UserUpdateResponse {
     user: UserInfo;
 }
 
-export type LoginResponseType = "success" | "requiresVerification";

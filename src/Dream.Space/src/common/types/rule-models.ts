@@ -1,13 +1,13 @@
-﻿import {QuotePeriod} from "../indicator/indicator-models";
+﻿import {QuotePeriod, TransformFunction, CompareOperator, RuleDataSource } from "./enums";
 
-export interface RuleInfo {
+export class RuleInfo {
     ruleId: number;
     name: string;
     description: string;
     deleted: boolean;
     period: QuotePeriod;
-    dataSourceV1: DataSourceType;
-    dataSourceV2: DataSourceType;
+    dataSourceV1: RuleDataSource;
+    dataSourceV2: RuleDataSource;
     dataSeriesV1: number;
     dataSeriesV2: number;
     constV1: string;
@@ -21,26 +21,6 @@ export interface RuleInfo {
     condition: CompareOperator;
 }
 
-export enum DataSourceType {
-
-}
-
-export enum TransformFunction {
-    First = 0,
-    Max = 1,
-    Sum = 2,
-    Avg = 3,
-    Min = 4
-}
-
-export enum CompareOperator {
-    Greater = 0,
-    GreaterOrEqual = 1,
-    Equal = 2,
-    Less = 3,
-    LessOrEqual = 4,
-    NotEqual = 5
-}
 
 export interface RuleSetInfo {
     rules: RuleModel[];

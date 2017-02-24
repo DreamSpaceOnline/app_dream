@@ -2,7 +2,7 @@
 import { DialogController } from 'aurelia-dialog';
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { BootstrapFormRenderer } from "../../form-validation/bootstrap-form-renderer";
-import {AccountService} from "../../services/account/account-service";
+import {AccountService} from "../../services/account-service";
 import { BindingEngine, Disposable } from 'aurelia-binding';
 
 @autoinject

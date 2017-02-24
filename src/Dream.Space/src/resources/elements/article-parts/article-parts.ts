@@ -1,7 +1,8 @@
-import {autoinject, bindable} from "aurelia-framework";
-import {BindingEngine, Disposable} from 'aurelia-binding';
-import {EventAggregator, Subscription} from 'aurelia-event-aggregator';
-import { ArticleBlockInfo, ArticleBlockAction} from "../../../services/articles/article-models";
+import { autoinject, bindable } from "aurelia-framework";
+import { BindingEngine, Disposable } from 'aurelia-binding';
+import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
+import { ArticleBlockInfo } from "../../../common/types/article-models";
+import { ArticleBlockAction } from "../../../common/types/enums";
 
 @autoinject
 export class ArticleParts {
@@ -83,7 +84,7 @@ export class ArticleParts {
 
     renewPartsSubscriptions() {
         if (this.partsSubscriptions.length > 0) {
-            this.partsSubscriptions.forEach(function(subscription) {
+            this.partsSubscriptions.forEach(subscription => {
                 subscription.dispose();
             });
 
@@ -91,12 +92,10 @@ export class ArticleParts {
         }    
 
         if (this.parts  && this.parts.length > 0) {
-            let self = this;
-
-            this.parts.forEach(function(item) {
-                self.partsSubscriptions.push(
-                    self.bindingEngine.propertyObserver(item, 'action')
-                        .subscribe((action) => self.onPartActionChange(action)));
+            this.parts.forEach(item => {
+                this.partsSubscriptions.push(
+                    this.bindingEngine.propertyObserver(item, "action")
+                    .subscribe((action) => this.onPartActionChange(action)));
             });
         }
     }
