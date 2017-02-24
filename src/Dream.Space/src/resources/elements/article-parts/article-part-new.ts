@@ -13,7 +13,7 @@ export class ArticlePartNew {
     constructor () {
         this.partTypes = ["Paragraph" , "Heading" , "Image" , "List"];
 
-        this.canAdd = false;§
+        this.canAdd = false;
         this.selectedType = "Unset";
     }
 

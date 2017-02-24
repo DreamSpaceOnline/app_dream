@@ -1,8 +1,8 @@
 import { autoinject } from "aurelia-framework";
 import { Router, RedirectToRoute } from "aurelia-router";
-import {AccountService} from "./services/account/account-service";
-import {UserInfo} from "./services/account/account-models";
-import {SettingsService} from "./services/settings/settings-service";
+import {AccountService} from "./services/account-service";
+import {SettingsService} from "./services/settings-service";
+import {UserInfo} from "./common/types/account-models";
 
 @autoinject
 export class App {

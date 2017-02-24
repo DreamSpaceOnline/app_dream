@@ -2,8 +2,8 @@ import { HttpClient } from "aurelia-fetch-client";
 import { Aurelia } from "aurelia-framework"
 import environment from "./environment";
 import { ErrorInterceptor } from "./infrastructure/error-interceptor";
-import { AccountService } from "./services/account/account-service";
-import { SettingsService } from "./services/settings/settings-service";
+import { AccountService } from "./services/account-service";
+import { SettingsService } from "./services/settings-service";
 import {CustomValidationRules} from "./form-validation/custom-validation-rules";
 (<any>Promise).config({
   warnings: {
