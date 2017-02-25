@@ -122,4 +122,9 @@ export class EnumValues {
 export class IdName {
     id: number;
     name: string;
+    active?: boolean;
+
+    constructor() {
+        this.active = false;
+    }
 }

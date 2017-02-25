@@ -1,6 +1,6 @@
 ﻿import { QuotePeriod } from "./enums";
 
-export interface IndicatorCore {
+export class IndicatorCore {
     name: string;
     id: number;
     period: QuotePeriod;
@@ -16,5 +16,22 @@ export class IndicatorInfo {
     deleted: boolean;
     chartPlotNumber: number;
     chartColor: string;
+    params: {}[];
+
 }
 
+export class IndicatorModel extends IndicatorInfo {
+    isNew?: boolean;
+    editMode?: boolean;
+    expanded?: boolean;
+    deleteMode?: boolean;
+
+    constructor() {
+        super();
+
+        this.isNew = false;
+        this.editMode = false;
+        this.expanded = false;
+        this.deleteMode = false;
+    }
+}

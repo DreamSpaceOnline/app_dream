@@ -7,7 +7,7 @@ import { ValidationRules, ValidationController, validateTrigger } from "aurelia-
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { AccountService } from "../../../services/account-service";
 import { SettingsService } from "../../../services/settings-service";
-import { RuleSetInfo, RuleInfo, RuleModel } from "../../../common/types/rule-models";
+import { RuleSetInfo, RuleInfo, RuleModel, RuleSetViewModel } from "../../../common/types/rule-models";
 import { IdName } from "../../../common/helpers/enum-helper";
 
 @autoinject
@@ -205,19 +205,3 @@ export class RuleSet {
 
 }
 
-export class RuleSetViewModel extends  RuleSetInfo {
-    expanded?: boolean;
-    deleteMode?: boolean;
-    editMode?: boolean;
-    isAdding?: boolean;
-
-    constructor() {
-        super();
-
-        this.expanded = false;
-        this.deleteMode = false;
-        this.editMode = false;
-        this.isAdding = false;
-    }
-
-}

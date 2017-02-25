@@ -1,10 +1,21 @@
 ﻿import { ChartUpdateMode, ChartUpdateModeName, ChartTypeName} from "./enums";
 import { QuoteInfo } from "./company-models";
 
-export interface PlaygroundInfo {
-    companyInfo: { name: string };
+export class PlaygroundInfo {
+    company: { name: string };
     periods: ChartInfo[];
     ruleSets: {}[];
+
+    constructor() {
+        this.periods = [];
+        this.ruleSets = [];
+    }
+}
+
+export class PlaygroundViewModel extends PlaygroundInfo {
+    constructor() {
+        super();
+    }
 }
 
 export interface ChartInfo {

@@ -16,10 +16,10 @@ export class App {
 
     configureRouter(config, router: Router) {
 
-        config.title = 'Dream Space';
+        config.title = "Dream Space";
         config.options.pushState = true;
         this.router = router;
-        config.addPipelineStep('authorize', AuthorizeStep);
+        config.addPipelineStep("authorize", AuthorizeStep);
 
         config.map([
             { route: ["user"], moduleId: "./components/user/navigation", name: "user", title: "Login", nav: false },
@@ -50,11 +50,11 @@ class AuthorizeStep {
             if (this.isAuthenticated) {
                 return next();
             } else {
-                return next.cancel(new RedirectToRoute('user'));
+                return next.cancel(new RedirectToRoute("user"));
             }
         } else {
             if (navigationInstruction.getAllInstructions()
-                .some(i => i.config.name === 'user-login' && this.isAuthenticated)) {
+                .some(i => i.config.name === "user-login" && this.isAuthenticated)) {
                 return next.cancel(new RedirectToRoute(this.homePage));
             }
             return next();

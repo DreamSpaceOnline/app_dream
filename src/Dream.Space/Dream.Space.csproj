@@ -287,6 +287,13 @@
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
     <Content Include="src\components\nav-menu\category-nav\category-nav.html" />
     <Content Include="src\components\nav-menu\sub-nav\sub-nav.html" />
+    <Content Include="src\components\strategies\indicators\indicators.html" />
+    <Content Include="src\components\strategies\navigation.html" />
+    <Content Include="src\components\strategies\rules\rule-sets.html" />
+    <Content Include="src\components\strategies\rules\rules.html" />
+    <Content Include="src\components\strategies\strategy-playground.html" />
+    <Content Include="src\components\strategies\strategy-rule-sets.html" />
+    <Content Include="src\components\strategies\strategy.html" />
     <Content Include="src\components\studies\navigation.html" />
     <Content Include="src\components\studies\study.html" />
     <Content Include="src\components\user\login.html" />
@@ -406,6 +413,13 @@
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\category-nav\category-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\sub-nav\sub-nav.ts" />
+    <TypeScriptCompile Include="src\components\strategies\indicators\indicators.ts" />
+    <TypeScriptCompile Include="src\components\strategies\navigation.ts" />
+    <TypeScriptCompile Include="src\components\strategies\rules\rule-sets.ts" />
+    <TypeScriptCompile Include="src\components\strategies\rules\rules.ts" />
+    <TypeScriptCompile Include="src\components\strategies\strategy-playground.ts" />
+    <TypeScriptCompile Include="src\components\strategies\strategy-rule-sets.ts" />
+    <TypeScriptCompile Include="src\components\strategies\strategy.ts" />
     <TypeScriptCompile Include="src\components\studies\navigation.ts" />
     <TypeScriptCompile Include="src\components\studies\study.ts" />
     <TypeScriptCompile Include="src\components\user\login.ts" />

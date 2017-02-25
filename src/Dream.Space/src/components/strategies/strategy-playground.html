@@ -1,0 +1,140 @@
+﻿<template>
+    <strategy-admin></strategy-admin>
+    <div class="c_playground-content">
+        <div class="row">
+            <div class="col-md-8 col-xs-12 c_playground">
+                <header>
+                    <h3 first-letter-span>Strategy Playground </h3>
+                </header>
+                <form>
+                    <fieldset>
+                        <div class="form-group">
+                            <label>Selected Strategy</label>
+                            <p class="form-control" readonly>${strategy.title}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Selected Company</label>
+                            <div class="input-group">
+                                <p class="form-control" readonly>${company.ticker} - ${company.name}</p>
+                                <div class="input-group-btn">
+                                    <button type="button" if.bind="!company.show && !searchMode" click.delegate="company.show = true" class="btn btn-default">Show Details</button>
+                                    <button type="button" click.delegate="searchMode = !!!searchMode" class="btn ${searchMode ? 'btn-default' : 'btn-danger'}">${searchMode ? 'Cancel' : 'Search'}</button>
+                                </div>
+                            </div>
+                            <div class="c_company-details" if.bind="company.show">
+                                <company-details company.bind="company"></company-details>
+                                <div class="c_company-actions">
+                                    <button type="button" click.delegate="updateCompany(company.ticker)" class="btn btn-danger">Update</button>
+                                    <button type="button" click.delegate="company.show = false" class="btn btn-default">Hide</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <div if.bind="searchMode" class="c_companies-content">
+                    <form submit.delegate="searchCompanies()">
+                        <fieldset>
+                            <div class="form-inline right">
+                                <label>Company Search: </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control uppercase" value.bind="searchCriteria" />
+                                    <div class="input-group-btn">
+                                        <button type="submit" disabled.bind="searchCriteria.length===0" class="btn btn-danger">Go</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <div class="c_company_list" if.bind="companies.length > 0">
+                        <div repeat.for="company of companies" class="c_company ${$index === $parent.companies.length-1 ? 'no-border': ''}">
+                            <div class="c_company-header">
+                                <button type="button" click.trigger="selectCompany(company)" class="btn btn-warning btn-xs">Select</button>
+                                <span click.trigger="company.expanded = !!!company.expanded">
+                                    <span>${company.ticker} - ${company.name}</span>
+                                    <a class="chevron">
+                                        <span class="glyphicon ${company.expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'} " aria-hidden="true"></span>
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="c_company-details" if.bind="company.expanded">
+                                <company-details company.bind="company"></company-details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div if.bind="strategy.strategyId && company.ticker && !playgroundLoaded">
+                    <div class="right">
+                        <button type="button" click.delegate="loadPlayground()" class="btn btn-danger">Load Playground</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <side-navigation strategyurl.bind="strategyUrl"></side-navigation>
+            </div>
+        </div>
+        <div class="row o_chart-content" if.bind="playgroundLoaded">
+            <div class="col-md-8 col-xs-12 c_playground">
+                <header>
+                    <h3>Charts</h3>
+                </header>
+                <div class="o_chart">
+                    <stock-chart model.bind="playgroundModel"></stock-chart>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12 c_strategy-runner">
+                <div class="side-navigation">
+                    <h3>Strategy Runner</h3>
+                    <form>
+                        <fieldset>
+                            <div class="c_strategy-runner--progress">
+                                <div class="form-group" repeat.for="ruleSet of playgroundModel.ruleSets">
+                                    <span>${ruleSet.name}</span>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="${ruleSet.progress}" aria-valuemin="0" aria-valuemax="100" style="width: ${ruleSet.progress}% ">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" repeat.for="rule of ruleSet.rules">
+                                        <span class="glyphicon ${rule.valid ? 'glyphicon-ok' : 'glyphicon-time'}" aria-hidden="true"></span>
+                                        <label>${rule.ruleName}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c_strategy-runner--options">
+                                <header>Runner</header>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox"> Stop when rules met
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="btn-group btn-group-sm">
+                                        <button class="btn btn-default" if.bind="streaming" click.delegate="stopStreaming()" type="button">
+                                            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="btn btn-default" if.bind="!streaming" click.delegate="startStreaming()" type="button">
+                                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="btn btn-default" click.delegate="loadPlayground()" type="button">
+                                            <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="btn btn-default" click.delegate="loadPrev()" type="button">
+                                            <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="btn btn-default" click.delegate="loadNext()" type="button">
+                                            <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

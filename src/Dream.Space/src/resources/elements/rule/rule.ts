@@ -5,7 +5,7 @@ import { RuleService } from "../../../services/rule-service";
 import { AccountService } from "../../../services/account-service";
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { SettingsService } from "../../../services/settings-service";
-import { RuleInfo } from "../../../common/types/rule-models";
+import { RuleInfo, RuleViewModel } from "../../../common/types/rule-models";
 import { IdName, EnumValues } from "../../../common/helpers/enum-helper";
 import {RuleDataSource} from "../../../common/types/enums";
 
@@ -173,21 +173,3 @@ export class Rule {
 
 }
 
-export class RuleViewModel extends RuleInfo {
-    editMode?: boolean;
-    expanded?: boolean;
-    deleteMode?: boolean;
-    dataSeriesOptionsV1?: {}[];
-    dataSeriesOptionsV2?: {}[];
-
-    constructor() {
-        super();
-
-        this.editMode = false;
-        this.expanded = false;
-        this.deleteMode = false;
-        this.dataSeriesOptionsV1 = [];
-        this.dataSeriesOptionsV2 = [];
-    }
-
-}

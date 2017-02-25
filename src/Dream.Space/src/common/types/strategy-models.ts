@@ -16,7 +16,7 @@ export class StrategySummary {
     }
 }
 
-export interface StrategyInfo {
+export class StrategyInfo {
     ruleSets: StrategyRuleSetInfo[];
     blocks: ArticleBlockInfo[];
     strategyId: number;
@@ -25,6 +25,23 @@ export interface StrategyInfo {
     summary: string;
     active: boolean;
     url: string;
+
+    constructor() {
+        this.strategyId = 0;
+        this.title = "";
+        this.url = "";
+        this.summary = "";
+        this.blocks = [];
+    }
+}
+
+export class StrategyViewModel extends StrategyInfo {
+    constructor() {
+        super();
+        this.editMode = false;
+    }
+
+    editMode?: boolean;
 }
 
 export interface StrategyEntity {

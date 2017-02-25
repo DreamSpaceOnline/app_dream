@@ -14,7 +14,7 @@ export class CompanyService {
         return await response.json();
     }
 
-    async searchCompanies(ticker: string, maxCount: number): Promise<CompanyHeader> {
+    async searchCompanies(ticker: string, maxCount: number): Promise<CompanyHeader[]> {
         const model = {
             ticker: ticker,
             maxCount: maxCount

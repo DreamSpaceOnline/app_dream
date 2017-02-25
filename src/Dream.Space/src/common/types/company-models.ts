@@ -1,15 +1,4 @@
-﻿export interface CompanyInfo extends CompanyHeader {
-
-    lastCalculated: Date;
-    nextReportDate: Date;
-    historyQuotes: QuoteInfo[];
-    updateSuccessful: boolean;
-    updateError: string;
-    calculatedSuccessful: boolean;
-    calculatedError: string;
-}
-
-export interface CompanyHeader {
+﻿export class CompanyHeader {
 
     ticker: string;
     name: string;
@@ -35,3 +24,31 @@ export class QuoteInfo {
     value: number;
     date: Date;
 }
+
+export class CompanyInfo extends CompanyHeader {
+
+    lastCalculated: Date;
+    nextReportDate: Date;
+    historyQuotes: QuoteInfo[];
+    updateSuccessful: boolean;
+    updateError: string;
+    calculatedSuccessful: boolean;
+    calculatedError: string;
+
+    constructor() {
+        super();
+
+        this.historyQuotes = [];
+    }
+}
+
+export class CompanyViewModel extends CompanyInfo {
+    show?: boolean;
+
+    constructor() {
+        super();
+
+        this.show = false;
+    }
+}
+

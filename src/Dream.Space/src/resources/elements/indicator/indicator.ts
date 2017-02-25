@@ -5,7 +5,7 @@ import { IndicatorService } from "../../../services/indicator-service";
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { AccountService } from "../../../services/account-service";
 import { SettingsService } from "../../../services/settings-service";
-import { IndicatorInfo } from "../../../common/types/indicator-models";
+import { IndicatorInfo, IndicatorModel } from "../../../common/types/indicator-models";
 
 @autoinject()
 export class Indicator {
@@ -173,10 +173,3 @@ export class Indicator {
 
 }
 
-export class IndicatorModel extends  IndicatorInfo {
-    isNew: boolean;
-    editMode: boolean;
-    params: {}[];
-    expanded: boolean;
-    deleteMode: boolean;
-}

@@ -19,6 +19,10 @@ export class RuleInfo {
     transformItemsV1: TransformFunction;
     transformItemsV2: TransformFunction;
     condition: CompareOperator;
+
+    constructor() {
+        this.ruleId = 0;
+    }
 }
 
 
@@ -29,6 +33,12 @@ export class RuleSetInfo {
     name: string;
     deleted: boolean;
     description: string;
+
+    constructor() {
+        this.description = "";
+        this.ruleSetId = 0;
+        this.rules = [];
+    }
 }
 
 export class RuleModel {
@@ -67,6 +77,51 @@ export class StrategyRuleSetInfo {
     constructor() {
         this.expanded = false;
         this.deleteMode = false;
+    }
+}
+
+export class StrategyRuleSetViewModel extends StrategyRuleSetInfo {
+    constructor() {
+        super();
+
+        this.editMode = false;
+    }
+
+    editMode?:boolean;
+}
+
+export class RuleViewModel extends RuleInfo {
+    editMode?: boolean;
+    expanded?: boolean;
+    deleteMode?: boolean;
+    dataSeriesOptionsV1?: {}[];
+    dataSeriesOptionsV2?: {}[];
+
+    constructor() {
+        super();
+
+        this.editMode = false;
+        this.expanded = false;
+        this.deleteMode = false;
+        this.dataSeriesOptionsV1 = [];
+        this.dataSeriesOptionsV2 = [];
+    }
+
+}
+
+export class RuleSetViewModel extends RuleSetInfo {
+    expanded?: boolean;
+    deleteMode?: boolean;
+    editMode?: boolean;
+    isAdding?: boolean;
+
+    constructor() {
+        super();
+
+        this.expanded = false;
+        this.deleteMode = false;
+        this.editMode = false;
+        this.isAdding = false;
     }
 
 }
