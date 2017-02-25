@@ -105,6 +105,11 @@
             "path": "../node_modules/aurelia-dialog/dist/amd",
             "main": "aurelia-dialog"
           },
+          {
+            "name": "npm-anystock",
+            "path": "../node_modules/npm-anystock",
+            "main": "anystock.min"
+          },
           "aurelia-binding",
           "aurelia-bootstrapper",
           "aurelia-dependency-injection",
