@@ -106,9 +106,9 @@
             "main": "aurelia-dialog"
           },
           {
-            "name": "npm-anystock",
-            "path": "../node_modules/npm-anystock",
-            "main": "anystock.min"
+            "name": "anychart",
+            "path": "../node_modules/anychart/dist",
+            "main": "anychart-bundle.min"
           },
           "aurelia-binding",
           "aurelia-bootstrapper",

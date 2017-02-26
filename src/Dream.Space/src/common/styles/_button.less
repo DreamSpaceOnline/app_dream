@@ -1,0 +1,54 @@
+﻿@import "_variables";
+
+.btn {
+    font-weight: normal;
+    font-size: 13px;
+    //font-family: 'Roboto', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    border-radius:0;
+    min-width:70px;
+}
+
+.btn-group, .btn-group-vertical {
+    .btn {
+        min-width:10px;
+        margin-right: 0;
+    }
+}
+
+.btn-default {
+    color: @btn-default-border-color;
+    border-color: @btn-default-border-color;
+
+    &:active, &:focus {
+        color: @btn-default-border-color;
+        border-color: @btn-default-border-color;
+        background-color: white;
+    }
+
+    &:hover {
+        color: @btn-default-border-color;
+        background-color: @btn-default-bg-hover;
+        border-color: @btn-default-border-color;
+
+    }
+}
+
+.btn-danger {
+    background-color: @btn-danger-bg;
+}
+
+.dropdown-menu > li > a {
+    //font-family: 'Roboto', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+    outline-color: transparent;
+ }
+
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+    color: @btn-default-border-color;
+    background-color: @btn-default-bg-hover;
+    border-color: @btn-default-border-color;
+}

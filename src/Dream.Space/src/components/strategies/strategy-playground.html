@@ -1,4 +1,6 @@
 ﻿<template>
+    <require from="./strategy-playground.css"></require>
+
     <strategy-admin></strategy-admin>
     <div class="c_playground-content">
         <div class="row">
@@ -37,7 +39,7 @@
                             <div class="form-inline right">
                                 <label>Company Search: </label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control uppercase" value.bind="searchCriteria" />
+                                    <input type="text" class="form-control uppercase" value.bind="searchCriteria"/>
                                     <div class="input-group-btn">
                                         <button type="submit" disabled.bind="searchCriteria.length===0" class="btn btn-danger">Go</button>
                                     </div>
@@ -81,6 +83,8 @@
                 <div class="o_chart">
                     <stock-chart model.bind="playgroundModel"></stock-chart>
                 </div>
+                
+                <br/>
             </div>
             <div class="col-md-4 col-xs-12 c_strategy-runner">
                 <div class="side-navigation">
@@ -91,8 +95,8 @@
                                 <div class="form-group" repeat.for="ruleSet of playgroundModel.ruleSets">
                                     <span>${ruleSet.name}</span>
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="${ruleSet.progress}" aria-valuemin="0" aria-valuemax="100" style="width: ${ruleSet.progress}% ">
-                                            <span class="sr-only">40% Complete (success)</span>
+                                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="${ruleSet.progress}" aria-valuemin="0" aria-valuemax="100" css.bind="{width: '${ruleSet.progress +'%'}'}">
+                                            <span class="sr-only">${ruleSet.progress}% Complete (success)</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-12" repeat.for="rule of ruleSet.rules">

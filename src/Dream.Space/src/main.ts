@@ -54,5 +54,7 @@ export async function configure(aurelia: Aurelia) {
         aurelia.use.plugin("aurelia-testing");
     }
 
-    aurelia.start().then(() => aurelia.setRoot());
+    await aurelia.start();
+    //await new Promise(resolve => $(document).ready(() => resolve()));
+    aurelia.setRoot();
 }

@@ -1,0 +1,72 @@
+﻿@import "../../../common/styles/_variables";
+
+.c_rules-content {
+
+    .c_rules {
+        background-color:@page-bg-content;
+    }
+
+    .c_rule-list {
+        border: 1px solid @solid-border-color;
+        padding:0 10px;
+        margin-bottom: 15px;
+
+        h3 {
+            //visibility:hidden;
+        }
+    }
+
+    .c_rule {
+        padding:10px 10px;
+        border-bottom: 1px solid @solid-border-color;
+
+        &.c_rule-add, .c_rule-add {
+            cursor: pointer;
+            border-bottom: 0px solid @solid-border-color;
+
+            .glyphicon {
+                color:green;
+            }
+        }
+
+        .c_rule-actions {
+            text-align: right;
+            border-top: 1px solid @h3-color;
+            padding-top:10px;
+        }
+
+        .c_rule-header {
+            cursor: pointer;
+            text-transform: capitalize;
+
+            .chevron {
+                float: right;
+            }
+
+            .btn {
+                margin-right: 10px;
+                z-index: 100;
+            }
+        }
+
+        .c_rule-details {
+            padding-top: 10px;
+
+            form {
+                border-top: 1px solid @h3-color;
+                padding-top: 10px;
+
+                fieldset {
+                    padding-bottom: 10px;
+                }
+            }
+
+            h4 {
+                //visibility:visible;
+                border-bottom: 1px solid @h3-color;
+            }
+        }
+    }
+
+}
+

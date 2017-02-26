@@ -24,6 +24,7 @@ export interface ChartInfo {
     quotes: QuoteInfo[];
     update: ChartUpdateInfo;
     indicators: ChartIndicatorInfo[];
+    table?: anychart.data.Table;
 }
 
 export interface ChartUpdateInfo {

@@ -315,8 +315,8 @@
     <Content Include="Web.config" />
     <Content Include="tsconfig.json" />
     <Content Include="src\components\header\dream-header.less" />
-    <Content Include="src\styles\_variables.less" />
-    <Content Include="src\styles\_fonts.less" />
+    <Content Include="src\common\styles\_variables.less" />
+    <Content Include="src\common\styles\_fonts.less" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -403,6 +403,7 @@
     <TypeScriptCompile Include="aurelia_project\tasks\run.ts" />
     <TypeScriptCompile Include="aurelia_project\tasks\test.ts" />
     <TypeScriptCompile Include="aurelia_project\tasks\transpile.ts" />
+    <TypeScriptCompile Include="custom_typings\anychart.d.ts" />
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
@@ -513,13 +514,13 @@
     <Content Include="src\components\nav-menu\category-nav\category-nav.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\_sub-nav.less" />
+    <Content Include="src\common\styles\_sub-nav.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\_body.less" />
+    <Content Include="src\common\styles\_body.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\common.less" />
+    <Content Include="src\common\styles\common.less" />
     <TypeScriptCompile Include="src\resources\elements\article-parts\article-parts.ts" />
     <Content Include="src\resources\elements\article-parts\article-parts.html" />
     <TypeScriptCompile Include="src\resources\elements\article-parts\article-part-actions.ts" />
@@ -541,19 +542,19 @@
     <Content Include="src\components\studies\study.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\_article.less" />
+    <Content Include="src\common\styles\_article.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\_page.less" />
+    <Content Include="src\common\styles\_page.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\_dialog.less" />
+    <Content Include="src\common\styles\_dialog.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\dialogs\login\user-login.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\styles\_form.less" />
+    <Content Include="src\common\styles\_form.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\components\categories\categories.less" />
@@ -561,6 +562,27 @@
   <ItemGroup>
     <Content Include="node_modules\npm-anystock\package.json" />
     <Content Include="node_modules\npm-anystock\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\strategies\strategy-playground.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\strategies\indicators\indicators.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\strategies\rules\rule-sets.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\strategies\rules\rules.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\components\strategies\strategy.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\resources\elements\chart\stock-chart.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\common\styles\_button.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

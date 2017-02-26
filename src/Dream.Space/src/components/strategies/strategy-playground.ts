@@ -56,7 +56,7 @@ export class StrategyPlayground {
                         const company = await this.companyService.getCompany(params.ticker);
                         if (company && company.ticker) {
                             this.company = company;
-                            this.loadPlayground();
+                            await this.loadPlayground();
                         }
                     }
 
@@ -94,6 +94,10 @@ export class StrategyPlayground {
         } 
     }
 
+    buildProgressStyle(ruleSet) {
+        return "width: " + ruleSet.progress + "%";
+    }
+
     streaming = false;
 
     async streamData() {
@@ -108,6 +112,7 @@ export class StrategyPlayground {
         });
     }
 
+
     startStreaming() {
         this.streaming = true;
         this.streamData();
@@ -121,9 +126,8 @@ export class StrategyPlayground {
         try {
             const playground = await this.playgroundService.loadPlayground(this.company.ticker, this.strategy.strategyId, 100);
             if (playground && playground.company) {
-                this.playgroundModel = playground;
                 this.playgroundLoaded = true;
-
+                this.playgroundModel = playground;
             } else {
                 toastr.error(`Failed to load playground for company ${this.company.name}`, "Load Playground Failed");
             }
