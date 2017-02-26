@@ -1,6 +1,5 @@
 ﻿import * as toastr from "toastr";
 import { autoinject } from "aurelia-framework";
-import { Navigation } from "./navigation";
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
 import { StrategyService} from "../../services/strategy-service";
 import { RuleSetService} from "../../services/rule-set-service";
@@ -27,10 +26,10 @@ export class StrategyRuleSets {
         description: string;
     };
     addingMode = false;
+    strategyChangedEvent = "onStrategyChanged";
 
     constructor(
         private eventAggregator: EventAggregator,
-        private strategyNavigation: Navigation,
         private strategyService: StrategyService,
         private ruleSetService: RuleSetService,
         settings: SettingsService
@@ -85,7 +84,8 @@ export class StrategyRuleSets {
                 const strategy = await this.strategyService.getSummaryByUrl(params.strategyUrl);
                 if (strategy && strategy.strategyId) {
                     this.strategy = strategy;
-                    this.strategyNavigation.configureNavigation(this.strategy.url);
+                    this.eventAggregator.publish(this.strategyChangedEvent, { url: this.strategy.url, module: "strategy-rule-sets" });
+
                     await this.loadRuleSets(this.strategy.strategyId);
 
                 } else {

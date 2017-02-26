@@ -94,9 +94,6 @@ export class StrategyPlayground {
         } 
     }
 
-    buildProgressStyle(ruleSet) {
-        return "width: " + ruleSet.progress + "%";
-    }
 
     streaming = false;
 

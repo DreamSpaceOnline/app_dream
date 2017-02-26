@@ -29,6 +29,7 @@
     <ApplicationInsightsResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/JustEat.TopPlacement.ManagementWeb</ApplicationInsightsResourceId>
     <TargetFrameworkProfile />
     <TypeScriptToolsVersion>2.1.5</TypeScriptToolsVersion>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <WebGreaseLibPath>..\..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -302,8 +303,11 @@
     <Content Include="src\components\user\profile.html" />
     <Content Include="src\dialogs\login\user-login.html" />
     <Content Include="src\resources\elements\chart\stock-chart.html" />
+    <Content Include="src\resources\elements\chart\stock-chart.js" />
+    <Content Include="src\resources\elements\chart\stock-chart.less" />
     <Content Include="src\resources\elements\company\company-details.html" />
     <Content Include="src\resources\elements\indicator\indicator.html" />
+    <Content Include="src\resources\elements\progress\progress.html" />
     <Content Include="src\resources\elements\rule-set\rule-set-item.html" />
     <Content Include="src\resources\elements\rule-set\rule-set.html" />
     <Content Include="src\resources\elements\rule\rule.html" />
@@ -439,6 +443,7 @@
     <TypeScriptCompile Include="src\resources\elements\chart\stock-chart.ts" />
     <TypeScriptCompile Include="src\resources\elements\company\company-details.ts" />
     <TypeScriptCompile Include="src\resources\elements\indicator\indicator.ts" />
+    <TypeScriptCompile Include="src\resources\elements\progress\progress.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule-set\rule-set-item.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule-set\rule-set.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule\rule.ts" />
@@ -579,10 +584,10 @@
     <Content Include="src\components\strategies\strategy.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\resources\elements\chart\stock-chart.less" />
+    <Content Include="src\common\styles\_button.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\common\styles\_button.less" />
+    <Content Include="src\resources\elements\chart\stock-chart.js.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
