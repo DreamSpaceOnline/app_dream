@@ -26,7 +26,6 @@ export class StrategyRuleSets {
         description: string;
     };
     addingMode = false;
-    strategyChangedEvent = "onStrategyChanged";
 
     constructor(
         private eventAggregator: EventAggregator,
@@ -84,7 +83,6 @@ export class StrategyRuleSets {
                 const strategy = await this.strategyService.getSummaryByUrl(params.strategyUrl);
                 if (strategy && strategy.strategyId) {
                     this.strategy = strategy;
-                    this.eventAggregator.publish(this.strategyChangedEvent, { url: this.strategy.url, module: "strategy-rule-sets" });
 
                     await this.loadRuleSets(this.strategy.strategyId);
 

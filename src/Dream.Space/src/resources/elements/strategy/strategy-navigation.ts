@@ -1,23 +1,17 @@
-﻿import { autoinject, bindable } from "aurelia-framework";
-import { Router } from 'aurelia-router';
-import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
+﻿import { autoinject } from "aurelia-framework";
+import { EventAggregator, Subscription } from "aurelia-event-aggregator";
+import { NavigationInstruction } from "aurelia-router";
 
 @autoinject
 export class StrategyNavigation {
 
-    @bindable strategychangedevent;
     subscription: Subscription = null;
     items: LinkInfo[] = [];
 
-    constructor(private router: Router, private eventAggregator: EventAggregator) {
-    }
-
-    strategychangedeventChanged(newValue) {
-        if (this.subscription) {
-            this.subscription.dispose();
-        }
-
-        this.subscription = this.eventAggregator.subscribe(newValue, url => this.onStrategyChanged(url));
+    constructor(private eventAggregator: EventAggregator) {
+        this.subscription = this.eventAggregator.subscribe("router:navigation:complete", (request) => {
+            this.onNavigatioComplete(request.instruction);
+        });
     }
 
     detached() {
@@ -26,31 +20,40 @@ export class StrategyNavigation {
         }
     }
 
-    onStrategyChanged(url: string) {
-        const currentModuleName = this.router.currentInstruction.config.name;
+
+    onNavigatioComplete(instruction: NavigationInstruction) {
+        if (instruction.config.name !== "strategies") return;
+
+        const currentUrl = instruction.fragment;
+        let page: string = "";
+
+        const fragments = currentUrl.split("/");
+        if (fragments.length > 3) {
+            page = fragments[3];
+        }
+
         this.items = [];
 
-        let strategyMenuItem: LinkInfo  =
-            {
-                isActive: currentModuleName === "strategy",
-                title: "Strategy Article",
-                url: "/strategies/strategy/" + url,
-                name: "strategy"
-            }
+        const strategyMenuItem: LinkInfo = {
+            isActive: currentUrl.startsWith("/strategies/strategy/"),
+            title: "Strategy Article",
+            url: "/strategies/strategy/" + page,
+            name: "strategy"
+        };
 
-        let rulesetsMenuItem: LinkInfo = {
-            isActive: currentModuleName === "strategy-rule-sets",
+        const rulesetsMenuItem: LinkInfo = {
+            isActive: currentUrl.startsWith("/strategies/strategy-rule-sets/"),
             title: "Strategy Rule Sets",
-            url: "/strategies/strategy-rule-sets/" + url,
+            url: "/strategies/strategy-rule-sets/" + page,
             name: "rule-sets"
-        }
+        };
 
-        let playgroundMenuItem: LinkInfo = {
-            isActive: currentModuleName === "strategy-playground",
+        const playgroundMenuItem: LinkInfo = {
+            isActive: currentUrl.startsWith("/strategies/strategy-playground/"),
             title: "Playground",
-            url: "/strategies/strategy-playground/" + url,
+            url: "/strategies/strategy-playground/" + page,
             name: "strategy-playground"
-        }
+        };
 
         this.items.push(strategyMenuItem);
         this.items.push(rulesetsMenuItem);

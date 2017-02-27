@@ -2,7 +2,6 @@
 import { autoinject } from "aurelia-framework";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-import { Navigation } from "./navigation";
 import { StrategyService} from "../../services/strategy-service";
 import { CompanyService} from "../../services/company-service";
 import { StockService} from "../../services/stock-service";
@@ -28,7 +27,6 @@ export class StrategyPlayground {
     routeName: string;
 
     constructor(
-        private strategyNavigation: Navigation,
         private strategyService: StrategyService,
         private companyService: CompanyService,
         private stockService: StockService,
@@ -50,7 +48,6 @@ export class StrategyPlayground {
                 const response = await this.strategyService.getSummaryByUrl(params.strategyUrl);
                 if (response && response.strategyId > 0) {
                     this.strategy = response;
-                    this.strategyNavigation.configureNavigation(this.strategy.url);
 
                     if (params.ticker) {
                         const company = await this.companyService.getCompany(params.ticker);

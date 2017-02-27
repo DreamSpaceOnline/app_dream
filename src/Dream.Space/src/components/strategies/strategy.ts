@@ -4,7 +4,6 @@ import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 
-import { Navigation } from "./navigation";
 import { StrategyService} from "../../services/strategy-service";
 import { BootstrapFormRenderer} from "../../form-validation/bootstrap-form-renderer";
 import { AccountService} from "../../services/account-service";
@@ -27,8 +26,7 @@ export class Strategy {
         private eventAggregator: EventAggregator,
         private strategyService: StrategyService,
         account: AccountService,
-        private validation: ValidationController,
-        private strategyNavigation: Navigation
+        private validation: ValidationController
     ) {
         this.powerUser = account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
@@ -101,7 +99,6 @@ export class Strategy {
             item.selected = item.strategyId === id;
         });
 
-        this.strategyNavigation.configureNavigation(this.strategy.url);
     }
 
     navigateToDefaultStrategy() {

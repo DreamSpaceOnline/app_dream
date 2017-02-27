@@ -7,8 +7,7 @@ export class Navigation {
 
     router: Router;
     section: string;
-    url: string;
-    strategyChangedEvent = "onStrategyChanged";
+    url = "";
 
     constructor(private eventAggregator: EventAggregator) {
     }
@@ -30,12 +29,8 @@ export class Navigation {
         this.section = config.title;
     }
 
-    configureNavigation(url) {
-        this.url = url;
-        this.eventAggregator.publish(this.strategyChangedEvent, url);
-    }
 
     attached() {
-        this.eventAggregator.publish(this.strategyChangedEvent, this.url);
+        this.eventAggregator.publish("this.strategyChangedEvent", this.url);
     }
 }

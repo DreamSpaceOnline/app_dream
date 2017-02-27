@@ -37,7 +37,7 @@ export async function configure(aurelia: Aurelia) {
         .instance("Account", account)
         .instance("Settings", settings)
         .feature("resources")
-        .plugin('aurelia-dialog',
+        .plugin("aurelia-dialog",
             config => {
                 config.useDefaults();
                 config.settings.lock = false;
