@@ -303,7 +303,6 @@
     <Content Include="src\components\user\profile.html" />
     <Content Include="src\dialogs\login\user-login.html" />
     <Content Include="src\resources\elements\chart\stock-chart.html" />
-    <Content Include="src\resources\elements\chart\stock-chart.js" />
     <Content Include="src\resources\elements\chart\stock-chart.less" />
     <Content Include="src\resources\elements\company\company-details.html" />
     <Content Include="src\resources\elements\indicator\indicator.html" />
@@ -585,9 +584,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\common\styles\_button.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="src\resources\elements\chart\stock-chart.js.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

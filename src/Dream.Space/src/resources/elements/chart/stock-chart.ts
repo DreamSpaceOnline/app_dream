@@ -1,10 +1,10 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
-import * as Playgroundmodels from "../../../common/types/playground-models";
+import {PlaygroundViewModel} from "../../../common/types/playground-models";
 
 @autoinject
 export class StockChart {
-    @bindable model: Playgroundmodels.PlaygroundViewModel;
+    @bindable model: PlaygroundViewModel;
     subscriptions: Subscription[] = [];
 
     constructor(private eventAggregator: EventAggregator) {

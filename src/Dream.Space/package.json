@@ -13,7 +13,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "anychart": "^7.12.0",
     "aurelia-animator-css": "^1.0.0",
     "aurelia-bootstrapper": "^1.0.0",
     "aurelia-dialog": "^1.0.0-beta.3.0.1",

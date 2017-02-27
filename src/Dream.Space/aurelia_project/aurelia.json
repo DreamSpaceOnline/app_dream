@@ -105,11 +105,6 @@
             "path": "../node_modules/aurelia-dialog/dist/amd",
             "main": "aurelia-dialog"
           },
-          {
-            "name": "anychart",
-            "path": "../node_modules/anychart/dist",
-            "main": "anychart-bundle.min"
-          },
           "aurelia-binding",
           "aurelia-bootstrapper",
           "aurelia-dependency-injection",
