@@ -72,7 +72,7 @@
 
             </div>
             <div class="col-md-4 col-xs-12">
-                <side-navigation strategyurl.bind="strategyUrl"></side-navigation>
+                <side-navigation strategyurl.bind="strategy.url"></side-navigation>
             </div>
         </div>
         <div class="row o_chart-content" if.bind="playgroundLoaded">
@@ -95,6 +95,7 @@
                                 <div class="form-group" repeat.for="ruleSet of playgroundModel.ruleSets">
                                     <span>${ruleSet.name}</span>
                                     <progress ruleset.bind="ruleSet"></progress>
+
                                     <div class="col-sm-12" repeat.for="rule of ruleSet.rules">
                                         <span class="glyphicon ${rule.valid ? 'glyphicon-ok' : 'glyphicon-time'}" aria-hidden="true"></span>
                                         <label>${rule.ruleName}</label>

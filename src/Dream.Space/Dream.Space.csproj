@@ -279,6 +279,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="node_modules\npm-anystock\anystock.min.js" />
+    <Content Include="Scripts\app-bundle.js" />
+    <Content Include="Scripts\vendor-bundle.js" />
     <Content Include="src\components\categories\categories.html" />
     <Content Include="src\components\categories\navigation.html" />
     <Content Include="src\components\footer\dream-footer.html" />
@@ -381,7 +383,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Infrastructure\Publishers\" />
-    <Folder Include="Scripts\" />
     <Folder Include="src\components\nav-menu\side-nav\" />
     <Folder Include="src\resources\binding-behaviors\" />
     <Folder Include="Views\Account\" />

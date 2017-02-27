@@ -24,8 +24,8 @@ export class StrategyNavigation {
     onNavigatioComplete(instruction: NavigationInstruction) {
         if (instruction.config.name !== "strategies") return;
 
-        const currentUrl = instruction.fragment;
-        let page: string = "";
+        const currentUrl = window.location.pathname;
+        let page = "";
 
         const fragments = currentUrl.split("/");
         if (fragments.length > 3) {
