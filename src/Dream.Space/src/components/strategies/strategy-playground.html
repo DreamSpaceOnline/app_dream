@@ -94,7 +94,7 @@
                             <div class="c_strategy-runner--progress">
                                 <div class="form-group" repeat.for="ruleSet of playgroundModel.ruleSets">
                                     <span>${ruleSet.name}</span>
-                                    <progress ruleset.bind="ruleSet"></progress>
+                                    <s-progress progress.bind="ruleSet.progress"></s-progress>
 
                                     <div class="col-sm-12" repeat.for="rule of ruleSet.rules">
                                         <span class="glyphicon ${rule.valid ? 'glyphicon-ok' : 'glyphicon-time'}" aria-hidden="true"></span>

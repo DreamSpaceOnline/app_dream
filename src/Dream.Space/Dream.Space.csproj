@@ -308,7 +308,7 @@
     <Content Include="src\resources\elements\chart\stock-chart.less" />
     <Content Include="src\resources\elements\company\company-details.html" />
     <Content Include="src\resources\elements\indicator\indicator.html" />
-    <Content Include="src\resources\elements\progress\progress.html" />
+    <Content Include="src\resources\elements\progress\s-progress.html" />
     <Content Include="src\resources\elements\rule-set\rule-set-item.html" />
     <Content Include="src\resources\elements\rule-set\rule-set.html" />
     <Content Include="src\resources\elements\rule\rule.html" />
@@ -443,7 +443,7 @@
     <TypeScriptCompile Include="src\resources\elements\chart\stock-chart.ts" />
     <TypeScriptCompile Include="src\resources\elements\company\company-details.ts" />
     <TypeScriptCompile Include="src\resources\elements\indicator\indicator.ts" />
-    <TypeScriptCompile Include="src\resources\elements\progress\progress.ts" />
+    <TypeScriptCompile Include="src\resources\elements\progress\s-progress.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule-set\rule-set-item.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule-set\rule-set.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule\rule.ts" />
@@ -585,6 +585,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\common\styles\_button.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\common\styles\_progress.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

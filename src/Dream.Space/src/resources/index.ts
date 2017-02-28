@@ -33,7 +33,7 @@ export function configure(config: FrameworkConfiguration) {
     config.globalResources(["./elements/indicator/indicator"]);
     config.globalResources(["./elements/company/company-details"]);
     config.globalResources(["./elements/chart/stock-chart"]);
-    config.globalResources(["./elements/progress/progress"]);
+    config.globalResources(["./elements/progress/s-progress"]);
 
     config.globalResources(["./attributes/first-letter-span"]);
 
