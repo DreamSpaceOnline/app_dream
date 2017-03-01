@@ -28,7 +28,7 @@
     </NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/JustEat.TopPlacement.ManagementWeb</ApplicationInsightsResourceId>
     <TargetFrameworkProfile />
-    <TypeScriptToolsVersion>2.1.5</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <WebGreaseLibPath>..\..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>

@@ -1,13 +1,14 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
-import { EventAggregator, Subscription } from "aurelia-event-aggregator";
+import { Subscription } from "aurelia-event-aggregator";
 import {PlaygroundViewModel} from "../../../common/types/playground-models";
+import {EventEmitter} from "../../../infrastructure/event-emitter";
 
 @autoinject
 export class StockChart {
     @bindable model: PlaygroundViewModel;
     subscriptions: Subscription[] = [];
 
-    constructor(private eventAggregator: EventAggregator) {
+    constructor(private eventEmitter: EventEmitter) {
     }
 
     modelChanged() {
@@ -15,10 +16,7 @@ export class StockChart {
 
     attached() {
         this.subscriptions.push(
-            this.eventAggregator.subscribe("StrategyPlayground.loadPrev", data => this.loadPrev(data)));
-
-        this.subscriptions.push(
-            this.eventAggregator.subscribe("StrategyPlayground.loadNext", data => this.loadNext(data)));
+            this.eventEmitter.subscribe("ChartData", data => this.loadChartData(data)));
 
         if (this.model && this.model.company) {
             this.drawChart();
@@ -33,18 +31,32 @@ export class StockChart {
         }
     }
 
-    playgroundData;
 
-    loadPrev(data) {
-        this.playgroundData = data;
-    }
+    loadChartData(data: PlaygroundViewModel) {
+        if (data && data.periods.length > 0) {
+            data.periods.forEach(item => {
+                const period = this.model.periods.find(m => m.id === item.id);
+                if (period && period.table) {
+                    const table = period.table;
 
-    loadNext(data) {
-        this.playgroundData = data;
-        //data.periods.forEach(function(period) {
-        //    table.addData(period.quotes);
-        //    table.remove();
-        //});
+                    item.quotes.forEach((item): void => {
+                        const row = [[item.date, item.open, item.high, item.low, item.close]];
+                        table.addData(row, true);
+                    });
+
+                    if(item.indicators.length > 0 && period.indicators.length > 0) {
+                        item.indicators.forEach(ind => {
+                            period.indicators.forEach(indicator => {
+                                if (ind.id === indicator.id) {
+                                    indicator.table.addData(ind.values);
+                                }
+                            });
+                        });
+                    }
+                }
+
+            });
+        }
     }
 
 
@@ -55,7 +67,7 @@ export class StockChart {
             period.table = anychart.data.table();
 
             period.quotes.forEach(item => {
-                const row = [[item.date, item.open, item.high, item.low, item.close]];
+                const row = [[item.date, item.open, item.high, item.low, item.close, item.volume]];
                 period.table.addData(row);
             });
 
@@ -77,9 +89,14 @@ export class StockChart {
 
             period.indicators.forEach(indicator => {
                 const indicatorPlot = chart.plot(plotNumber);
-                const indicatorData = anychart.data.table(0);
-                indicatorData.addData(indicator.values);
-                const indicatorMapping = indicatorData.mapAs();
+                indicator.table = anychart.data.table(0);
+
+                indicator.values.forEach(value => {
+                    const row = [[value.date, value.value]];
+                    indicator.table.addData(row);
+                });
+
+                const indicatorMapping = indicator.table.mapAs();
                 indicatorMapping.addField("value", 1);   
                 const indicatorSeries = indicatorPlot.line(indicatorMapping);
                 indicatorSeries.name(indicator.name);
@@ -87,7 +104,7 @@ export class StockChart {
 
             const volumePlot = chart.plot(1 + plotNumber);
             const volumeMapping = period.table.mapAs();
-            volumeMapping.addField("value", 1);   
+            volumeMapping.addField("value", 5);   
 
             volumePlot.column(volumeMapping).name("Volume");
             volumePlot.height("30%");

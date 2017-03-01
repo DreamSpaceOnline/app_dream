@@ -21,8 +21,8 @@ export class QuoteInfo {
     close: number;
     high: number;
     low: number;
-    value: number;
     date: Date;
+    volume: number;
 }
 
 export class CompanyInfo extends CompanyHeader {

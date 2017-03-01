@@ -1,6 +1,5 @@
 ﻿import * as toastr from "toastr";
 import { autoinject } from "aurelia-framework";
-import { EventAggregator } from "aurelia-event-aggregator";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { StrategyService} from "../../services/strategy-service";
 import { CompanyService} from "../../services/company-service";
@@ -11,6 +10,7 @@ import { IdName} from "../../common/helpers/enum-helper";
 import { PlaygroundViewModel} from "../../common/types/playground-models";
 import { StrategySummary} from "../../common/types/strategy-models";
 import { CompanyHeader, CompanyViewModel } from "../../common/types/company-models";
+import { EventEmitter } from "../../infrastructure/event-emitter";
 
 @autoinject
 export class StrategyPlayground {
@@ -32,7 +32,7 @@ export class StrategyPlayground {
         private stockService: StockService,
         private playgroundService: PlaygroundService,
         private settings: SettingsService,
-        private eventAggregator: EventAggregator
+        private eventEmitter: EventEmitter
     ) {
         this.periods = this.settings.periods;
     }
@@ -134,7 +134,7 @@ export class StrategyPlayground {
         try {
             const playground = await this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId, 100, 1);
             if (playground && playground.company) {
-                this.eventAggregator.publish('StrategyPlayground.loadNext', playground);
+                this.eventEmitter.publish("ChartData", playground);
             } else {
                 toastr.error(`Failed to load next playground data for company ${this.company.name}`, "Load Next Data Failed");
             }
@@ -148,7 +148,7 @@ export class StrategyPlayground {
         try {
             const playground = await this.playgroundService.loadPrev(this.company.ticker, this.strategy.strategyId, 100, 1);
             if (playground && playground.company) {
-                this.eventAggregator.publish('StrategyPlayground.loadPrev', playground);
+                this.eventEmitter.publish("ChartData", playground);
             } else {
                 toastr.error(`Failed to load previous playground data for company ${this.company.name}`, "Load previous Data Failed");
             }
