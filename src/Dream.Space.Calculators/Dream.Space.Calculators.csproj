@@ -61,15 +61,15 @@
   <ItemGroup>
     <ProjectReference Include="..\Dream.Space.Data\Dream.Space.Data.csproj">
       <Project>{eb10172d-559a-4e59-bc95-eee805f1a19b}</Project>
-      <Name>dream.walker.data</Name>
+      <Name>Dream.Space.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Indicators\Dream.Space.Indicators.csproj">
       <Project>{d3dd96e0-079e-4a28-acc3-aa5b2ea39c01}</Project>
-      <Name>dream.walker.indicators</Name>
+      <Name>Dream.Space.Indicators</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Reader\Dream.Space.Reader.csproj">
       <Project>{3d49dde8-e00e-429c-9f3b-cfe2db6e2de5}</Project>
-      <Name>dream.walker.reader</Name>
+      <Name>Dream.Space.Reader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
