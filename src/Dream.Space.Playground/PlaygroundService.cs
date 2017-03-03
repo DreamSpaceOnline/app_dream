@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Cache;
 using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Entities.Strategies;
+using Dream.Space.Data.Extensions;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
@@ -133,5 +135,10 @@ namespace Dream.Space.Playground
         }
 
 
+        public async Task Init(string ticker, int bars)
+        {
+
+
+        }
     }
 }
