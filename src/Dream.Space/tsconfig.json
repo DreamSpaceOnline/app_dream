@@ -10,8 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    // Update this to es2017 in the next release of the VS2015 TypeScript plugin
-    "lib": [ "es2016", "dom" ],
+    "lib": [ "es2017", "dom" ],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "importHelpers": true
@@ -22,7 +21,6 @@
   "include": [
     "./src/**/*.ts",
     "./test/**/*.ts",
-    "./typings/**/*.d.ts",
     "./custom_typings/**/*.d.ts",
     "./aurelia_project/environments/**/*.ts"
   ],

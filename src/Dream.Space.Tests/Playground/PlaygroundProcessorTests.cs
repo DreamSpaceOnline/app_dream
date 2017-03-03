@@ -65,5 +65,23 @@ namespace Dream.Space.Tests.Playground
 
             Assert.That(dailyChart.Quotes.Count == 10 + 1);
         }
+
+
+        [Test]
+        public void Move_ShouldReturn_PlaygroundChartModel_For_1_bars()
+        {
+            var initial = _processor.Initialize(200, DateTime.MinValue);
+            for (int i = 0; i < 10; i++)
+            {
+                var response = _processor.Next(1);
+
+                PlaygroundChartModel.ChartInfo dailyChart = response.Periods[(int)QuotePeriod.Daily];
+                PlaygroundChartModel.ChartInfo weeklyChart = response.Periods[(int)QuotePeriod.Weekly];
+
+                //Assert.That(dailyChart.Quotes.Count == 10 + 1);
+            }
+
+        }
+
     }
 }

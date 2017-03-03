@@ -58,6 +58,7 @@
     <Compile Include="Models\HistoricalQuotes.cs" />
     <Compile Include="Models\IndicatorChartData.cs" />
     <Compile Include="Models\PlaygroundModel.cs" />
+    <Compile Include="PlaygroundService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

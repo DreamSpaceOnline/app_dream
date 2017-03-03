@@ -11,7 +11,6 @@ namespace Dream.Space.Controllers
     public class PlaygroundApiController : ApiController
     {
         private readonly IPlaygroundService _playgroundService;
-        private PlaygroundProcessor _playground;
 
         public PlaygroundApiController(IPlaygroundService playgroundService)
         {
@@ -23,8 +22,8 @@ namespace Dream.Space.Controllers
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}")]
         public async Task<IHttpActionResult> LoadPlayground(string ticker, int strategyId, int bars)
         {
-            _playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, false);
-            var response = _playground.Initialize(Math.Max(50, bars), DateTime.MinValue);
+            var playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, false);
+            var response = playground.Initialize(Math.Max(50, bars), DateTime.MinValue);
 
             return Ok(response);
         }
@@ -33,31 +32,34 @@ namespace Dream.Space.Controllers
         [HttpGet]
         [ResponseType(typeof(PlaygroundChartModel))]
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/next/{step:int:min(1)}")]
-        public async Task<IHttpActionResult> Next(string ticker, int strategyId, int bars, int step)
+        public IHttpActionResult Next(string ticker, int strategyId, int bars, int step)
         {
-            if (_playground == null)
+            var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
+            if (playground != null)
             {
-                _playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, false);
-                _playground.Initialize(Math.Max(50, bars), DateTime.MinValue);
+                var response = playground.Next(step);
+                _playgroundService.UpdatePlayground(playground);
+                return Ok(response);
             }
-            var response = _playground.Next(step);
 
-            return Ok(response);
+            return NotFound();
+
         }
 
         [HttpGet]
         [ResponseType(typeof(PlaygroundChartModel))]
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/prev/{step:int:min(1)}")]
-        public async Task<IHttpActionResult> Prev(string ticker, int strategyId, int bars, int step)
+        public IHttpActionResult Prev(string ticker, int strategyId, int bars, int step)
         {
-            if (_playground == null)
+            var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
+            if (playground != null)
             {
-                _playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, false);
-                _playground.Initialize(Math.Max(50, bars), DateTime.MinValue);
+                var response = playground.Prev(step);
+                _playgroundService.UpdatePlayground(playground);
+                return Ok(response);
             }
-            var response = _playground.Prev(step);
 
-            return Ok(response);
+            return NotFound();
         }
 
     }

@@ -9,6 +9,7 @@ namespace Dream.Space.Cache
         Task<T> Get<T>(string key, Func<Task<T>> func) where T : class;
         T Get<T>(string key, Func<T> func) where T : class;
         void Set<T>(string key, T data) where T : class;
+        T Get<T>(string ke) where T : class;
         void Delete(string key);
     }
 
@@ -57,6 +58,12 @@ namespace Dream.Space.Cache
             {
                 _cache.Remove(key);
             }
+        }
+
+        public T Get<T>(string key) where T : class
+        {
+            var data = _cache.Get(key) as T;
+            return data;
         }
     }
 }

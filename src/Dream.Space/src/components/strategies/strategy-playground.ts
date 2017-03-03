@@ -132,13 +132,9 @@ export class StrategyPlayground {
 
     async loadNext() {
         try {
-            const playground = await this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId, 100, 1);
-            if (playground && playground.company) {
-                this.eventEmitter.publish("ChartData", playground);
-            } else {
-                toastr.error(`Failed to load next playground data for company ${this.company.name}`, "Load Next Data Failed");
-            }
-            
+            await this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId, 100, 1);
+            await this.loadPlayground();
+
         } catch (e) {
             toastr.error(`Failed to load next playground`, "Exception");
         } 

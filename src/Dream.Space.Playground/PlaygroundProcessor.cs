@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
@@ -19,9 +20,16 @@ namespace Dream.Space.Playground
             _indicators = indicators;
             _playgroundModel = new PlaygroundModel(company, indicatorProcessorFactory, rules);
             HistoryDays = company.HistoryQuotes.Count;
+            Ticker = company.Ticker;
+            if (rules.Any())
+            {
+                StrategyId = rules.First().StrategyId;
+            }
         }
 
         public int HistoryDays { get; private set; }
+        public string Ticker { get; private set; }
+        public int StrategyId { get; private set; }
 
 
         public PlaygroundChartModel Initialize(int bars, DateTime date)
