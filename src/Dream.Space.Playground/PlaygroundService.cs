@@ -11,6 +11,7 @@ using Dream.Space.Data.Extensions;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
+using Dream.Space.Playground.Models;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Models;
 using Dream.Space.Stock;
@@ -74,24 +75,23 @@ namespace Dream.Space.Playground
 
         public void UpdatePlayground(PlaygroundProcessor playground)
         {
-            var ticker = playground.Ticker;
-            var strategyId = playground.StrategyId;
+            var ticker = playground.Company.Ticker;
 
-            var key = $"LoadPlaygroundAsync-{ticker}-{strategyId}";
+            var key = $"LoadPlaygroundAsync-{ticker}";
             _cache.Set(key, playground);
         }
 
 
-        public PlaygroundProcessor LoadPlaygroundFromCache(string ticker, int strategyId)
+        public PlaygroundProcessor LoadPlaygroundFromCache(string ticker)
         {
-            var key = $"LoadPlaygroundAsync-{ticker}-{strategyId}";
+            var key = $"LoadPlaygroundAsync-{ticker}";
             return _cache.Get<PlaygroundProcessor>(key);
         }
 
 
         public async Task<PlaygroundProcessor> LoadPlaygroundAsync(string ticker, int strategyId, bool refreshCache)
         {
-            var key = $"LoadPlaygroundAsync-{ticker}-{strategyId}";
+            var key = $"LoadPlaygroundAsync-{ticker}";
 
             if (refreshCache)
             {
@@ -99,7 +99,7 @@ namespace Dream.Space.Playground
             }
 
             var processor = await _cache.Get(key, async () => await LoadPlayground(ticker, strategyId));
-            if (processor.HistoryDays < 300)
+            if (processor.Quotes.Count < 300)
             {
                 var historicalData = await LoadHistoryAsync(ticker);
                 if (historicalData.Count > 300)
@@ -124,21 +124,17 @@ namespace Dream.Space.Playground
             using (var scope = _container.BeginLifetimeScope())
             {
                 var indicatorProcessorFactory = scope.Resolve<IndicatorProcessorFactory>();
-                var strategyRules = scope.Resolve<IVStrategyRuleRepository>();
+                //var strategyRules = scope.Resolve<IVStrategyRuleRepository>();
                 var companyRepository = scope.Resolve<ICompanyRepository>();
 
-                var rules = await strategyRules.GetRulesAsync(strategyId);
+                //var rules = await strategyRules.GetRulesAsync(strategyId);
                 var company = companyRepository.Get(ticker);
 
-                return new PlaygroundProcessor(company, indicators, indicatorProcessorFactory, rules);
+                return new PlaygroundProcessor(
+                    new CompanyInfo {Ticker = company.Ticker, Name = company.Name}, 
+                    company.HistoryQuotes, indicators, indicatorProcessorFactory, 100);
             }
         }
 
-
-        public async Task Init(string ticker, int bars)
-        {
-
-
-        }
     }
 }

@@ -11,7 +11,7 @@ namespace Dream.Space.Playground
         Task<List<QuotesModel>> LoadHistoryAsync(string ticker);
         Task<List<Indicator>> LoadIndicatorsAsync(int strategyId);
         Task<PlaygroundProcessor> LoadPlaygroundAsync(string ticker, int strategyId, bool refreshCache);
-        PlaygroundProcessor LoadPlaygroundFromCache(string ticker, int strategyId);
+        PlaygroundProcessor LoadPlaygroundFromCache(string ticker);
         Task<List<vStrategyRule>> LoadStrategyRulesAsync(int strategyId);
         void UpdatePlayground(PlaygroundProcessor playground);
     }

@@ -7,6 +7,7 @@ using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Extensions;
 using Dream.Space.Playground;
+using Dream.Space.Playground.Models;
 using Dream.Space.Reader.Models;
 using NUnit.Framework;
 
@@ -18,7 +19,7 @@ namespace Dream.Space.Tests.Services
         private IPlaygroundService _service;
         private List<QuotesModel> _quotes;
         private DateTime _currentDate;
-        private TechnicalAnalysis _technicalAnalysis;
+        private PlaygroundProcessor _playgroundProcessor;
         private List<Indicator> _indicators;
         private IndicatorProcessorFactory _indicatorProcessorFactory;
 
@@ -37,20 +38,29 @@ namespace Dream.Space.Tests.Services
         {
             const int bars = 100;
             _currentDate = _quotes.ToWeeekly().TakeLast(bars).First().Date;
-            _technicalAnalysis = new TechnicalAnalysis(_quotes, _indicators, _indicatorProcessorFactory, bars);
-            _technicalAnalysis.Initialize(_currentDate);
+            _playgroundProcessor = new PlaygroundProcessor(new CompanyInfo(),  _quotes, _indicators, _indicatorProcessorFactory, bars);
+            _playgroundProcessor.Initialize(_currentDate);
         }
 
         [Test]
         public void MoveNext()
         {
+            var data = _playgroundProcessor.MoveNext();
             Assert.That(true);
         }
 
         [Test]
         public void MovePrev()
         {
-            
+            var data = _playgroundProcessor.MovePrev();
+            Assert.That(true);
+        }
+
+        [Test]
+        public void Reset()
+        {
+            var data = _playgroundProcessor.Reset();
+            Assert.That(true);
         }
     }
 }

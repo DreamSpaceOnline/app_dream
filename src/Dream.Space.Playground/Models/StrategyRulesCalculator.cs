@@ -11,9 +11,9 @@ namespace Dream.Space.Playground.Models
     public class StrategyRulesCalculator
     {
         private readonly List<vStrategyRule> _rules;
-        private readonly Dictionary<QuotePeriod, ChartModel> _charts;
+        private readonly CompanyChartData _charts;
 
-        public StrategyRulesCalculator(List<vStrategyRule> rules, Dictionary<QuotePeriod, ChartModel> charts)
+        public StrategyRulesCalculator(List<vStrategyRule> rules, CompanyChartData charts)
         {
             _rules = rules;
             _charts = charts;
@@ -76,8 +76,8 @@ namespace Dream.Space.Playground.Models
 
         private decimal GetValueFromHistorical(vStrategyRule rule, bool isFirst)
         {
-            var values = isFirst ? _charts[rule.Period].Quotes.Skip(rule.SkipItemsV1).Take(rule.TakeItemsV1).ToList() 
-                : _charts[rule.Period].Quotes.Skip(rule.SkipItemsV2).Take(rule.TakeItemsV2).ToList();
+            var values = isFirst ? _charts.Periods.First(p => p.Period == rule.Period).Quotes.Skip(rule.SkipItemsV1).Take(rule.TakeItemsV1).ToList() 
+                : _charts.Periods.First(p => p.Period == rule.Period).Quotes.Skip(rule.SkipItemsV2).Take(rule.TakeItemsV2).ToList();
 
             var result = CalculateHistoricalValue(values, isFirst ? rule.TransformItemsV1 : rule.TransformItemsV2,
                 isFirst ? (HistoricalDataSeriesType) rule.DataSeriesV1 : (HistoricalDataSeriesType) rule.DataSeriesV2);
@@ -134,14 +134,14 @@ namespace Dream.Space.Playground.Models
 
         private decimal GetValueFromIndicator(vStrategyRule rule, bool isFirst)
         {
-            var indicator = _charts[rule.Period].Indicators
-                .Where(i => i.Key == (isFirst ? rule.DataSeriesV1 : rule.DataSeriesV2))
-                .Select(i => i.Value)
+            var indicator = _charts.Periods.First(p => p.Period == rule.Period).Indicators
+                .Where(i => i.Indicator.IndicatorId == (isFirst ? rule.DataSeriesV1 : rule.DataSeriesV2))
+                .Select(i => i)
                 .FirstOrDefault();
 
             if (indicator != null)
             {
-                var values = indicator.Values
+                var values = indicator.IndicatorValues
                     .Skip(isFirst ? rule.SkipItemsV1 : rule.SkipItemsV2)
                     .Take(isFirst ? rule.TakeItemsV1 : rule.TakeItemsV2)
                     .ToList();

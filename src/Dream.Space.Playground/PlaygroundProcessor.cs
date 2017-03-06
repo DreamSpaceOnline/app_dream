@@ -2,60 +2,156 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dream.Space.Calculators.IndicatorProcessor;
-using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Entities.Strategies;
+using Dream.Space.Data.Enums;
+using Dream.Space.Data.Extensions;
 using Dream.Space.Playground.Models;
+using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Playground
 {
     public class PlaygroundProcessor
     {
-        private readonly List<Indicator> _indicators;
-        private readonly PlaygroundModel _playgroundModel;
+        public CompanyInfo Company { get; }
+        public List<QuotesModel> Quotes { get; }
+        private List<Indicator> Indicators { get; }
+        private IndicatorProcessorFactory IndicatorProcessorFactory { get; }
+        private int Bars { get; }
+        private DateTime CurrentDate { get; set; }
+        private List<ChartData> Periods { get; }
+        private DateTime InitialDate { get; set; }
 
-
-        public PlaygroundProcessor(Company company, List<Indicator> indicators, IndicatorProcessorFactory indicatorProcessorFactory, List<vStrategyRule> rules)
+        public PlaygroundProcessor(CompanyInfo company, List<QuotesModel> quotes, List<Indicator> indicators, IndicatorProcessorFactory indicatorProcessorFactory, int bars)
         {
-            _indicators = indicators;
-            _playgroundModel = new PlaygroundModel(company, indicatorProcessorFactory, rules);
-            HistoryDays = company.HistoryQuotes.Count;
-            Ticker = company.Ticker;
-            if (rules.Any())
+            Company = company;
+            Quotes = quotes;
+            Indicators = indicators;
+            IndicatorProcessorFactory = indicatorProcessorFactory;
+            Bars = bars;
+            Periods = new List<ChartData>();
+        }
+
+        public void Initialize(DateTime? currentDate)
+        {
+            CurrentDate = CalculateCurrentDate(currentDate);
+            InitialDate = CurrentDate;
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Periods.Clear();
+            foreach (QuotePeriod period in Enum.GetValues(typeof(QuotePeriod)))
             {
-                StrategyId = rules.First().StrategyId;
+                Periods.Add(CalculateChartData(period));
             }
         }
 
-        public int HistoryDays { get; private set; }
-        public string Ticker { get; private set; }
-        public int StrategyId { get; private set; }
-
-
-        public PlaygroundChartModel Initialize(int bars, DateTime date)
+        private ChartData CalculateChartData(QuotePeriod period)
         {
-            _playgroundModel.Initialize(bars, date, _indicators);
-            return _playgroundModel.Build();
+            var maxPeriod = Indicators.Where(i => i.Period == period).Max(p => p.Params.Max(c => c.Value));
+            var quotes = CalculateVirtualPeriod(period, maxPeriod);
+            var indicators = CalculateIndicators(quotes, Indicators.Where(i => i.Period == period).ToList());
+
+            return new ChartData()
+            {
+                Quotes = quotes.Take(Bars).ToList(),
+                Indicators = indicators,
+                Period = period
+            };
+        }
+
+        private List<IndicatorChartData> CalculateIndicators(List<QuotesModel> quotes, List<Indicator> indicators)
+        {
+            var result = new List<IndicatorChartData>();
+
+            foreach (var indicator in indicators)
+            {
+                var calculator = IndicatorProcessorFactory.Create(indicator);
+                if (calculator != null)
+                {
+                    if (result.All(i => i.Indicator.IndicatorId != indicator.IndicatorId))
+                    {
+                        var item = new IndicatorChartData()
+                        {
+                            Indicator = indicator,
+                            IndicatorValues = calculator.Calculate(indicator, quotes).Take(Bars).ToList()
+                        };
+                        result.Add(item);
+                    }
+                }
+            }
+
+            return result;
         }
 
 
-        public PlaygroundChartModel Next(int bars)
+        private List<QuotesModel> CalculateVirtualPeriod(QuotePeriod period, int virtualOffset)
         {
-            var appendedQuotes = _playgroundModel.MoveNext(bars);
-            var model = _playgroundModel.Build(new ChartUpdateMode(ChartUpdateMode.UpdateMode.Append, appendedQuotes));
-
-            return model;
+            switch (period)
+            {
+                case QuotePeriod.Daily:
+                    return Quotes.Where(q => q.Date <= CurrentDate).Take(Bars+virtualOffset).ToList();
+                case QuotePeriod.Weekly:
+                    return Quotes.Where(q => q.Date <= CurrentDate).ToList().ToWeeekly().Take(Bars + virtualOffset).ToList();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(period), period, null);
+            }
         }
 
-
-        public PlaygroundChartModel Prev(int bars)
+        public CompanyChartData MoveNext()
         {
-            var insertedQuotes = _playgroundModel.MovePrev(bars);
-            var model = _playgroundModel.Build(new ChartUpdateMode(ChartUpdateMode.UpdateMode.Insert, insertedQuotes));
+            if (CurrentDate < Quotes.First().Date)
+            {
+                CurrentDate = CurrentDate.AddDays(1);
+                Initialize();
+            }
 
-            return model;
+            return CalculateCompanyChartData();
         }
 
+        public CompanyChartData MovePrev()
+        {
+            if (CurrentDate > InitialDate)
+            {
+                CurrentDate = CurrentDate.AddDays(-1);
+                Initialize();
+            }
+            return CalculateCompanyChartData();
+        }
 
+        public CompanyChartData Reset()
+        {
+            CurrentDate = InitialDate;
+            Initialize();
+
+            return CalculateCompanyChartData();
+        }
+
+        private CompanyChartData CalculateCompanyChartData()
+        {
+            return new CompanyChartData()
+            {
+                Periods = Periods,
+                Company = Company
+            };
+        }
+
+        private DateTime CalculateCurrentDate(DateTime? currentDate)
+        {
+            var weekly = Quotes.ToWeeekly();
+            var result = weekly.TakeLast(Bars).First().Date;
+            if (currentDate != null)
+            {
+                var pos = weekly.FindIndex(q => q.Date <= currentDate);
+                if (pos > -1 && weekly.Count - pos >= Bars)
+                {
+                    result = currentDate.Value;
+                }
+            }
+
+            return result;
+        }
     }
 }

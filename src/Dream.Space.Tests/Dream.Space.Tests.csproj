@@ -72,7 +72,6 @@
     <Compile Include="Controllers\PlaygroundApiControllerTests.cs" />
     <Compile Include="IndicatorTests.cs" />
     <Compile Include="IoC.cs" />
-    <Compile Include="Playground\PlaygroundProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ChartDataServiceTests.cs" />
     <Compile Include="Services\PlaygroundServiceTests.cs" />
@@ -115,6 +114,9 @@
       <Project>{bfc624d3-db31-402f-90aa-188339b1a91c}</Project>
       <Name>Dream.Space</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Playground\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

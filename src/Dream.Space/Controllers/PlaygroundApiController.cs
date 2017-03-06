@@ -18,26 +18,27 @@ namespace Dream.Space.Controllers
         }
 
         [HttpGet]
-        [ResponseType(typeof(PlaygroundChartModel))]
+        [ResponseType(typeof(CompanyChartData))]
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}")]
         public async Task<IHttpActionResult> LoadPlayground(string ticker, int strategyId, int bars)
         {
-            var playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, false);
-            var response = playground.Initialize(Math.Max(50, bars), DateTime.MinValue);
+            var playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, true);
+            playground.Initialize(null);
+            var response = playground.Reset();
 
             return Ok(response);
         }
 
 
         [HttpGet]
-        [ResponseType(typeof(PlaygroundChartModel))]
+        [ResponseType(typeof(CompanyChartData))]
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/next/{step:int:min(1)}")]
         public IHttpActionResult Next(string ticker, int strategyId, int bars, int step)
         {
-            var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
+            var playground = _playgroundService.LoadPlaygroundFromCache(ticker);
             if (playground != null)
             {
-                var response = playground.Next(step);
+                var response = playground.MoveNext();
                 _playgroundService.UpdatePlayground(playground);
                 return Ok(response);
             }
@@ -47,14 +48,14 @@ namespace Dream.Space.Controllers
         }
 
         [HttpGet]
-        [ResponseType(typeof(PlaygroundChartModel))]
+        [ResponseType(typeof(CompanyChartData))]
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/prev/{step:int:min(1)}")]
         public IHttpActionResult Prev(string ticker, int strategyId, int bars, int step)
         {
-            var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
+            var playground = _playgroundService.LoadPlaygroundFromCache(ticker);
             if (playground != null)
             {
-                var response = playground.Prev(step);
+                var response = playground.MovePrev();
                 _playgroundService.UpdatePlayground(playground);
                 return Ok(response);
             }
