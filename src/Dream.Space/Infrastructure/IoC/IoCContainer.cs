@@ -101,6 +101,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<IndicatorProcessorFactory>().SingleInstance();
             builder.RegisterType<DataCache>().As<IDataCache>().SingleInstance();
             builder.RegisterType<PlaygroundProcessor>();
+            builder.RegisterType<PlaygroundConfigurationLoader>();
 
             builder.Register(c => new YahooFinanceClientConfig() { Proxy = "" }).SingleInstance();
             builder.RegisterType<YahooFinanceClient>().As<IMarketStockClient>();

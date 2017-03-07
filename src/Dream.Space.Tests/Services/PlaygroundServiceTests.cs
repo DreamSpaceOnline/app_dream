@@ -16,30 +16,25 @@ namespace Dream.Space.Tests.Services
     [TestFixture]
     public class PlaygroundServiceTests
     {
-        private IPlaygroundService _service;
-        private List<QuotesModel> _quotes;
+        private PlaygroundConfiguration _configuration;
         private DateTime _currentDate;
         private PlaygroundProcessor _playgroundProcessor;
-        private List<Indicator> _indicators;
-        private IndicatorProcessorFactory _indicatorProcessorFactory;
 
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            _service = IoCContainer.Instance.Resolve<IPlaygroundService>();
-            _indicatorProcessorFactory = IoCContainer.Instance.Resolve<IndicatorProcessorFactory>();
-
-            _quotes = await _service.LoadHistoryAsync("A");
-            _indicators = await _service.LoadIndicatorsAsync(3);
+            var loader = IoCContainer.Instance.Resolve<PlaygroundConfigurationLoader>();
+            _configuration = await loader.Load("A", 3);
         }
 
         [SetUp]
         public void Init()
         {
             const int bars = 100;
-            _currentDate = _quotes.ToWeeekly().TakeLast(bars).First().Date;
-            _playgroundProcessor = new PlaygroundProcessor(new CompanyInfo(),  _quotes, _indicators, _indicatorProcessorFactory, bars);
-            _playgroundProcessor.Initialize(_currentDate);
+            _currentDate = _configuration.Quotes.ToWeeekly().TakeLast(bars).First().Date;
+
+            _playgroundProcessor = new PlaygroundProcessor(_configuration);
+            _playgroundProcessor.Initialize(_currentDate, bars);
         }
 
         [Test]

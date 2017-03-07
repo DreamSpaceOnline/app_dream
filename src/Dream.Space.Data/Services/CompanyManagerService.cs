@@ -162,5 +162,15 @@ namespace Dream.Space.Data.Services
             return new CompanyManager(company, this);
         }
 
+        public Company Get(string ticker)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                var company = repository.Get(ticker);
+
+                return company;
+            }
+        }
     }
 }

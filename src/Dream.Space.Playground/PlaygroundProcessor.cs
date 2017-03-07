@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Enums;
 using Dream.Space.Data.Extensions;
@@ -12,27 +11,29 @@ namespace Dream.Space.Playground
 {
     public class PlaygroundProcessor
     {
-        public CompanyInfo Company { get; }
-        public List<QuotesModel> Quotes { get; }
-        private List<Indicator> Indicators { get; }
-        private IndicatorProcessorFactory IndicatorProcessorFactory { get; }
-        private int Bars { get; }
+        public int Bars { get; private set; }
+
+        private readonly PlaygroundConfiguration _configuration;
+
+        public PlaygroundProcessor(PlaygroundConfiguration configuration)
+        {
+            _configuration = configuration;
+            Bars = 100;
+            Periods = new List<ChartData>();
+        }
+
+        public string Ticker => _configuration.Company.Ticker;
+        public int QuotesCount => _configuration.Quotes.Count;
+        public int StrategyId => _configuration.StrategyId;
+
         private DateTime CurrentDate { get; set; }
         private List<ChartData> Periods { get; }
         private DateTime InitialDate { get; set; }
 
-        public PlaygroundProcessor(CompanyInfo company, List<QuotesModel> quotes, List<Indicator> indicators, IndicatorProcessorFactory indicatorProcessorFactory, int bars)
-        {
-            Company = company;
-            Quotes = quotes;
-            Indicators = indicators;
-            IndicatorProcessorFactory = indicatorProcessorFactory;
-            Bars = bars;
-            Periods = new List<ChartData>();
-        }
 
-        public void Initialize(DateTime? currentDate)
+        public void Initialize(DateTime currentDate, int bars)
         {
+            Bars = bars;
             CurrentDate = CalculateCurrentDate(currentDate);
             InitialDate = CurrentDate;
 
@@ -50,9 +51,9 @@ namespace Dream.Space.Playground
 
         private ChartData CalculateChartData(QuotePeriod period)
         {
-            var maxPeriod = Indicators.Where(i => i.Period == period).Max(p => p.Params.Max(c => c.Value));
+            var maxPeriod = _configuration.Indicators.Where(i => i.Period == period).Max(p => p.Params.Max(c => c.Value));
             var quotes = CalculateVirtualPeriod(period, maxPeriod);
-            var indicators = CalculateIndicators(quotes, Indicators.Where(i => i.Period == period).ToList());
+            var indicators = CalculateIndicators(quotes, _configuration.Indicators.Where(i => i.Period == period).ToList());
 
             return new ChartData()
             {
@@ -68,7 +69,7 @@ namespace Dream.Space.Playground
 
             foreach (var indicator in indicators)
             {
-                var calculator = IndicatorProcessorFactory.Create(indicator);
+                var calculator = _configuration.IndicatorProcessorFactory.Create(indicator);
                 if (calculator != null)
                 {
                     if (result.All(i => i.Indicator.IndicatorId != indicator.IndicatorId))
@@ -92,9 +93,9 @@ namespace Dream.Space.Playground
             switch (period)
             {
                 case QuotePeriod.Daily:
-                    return Quotes.Where(q => q.Date <= CurrentDate).Take(Bars+virtualOffset).ToList();
+                    return _configuration.Quotes.Where(q => q.Date <= CurrentDate).Take(Bars + virtualOffset).ToList();
                 case QuotePeriod.Weekly:
-                    return Quotes.Where(q => q.Date <= CurrentDate).ToList().ToWeeekly().Take(Bars + virtualOffset).ToList();
+                    return _configuration.Quotes.Where(q => q.Date <= CurrentDate).ToList().ToWeeekly().Take(Bars + virtualOffset).ToList();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(period), period, null);
             }
@@ -102,7 +103,7 @@ namespace Dream.Space.Playground
 
         public CompanyChartData MoveNext()
         {
-            if (CurrentDate < Quotes.First().Date)
+            if (CurrentDate < _configuration.Quotes.First().Date)
             {
                 CurrentDate = CurrentDate.AddDays(1);
                 Initialize();
@@ -134,13 +135,13 @@ namespace Dream.Space.Playground
             return new CompanyChartData()
             {
                 Periods = Periods,
-                Company = Company
+                Company = _configuration.Company
             };
         }
 
         private DateTime CalculateCurrentDate(DateTime? currentDate)
         {
-            var weekly = Quotes.ToWeeekly();
+            var weekly = _configuration.Quotes.ToWeeekly();
             var result = weekly.TakeLast(Bars).First().Date;
             if (currentDate != null)
             {

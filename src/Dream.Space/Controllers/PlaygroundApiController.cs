@@ -22,8 +22,9 @@ namespace Dream.Space.Controllers
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}")]
         public async Task<IHttpActionResult> LoadPlayground(string ticker, int strategyId, int bars)
         {
-            var playground = await _playgroundService.LoadPlaygroundAsync(ticker, strategyId, true);
-            playground.Initialize(null);
+            var request = new LoadPlaygroundRequest(ticker, strategyId, true);
+            var playground = await _playgroundService.LoadPlaygroundAsync(request);
+            playground.Initialize(DateTime.MinValue, bars);
             var response = playground.Reset();
 
             return Ok(response);
@@ -35,7 +36,7 @@ namespace Dream.Space.Controllers
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/next/{step:int:min(1)}")]
         public IHttpActionResult Next(string ticker, int strategyId, int bars, int step)
         {
-            var playground = _playgroundService.LoadPlaygroundFromCache(ticker);
+            var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
             if (playground != null)
             {
                 var response = playground.MoveNext();
@@ -52,7 +53,7 @@ namespace Dream.Space.Controllers
         [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/prev/{step:int:min(1)}")]
         public IHttpActionResult Prev(string ticker, int strategyId, int bars, int step)
         {
-            var playground = _playgroundService.LoadPlaygroundFromCache(ticker);
+            var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
             if (playground != null)
             {
                 var response = playground.MovePrev();

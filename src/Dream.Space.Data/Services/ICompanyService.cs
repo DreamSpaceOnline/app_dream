@@ -11,6 +11,7 @@ namespace Dream.Space.Data.Services
     public interface ICompanyService : ICompanyManagerService
     {
         Company Register(CompanyModel company);
+        Company Get(string ticker);
         List<CompanyToUpdate> FindCompaniesForUpdate(FindCompaniesForUpdateRequest request);
         void UpdateQuotes(UpdateQuotesRequest request);
         List<QuotesModel> GetQuotes(string ticker);
