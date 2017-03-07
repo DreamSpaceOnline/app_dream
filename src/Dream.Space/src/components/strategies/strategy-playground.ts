@@ -10,7 +10,7 @@ import { IdName} from "../../common/helpers/enum-helper";
 import { PlaygroundViewModel} from "../../common/types/playground-models";
 import { StrategySummary} from "../../common/types/strategy-models";
 import { CompanyHeader, CompanyViewModel } from "../../common/types/company-models";
-import { EventEmitter } from "../../infrastructure/event-emitter";
+//import { EventEmitter } from "../../infrastructure/event-emitter";
 
 @autoinject
 export class StrategyPlayground {
@@ -31,8 +31,8 @@ export class StrategyPlayground {
         private companyService: CompanyService,
         private stockService: StockService,
         private playgroundService: PlaygroundService,
-        private settings: SettingsService,
-        private eventEmitter: EventEmitter
+        private settings: SettingsService//,
+        //private eventEmitter: EventEmitter
     ) {
         this.periods = this.settings.periods;
     }
@@ -118,7 +118,7 @@ export class StrategyPlayground {
 
     async loadPlayground() {
         try {
-            const playground = await this.playgroundService.loadPlayground(this.company.ticker, this.strategy.strategyId, 100);
+            const playground = await this.playgroundService.loadPlayground(this.company.ticker, this.strategy.strategyId, 100, 0);
             if (playground && playground.company) {
                 this.playgroundLoaded = true;
                 this.playgroundModel = playground;
@@ -132,8 +132,10 @@ export class StrategyPlayground {
 
     async loadNext() {
         try {
-            await this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId, 100, 1);
-            await this.loadPlayground();
+            const playground = await this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId);
+            if (playground && playground.company) {
+                this.playgroundModel = playground;
+            }
 
         } catch (e) {
             toastr.error(`Failed to load next playground`, "Exception");
@@ -142,11 +144,9 @@ export class StrategyPlayground {
 
     async loadPrev() {
         try {
-            const playground = await this.playgroundService.loadPrev(this.company.ticker, this.strategy.strategyId, 100, 1);
+            const playground = await this.playgroundService.loadPrev(this.company.ticker, this.strategy.strategyId);
             if (playground && playground.company) {
-                this.eventEmitter.publish("ChartData", playground);
-            } else {
-                toastr.error(`Failed to load previous playground data for company ${this.company.name}`, "Load previous Data Failed");
+                this.playgroundModel = playground;
             }
             
         } catch (e) {

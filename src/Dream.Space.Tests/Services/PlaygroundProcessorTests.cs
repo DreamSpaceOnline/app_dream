@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace Dream.Space.Tests.Services
 {
     [TestFixture]
-    public class PlaygroundServiceTests
+    public class PlaygroundProcessorTests
     {
         private PlaygroundConfiguration _configuration;
         private DateTime _currentDate;

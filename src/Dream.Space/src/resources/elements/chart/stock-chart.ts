@@ -12,15 +12,15 @@ export class StockChart {
     }
 
     modelChanged() {
+        if (this.model && this.model.company) {
+            this.drawChart();
+        }
     }
 
     attached() {
         this.subscriptions.push(
             this.eventEmitter.subscribe("ChartData", data => this.loadChartData(data)));
 
-        if (this.model && this.model.company) {
-            this.drawChart();
-        }
     }
 
     detached() {
@@ -33,30 +33,7 @@ export class StockChart {
 
 
     loadChartData(data: PlaygroundViewModel) {
-        if (data && data.periods.length > 0) {
-            data.periods.forEach(item => {
-                const period = this.model.periods.find(m => m.id === item.id);
-                if (period && period.table) {
-                    const table = period.table;
-
-                    item.quotes.forEach((item): void => {
-                        const row = [[item.date, item.open, item.high, item.low, item.close]];
-                        table.addData(row, true);
-                    });
-
-                    if(item.indicators.length > 0 && period.indicators.length > 0) {
-                        item.indicators.forEach(ind => {
-                            period.indicators.forEach(indicator => {
-                                if (ind.id === indicator.id) {
-                                    indicator.table.addData(ind.values);
-                                }
-                            });
-                        });
-                    }
-                }
-
-            });
-        }
+        console.log(data.company.name);
     }
 
 
@@ -91,7 +68,7 @@ export class StockChart {
                 const indicatorPlot = chart.plot(plotNumber);
                 indicator.table = anychart.data.table(0);
 
-                indicator.values.forEach(value => {
+                indicator.indicatorValues.forEach(value => {
                     const row = [[value.date, value.value]];
                     indicator.table.addData(row);
                 });

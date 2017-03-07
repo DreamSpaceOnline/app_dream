@@ -74,7 +74,7 @@
     <Compile Include="IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ChartDataServiceTests.cs" />
-    <Compile Include="Services\PlaygroundServiceTests.cs" />
+    <Compile Include="Services\PlaygroundProcessorTests.cs" />
     <Compile Include="Services\RuleServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>

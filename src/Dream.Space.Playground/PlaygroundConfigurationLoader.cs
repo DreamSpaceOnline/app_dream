@@ -31,6 +31,7 @@ namespace Dream.Space.Playground
         public async Task<PlaygroundConfiguration> Load(string ticker, int strategyId)
         {
             Indicators = await _playgroundService.LoadIndicatorsAsync(strategyId);
+            var rules = await _playgroundService.LoadStrategyRulesAsync(strategyId);
             var company = _companyService.Get(ticker);
             Company = new CompanyInfo()
             {
@@ -39,7 +40,7 @@ namespace Dream.Space.Playground
             };
             Quotes = company.HistoryQuotes;
 
-            return new PlaygroundConfiguration(Company, Quotes, Indicators, IndicatorProcessorFactory, strategyId);
+            return new PlaygroundConfiguration(Company, Quotes, Indicators, IndicatorProcessorFactory, strategyId, rules);
         }
     }
 }

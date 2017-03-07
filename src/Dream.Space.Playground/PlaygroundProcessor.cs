@@ -111,6 +111,10 @@ namespace Dream.Space.Playground
 
             return CalculateCompanyChartData();
         }
+        public CompanyChartData Current()
+        {
+            return CalculateCompanyChartData();
+        }
 
         public CompanyChartData MovePrev()
         {
@@ -132,11 +136,17 @@ namespace Dream.Space.Playground
 
         private CompanyChartData CalculateCompanyChartData()
         {
-            return new CompanyChartData()
+            
+            var result = new CompanyChartData()
             {
                 Periods = Periods,
                 Company = _configuration.Company
             };
+
+            var ruleSets = new StrategyRulesCalculator(_configuration.Rules, result).Calculate();
+            result.RuleSets = ruleSets;
+
+            return result;
         }
 
         private DateTime CalculateCurrentDate(DateTime? currentDate)

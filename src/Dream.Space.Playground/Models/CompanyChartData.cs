@@ -6,10 +6,12 @@ namespace Dream.Space.Playground.Models
     {
         public CompanyChartData()
         {
-            Periods = new List<ChartData>();    
+            Periods = new List<ChartData>();
+            RuleSets = new List<StrategyRuleSetResult>();
         }
 
         public List<ChartData> Periods { get; set; }
         public CompanyInfo Company { get; set; }
+        public List<StrategyRuleSetResult> RuleSets { get; set; }
     }
 }

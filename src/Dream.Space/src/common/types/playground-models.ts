@@ -61,7 +61,7 @@ export interface ChartIndicatorInfo {
     chartType: ChartTypeName;
     name: string;
     sharedPlot: number;
-    values: IndicatorValue[];
+    indicatorValues: IndicatorValue[];
     table: anychart.data.Table;
 }
 

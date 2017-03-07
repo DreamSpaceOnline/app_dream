@@ -10,25 +10,25 @@ export class PlaygroundService {
     }
 
 
-    async loadPlayground(ticker, strategyId, bars): Promise<PlaygroundInfo> {
-        const response = await this.http.fetch('playground/' + ticker + '/' + strategyId + '/' + bars,
-            { method: 'get' });
+    async loadPlayground(ticker: string, strategyId: number, bars: number, date: number): Promise<PlaygroundInfo> {
+        const response = await this.http.fetch(`playground/${ticker}/${strategyId}/${bars}/${date}`,
+            { method: "get" });
 
         return await response.json();
     }
 
-    async loadNext(ticker, strategyId, bars, step): Promise<PlaygroundInfo> {
+    async loadNext(ticker: string, strategyId: number): Promise<PlaygroundInfo> {
 
-        const response = await this.http.fetch('playground/' + ticker + '/' + strategyId + '/' + bars + '/next/' + step,
-            { method: 'get' });
+        const response = await this.http.fetch(`playground/${ticker}/${strategyId}/next`,
+            { method: "get" });
 
         return await response.json();
     }
 
-    async loadPrev(ticker, strategyId, bars, step): Promise<PlaygroundInfo> {
+    async loadPrev(ticker: string, strategyId: number): Promise<PlaygroundInfo> {
 
-        const response = await this.http.fetch('playground/' + ticker + '/' + strategyId + '/' + bars + '/prev/' + step,
-            { method: 'get' });
+        const response = await this.http.fetch(`playground/${ticker}/${strategyId}/prev`,
+            { method: "get" });
 
         return await response.json();
     }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Dream.Space.Data.Extensions;
 using Dream.Space.Playground;
 using Dream.Space.Playground.Models;
 
@@ -19,13 +20,20 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [ResponseType(typeof(CompanyChartData))]
-        [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}")]
-        public async Task<IHttpActionResult> LoadPlayground(string ticker, int strategyId, int bars)
+        [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/{date?:int}")]
+        public async Task<IHttpActionResult> LoadPlayground(string ticker, int strategyId, int bars, int date = 0)
         {
             var request = new LoadPlaygroundRequest(ticker, strategyId, true);
             var playground = await _playgroundService.LoadPlaygroundAsync(request);
-            playground.Initialize(DateTime.MinValue, bars);
-            var response = playground.Reset();
+
+            var startDate = DateTime.MinValue;
+            if(date > 19000101 && date <= DateTime.Today.ToInt())
+            {
+                startDate = date.ToDate();
+            }
+
+            playground.Initialize(startDate, bars);
+            var response = playground.Current();
 
             return Ok(response);
         }
@@ -33,8 +41,8 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [ResponseType(typeof(CompanyChartData))]
-        [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/next/{step:int:min(1)}")]
-        public IHttpActionResult Next(string ticker, int strategyId, int bars, int step)
+        [Route("{ticker}/{strategyId:int:min(1)}/next")]
+        public IHttpActionResult Next(string ticker, int strategyId)
         {
             var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
             if (playground != null)
@@ -50,8 +58,8 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [ResponseType(typeof(CompanyChartData))]
-        [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/prev/{step:int:min(1)}")]
-        public IHttpActionResult Prev(string ticker, int strategyId, int bars, int step)
+        [Route("{ticker}/{strategyId:int:min(1)}/prev")]
+        public IHttpActionResult Prev(string ticker, int strategyId)
         {
             var playground = _playgroundService.LoadPlaygroundFromCache(ticker, strategyId);
             if (playground != null)
