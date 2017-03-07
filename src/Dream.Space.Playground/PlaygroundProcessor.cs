@@ -103,14 +103,21 @@ namespace Dream.Space.Playground
 
         public CompanyChartData MoveNext()
         {
-            if (CurrentDate < _configuration.Quotes.First().Date)
+            CurrentDate = CurrentDate.AddDays(1);
+            while (IsEmpty(CurrentDate))
             {
                 CurrentDate = CurrentDate.AddDays(1);
+            }
+
+            if (CurrentDate < _configuration.Quotes.First().Date)
+            {
                 Initialize();
             }
 
             return CalculateCompanyChartData();
         }
+
+
         public CompanyChartData Current()
         {
             return CalculateCompanyChartData();
@@ -118,12 +125,28 @@ namespace Dream.Space.Playground
 
         public CompanyChartData MovePrev()
         {
-            if (CurrentDate > InitialDate)
+            CurrentDate = CurrentDate.AddDays(-1);
+            while (IsEmpty(CurrentDate))
             {
                 CurrentDate = CurrentDate.AddDays(-1);
+            }
+
+            if (CurrentDate > InitialDate)
+            {
                 Initialize();
             }
+
             return CalculateCompanyChartData();
+        }
+
+        private bool IsEmpty(DateTime currentDate)
+        {
+            if (currentDate > InitialDate && currentDate < _configuration.Quotes.First().Date)
+            {
+                var quote = _configuration.Quotes.FirstOrDefault(q => q.Date == currentDate);
+                return quote == null;
+            }
+            return false;
         }
 
         public CompanyChartData Reset()
