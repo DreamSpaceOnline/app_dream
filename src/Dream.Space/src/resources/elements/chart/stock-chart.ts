@@ -7,20 +7,30 @@ import {EventEmitter} from "../../../infrastructure/event-emitter";
 export class StockChart {
     @bindable model: PlaygroundViewModel;
     subscriptions: Subscription[] = [];
+    isAttached = false;
+    chart: anychart.charts.Stock;
 
     constructor(private eventEmitter: EventEmitter) {
     }
 
     modelChanged() {
-        if (this.model && this.model.company) {
+        if (this.model && this.model.company && this.isAttached) {
+            $("#container-Weekly").empty();
+            $("#container-Daily").empty();
+
             this.drawChart();
         }
     }
 
     attached() {
+        this.isAttached = true; 
+
+        if (this.model && this.model.company) {
+            this.drawChart();
+        }
+
         this.subscriptions.push(
             this.eventEmitter.subscribe("ChartData", data => this.loadChartData(data)));
-
     }
 
     detached() {
@@ -40,7 +50,7 @@ export class StockChart {
     drawChart() {
         this.model.periods.forEach(period => {
             const plotNumber = 0;
-            const chart = anychart.stock();
+            this.chart = anychart.stock();
             period.table = anychart.data.table();
 
             period.quotes.forEach(item => {
@@ -54,18 +64,18 @@ export class StockChart {
             mapping.addField("low", 3, anychart.enums.AggregationType.MIN);
             mapping.addField("close", 4, anychart.enums.AggregationType.LAST);
 
-            const series = chart.plot(plotNumber).ohlc(mapping);
+            const series = this.chart.plot(plotNumber).ohlc(mapping);
             const seriesName = this.model.company.name + " (" + period.name + ")";
             series.name(seriesName);
 
             const legend = series.legendItem();
             legend.text(seriesName);
 
-            chart.plot(plotNumber).grid(0).enabled(true);
-            chart.plot(plotNumber).grid(0).stroke("#EEE");
+            this.chart.plot(plotNumber).grid(0).enabled(true);
+            this.chart.plot(plotNumber).grid(0).stroke("#EEE");
 
             period.indicators.forEach(indicator => {
-                const indicatorPlot = chart.plot(plotNumber);
+                const indicatorPlot = this.chart.plot(plotNumber);
                 indicator.table = anychart.data.table(0);
 
                 indicator.indicatorValues.forEach(value => {
@@ -79,17 +89,18 @@ export class StockChart {
                 indicatorSeries.name(indicator.name);
             });
 
-            const volumePlot = chart.plot(1 + plotNumber);
+            const volumePlot = this.chart.plot(1 + plotNumber);
             const volumeMapping = period.table.mapAs();
             volumeMapping.addField("value", 5);   
 
             volumePlot.column(volumeMapping).name("Volume");
             volumePlot.height("30%");
 
-            chart.title(seriesName);
-            chart.container(`container-${period.name}`);
-            chart.draw();
+            this.chart.title(seriesName);
+            this.chart.container(`container-${period.name}`);
+            this.chart.draw();
         });
 
     }
+
 }

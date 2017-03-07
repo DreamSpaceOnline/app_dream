@@ -20,7 +20,7 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [ResponseType(typeof(CompanyChartData))]
-        [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/{date?:int}")]
+        [Route("{ticker}/{strategyId:int:min(1)}/{bars:int}/{date:int}")]
         public async Task<IHttpActionResult> LoadPlayground(string ticker, int strategyId, int bars, int date = 0)
         {
             var request = new LoadPlaygroundRequest(ticker, strategyId, true);

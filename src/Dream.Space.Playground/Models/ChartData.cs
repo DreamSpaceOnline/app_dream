@@ -9,5 +9,6 @@ namespace Dream.Space.Playground.Models
         public List<QuotesModel> Quotes { get; set; }
         public List<IndicatorChartData> Indicators { get; set; }
         public QuotePeriod Period { get; set; }
+        public string Name => Period.ToString();
     }
 }
