@@ -1,15 +1,18 @@
-using System.Data.Entity.Migrations;
-
 namespace Dream.Space.Data.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<DreamDbContext>
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Linq;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<Dream.Space.Data.DreamDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(DreamDbContext context)
+        protected override void Seed(Dream.Space.Data.DreamDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

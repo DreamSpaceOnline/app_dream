@@ -115,145 +115,13 @@
     <Compile Include="Enums\HistoricalDataSeriesType.cs" />
     <Compile Include="Extensions\QuotesModelExtensions.cs" />
     <Compile Include="Helpers\Slug.cs" />
-    <Compile Include="Migrations\201605151153585_CreateTableIndicatorRule.cs" />
-    <Compile Include="Migrations\201605151153585_CreateTableIndicatorRule.Designer.cs">
-      <DependentUpon>201605151153585_CreateTableIndicatorRule.cs</DependentUpon>
+    <Compile Include="Migrations\201703081400500_InitialCommit.cs" />
+    <Compile Include="Migrations\201703081400500_InitialCommit.Designer.cs">
+      <DependentUpon>201703081400500_InitialCommit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201605151201377_CreateTableCompanyIndicatorRule.cs" />
-    <Compile Include="Migrations\201605151201377_CreateTableCompanyIndicatorRule.Designer.cs">
-      <DependentUpon>201605151201377_CreateTableCompanyIndicatorRule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605151205061_CreateTableStrategy.cs" />
-    <Compile Include="Migrations\201605151205061_CreateTableStrategy.Designer.cs">
-      <DependentUpon>201605151205061_CreateTableStrategy.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605151221421_CreateTableStrategyRule.cs" />
-    <Compile Include="Migrations\201605151221421_CreateTableStrategyRule.Designer.cs">
-      <DependentUpon>201605151221421_CreateTableStrategyRule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605151227334_CreateTableCompanyRule.cs" />
-    <Compile Include="Migrations\201605151227334_CreateTableCompanyRule.Designer.cs">
-      <DependentUpon>201605151227334_CreateTableCompanyRule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201606101219161_NHNLTables.cs" />
-    <Compile Include="Migrations\201606101219161_NHNLTables.Designer.cs">
-      <DependentUpon>201606101219161_NHNLTables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201609231123550_AlterCompanyTable.cs" />
-    <Compile Include="Migrations\201609231123550_AlterCompanyTable.Designer.cs">
-      <DependentUpon>201609231123550_AlterCompanyTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610211413296_AlterIndicator_AddChartPlotNumber.cs" />
-    <Compile Include="Migrations\201610211413296_AlterIndicator_AddChartPlotNumber.Designer.cs">
-      <DependentUpon>201610211413296_AlterIndicator_AddChartPlotNumber.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610231035141_AlterIndicator_AddChartColor.cs" />
-    <Compile Include="Migrations\201610231035141_AlterIndicator_AddChartColor.Designer.cs">
-      <DependentUpon>201610231035141_AlterIndicator_AddChartColor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610261453148_AlterTable.cs" />
-    <Compile Include="Migrations\201610261453148_AlterTable.Designer.cs">
-      <DependentUpon>201610261453148_AlterTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611021549019_Alter_Company_Calculate.cs" />
-    <Compile Include="Migrations\201611021549019_Alter_Company_Calculate.Designer.cs">
-      <DependentUpon>201611021549019_Alter_Company_Calculate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611021710470_Alter_Company_Filtered.cs" />
-    <Compile Include="Migrations\201611021710470_Alter_Company_Filtered.Designer.cs">
-      <DependentUpon>201611021710470_Alter_Company_Filtered.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611231351140_CreateArticleTables.cs" />
-    <Compile Include="Migrations\201611231351140_CreateArticleTables.Designer.cs">
-      <DependentUpon>201611231351140_CreateArticleTables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611282052436_AlterStrategy_AddUrl.cs" />
-    <Compile Include="Migrations\201611282052436_AlterStrategy_AddUrl.Designer.cs">
-      <DependentUpon>201611282052436_AlterStrategy_AddUrl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612051210065_AlterTableRule.cs" />
-    <Compile Include="Migrations\201612051210065_AlterTableRule.Designer.cs">
-      <DependentUpon>201612051210065_AlterTableRule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612051213378_CreateRuleSet.cs" />
-    <Compile Include="Migrations\201612051213378_CreateRuleSet.Designer.cs">
-      <DependentUpon>201612051213378_CreateRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612051220194_CreateStrategyRuleSet.cs" />
-    <Compile Include="Migrations\201612051220194_CreateStrategyRuleSet.Designer.cs">
-      <DependentUpon>201612051220194_CreateStrategyRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612071351102_CreateCompanyRuleSet.cs" />
-    <Compile Include="Migrations\201612071351102_CreateCompanyRuleSet.Designer.cs">
-      <DependentUpon>201612071351102_CreateCompanyRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612081436501_AlterStrategyRuleSet.cs" />
-    <Compile Include="Migrations\201612081436501_AlterStrategyRuleSet.Designer.cs">
-      <DependentUpon>201612081436501_AlterStrategyRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612091151580_CreateRuleSetDetails.cs" />
-    <Compile Include="Migrations\201612091151580_CreateRuleSetDetails.Designer.cs">
-      <DependentUpon>201612091151580_CreateRuleSetDetails.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612151248335_AlterRule.cs" />
-    <Compile Include="Migrations\201612151248335_AlterRule.Designer.cs">
-      <DependentUpon>201612151248335_AlterRule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612161202125_AlterIndicator.cs" />
-    <Compile Include="Migrations\201612161202125_AlterIndicator.Designer.cs">
-      <DependentUpon>201612161202125_AlterIndicator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612211219516_vRuleSet.cs" />
-    <Compile Include="Migrations\201612211219516_vRuleSet.Designer.cs">
-      <DependentUpon>201612211219516_vRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612211226258_vRuleSet3.cs" />
-    <Compile Include="Migrations\201612211226258_vRuleSet3.Designer.cs">
-      <DependentUpon>201612211226258_vRuleSet3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612211456330_AltervRuleSet.cs" />
-    <Compile Include="Migrations\201612211456330_AltervRuleSet.Designer.cs">
-      <DependentUpon>201612211456330_AltervRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612211904547_AlterViewRuleSet.cs" />
-    <Compile Include="Migrations\201612211904547_AlterViewRuleSet.Designer.cs">
-      <DependentUpon>201612211904547_AlterViewRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612241147111_CreateViewStrategy.cs" />
-    <Compile Include="Migrations\201612241147111_CreateViewStrategy.Designer.cs">
-      <DependentUpon>201612241147111_CreateViewStrategy.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612241152048_AlterStrategy.cs" />
-    <Compile Include="Migrations\201612241152048_AlterStrategy.Designer.cs">
-      <DependentUpon>201612241152048_AlterStrategy.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612241153559_AlterViewStrategy.cs" />
-    <Compile Include="Migrations\201612241153559_AlterViewStrategy.Designer.cs">
-      <DependentUpon>201612241153559_AlterViewStrategy.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612241328069_AlterStrategy2.cs" />
-    <Compile Include="Migrations\201612241328069_AlterStrategy2.Designer.cs">
-      <DependentUpon>201612241328069_AlterStrategy2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612241331222_AlterStrategy3.cs" />
-    <Compile Include="Migrations\201612241331222_AlterStrategy3.Designer.cs">
-      <DependentUpon>201612241331222_AlterStrategy3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612241333038_AltervStrategy.cs" />
-    <Compile Include="Migrations\201612241333038_AltervStrategy.Designer.cs">
-      <DependentUpon>201612241333038_AltervStrategy.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612291254010_CreatevStrategyRuleSet.cs" />
-    <Compile Include="Migrations\201612291254010_CreatevStrategyRuleSet.Designer.cs">
-      <DependentUpon>201612291254010_CreatevStrategyRuleSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701192039216_CreateVStrategyRule.cs" />
-    <Compile Include="Migrations\201701192039216_CreateVStrategyRule.Designer.cs">
-      <DependentUpon>201701192039216_CreateVStrategyRule.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701192104150_AlterVStrategyRule.cs" />
-    <Compile Include="Migrations\201701192104150_AlterVStrategyRule.Designer.cs">
-      <DependentUpon>201701192104150_AlterVStrategyRule.cs</DependentUpon>
+    <Compile Include="Migrations\201703081515091_InitialCommit2.cs" />
+    <Compile Include="Migrations\201703081515091_InitialCommit2.Designer.cs">
+      <DependentUpon>201703081515091_InitialCommit2.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\CompanyDetails.cs" />
@@ -265,19 +133,7 @@
     <Compile Include="Models\RuleSetModel.cs" />
     <Compile Include="Models\StrategyRuleSetModel.cs" />
     <Compile Include="Models\StrategySummary.cs" />
-    <Compile Include="Migrations\201605151044366_CreateTableCompanyIndicator.cs" />
-    <Compile Include="Migrations\201605151044366_CreateTableCompanyIndicator.Designer.cs">
-      <DependentUpon>201605151044366_CreateTableCompanyIndicator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605151055349_CreateTableRule.cs" />
-    <Compile Include="Migrations\201605151055349_CreateTableRule.Designer.cs">
-      <DependentUpon>201605151055349_CreateTableRule.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\IndicatorData.cs" />
-    <Compile Include="Migrations\201605151030443_CreateTableIndicators.cs" />
-    <Compile Include="Migrations\201605151030443_CreateTableIndicators.Designer.cs">
-      <DependentUpon>201605151030443_CreateTableIndicators.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\IndicatorParam.cs" />
     <Compile Include="Enums\IndicatorParamName.cs" />
     <Compile Include="Enums\QuotePeriod.cs" />
@@ -301,10 +157,6 @@
     <Compile Include="Repositories\StrategyRuleSetRepository.cs" />
     <Compile Include="Requests\CompanySearchRequest.cs" />
     <Compile Include="Requests\FindCompaniesForUpdateRequest.cs" />
-    <Compile Include="Migrations\201604291700223_CompanyTable.cs" />
-    <Compile Include="Migrations\201604291700223_CompanyTable.Designer.cs">
-      <DependentUpon>201604291700223_CompanyTable.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Managers\CompanyManager.cs" />
@@ -337,125 +189,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604291700223_CompanyTable.resx">
-      <DependentUpon>201604291700223_CompanyTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151030443_CreateTableIndicators.resx">
-      <DependentUpon>201605151030443_CreateTableIndicators.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151044366_CreateTableCompanyIndicator.resx">
-      <DependentUpon>201605151044366_CreateTableCompanyIndicator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151055349_CreateTableRule.resx">
-      <DependentUpon>201605151055349_CreateTableRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151153585_CreateTableIndicatorRule.resx">
-      <DependentUpon>201605151153585_CreateTableIndicatorRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151201377_CreateTableCompanyIndicatorRule.resx">
-      <DependentUpon>201605151201377_CreateTableCompanyIndicatorRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151205061_CreateTableStrategy.resx">
-      <DependentUpon>201605151205061_CreateTableStrategy.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151221421_CreateTableStrategyRule.resx">
-      <DependentUpon>201605151221421_CreateTableStrategyRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605151227334_CreateTableCompanyRule.resx">
-      <DependentUpon>201605151227334_CreateTableCompanyRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201606101219161_NHNLTables.resx">
-      <DependentUpon>201606101219161_NHNLTables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201609231123550_AlterCompanyTable.resx">
-      <DependentUpon>201609231123550_AlterCompanyTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610211413296_AlterIndicator_AddChartPlotNumber.resx">
-      <DependentUpon>201610211413296_AlterIndicator_AddChartPlotNumber.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610231035141_AlterIndicator_AddChartColor.resx">
-      <DependentUpon>201610231035141_AlterIndicator_AddChartColor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610261453148_AlterTable.resx">
-      <DependentUpon>201610261453148_AlterTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611021549019_Alter_Company_Calculate.resx">
-      <DependentUpon>201611021549019_Alter_Company_Calculate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611021710470_Alter_Company_Filtered.resx">
-      <DependentUpon>201611021710470_Alter_Company_Filtered.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611231351140_CreateArticleTables.resx">
-      <DependentUpon>201611231351140_CreateArticleTables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611282052436_AlterStrategy_AddUrl.resx">
-      <DependentUpon>201611282052436_AlterStrategy_AddUrl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612051210065_AlterTableRule.resx">
-      <DependentUpon>201612051210065_AlterTableRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612051213378_CreateRuleSet.resx">
-      <DependentUpon>201612051213378_CreateRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612051220194_CreateStrategyRuleSet.resx">
-      <DependentUpon>201612051220194_CreateStrategyRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612071351102_CreateCompanyRuleSet.resx">
-      <DependentUpon>201612071351102_CreateCompanyRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612081436501_AlterStrategyRuleSet.resx">
-      <DependentUpon>201612081436501_AlterStrategyRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612091151580_CreateRuleSetDetails.resx">
-      <DependentUpon>201612091151580_CreateRuleSetDetails.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612151248335_AlterRule.resx">
-      <DependentUpon>201612151248335_AlterRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612161202125_AlterIndicator.resx">
-      <DependentUpon>201612161202125_AlterIndicator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612211219516_vRuleSet.resx">
-      <DependentUpon>201612211219516_vRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612211226258_vRuleSet3.resx">
-      <DependentUpon>201612211226258_vRuleSet3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612211456330_AltervRuleSet.resx">
-      <DependentUpon>201612211456330_AltervRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612211904547_AlterViewRuleSet.resx">
-      <DependentUpon>201612211904547_AlterViewRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612241147111_CreateViewStrategy.resx">
-      <DependentUpon>201612241147111_CreateViewStrategy.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612241152048_AlterStrategy.resx">
-      <DependentUpon>201612241152048_AlterStrategy.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612241153559_AlterViewStrategy.resx">
-      <DependentUpon>201612241153559_AlterViewStrategy.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612241328069_AlterStrategy2.resx">
-      <DependentUpon>201612241328069_AlterStrategy2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612241331222_AlterStrategy3.resx">
-      <DependentUpon>201612241331222_AlterStrategy3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612241333038_AltervStrategy.resx">
-      <DependentUpon>201612241333038_AltervStrategy.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612291254010_CreatevStrategyRuleSet.resx">
-      <DependentUpon>201612291254010_CreatevStrategyRuleSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701192039216_CreateVStrategyRule.resx">
-      <DependentUpon>201701192039216_CreateVStrategyRule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701192104150_AlterVStrategyRule.resx">
-      <DependentUpon>201701192104150_AlterVStrategyRule.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Dream.Space.Reader\Dream.Space.Reader.csproj">
       <Project>{3d49dde8-e00e-429c-9f3b-cfe2db6e2de5}</Project>
       <Name>Dream.Space.Reader</Name>
@@ -464,6 +197,14 @@
       <Project>{eb65cea0-bc6f-4b02-beb3-2571d1edf06c}</Project>
       <Name>Dream.Space.Stock</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201703081400500_InitialCommit.resx">
+      <DependentUpon>201703081400500_InitialCommit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703081515091_InitialCommit2.resx">
+      <DependentUpon>201703081515091_InitialCommit2.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

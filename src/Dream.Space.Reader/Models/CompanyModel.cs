@@ -9,6 +9,7 @@
         public string SummaryUrl { get; set; }
         public string Exchange { get; set; }
         public int IsActive { get; set; }
-        public string StartDateString { get; set; }
+        public decimal MarketCap { get; set; }
+        public decimal Price { get; set; }
     }
 }

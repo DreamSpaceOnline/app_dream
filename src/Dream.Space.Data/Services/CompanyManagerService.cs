@@ -30,15 +30,17 @@ namespace Dream.Space.Data.Services
                 if (record == null)
                 {
                     record = repository.Add(new Company());
-
                     record.Ticker = company.Ticker;
-                    record.Name = company.Name;
-                    record.Sector = company.Sector;
-                    record.Industry = company.Industry;
-                    record.SummaryUrl = company.SummaryUrl;
-
-                    repository.Commit();
                 }
+
+                record.LastUpdated = DateTime.UtcNow;
+                record.Name = company.Name;
+                record.Sector = company.Sector;
+                record.Industry = company.Industry;
+                record.SummaryUrl = company.SummaryUrl;
+                record.Price = company.Price;
+
+                repository.Commit();
 
                 return record;
             }

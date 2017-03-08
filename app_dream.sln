@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A132822B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Tests", "src\Dream.Space.Tests\Dream.Space.Tests.csproj", "{DC550AD2-78E7-456E-BA7E-D92D46AD13CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImportData", "ImportData", "{FBDD3230-1967-4EFA-A309-D8415AB02F20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Import", "src\Dream.Space.Import\Dream.Space.Import.csproj", "{1911B209-79ED-46C4-84CF-004018C6EEBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,11 +69,16 @@ Global
 		{DC550AD2-78E7-456E-BA7E-D92D46AD13CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC550AD2-78E7-456E-BA7E-D92D46AD13CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC550AD2-78E7-456E-BA7E-D92D46AD13CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DC550AD2-78E7-456E-BA7E-D92D46AD13CA} = {A132822B-EFBC-4919-8C19-9F0C927B32AA}
+		{1911B209-79ED-46C4-84CF-004018C6EEBD} = {FBDD3230-1967-4EFA-A309-D8415AB02F20}
 	EndGlobalSection
 EndGlobal
