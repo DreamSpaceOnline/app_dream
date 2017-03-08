@@ -12,7 +12,7 @@ namespace Dream.Space.Data.Repositories
     {
         Company Get(string ticker);
         List<CompanyToUpdate> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count);
-        List<CompanyToProcess> FindCompaniesToProcess(TimeSpan fromTimeAgo, int count);
+        //List<CompanyToProcess> FindCompaniesToProcess(TimeSpan fromTimeAgo, int count);
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
@@ -34,11 +34,11 @@ namespace Dream.Space.Data.Repositories
         public List<CompanyToUpdate> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count)
         {
             var fromDate = DateTime.Now.Subtract(fromTimeAgo).Date;
-            var records = Dbset.Where(c => c.Filtered && c.LastUpdated < fromDate)
+            var records = Dbset.Where(c => c.Filtered && c.LastCalculated < fromDate)
                 .Select(c => new CompanyToUpdate
                 {
                     Ticker = c.Ticker,
-                    LastUpdated = c.LastUpdated,
+                    LastUpdated = c.LastCalculated,
                     HistoryQuotesJson = c.HistoryQuotesJson
                 })
                 .OrderBy(c => c.Ticker)
@@ -48,25 +48,25 @@ namespace Dream.Space.Data.Repositories
             return records;
         }
 
-        public List<CompanyToProcess> FindCompaniesToProcess(TimeSpan fromTimeAgo, int count)
-        {
-            var fromDate = DateTime.Now.Subtract(fromTimeAgo).Date;
-            var records = Dbset
-                .Where(c => c.Filtered && c.LastCalculated < fromDate)
-                .OrderBy(c => c.Ticker)
-                .Take(count)
-                .Select(c =>
-                    new CompanyToProcess
-                    {
-                        Ticker = c.Ticker,
-                        LastCalculated = c.LastCalculated,
-                        LastUpdated = c.LastUpdated,
-                        QuotesJson = c.HistoryQuotesJson
-                    })
-                .ToList();
+        //public List<CompanyToProcess> FindCompaniesToProcess(TimeSpan fromTimeAgo, int count)
+        //{
+        //    var fromDate = DateTime.Now.Subtract(fromTimeAgo).Date;
+        //    var records = Dbset
+        //        .Where(c => c.Filtered && c.LastCalculated < fromDate)
+        //        .OrderBy(c => c.Ticker)
+        //        .Take(count)
+        //        .Select(c =>
+        //            new CompanyToProcess
+        //            {
+        //                Ticker = c.Ticker,
+        //                LastCalculated = c.LastCalculated,
+        //                LastUpdated = c.LastUpdated,
+        //                QuotesJson = c.HistoryQuotesJson
+        //            })
+        //        .ToList();
 
-            return records;
-        }
+        //    return records;
+        //}
 
         public List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount)
         {

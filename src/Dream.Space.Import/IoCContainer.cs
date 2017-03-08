@@ -8,6 +8,7 @@ using Dream.Space.Data;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
 using Dream.Space.Import.CompanyImport;
+using Dream.Space.Import.QuotesImport;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Validators;
 using Dream.Space.Stock;
@@ -53,6 +54,7 @@ namespace Dream.Space.Import
             builder.RegisterType<FileReaderConfiguration>().SingleInstance();
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
             builder.RegisterType<CompanyImportJob>().As<IJob>().As<ICompanyImportJob>();
+            builder.RegisterType<QuotesImportJob>().As<IJob>().As<IQuotesImportJob>();
 
             builder.Register(c => new NasdaqStockClientConfig { Proxy = "" }).SingleInstance();
             builder.Register(c => new YahooFinanceClientConfig() { Proxy = "" }).SingleInstance();

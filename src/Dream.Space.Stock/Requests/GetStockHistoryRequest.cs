@@ -5,10 +5,16 @@ namespace Dream.Space.Stock.Requests
 {
     public class GetStockHistoryRequest
     {
-        //private const int MaxHistoryPeriodInMonths = 12;
 
         public GetStockHistoryRequest() { }
 
+        public GetStockHistoryRequest(string ticker)
+        {
+            Ticker = ticker;
+            TimeFrame = QuoteTimeFrame.Year;
+            TimeFrameValue = 10;
+            FromDate = DateTime.Today.AddYears(-10);
+        }
 
         public GetStockHistoryRequest(string ticker, DateTime lastUpdated)
         {

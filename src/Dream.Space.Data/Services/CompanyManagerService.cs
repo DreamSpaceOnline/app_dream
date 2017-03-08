@@ -70,8 +70,7 @@ namespace Dream.Space.Data.Services
                     company.ChaosPercentage = request.ChaosPercentage;
                     company.HighestPrice52 = request.HighestHigh52;
                     company.LowestPrice52 = request.LowestLow52;
-                    company.LastCalculated = request.CalculatedTime;
-                    company.LastUpdated = DateTime.UtcNow;
+                    company.LastCalculated = DateTime.UtcNow;
                     company.UpdateSuccessful = string.IsNullOrWhiteSpace(request.ErrorMessage);
                     company.UpdateError = request.ErrorMessage;
 
@@ -95,15 +94,15 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public List<CompanyToProcess> FindCompaniesToProcess(CompaniesToProcessRequest request)
-        {
-            using (var scope = _container.BeginLifetimeScope())
-            {
-                var repository = scope.Resolve<ICompanyRepository>();
-                var companies = repository.FindCompaniesToProcess(request.FromTimeAgo, request.MaxRecordCount);
-                return companies;
-            }
-        }
+        //public List<CompanyToProcess> FindCompaniesToProcess(CompaniesToProcessRequest request)
+        //{
+        //    using (var scope = _container.BeginLifetimeScope())
+        //    {
+        //        var repository = scope.Resolve<ICompanyRepository>();
+        //        var companies = repository.FindCompaniesToProcess(request.FromTimeAgo, request.MaxRecordCount);
+        //        return companies;
+        //    }
+        //}
 
         public void SetLastCalculated(string ticker)
         {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Import.CompanyImport;
+using Dream.Space.Import.QuotesImport;
 
 namespace Dream.Space.Import
 {
@@ -12,7 +13,7 @@ namespace Dream.Space.Import
     {
         static void Main(string[] args)
         {
-            var job = IoCContainer.Instance.Resolve<ICompanyImportJob>();
+            var job = IoCContainer.Instance.Resolve<IQuotesImportJob>();
             job.Start();
         }
     }

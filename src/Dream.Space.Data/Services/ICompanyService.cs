@@ -15,7 +15,7 @@ namespace Dream.Space.Data.Services
         List<CompanyToUpdate> FindCompaniesForUpdate(FindCompaniesForUpdateRequest request);
         void UpdateQuotes(UpdateQuotesRequest request);
         List<QuotesModel> GetQuotes(string ticker);
-        List<CompanyToProcess> FindCompaniesToProcess(CompaniesToProcessRequest request);
+        //List<CompanyToProcess> FindCompaniesToProcess(CompaniesToProcessRequest request);
         void SetLastCalculated(string ticker);
         void UpdateMetricsFailed(UpdateMetricsFailedRequest updateMetricsFailedRequest);
 

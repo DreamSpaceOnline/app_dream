@@ -60,6 +60,7 @@
     <Compile Include="IoCContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuotesImport\QuotesImportJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
