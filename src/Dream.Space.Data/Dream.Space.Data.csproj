@@ -123,6 +123,10 @@
     <Compile Include="Migrations\201703081515091_InitialCommit2.Designer.cs">
       <DependentUpon>201703081515091_InitialCommit2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703101259458_Alter_Company.cs" />
+    <Compile Include="Migrations\201703101259458_Alter_Company.Designer.cs">
+      <DependentUpon>201703101259458_Alter_Company.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\CompanyDetails.cs" />
     <Compile Include="Models\CompanyHeader.cs" />
@@ -204,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703081515091_InitialCommit2.resx">
       <DependentUpon>201703081515091_InitialCommit2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703101259458_Alter_Company.resx">
+      <DependentUpon>201703101259458_Alter_Company.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

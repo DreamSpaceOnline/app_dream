@@ -70,10 +70,11 @@ namespace Dream.Space.Data.Services
                     company.ChaosPercentage = request.ChaosPercentage;
                     company.HighestPrice52 = request.HighestHigh52;
                     company.LowestPrice52 = request.LowestLow52;
-                    company.LastCalculated = DateTime.UtcNow;
+                    company.LastUpdated = DateTime.UtcNow;
                     company.UpdateSuccessful = string.IsNullOrWhiteSpace(request.ErrorMessage);
                     company.UpdateError = request.ErrorMessage;
-
+                    company.StartDate = request.StartDate;
+                    company.EndDate = request.EndDate;
                     repository.Commit();
                 }
             }

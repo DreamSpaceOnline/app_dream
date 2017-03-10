@@ -20,12 +20,8 @@ namespace Dream.Space.Stock.Requests
         {
             Ticker = ticker;
 
-            if (lastUpdated.AddYears(2) < DateTime.Today)
-            {
-                lastUpdated = DateTime.Today.AddYears(-2);
-            }
-
             FromDate = lastUpdated;
+
             if (FromDate.AddMonths(1) > DateTime.Today)
             {
                 FromDate = DateTime.Today.AddMonths(-1);
@@ -47,10 +43,6 @@ namespace Dream.Space.Stock.Requests
             if (years > 1)
             {
                 TimeFrame = QuoteTimeFrame.Year;
-                if (years > 2)
-                {
-                    years = 2;
-                }
                 TimeFrameValue = years;
             }
             else

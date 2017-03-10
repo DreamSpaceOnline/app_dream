@@ -44,5 +44,7 @@ namespace Dream.Space.Data.Entities.Companies
         public bool CalculatedSuccessful { get; set; }
         public string CalculatedError { get; set; }
         public bool Filtered { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

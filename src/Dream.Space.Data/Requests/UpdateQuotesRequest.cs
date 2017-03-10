@@ -23,6 +23,8 @@ namespace Dream.Space.Data.Requests
                 HighestHigh52 = quotes.Where(q => q.Date > DateTime.Today.AddYears(-1)).Max(p => p.High);
                 LowestLow52 = quotes.Where(q => q.Date > DateTime.Today.AddYears(-1)).Min(p => p.Low);
                 ChaosPercentage = CalculateChaos(quotes);
+                StartDate = quotes.Last().Date;
+                EndDate = quotes.First().Date;
             }
             CalculatedTime = DateTime.Now;
             JsonQuotes = JsonConvert.SerializeObject(quotes);
@@ -43,6 +45,8 @@ namespace Dream.Space.Data.Requests
         public string Ticker { get; private set; }
         public string JsonQuotes { get; private set; }
         public string ErrorMessage { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
 
         private int CalculateChaos(List<QuotesModel> quotes)

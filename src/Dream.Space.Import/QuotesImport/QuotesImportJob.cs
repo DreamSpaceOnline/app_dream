@@ -66,10 +66,11 @@ namespace Dream.Space.Import.QuotesImport
 
             if (!company.HistoryQuotes.Any())
             {
-                company.LastUpdated = DateTime.Today.AddYears(-1);
+                company.LastUpdated = DateTime.Today.AddYears(-10);
+                company.HistoryQuotes = new List<QuotesModel>();
             }
 
-            var historyRequest = new GetStockHistoryRequest(company.Ticker);
+            var historyRequest = new GetStockHistoryRequest(company.Ticker, company.LastUpdated);
 
             var quotes = new List<QuotesModel>();
             var errorMessage = string.Empty;
@@ -79,7 +80,7 @@ namespace Dream.Space.Import.QuotesImport
                 var csvQuotes =
                     Task.Run(() => _marketStockClient.GetStockHistory(historyRequest)).Result;
                 quotes = _quotesFileReader.Read(csvQuotes);
-                quotes = quotes.Merge(company.HistoryQuotes).Where(q => q.Date > DateTime.Today.AddYears(-1)).ToList();
+                quotes = quotes.Merge(company.HistoryQuotes);
 
 
             }

@@ -34,11 +34,11 @@ namespace Dream.Space.Data.Repositories
         public List<CompanyToUpdate> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count)
         {
             var fromDate = DateTime.Now.Subtract(fromTimeAgo).Date;
-            var records = Dbset.Where(c => c.Filtered && c.LastCalculated < fromDate)
+            var records = Dbset.Where(c => c.Filtered && c.LastUpdated < fromDate)
                 .Select(c => new CompanyToUpdate
                 {
                     Ticker = c.Ticker,
-                    LastUpdated = c.LastCalculated,
+                    LastUpdated = c.LastUpdated,
                     HistoryQuotesJson = c.HistoryQuotesJson
                 })
                 .OrderBy(c => c.Ticker)
