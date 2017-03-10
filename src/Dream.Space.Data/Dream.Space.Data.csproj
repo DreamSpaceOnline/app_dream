@@ -94,8 +94,10 @@
     <Compile Include="Entities\Articles\Section.cs" />
     <Compile Include="Entities\Companies\Company.cs" />
     <Compile Include="Entities\Companies\CompanyIndicator.cs" />
+    <Compile Include="Entities\Companies\CompanyInductry.cs" />
     <Compile Include="Entities\Companies\CompanyNHNL.cs" />
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
+    <Compile Include="Entities\Companies\CompanySector.cs" />
     <Compile Include="Entities\Indicators\MarketNHNL.cs" />
     <Compile Include="Entities\Strategies\vStrategyRule.cs" />
     <Compile Include="Entities\Strategies\vStrategy.cs" />
@@ -126,6 +128,22 @@
     <Compile Include="Migrations\201703101259458_Alter_Company.cs" />
     <Compile Include="Migrations\201703101259458_Alter_Company.Designer.cs">
       <DependentUpon>201703101259458_Alter_Company.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703101532285_CompanySector.cs" />
+    <Compile Include="Migrations\201703101532285_CompanySector.Designer.cs">
+      <DependentUpon>201703101532285_CompanySector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703101534294_CompanySectorTable.cs" />
+    <Compile Include="Migrations\201703101534294_CompanySectorTable.Designer.cs">
+      <DependentUpon>201703101534294_CompanySectorTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703101622413_CompanyIndustry.cs" />
+    <Compile Include="Migrations\201703101622413_CompanyIndustry.Designer.cs">
+      <DependentUpon>201703101622413_CompanyIndustry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703101633379_CompanyIndustryColumn.cs" />
+    <Compile Include="Migrations\201703101633379_CompanyIndustryColumn.Designer.cs">
+      <DependentUpon>201703101633379_CompanyIndustryColumn.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\CompanyDetails.cs" />
@@ -212,6 +230,21 @@
     <EmbeddedResource Include="Migrations\201703101259458_Alter_Company.resx">
       <DependentUpon>201703101259458_Alter_Company.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703101532285_CompanySector.resx">
+      <DependentUpon>201703101532285_CompanySector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703101534294_CompanySectorTable.resx">
+      <DependentUpon>201703101534294_CompanySectorTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703101622413_CompanyIndustry.resx">
+      <DependentUpon>201703101622413_CompanyIndustry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703101633379_CompanyIndustryColumn.resx">
+      <DependentUpon>201703101633379_CompanyIndustryColumn.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Entities\GlobalIndicators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
