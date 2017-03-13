@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Extensions;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
@@ -20,14 +21,17 @@ namespace Dream.Space.Import.QuotesImport
         private readonly IMarketStockClient _marketStockClient;
         private readonly ICompanyService _companyService;
         private readonly IQuotesFileReader _quotesFileReader;
+        private readonly IGlobalIndicatorProcessor _indicatorProcessor;
 
         public QuotesImportJob(IMarketStockClient marketStockClient,
             ICompanyService companyService,
-            IQuotesFileReader quotesFileReader)
+            IQuotesFileReader quotesFileReader,
+            IGlobalIndicatorProcessor indicatorProcessor)
         {
             _marketStockClient = marketStockClient;
             _companyService = companyService;
             _quotesFileReader = quotesFileReader;
+            _indicatorProcessor = indicatorProcessor;
         }
 
 
@@ -106,8 +110,11 @@ namespace Dream.Space.Import.QuotesImport
                     ErrorMessage = errorMessage
                 });
 
+                _indicatorProcessor.Calculate(quotes, company.Ticker);
+
                 if (string.IsNullOrEmpty(errorMessage))
                 {
+                    
                     log.Info($"Company quotes updated successfully: {company.Ticker}");
                 }
                 else
