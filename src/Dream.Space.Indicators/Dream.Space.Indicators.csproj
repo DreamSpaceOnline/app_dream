@@ -41,17 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SMA.cs" />
     <Compile Include="ForceIndex.cs" />
-    <Compile Include="Ema.cs" />
+    <Compile Include="EMA.cs" />
     <Compile Include="Extensions\IndicatorModelExtensions.cs" />
     <Compile Include="Enums\QuoteModelField.cs" />
     <Compile Include="Models\ImpulseData.cs" />
     <Compile Include="IndicatorParams\ImpulseSystemParams.cs" />
     <Compile Include="Enums\ImpulseType.cs" />
-    <Compile Include="Macd.cs" />
+    <Compile Include="MACD.cs" />
     <Compile Include="IndicatorParams\MacdParams.cs" />
     <Compile Include="IIndicator.cs" />
-    <Compile Include="Nhnl.cs" />
+    <Compile Include="NHNL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ImpulseSystem.cs" />
   </ItemGroup>

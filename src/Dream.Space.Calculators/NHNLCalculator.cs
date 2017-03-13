@@ -4,18 +4,18 @@ using System.Linq;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Enums;
 using Dream.Space.Indicators;
-using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Calculators
 {
-    public class EmaCalculator : IIndicatorCalculator
-    {
-        private readonly EMA _calculator;
 
-        public EmaCalculator()
+    public class NHNLCalculator : IIndicatorCalculator<NHNLModel>, IIndicatorCalculatorAny
+    {
+        private readonly NHNL _calculator;
+
+        public NHNLCalculator()
         {
-            _calculator = new EMA();
+            _calculator = new NHNL();
         }
 
         public bool CanCalculate(Indicator indicator)
@@ -23,7 +23,7 @@ namespace Dream.Space.Calculators
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public List<IndicatorModel> Calculate(Indicator indicator, List<QuotesModel> quotes)
+        public List<NHNLModel> Calculate(Indicator indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 
@@ -45,11 +45,14 @@ namespace Dream.Space.Calculators
             }
         }
 
-
         private int ExtractPeriod(Indicator indicator)
         {
             var param = indicator.Params.First(p => p.ParamName == IndicatorParamName.Period.ToString());
             return param.Value;
         }
+    }
+
+    public interface IIndicatorCalculatorAny
+    {
     }
 }

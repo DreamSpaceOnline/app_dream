@@ -14,11 +14,11 @@ namespace Dream.Space.Calculators
 {
     public class MacdCalculator : IIndicatorCalculator
     {
-        private readonly Macd _calculator;
+        private readonly MACD _calculator;
 
         public MacdCalculator()
         {
-            _calculator = new Macd();
+            _calculator = new MACD();
         }
 
         public bool CanCalculate(Indicator indicator)

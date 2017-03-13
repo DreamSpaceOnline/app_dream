@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NHNLCalculator.cs" />
     <Compile Include="ImpulseSystemCalculator.cs" />
     <Compile Include="MacdCalculator.cs" />
     <Compile Include="ForceIndexCalculator.cs" />

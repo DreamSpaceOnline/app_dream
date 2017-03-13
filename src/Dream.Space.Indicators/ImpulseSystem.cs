@@ -31,8 +31,8 @@ namespace Dream.Space.Indicators
 
         public List<IndicatorModel> Calculate(List<QuotesModel> quotes, ImpulseSystemParams inputParams)
         {
-            var macdHist = new Macd().Calculate(quotes, inputParams.MacdParams);
-            var ema = new Ema().Calculate(quotes, inputParams.EmaPeriod);
+            var macdHist = new MACD().Calculate(quotes, inputParams.MacdParams);
+            var ema = new EMA().Calculate(quotes, inputParams.EmaPeriod);
             var impulseData = (from h in macdHist
                          join e in ema
                          on h.Date equals e.Date

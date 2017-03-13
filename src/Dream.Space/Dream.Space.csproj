@@ -525,6 +525,10 @@
       <Project>{d3dd96e0-079e-4a28-acc3-aa5b2ea39c01}</Project>
       <Name>Dream.Space.Indicators</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
+      <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
+      <Name>Dream.Space.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Playground\Dream.Space.Playground.csproj">
       <Project>{62210fc3-021c-4f94-a494-f781bbe87a2c}</Project>
       <Name>Dream.Space.Playground</Name>

@@ -3,7 +3,6 @@ using System.Linq;
 using Dream.Space.Indicators.Enums;
 using Dream.Space.Indicators.Extensions;
 using Dream.Space.Indicators.IndicatorParams;
-using Dream.Space.Indicators.Models;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
@@ -18,7 +17,7 @@ namespace Dream.Space.Indicators
         4. Calculate a 9 day EMA of the MACD line gotten in (3)
     */
 
-    public class Macd : IIndicator<IndicatorModel, MacdParams>
+    public class MACD : IIndicator<IndicatorModel, MacdParams>
     {
         public string Name => "MACD";
 
@@ -29,10 +28,10 @@ namespace Dream.Space.Indicators
                 return null;
             }
 
-            var slowEma = new Ema().Calculate(quotes, inputParams.SlowEmaPeriod);
-            var fastEma = new Ema().Calculate(quotes, inputParams.FastEmaPeriod);
+            var slowEma = new EMA().Calculate(quotes, inputParams.SlowEmaPeriod);
+            var fastEma = new EMA().Calculate(quotes, inputParams.FastEmaPeriod);
             var macdLine = fastEma.Substract(slowEma);
-            var signalEma = new Ema().Calculate(macdLine.AsQuotesModel(QuoteModelField.Close), inputParams.SignalEmaPeriod);
+            var signalEma = new EMA().Calculate(macdLine.AsQuotesModel(QuoteModelField.Close), inputParams.SignalEmaPeriod);
             var macdHist = macdLine.Substract(signalEma);
 
             var result = macdHist.Select(c => new IndicatorModel() {Date = c.Date, Value = c.Value}).ToList();

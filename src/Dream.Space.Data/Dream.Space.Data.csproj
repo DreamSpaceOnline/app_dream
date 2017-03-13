@@ -95,11 +95,9 @@
     <Compile Include="Entities\Companies\Company.cs" />
     <Compile Include="Entities\Companies\CompanyIndicator.cs" />
     <Compile Include="Entities\Companies\CompanyIndustry.cs" />
-    <Compile Include="Entities\Companies\CompanyNHNL.cs" />
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
-    <Compile Include="Entities\Indicators\MarketNHNL.cs" />
     <Compile Include="Entities\Strategies\vStrategyRule.cs" />
     <Compile Include="Entities\Strategies\vStrategy.cs" />
     <Compile Include="Entities\Strategies\vStrategyRuleSet.cs" />
@@ -109,7 +107,6 @@
     <Compile Include="Entities\Strategies\StrategyRuleSet.cs" />
     <Compile Include="Enums\TransformFunction.cs" />
     <Compile Include="Enums\ChartType.cs" />
-    <Compile Include="Enums\NHNLPeriod.cs" />
     <Compile Include="Entities\Strategies\Strategy.cs" />
     <Compile Include="Enums\RuleFunction.cs" />
     <Compile Include="Enums\CompareOperator.cs" />

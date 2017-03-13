@@ -54,7 +54,7 @@ namespace Dream.Space.Indicators
                 yesterday = today;
             }
 
-            var forceIndex = new Ema().Calculate(result, period);
+            var forceIndex = new EMA().Calculate(result, period);
             return forceIndex;
 
         }

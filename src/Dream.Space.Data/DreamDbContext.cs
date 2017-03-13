@@ -73,15 +73,6 @@ namespace Dream.Space.Data
             //Strategy
             modelBuilder.Entity<GlobalIndicator>().HasKey(e => new { e.IndicatorId, e.SectorId });
 
-            //MarketNHNL
-            modelBuilder.Entity<MarketNHNL>().HasKey(e => new { e.Market, e.Period });
-            modelBuilder.Entity<MarketNHNL>().Property(e => e.Market).IsRequired().HasColumnType("varchar").HasMaxLength(50);
-
-            //CompanyNHNL
-            modelBuilder.Entity<CompanyNHNL>().HasKey(e => new { e.Ticker, e.Period });
-            modelBuilder.Entity<CompanyNHNL>().Property(e => e.Ticker).IsRequired().HasColumnType("varchar").HasMaxLength(50);
-
-
             modelBuilder.Entity<Article>().HasKey(t => t.ArticleId);
             modelBuilder.Entity<Article>().HasRequired(a => a.Category).WithMany(t => t.Articles).HasForeignKey(p => p.CategoryId);
             modelBuilder.Entity<Article>().Property(a => a.ArticleId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
@@ -121,8 +112,6 @@ namespace Dream.Space.Data
         public DbSet<RuleSetDetails> RuleSetDetails { get; set; }
         public DbSet<Strategy> Strategies { get; set; }
         public DbSet<StrategyRuleSet> StrategyRuleSets { get; set; }
-        public DbSet<MarketNHNL> MarketNHNLs { get; set; }
-        public DbSet<CompanyNHNL> CompanyNHNLs { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Section> Sections { get; set; }

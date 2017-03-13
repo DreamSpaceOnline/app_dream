@@ -10,7 +10,9 @@ using Dream.Space.Data;
 using Dream.Space.Data.Azure;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
+using Dream.Space.Indicators;
 using Dream.Space.Infrastructure.Settings;
+using Dream.Space.Models.Indicators;
 using Dream.Space.Playground;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Validators;
@@ -113,6 +115,9 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<ForceIndexCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<MacdCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
+
+            builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator<NHNLModel>>();
+
 
         }
 

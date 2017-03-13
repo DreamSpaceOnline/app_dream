@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Indicators.Models;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
@@ -22,7 +21,7 @@ namespace Dream.Space.Indicators
     /// EMA = Price(t) * k + EMA(y) * (1 – k)
     /// where: t = today, y = yesterday, N = number of days in EMA, k = 2/(N+1)
     /// </summary>
-    public class Ema : IIndicator<IndicatorModel, int>
+    public class EMA : IIndicator<IndicatorModel, int>
     {
         public string Name => "EMA";
 

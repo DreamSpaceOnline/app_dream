@@ -10,6 +10,11 @@ namespace Dream.Space.Calculators
     {
         bool CanCalculate(Indicator indicator);
         List<IndicatorModel> Calculate(Indicator indicator, List<QuotesModel> quotes);
-        //IndicatorModel Calculate(Indicator indicator, List<IndicatorModel> values, QuotesModel quotes);
+    }
+
+    public interface IIndicatorCalculator<TModel> where TModel : IIndicatorModel
+    {
+        bool CanCalculate(Indicator indicator);
+        List<TModel> Calculate(Indicator indicator, List<QuotesModel> quotes);
     }
 }
