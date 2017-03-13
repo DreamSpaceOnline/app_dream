@@ -11,6 +11,6 @@ namespace Dream.Space.Data.Entities.Companies
         public int SectorId { get; set; }
         public string SectorName { get; set; }
 
-        public List<CompanyInductry> Industries { get; set; }
+        public List<CompanyIndustry> Industries { get; set; }
     }
 }

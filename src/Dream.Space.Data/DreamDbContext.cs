@@ -42,10 +42,10 @@ namespace Dream.Space.Data
             modelBuilder.Entity<CompanyIndicator>().HasKey(e => new { e.Ticker, e.IndicatorId });
             modelBuilder.Entity<CompanyIndicator>().Property(e => e.Ticker).IsRequired().HasColumnType("varchar").HasMaxLength(50);
 
-            //CompanyInductry
-            modelBuilder.Entity<CompanyInductry>().HasKey(e => e.InductryId);
-            modelBuilder.Entity<CompanyInductry>().Property(e => e.InductryName).IsRequired().HasColumnType("varchar").HasMaxLength(250);
-            modelBuilder.Entity<CompanyInductry>().HasRequired(a => a.Sector).WithMany(t => t.Industries).HasForeignKey(p => p.SectorId);
+            //CompanyIndustry
+            modelBuilder.Entity<CompanyIndustry>().HasKey(e => e.InductryId);
+            modelBuilder.Entity<CompanyIndustry>().Property(e => e.IndustryName).IsRequired().HasColumnType("varchar").HasMaxLength(250);
+            modelBuilder.Entity<CompanyIndustry>().HasRequired(a => a.Sector).WithMany(t => t.Industries).HasForeignKey(p => p.SectorId);
 
             //CompanyRuleSet
             modelBuilder.Entity<CompanyRuleSet>().HasKey(e => new { e.Ticker, e.RuleSetId });
@@ -124,7 +124,7 @@ namespace Dream.Space.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Section> Sections { get; set; }
         public DbSet<CompanySector> Sectors { get; set; }
-        public DbSet<CompanyInductry> Inductries { get; set; }
+        public DbSet<CompanyIndustry> Inductries { get; set; }
         public virtual DbSet<vRuleSet> vRuleSets { get; set; }
         public virtual DbSet<vStrategy> vStrategies { get; set; }
         public virtual DbSet<vStrategyRuleSet> vStrategyRuleSets { get; set; }

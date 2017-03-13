@@ -94,7 +94,7 @@
     <Compile Include="Entities\Articles\Section.cs" />
     <Compile Include="Entities\Companies\Company.cs" />
     <Compile Include="Entities\Companies\CompanyIndicator.cs" />
-    <Compile Include="Entities\Companies\CompanyInductry.cs" />
+    <Compile Include="Entities\Companies\CompanyIndustry.cs" />
     <Compile Include="Entities\Companies\CompanyNHNL.cs" />
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
@@ -144,6 +144,10 @@
     <Compile Include="Migrations\201703101633379_CompanyIndustryColumn.cs" />
     <Compile Include="Migrations\201703101633379_CompanyIndustryColumn.Designer.cs">
       <DependentUpon>201703101633379_CompanyIndustryColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703111013478_alterCompanyIndustry.cs" />
+    <Compile Include="Migrations\201703111013478_alterCompanyIndustry.Designer.cs">
+      <DependentUpon>201703111013478_alterCompanyIndustry.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\CompanyDetails.cs" />
@@ -241,6 +245,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703101633379_CompanyIndustryColumn.resx">
       <DependentUpon>201703101633379_CompanyIndustryColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703111013478_alterCompanyIndustry.resx">
+      <DependentUpon>201703111013478_alterCompanyIndustry.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
