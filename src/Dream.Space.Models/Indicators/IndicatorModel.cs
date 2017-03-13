@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dream.Space.Indicators.Models
+namespace Dream.Space.Models.Indicators
 {
 
     public class IndicatorModel : IIndicatorModel

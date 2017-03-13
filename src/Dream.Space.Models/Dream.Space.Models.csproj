@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D3DD96E0-079E-4A28-ACC3-AA5B2EA39C01}</ProjectGuid>
+    <ProjectGuid>{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dream.Space.Indicators</RootNamespace>
-    <AssemblyName>Dream.Space.Indicators</AssemblyName>
+    <RootNamespace>Dream.Space.Models</RootNamespace>
+    <AssemblyName>Dream.Space.Models</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,37 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ForceIndex.cs" />
-    <Compile Include="Ema.cs" />
-    <Compile Include="Extensions\IndicatorModelExtensions.cs" />
-    <Compile Include="Enums\QuoteModelField.cs" />
-    <Compile Include="Models\ImpulseData.cs" />
-    <Compile Include="IndicatorParams\ImpulseSystemParams.cs" />
-    <Compile Include="Enums\ImpulseType.cs" />
-    <Compile Include="Macd.cs" />
-    <Compile Include="IndicatorParams\MacdParams.cs" />
-    <Compile Include="IIndicator.cs" />
-    <Compile Include="Nhnl.cs" />
+    <Compile Include="Indicators\IIndicatorModel.cs" />
+    <Compile Include="Indicators\IndicatorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ImpulseSystem.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Dream.Space.Data\Dream.Space.Data.csproj">
-      <Project>{eb10172d-559a-4e59-bc95-eee805f1a19b}</Project>
-      <Name>Dream.Space.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
-      <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
-      <Name>Dream.Space.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dream.Space.Reader\Dream.Space.Reader.csproj">
-      <Project>{3d49dde8-e00e-429c-9f3b-cfe2db6e2de5}</Project>
-      <Name>Dream.Space.Reader</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

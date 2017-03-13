@@ -5,6 +5,7 @@ using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Enums;
 using Dream.Space.Indicators;
 using Dream.Space.Indicators.Models;
+using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Calculators

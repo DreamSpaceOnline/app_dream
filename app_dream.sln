@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImportData", "ImportData", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Import", "src\Dream.Space.Import\Dream.Space.Import.csproj", "{1911B209-79ED-46C4-84CF-004018C6EEBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Models", "src\Dream.Space.Models\Dream.Space.Models.csproj", "{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1911B209-79ED-46C4-84CF-004018C6EEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

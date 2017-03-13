@@ -98,6 +98,7 @@
     <Compile Include="Entities\Companies\CompanyNHNL.cs" />
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
+    <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
     <Compile Include="Entities\Indicators\MarketNHNL.cs" />
     <Compile Include="Entities\Strategies\vStrategyRule.cs" />
     <Compile Include="Entities\Strategies\vStrategy.cs" />
@@ -149,24 +150,30 @@
     <Compile Include="Migrations\201703111013478_alterCompanyIndustry.Designer.cs">
       <DependentUpon>201703111013478_alterCompanyIndustry.cs</DependentUpon>
     </Compile>
+    <Compile Include="Enums\IndicatorParamName.cs" />
+    <Compile Include="Enums\QuotePeriod.cs" />
+    <Compile Include="Migrations\201703131236210_CreateGlobalIndicator.cs" />
+    <Compile Include="Migrations\201703131236210_CreateGlobalIndicator.Designer.cs">
+      <DependentUpon>201703131236210_CreateGlobalIndicator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\CompanyDetails.cs" />
     <Compile Include="Models\CompanyHeader.cs" />
+    <Compile Include="Models\CompanyToProcess.cs" />
+    <Compile Include="Models\CompanyToUpdate.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="Models\IndicatorCore.cs" />
-    <Compile Include="Models\RuleModel.cs" />
-    <Compile Include="Models\StrategyModel.cs" />
-    <Compile Include="Models\RuleSetModel.cs" />
-    <Compile Include="Models\StrategyRuleSetModel.cs" />
-    <Compile Include="Models\StrategySummary.cs" />
     <Compile Include="Models\IndicatorData.cs" />
     <Compile Include="Models\IndicatorParam.cs" />
-    <Compile Include="Enums\IndicatorParamName.cs" />
-    <Compile Include="Enums\QuotePeriod.cs" />
-    <Compile Include="Models\CompanyToUpdate.cs" />
+    <Compile Include="Models\RuleModel.cs" />
+    <Compile Include="Models\RuleSetModel.cs" />
+    <Compile Include="Models\StrategyModel.cs" />
+    <Compile Include="Models\StrategyRuleSetModel.cs" />
+    <Compile Include="Models\StrategySummary.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />
+    <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
     <Compile Include="Repositories\VStrategyRepository.cs" />
@@ -193,9 +200,9 @@
     <Compile Include="Services\ArticleService.cs" />
     <Compile Include="Services\ArticleStorageService.cs" />
     <Compile Include="Services\CompanyIndicatorService.cs" />
+    <Compile Include="Services\GlobalIndicatorService.cs" />
     <Compile Include="Services\CompanyManagerService.cs" />
     <Compile Include="Requests\CompaniesToProcessRequest.cs" />
-    <Compile Include="Models\CompanyToProcess.cs" />
     <Compile Include="Services\IArticleService.cs" />
     <Compile Include="Services\IArticleStorageService.cs" />
     <Compile Include="Services\ICompanyIndicatorService.cs" />
@@ -215,6 +222,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
+      <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
+      <Name>Dream.Space.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Reader\Dream.Space.Reader.csproj">
       <Project>{3d49dde8-e00e-429c-9f3b-cfe2db6e2de5}</Project>
       <Name>Dream.Space.Reader</Name>
@@ -249,10 +260,11 @@
     <EmbeddedResource Include="Migrations\201703111013478_alterCompanyIndustry.resx">
       <DependentUpon>201703111013478_alterCompanyIndustry.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703131236210_CreateGlobalIndicator.resx">
+      <DependentUpon>201703131236210_CreateGlobalIndicator.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entities\GlobalIndicators\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

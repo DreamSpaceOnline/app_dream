@@ -4,6 +4,7 @@ using System.Linq;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Enums;
 using Dream.Space.Indicators.Models;
+using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Playground.Models

@@ -7,6 +7,7 @@ using Dream.Space.Data.Models;
 using Dream.Space.Indicators;
 using Dream.Space.Indicators.IndicatorParams;
 using Dream.Space.Indicators.Models;
+using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Calculators

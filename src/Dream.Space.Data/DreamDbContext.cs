@@ -70,6 +70,9 @@ namespace Dream.Space.Data
             modelBuilder.Entity<Strategy>().HasKey(e => e.StrategyId);
             modelBuilder.Entity<Strategy>().Property(e => e.Name).IsRequired().HasColumnType("varchar").HasMaxLength(255);
 
+            //Strategy
+            modelBuilder.Entity<GlobalIndicator>().HasKey(e => new { e.IndicatorId, e.SectorId });
+
             //MarketNHNL
             modelBuilder.Entity<MarketNHNL>().HasKey(e => new { e.Market, e.Period });
             modelBuilder.Entity<MarketNHNL>().Property(e => e.Market).IsRequired().HasColumnType("varchar").HasMaxLength(50);
@@ -129,5 +132,6 @@ namespace Dream.Space.Data
         public virtual DbSet<vStrategy> vStrategies { get; set; }
         public virtual DbSet<vStrategyRuleSet> vStrategyRuleSets { get; set; }
         public virtual DbSet<vStrategyRule> vStrategyRules { get; set; }
+        public virtual DbSet<GlobalIndicator> GlobalIndicators { get; set; }
     }
 }

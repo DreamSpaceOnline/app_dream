@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Indicators.Models;
+using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Calculators
