@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Managers;
@@ -20,6 +21,8 @@ namespace Dream.Space.Data.Services
 
         Task<List<CompanyDetails>> SearchAsync(CompanySearchRequest request);
         Task<CompanyHeader> GetAsync(string ticker);
+        List<CompanyToUpdate> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
+        List<CompanySector> GetCompanySectors();
     }
 
     public interface ICompanyManagerService 

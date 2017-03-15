@@ -153,6 +153,14 @@
     <Compile Include="Migrations\201703131236210_CreateGlobalIndicator.Designer.cs">
       <DependentUpon>201703131236210_CreateGlobalIndicator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703151458239_AddColumnGlobal.cs" />
+    <Compile Include="Migrations\201703151458239_AddColumnGlobal.Designer.cs">
+      <DependentUpon>201703151458239_AddColumnGlobal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703151534363_AddJobIdColumn.cs" />
+    <Compile Include="Migrations\201703151534363_AddJobIdColumn.Designer.cs">
+      <DependentUpon>201703151534363_AddJobIdColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\CompanyDetails.cs" />
     <Compile Include="Models\CompanyHeader.cs" />
@@ -171,6 +179,7 @@
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />
     <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
+    <Compile Include="Repositories\ICompanySectorRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
     <Compile Include="Repositories\VStrategyRepository.cs" />
@@ -186,6 +195,7 @@
     <Compile Include="Repositories\StrategyRepository.cs" />
     <Compile Include="Repositories\StrategyRuleSetRepository.cs" />
     <Compile Include="Requests\CompanySearchRequest.cs" />
+    <Compile Include="Requests\FindCompaniesForJobRequest.cs" />
     <Compile Include="Requests\FindCompaniesForUpdateRequest.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -259,6 +269,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703131236210_CreateGlobalIndicator.resx">
       <DependentUpon>201703131236210_CreateGlobalIndicator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703151458239_AddColumnGlobal.resx">
+      <DependentUpon>201703151458239_AddColumnGlobal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703151534363_AddJobIdColumn.resx">
+      <DependentUpon>201703151534363_AddJobIdColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

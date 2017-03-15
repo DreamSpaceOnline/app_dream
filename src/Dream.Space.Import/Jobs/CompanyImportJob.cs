@@ -4,7 +4,7 @@ using System.IO;
 using Dream.Space.Data.Services;
 using Dream.Space.Reader;
 
-namespace Dream.Space.Import.CompanyImport
+namespace Dream.Space.Import.Jobs
 {
     public class CompanyImportJob: ICompanyImportJob
     {

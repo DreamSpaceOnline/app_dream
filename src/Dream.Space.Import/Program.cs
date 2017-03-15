@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
-using Dream.Space.Import.CompanyImport;
-using Dream.Space.Import.QuotesImport;
+using Dream.Space.Import.Jobs;
 
 namespace Dream.Space.Import
 {

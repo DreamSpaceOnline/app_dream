@@ -48,6 +48,6 @@ namespace Dream.Space.Data.Entities.Companies
         public DateTime EndDate { get; set; }
         public int SectorId { get; set; }
         public int IndustryId { get; set; }
-
+        public string LastJobId { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace Dream.Space.Data.Services
         Task<Indicator> SaveIndicatorAsync(Indicator model);
         Task DeleteIndicatorAsync(int id);
         Task<List<IndicatorCore>> GetIndicatorsAsync();
+        List<Indicator> GetGlobalIndicators();
     }
 
     public class IndicatorService : IIndicatorService
@@ -107,6 +108,17 @@ namespace Dream.Space.Data.Services
                 var repository = scope.Resolve<IIndicatorRepository>();
                 var entities = await repository.GetAllAsync();
                 var result = entities.Select(e => new IndicatorCore(e)).OrderBy(e => e.Name).ToList();
+
+                return result;
+            }
+        }
+
+        public List<Indicator> GetGlobalIndicators()
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IIndicatorRepository>();
+                var result = repository.GetGlobalAll();
 
                 return result;
             }

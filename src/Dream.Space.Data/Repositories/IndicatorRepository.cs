@@ -20,6 +20,7 @@ namespace Dream.Space.Data.Repositories
         Task<List<Indicator>> GetAllAsync(QuotePeriod period);
         Task<List<Indicator>> GetAllAsync();
         Task<List<Indicator>> GetByStrategyIdAsync(int id);
+        List<Indicator> GetGlobalAll();
     }
 
 
@@ -37,19 +38,19 @@ namespace Dream.Space.Data.Repositories
 
         public List<Indicator> GetAll()
         {
-            var indicators = Dbset.Where(i => !i.Deleted).ToList();
+            var indicators = Dbset.Where(i => !i.Deleted && !i.Global).ToList();
             return indicators;
         }
 
         public async Task<List<Indicator>> GetAllAsync()
         {
-            var records = await Dbset.Where(r => !r.Deleted).OrderBy(r => r.Name).ToListAsync();
+            var records = await Dbset.Where(i => !i.Deleted && !i.Global).OrderBy(r => r.Name).ToListAsync();
             return records;
         }
 
         public async Task<List<Indicator>> GetAllAsync(QuotePeriod period)
         {
-            var records = await Dbset.Where(r => r.Period == period && !r.Deleted).OrderBy(r => r.Name).ToListAsync();
+            var records = await Dbset.Where(r => r.Period == period && !r.Deleted && !r.Global).OrderBy(r => r.Name).ToListAsync();
             return records;
         }
 
@@ -81,6 +82,13 @@ namespace Dream.Space.Data.Repositories
 
             var records = await Dbset.SqlQuery(query, new[] { new SqlParameter("@strategyId", id) }).ToListAsync();
             return records;
+        }
+
+
+        public List<Indicator> GetGlobalAll()
+        {
+            var indicators = Dbset.Where(i => !i.Deleted && i.Global).ToList();
+            return indicators;
         }
     }
 }

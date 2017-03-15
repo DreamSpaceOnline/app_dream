@@ -16,6 +16,7 @@ namespace Dream.Space.Data.Repositories
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
+        List<CompanyToUpdate> FindCompaniesForJob(string requestJobId, int maxRecordCount, int sectorId);
     }
 
 
@@ -121,5 +122,20 @@ namespace Dream.Space.Data.Repositories
             return new CompanyHeader(record);
         }
 
+        public List<CompanyToUpdate> FindCompaniesForJob(string jobId,  int count, int sectorId)
+        {
+            var records = Dbset.Where(c => c.SectorId == sectorId && c.Filtered && c.LastJobId != jobId)
+                .Select(c => new CompanyToUpdate
+                {
+                    Ticker = c.Ticker,
+                    LastUpdated = c.LastUpdated,
+                    HistoryQuotesJson = c.HistoryQuotesJson
+                })
+                .OrderBy(c => c.Ticker)
+                .Take(count)
+                .ToList();
+
+            return records;
+        }
     }
 }

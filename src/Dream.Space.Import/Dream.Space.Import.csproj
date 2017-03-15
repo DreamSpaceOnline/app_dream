@@ -56,11 +56,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompanyImport\CompanyImportJob.cs" />
+    <Compile Include="Jobs\CompanyImportJob.cs" />
     <Compile Include="IoCContainer.cs" />
+    <Compile Include="Jobs\GlobalIndicatorsProcessJob.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuotesImport\QuotesImportJob.cs" />
+    <Compile Include="Jobs\QuotesImportJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

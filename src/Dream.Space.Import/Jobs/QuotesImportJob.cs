@@ -8,13 +8,12 @@ using Dream.Space.Data.Extensions;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
-using Dream.Space.Import.CompanyImport;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Models;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Requests;
 
-namespace Dream.Space.Import.QuotesImport
+namespace Dream.Space.Import.Jobs
 {
     public class QuotesImportJob : IQuotesImportJob
     {
@@ -110,7 +109,7 @@ namespace Dream.Space.Import.QuotesImport
                     ErrorMessage = errorMessage
                 });
 
-                _indicatorProcessor.Calculate(quotes, company.Ticker);
+                //_indicatorProcessor.Calculate(quotes, company.Ticker);
 
                 if (string.IsNullOrEmpty(errorMessage))
                 {

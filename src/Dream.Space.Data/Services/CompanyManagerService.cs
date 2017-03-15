@@ -174,5 +174,25 @@ namespace Dream.Space.Data.Services
                 return company;
             }
         }
+
+        public List<CompanyToUpdate> FindCompaniesForJob(FindCompaniesForJobRequest request)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                var companies = repository.FindCompaniesForJob(request.JobId, request.MaxRecordCount, request.SectorId);
+                return companies;
+            }
+        }
+
+        public List<CompanySector> GetCompanySectors()
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanySectorRepository>();
+                var result = repository.GetAll();
+                return result;
+            }
+        }
     }
 }
