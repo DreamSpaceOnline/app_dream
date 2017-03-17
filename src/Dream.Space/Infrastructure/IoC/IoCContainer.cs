@@ -111,12 +111,11 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<FileReaderValidator>().As<IFileReaderValidator>().InstancePerDependency();
 
             //Calculators
-            builder.RegisterType<EmaCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<EMACalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ForceIndexCalculator>().As<IIndicatorCalculator>();
-            builder.RegisterType<MacdCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<MACDCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
-
-            builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator<NHNLModel>>();
+            builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
 
 
         }

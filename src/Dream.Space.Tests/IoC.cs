@@ -88,15 +88,11 @@ namespace Dream.Space.Tests
             builder.RegisterType<PlaygroundProcessor>();
 
             //Calculators
-            builder.RegisterType<EmaCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<EMACalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ForceIndexCalculator>().As<IIndicatorCalculator>();
-            builder.RegisterType<MacdCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<MACDCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
-
-            builder.RegisterType<NHNLModel>().As<IIndicatorModel>();
-
-
-            builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator<NHNLModel>>();
+            builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
 
             builder.RegisterType<PlaygroundConfigurationLoader>();
 

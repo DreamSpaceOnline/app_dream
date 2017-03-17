@@ -9,11 +9,11 @@ using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Calculators
 {
-    public class EmaCalculator : IIndicatorCalculator
+    public class EMACalculator : IIndicatorCalculator
     {
         private readonly EMA _calculator;
 
-        public EmaCalculator()
+        public EMACalculator()
         {
             _calculator = new EMA();
         }

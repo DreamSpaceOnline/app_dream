@@ -79,6 +79,10 @@
       <Project>{eb10172d-559a-4e59-bc95-eee805f1a19b}</Project>
       <Name>Dream.Space.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
+      <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
+      <Name>Dream.Space.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Reader\Dream.Space.Reader.csproj">
       <Project>{3d49dde8-e00e-429c-9f3b-cfe2db6e2de5}</Project>
       <Name>Dream.Space.Reader</Name>

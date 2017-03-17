@@ -4,12 +4,13 @@ using System.Linq;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Enums;
 using Dream.Space.Indicators;
+using Dream.Space.Models.Indicators;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Calculators
 {
 
-    public class NHNLCalculator : IIndicatorCalculator<NHNLModel>, IIndicatorCalculatorAny
+    public class NHNLCalculator : IIndicatorCalculator
     {
         private readonly NHNL _calculator;
 
@@ -23,7 +24,7 @@ namespace Dream.Space.Calculators
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public List<NHNLModel> Calculate(Indicator indicator, List<QuotesModel> quotes)
+        public List<IndicatorModel> Calculate(Indicator indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 
@@ -52,7 +53,5 @@ namespace Dream.Space.Calculators
         }
     }
 
-    public interface IIndicatorCalculatorAny
-    {
-    }
+
 }
