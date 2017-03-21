@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Extensions;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Companies;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Reader;
-using Dream.Space.Reader.Models;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Requests;
 
@@ -20,17 +19,14 @@ namespace Dream.Space.Import.Jobs
         private readonly IMarketStockClient _marketStockClient;
         private readonly ICompanyService _companyService;
         private readonly IQuotesFileReader _quotesFileReader;
-        private readonly IGlobalIndicatorProcessor _indicatorProcessor;
 
         public QuotesImportJob(IMarketStockClient marketStockClient,
             ICompanyService companyService,
-            IQuotesFileReader quotesFileReader,
-            IGlobalIndicatorProcessor indicatorProcessor)
+            IQuotesFileReader quotesFileReader)
         {
             _marketStockClient = marketStockClient;
             _companyService = companyService;
             _quotesFileReader = quotesFileReader;
-            _indicatorProcessor = indicatorProcessor;
         }
 
 

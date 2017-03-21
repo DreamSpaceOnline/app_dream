@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Dream.Space.Data.Enums;
 using Dream.Space.Domain.ChartData;
 using Dream.Space.Domain.ChartData.Requests;
+using Dream.Space.Models.Enums;
 using NUnit.Framework;
 
 namespace Dream.Space.Tests.Services

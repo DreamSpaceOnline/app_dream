@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Models;
+using Dream.Space.Models.Enums;
+using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Data
 {

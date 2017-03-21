@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Dream.Space.Data.Enums;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Data.Entities.Strategies
 {

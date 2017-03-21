@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Models.Enums;
+using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Data.Services
 {

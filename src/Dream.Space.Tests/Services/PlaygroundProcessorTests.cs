@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Dream.Space.Calculators.IndicatorProcessor;
-using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Extensions;
 using Dream.Space.Playground;
-using Dream.Space.Playground.Models;
-using Dream.Space.Reader.Models;
 using NUnit.Framework;
 
 namespace Dream.Space.Tests.Services

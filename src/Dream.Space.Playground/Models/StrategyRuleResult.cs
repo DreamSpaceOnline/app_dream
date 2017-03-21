@@ -1,6 +1,6 @@
 using System;
 using Dream.Space.Data.Entities.Strategies;
-using Dream.Space.Data.Enums;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Playground.Models
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Dream.Space.Data.Enums;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Enums;
+using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Playground.Models
 {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dream.Space.Data.Entities.Companies;
-using Dream.Space.Data.Models;
+using Dream.Space.Models.Companies;
 
 namespace Dream.Space.Data.Repositories
 {

@@ -1,4 +1,4 @@
-﻿namespace Dream.Space.Data.Enums
+﻿namespace Dream.Space.Models.Enums
 {
     public enum HistoricalDataSeriesType
     {

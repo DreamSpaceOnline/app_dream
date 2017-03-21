@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Data.Enums;
 using Dream.Space.Indicators.Models;
 using Dream.Space.Reader.Models;
 

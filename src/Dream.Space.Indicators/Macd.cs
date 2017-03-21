@@ -4,6 +4,7 @@ using Dream.Space.Indicators.Enums;
 using Dream.Space.Indicators.Extensions;
 using Dream.Space.Indicators.IndicatorParams;
 using Dream.Space.Models.Indicators;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Indicators

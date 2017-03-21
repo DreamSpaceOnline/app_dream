@@ -1,12 +1,11 @@
 ﻿using System;
-using Dream.Space.Data.Entities.Companies;
 
-namespace Dream.Space.Data.Models
+namespace Dream.Space.Models.Companies
 {
     public class CompanyHeader
     {
  
-        public CompanyHeader(Company company)
+        public CompanyHeader(ICompanyEntity company)
         {
             Ticker = company.Ticker;
             Name = company.Name;

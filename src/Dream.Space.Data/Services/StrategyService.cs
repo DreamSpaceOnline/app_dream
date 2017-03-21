@@ -5,6 +5,7 @@ using Autofac;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Models.Strategies;
 using Newtonsoft.Json;
 
 namespace Dream.Space.Data.Services

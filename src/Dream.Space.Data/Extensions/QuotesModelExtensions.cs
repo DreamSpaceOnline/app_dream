@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Data.Extensions

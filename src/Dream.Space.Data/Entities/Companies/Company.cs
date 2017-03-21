@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Companies;
+using Dream.Space.Models.Quotes;
 using Newtonsoft.Json;
 
 namespace Dream.Space.Data.Entities.Companies
 {
-    public class Company
+    public class Company : ICompanyEntity
     {
         public Company()
         {

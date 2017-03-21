@@ -2,18 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Dream.Space.Data.Enums;
-using Dream.Space.Data.Models;
+using Dream.Space.Models.Enums;
+using Dream.Space.Models.Indicators;
 using Newtonsoft.Json;
 
 namespace Dream.Space.Data.Entities.Indicators
 {
-    public class Indicator
+    public class Indicator: IIndicatorEntity
     {
-        public Indicator()
-        {
-        }
-
         public int IndicatorId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

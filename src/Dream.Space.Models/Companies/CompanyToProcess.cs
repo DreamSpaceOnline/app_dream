@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Quotes;
 using Newtonsoft.Json;
 
-namespace Dream.Space.Data.Models
+namespace Dream.Space.Models.Companies
 {
-    public class CompanyToUpdate
+    public class CompanyToProcess
     {
         public string Ticker { get; set; }
+        public DateTime LastCalculated { get; set; }
         public DateTime LastUpdated { get; set; }
-        public string HistoryQuotesJson { get; set; }
 
-        public List<QuotesModel> HistoryQuotes
+        public List<QuotesModel> Quotes
         {
             get
             {
-
                 try
                 {
-                    return JsonConvert.DeserializeObject<List<QuotesModel>>(HistoryQuotesJson);
-
+                    return JsonConvert.DeserializeObject<List<QuotesModel>>(QuotesJson);
                 }
                 catch (Exception)
                 {
+                    
                     return new List<QuotesModel>();
                 }
             }
-            set { HistoryQuotesJson = JsonConvert.SerializeObject(value); }
         }
 
+        public string QuotesJson { get; set; }
     }
 }

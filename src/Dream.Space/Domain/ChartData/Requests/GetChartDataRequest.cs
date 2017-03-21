@@ -1,4 +1,4 @@
-﻿using Dream.Space.Data.Enums;
+﻿using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Domain.ChartData.Requests
 {

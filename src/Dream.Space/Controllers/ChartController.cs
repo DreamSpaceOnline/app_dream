@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
-using Dream.Space.Data.Enums;
 using Dream.Space.Domain.ChartData;
 using Dream.Space.Domain.ChartData.Requests;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Controllers
 {

@@ -8,8 +8,8 @@ using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Reader;
-using Dream.Space.Reader.Models;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Requests;
 

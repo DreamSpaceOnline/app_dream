@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Enums;
-using Dream.Space.Data.Models;
 using Dream.Space.Indicators;
 using Dream.Space.Indicators.IndicatorParams;
+using Dream.Space.Models.Calculators;
+using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Calculators
 {
@@ -20,12 +19,12 @@ namespace Dream.Space.Calculators
             _calculator = new MACD();
         }
 
-        public bool CanCalculate(Indicator indicator)
+        public bool CanCalculate(IIndicatorEntity indicator)
         {
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public List<IndicatorModel> Calculate(Indicator indicator, List<QuotesModel> quotes)
+        public List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 
@@ -48,7 +47,7 @@ namespace Dream.Space.Calculators
         }
 
 
-        public void Validate(Indicator indicator, List<QuotesModel> quotes)
+        public void Validate(IIndicatorEntity indicator, List<QuotesModel> quotes)
         {
             if (!CanCalculate(indicator))
             {

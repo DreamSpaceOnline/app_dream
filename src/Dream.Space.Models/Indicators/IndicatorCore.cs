@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Enums;
+using Dream.Space.Models.Enums;
 
-namespace Dream.Space.Data.Models
+namespace Dream.Space.Models.Indicators
 {
     public class IndicatorCore
     {
@@ -11,14 +10,14 @@ namespace Dream.Space.Data.Models
 
         }
 
-        public IndicatorCore(Indicator indicator )
+        public IndicatorCore(IIndicatorEntity indicator )
         {
             Name = GenerateName(indicator);
             Id = indicator.IndicatorId;
             Period = indicator.Period;
         }
 
-        private string GenerateName(Indicator indicator)
+        private string GenerateName(IIndicatorEntity indicator)
         {
             var parameters = indicator.Params.Select(p => p.Value).ToArray();
 

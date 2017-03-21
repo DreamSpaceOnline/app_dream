@@ -1,4 +1,4 @@
-﻿namespace Dream.Space.Data.Models
+﻿namespace Dream.Space.Models.Strategies.Rules
 {
     public class RuleModel
     {

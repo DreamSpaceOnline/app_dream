@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Entities.Strategies;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Playground
 {

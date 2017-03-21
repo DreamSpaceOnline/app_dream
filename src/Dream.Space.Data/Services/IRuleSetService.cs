@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Strategies;
-using Dream.Space.Data.Enums;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Models.Enums;
+using Dream.Space.Models.Strategies.Rules;
 
 namespace Dream.Space.Data.Services
 {
@@ -47,7 +47,7 @@ namespace Dream.Space.Data.Services
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IVRuleSetRepository>();
-                var data = await repository.GetAsync(id);
+                var data = (await repository.GetAsync(id)).Select(c => c as IRuleSetView).ToList();
 
                 return new RuleSetModel(data, id);
             }
@@ -58,7 +58,7 @@ namespace Dream.Space.Data.Services
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IVRuleSetRepository>();
-                var data = await repository.GetAllAsync(period, false);
+                var data = (await repository.GetAllAsync(period, false)).Select(c => c as IRuleSetView).ToList();
                 var result = new List<RuleSetModel>();
 
                 foreach (var item in data)
@@ -79,7 +79,7 @@ namespace Dream.Space.Data.Services
             {
                 var repository = scope.Resolve<IRuleSetRepository>();
 
-                RuleSet ruleSet = null;
+                RuleSet ruleSet;
 
                 if(model.RuleSetId > 0)
                 {

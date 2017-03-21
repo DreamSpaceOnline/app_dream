@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Dream.Space.Data.Models
+namespace Dream.Space.Models.Strategies
 {
     public class StrategyRuleSetModel
     {

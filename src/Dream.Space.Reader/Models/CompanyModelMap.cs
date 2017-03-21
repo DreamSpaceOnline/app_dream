@@ -27,20 +27,6 @@ namespace Dream.Space.Reader.Models
                 }
                 return 0;
             });
-            //Map(m => m.MarketCap).Index(3).ConvertUsing(row =>
-            //{
-            //    var sprice = row.GetField(3);
-
-            //    try
-            //    {
-            //        return decimal.Parse(sprice, NumberStyles.Currency | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
-            //    }
-            //    catch (Exception)
-            //    {
-            //        return 0;
-            //    }
-
-            //});
             Map(m => m.Sector).Index(5);
             Map(m => m.Industry).Index(6);
             Map(m => m.SummaryUrl).Index(7);

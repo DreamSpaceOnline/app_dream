@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Extensions;
+using Dream.Space.Models.Enums;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Playground.Models;
-using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Playground
 {

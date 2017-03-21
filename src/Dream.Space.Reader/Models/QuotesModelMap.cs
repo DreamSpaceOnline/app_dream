@@ -1,5 +1,6 @@
 ﻿using System;
 using CsvHelper.Configuration;
+using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Reader.Models
 {

@@ -61,7 +61,6 @@
     <Compile Include="IQuotesFileReader.cs" />
     <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Models\CompanyModelMap.cs" />
-    <Compile Include="Models\QuotesModel.cs" />
     <Compile Include="Models\QuotesModelMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuotesFileReader.cs" />
@@ -70,6 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
+      <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
+      <Name>Dream.Space.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Calculators;
 using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Companies;
 using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Import.Jobs
@@ -44,7 +43,7 @@ namespace Dream.Space.Import.Jobs
                     };
 
                     var companies = _companyService.FindCompaniesForJob(findRequest);
-                    var sectorResult = new SectorIndicatorResults(sector.SectorId);
+                    var sectorResult = new SectorIndicatorResults(sector.SectorId, _processorFactory);
 
                     while (companies != null && companies.Any())
                     {
@@ -53,6 +52,7 @@ namespace Dream.Space.Import.Jobs
                             foreach (var indicator in indicators)
                             {
                                 var result = CalculateIndicators(company, indicator);
+
                                 sectorResult.Add(result, indicator, company.Ticker);
                             }
                         }
@@ -78,36 +78,34 @@ namespace Dream.Space.Import.Jobs
 
     public class SectorIndicatorResults
     {
+        private readonly IndicatorProcessorFactory _processorFactory;
         public int SectorId { get; }
 
-        public SectorIndicatorResults(int sectorId)
+        public SectorIndicatorResults(int sectorId, IndicatorProcessorFactory processorFactory)
         {
+            _processorFactory = processorFactory;
             SectorId = sectorId;
-            IndicatorResults = new Dictionary<int, IndicatorResult>();
+            IndicatorResults = new Dictionary<int, IndicatorResults>();
         }
 
         public void Add(IList<IndicatorModel> result, Indicator indicator, string ticker)
         {
             if (!IndicatorResults.ContainsKey(indicator.IndicatorId))
             {
-                IndicatorResults.Add(indicator.IndicatorId, new IndicatorResult());
+                IndicatorResults.Add(indicator.IndicatorId, new IndicatorResults(indicator));
             }
-            IndicatorResults[indicator.IndicatorId].Add(result);
+            IndicatorResults[indicator.IndicatorId].Add(new IndicatorResult(ticker, result));
         }
 
-        public Dictionary<int, IndicatorResult> IndicatorResults { get; set; }
+        public Dictionary<int, IndicatorResults> IndicatorResults { get; set; }
 
         public void Merge()
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class IndicatorResult
-    {
-        public void Add(IList<IndicatorModel> result)
-        {
-            throw new NotImplementedException();
+            foreach (var indicatorResult in IndicatorResults)
+            {
+                var calculator = _processorFactory.Create(indicatorResult.Value.Indicator);
+                indicatorResult.Value.Merge(calculator);
+            }
         }
     }
 

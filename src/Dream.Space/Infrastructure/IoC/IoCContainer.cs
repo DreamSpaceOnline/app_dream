@@ -12,7 +12,7 @@ using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
 using Dream.Space.Indicators;
 using Dream.Space.Infrastructure.Settings;
-using Dream.Space.Models.Indicators;
+using Dream.Space.Models.Calculators;
 using Dream.Space.Playground;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Validators;

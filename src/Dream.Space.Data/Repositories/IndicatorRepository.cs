@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Enums;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Data.Repositories
 {

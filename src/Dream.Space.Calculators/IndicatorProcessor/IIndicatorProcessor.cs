@@ -2,7 +2,7 @@
 using System.Linq;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Services;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Quotes;
 using Newtonsoft.Json;
 
 namespace Dream.Space.Calculators.IndicatorProcessor
@@ -36,7 +36,7 @@ namespace Dream.Space.Calculators.IndicatorProcessor
 
         public void Process(string ticker, List<QuotesModel> quotes)
         {
-            var companyIndicators = _companyIndicatorService.GetIndicators(ticker);
+           // var companyIndicators = _companyIndicatorService.GetIndicators(ticker);
             foreach (var indicator in _indicators)
             {
                 var processor = _processorFactory.Create(indicator);

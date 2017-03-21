@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Strategies;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Data.Services
 {

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using Dream.Space.Data.Entities.Indicators;
+using Dream.Space.Models.Calculators;
+using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Calculators.IndicatorProcessor
 {
@@ -14,7 +15,7 @@ namespace Dream.Space.Calculators.IndicatorProcessor
             _calculators = container.Resolve<IEnumerable<IIndicatorCalculator>>();
         }
 
-        public IIndicatorCalculator Create(Indicator indicator)
+        public IIndicatorCalculator Create(IIndicatorEntity indicator)
         {
             return _calculators.FirstOrDefault(calculator => calculator.CanCalculate(indicator));
         }

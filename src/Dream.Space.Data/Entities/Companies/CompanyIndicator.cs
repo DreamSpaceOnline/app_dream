@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Dream.Space.Data.Models;
+using Dream.Space.Models.Indicators;
 using Newtonsoft.Json;
 
 namespace Dream.Space.Data.Entities.Companies

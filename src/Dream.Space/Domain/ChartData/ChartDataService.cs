@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Text;
 using Dream.Space.Data.Entities.Companies;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Domain.ChartData.Models;
 using Dream.Space.Domain.ChartData.Requests;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Domain.ChartData
 {

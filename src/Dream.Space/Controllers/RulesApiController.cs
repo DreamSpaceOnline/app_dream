@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Dream.Space.Data.Entities.Strategies;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Controllers
 {

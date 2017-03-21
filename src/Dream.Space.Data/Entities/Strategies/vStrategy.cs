@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Dream.Space.Models.Strategies;
 
 namespace Dream.Space.Data.Entities.Strategies
 {
     [Table("vStrategy")]
-    public partial class vStrategy
+    public partial class vStrategy: IStrategyView
     {
         public int StrategyId { get; set; }
 

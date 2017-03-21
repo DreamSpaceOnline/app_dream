@@ -2,6 +2,7 @@
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Models;
+using Dream.Space.Models.Companies;
 
 namespace Dream.Space.Data.Services
 {

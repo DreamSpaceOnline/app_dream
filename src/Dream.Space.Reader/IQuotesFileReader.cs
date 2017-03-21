@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Reader
 {

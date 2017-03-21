@@ -1,6 +1,4 @@
-﻿using Dream.Space.Data.Entities.Strategies;
-
-namespace Dream.Space.Data.Models
+﻿namespace Dream.Space.Models.Strategies
 {
     public class StrategySummary
     {
@@ -10,7 +8,7 @@ namespace Dream.Space.Data.Models
             
         }
 
-        public StrategySummary(Strategy strategy)
+        public StrategySummary(IStrategyEntity strategy)
         {
             StrategyId = strategy.StrategyId;
             Title = strategy.Name;

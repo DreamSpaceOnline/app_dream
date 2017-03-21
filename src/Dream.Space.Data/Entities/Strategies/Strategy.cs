@@ -1,6 +1,8 @@
-﻿namespace Dream.Space.Data.Entities.Strategies
+﻿using Dream.Space.Models.Strategies;
+
+namespace Dream.Space.Data.Entities.Strategies
 {
-    public class Strategy
+    public class Strategy: IStrategyEntity
     {
         public int StrategyId { get; set; }
         public string Name { get; set; }

@@ -5,6 +5,8 @@ using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Managers;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
+using Dream.Space.Models.Companies;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Data.Services

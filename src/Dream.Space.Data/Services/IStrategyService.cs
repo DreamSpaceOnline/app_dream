@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Models;
+using Dream.Space.Models.Strategies;
 
 namespace Dream.Space.Data.Services
 {

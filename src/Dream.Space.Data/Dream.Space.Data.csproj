@@ -101,18 +101,12 @@
     <Compile Include="Entities\Strategies\vStrategyRule.cs" />
     <Compile Include="Entities\Strategies\vStrategy.cs" />
     <Compile Include="Entities\Strategies\vStrategyRuleSet.cs" />
-    <Compile Include="Enums\DataSourceType.cs" />
     <Compile Include="Entities\Strategies\RuleSet.cs" />
     <Compile Include="Entities\Strategies\RuleSetDetails.cs" />
     <Compile Include="Entities\Strategies\StrategyRuleSet.cs" />
-    <Compile Include="Enums\TransformFunction.cs" />
-    <Compile Include="Enums\ChartType.cs" />
     <Compile Include="Entities\Strategies\Strategy.cs" />
-    <Compile Include="Enums\RuleFunction.cs" />
-    <Compile Include="Enums\CompareOperator.cs" />
     <Compile Include="Entities\Indicators\Indicator.cs" />
     <Compile Include="Entities\Strategies\Rule.cs" />
-    <Compile Include="Enums\HistoricalDataSeriesType.cs" />
     <Compile Include="Extensions\QuotesModelExtensions.cs" />
     <Compile Include="Helpers\Slug.cs" />
     <Compile Include="Migrations\201703081400500_InitialCommit.cs" />
@@ -147,8 +141,6 @@
     <Compile Include="Migrations\201703111013478_alterCompanyIndustry.Designer.cs">
       <DependentUpon>201703111013478_alterCompanyIndustry.cs</DependentUpon>
     </Compile>
-    <Compile Include="Enums\IndicatorParamName.cs" />
-    <Compile Include="Enums\QuotePeriod.cs" />
     <Compile Include="Migrations\201703131236210_CreateGlobalIndicator.cs" />
     <Compile Include="Migrations\201703131236210_CreateGlobalIndicator.Designer.cs">
       <DependentUpon>201703131236210_CreateGlobalIndicator.cs</DependentUpon>
@@ -162,19 +154,7 @@
       <DependentUpon>201703151534363_AddJobIdColumn.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobContainer.cs" />
-    <Compile Include="Models\CompanyDetails.cs" />
-    <Compile Include="Models\CompanyHeader.cs" />
-    <Compile Include="Models\CompanyToProcess.cs" />
-    <Compile Include="Models\CompanyToUpdate.cs" />
     <Compile Include="Models\FileCategory.cs" />
-    <Compile Include="Models\IndicatorCore.cs" />
-    <Compile Include="Models\IndicatorData.cs" />
-    <Compile Include="Models\IndicatorParam.cs" />
-    <Compile Include="Models\RuleModel.cs" />
-    <Compile Include="Models\RuleSetModel.cs" />
-    <Compile Include="Models\StrategyModel.cs" />
-    <Compile Include="Models\StrategyRuleSetModel.cs" />
-    <Compile Include="Models\StrategySummary.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />

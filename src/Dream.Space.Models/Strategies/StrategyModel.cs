@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Data.Entities.Strategies;
 using Newtonsoft.Json;
 
-namespace Dream.Space.Data.Models
+namespace Dream.Space.Models.Strategies
 {
     public class StrategyModel
     {
@@ -13,7 +12,7 @@ namespace Dream.Space.Data.Models
             RuleSets = new List<StrategyRuleSetModel>();
         }
 
-        public StrategyModel(Strategy strategy):this()
+        public StrategyModel(IStrategyEntity strategy):this()
         {
             StrategyId = strategy.StrategyId;
             Title = strategy.Name;
@@ -24,7 +23,7 @@ namespace Dream.Space.Data.Models
             Blocks = JsonConvert.DeserializeObject<List<dynamic>>(strategy.JsonArticleBlocks??String.Empty);
         }
 
-        public StrategyModel(List<vStrategy> data, int strategyId) :this()
+        public StrategyModel(List<IStrategyView> data, int strategyId) :this()
         {
             var header = data.FirstOrDefault(r => r.StrategyId == strategyId);
             if (header != null)

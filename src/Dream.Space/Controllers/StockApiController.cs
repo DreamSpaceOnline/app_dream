@@ -6,6 +6,7 @@ using Dream.Space.Data.Extensions;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Companies;
 using Dream.Space.Reader;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Requests;

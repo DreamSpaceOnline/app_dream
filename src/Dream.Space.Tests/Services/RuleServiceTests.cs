@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Autofac;
-using Dream.Space.Data.Enums;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Enums;
 using NUnit.Framework;
 
 namespace Dream.Space.Tests.Services

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Data.Entities.Strategies;
-using Dream.Space.Data.Enums;
+using Dream.Space.Models.Enums;
 
-namespace Dream.Space.Data.Models
+namespace Dream.Space.Models.Strategies.Rules
 {
     public class RuleSetModel
     {
@@ -12,7 +11,7 @@ namespace Dream.Space.Data.Models
             Rules = new List<RuleModel>();
         }
 
-        public RuleSetModel(List<vRuleSet> data, int ruleSetId) :this()
+        public RuleSetModel(List<IRuleSetView> data, int ruleSetId) :this()
         {
             var header = data.FirstOrDefault(r => r.RuleSetId == ruleSetId);
             if (header != null)
