@@ -187,6 +187,7 @@
     <Compile Include="Services\ArticleService.cs" />
     <Compile Include="Services\ArticleStorageService.cs" />
     <Compile Include="Services\CompanyIndicatorService.cs" />
+    <Compile Include="Requests\CompleteJobRequest.cs" />
     <Compile Include="Services\GlobalIndicatorService.cs" />
     <Compile Include="Services\CompanyManagerService.cs" />
     <Compile Include="Requests\CompaniesToProcessRequest.cs" />

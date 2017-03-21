@@ -25,6 +25,7 @@ namespace Dream.Space.Data.Services
         Task<CompanyHeader> GetAsync(string ticker);
         List<CompanyToUpdate> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
         List<CompanySector> GetCompanySectors();
+        void CompleteJob(CompleteJobRequest completeJobRequest);
     }
 
     public interface ICompanyManagerService 

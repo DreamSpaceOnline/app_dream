@@ -7,7 +7,7 @@ namespace Dream.Space.Import
     {
         static void Main(string[] args)
         {
-            var job = IoCContainer.Instance.Resolve<IQuotesImportJob>();
+            var job = IoCContainer.Instance.Resolve<IGlobalIndicatorsProcessJob>();
             job.Start();
         }
     }

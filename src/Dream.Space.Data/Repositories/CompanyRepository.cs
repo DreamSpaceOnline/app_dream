@@ -16,6 +16,7 @@ namespace Dream.Space.Data.Repositories
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
         List<CompanyToUpdate> FindCompaniesForJob(string requestJobId, int maxRecordCount, int sectorId);
+        void CompleteJob(string jobId, IList<string> tickers);
     }
 
 
@@ -116,6 +117,20 @@ namespace Dream.Space.Data.Repositories
                 .ToList();
 
             return records;
+        }
+
+        public void CompleteJob(string jobId, IList<string> tickerList)
+        {
+            var tickers = string.Join(",", tickerList.Select(t => $"'{t}'").ToArray());
+
+            var sql = $@"
+                UPDATE  C
+                    SET JobId = {jobId}
+                FROM dbo.Company C
+                WHERE Ticker IN ({tickers})";
+
+
+            DbContext.Database.ExecuteSqlCommand(sql);
         }
     }
 }

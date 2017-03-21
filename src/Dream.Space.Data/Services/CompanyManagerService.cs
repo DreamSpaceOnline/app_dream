@@ -196,5 +196,15 @@ namespace Dream.Space.Data.Services
                 return result;
             }
         }
+
+        public void CompleteJob(CompleteJobRequest request)
+        {
+            var tickers = request.Tickers;
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                repository.CompleteJob(request.JobId, request.Tickers);
+            }
+        }
     }
 }

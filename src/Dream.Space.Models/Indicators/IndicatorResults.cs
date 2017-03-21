@@ -11,10 +11,5 @@ namespace Dream.Space.Models.Indicators
         {
             Indicator = indicator;
         }
-
-        public void Merge(IIndicatorCalculator calculator)
-        {
-            //calculator.Merge(this);
-        }
     }
 }

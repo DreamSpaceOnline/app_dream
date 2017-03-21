@@ -14,12 +14,17 @@ namespace Dream.Space.Import.Jobs
     {
         private readonly ICompanyService _companyService;
         private readonly IIndicatorService _indicatorService;
+        private readonly IGlobalIndicatorService _globalIndicatorService;
         private readonly IndicatorProcessorFactory _processorFactory;
 
-        public GlobalIndicatorsProcessJob(ICompanyService companyService, IIndicatorService indicatorService, IndicatorProcessorFactory processorFactory)
+        public GlobalIndicatorsProcessJob(ICompanyService companyService, 
+            IIndicatorService indicatorService,
+            IGlobalIndicatorService globalIndicatorService, 
+            IndicatorProcessorFactory processorFactory)
         {
             _companyService = companyService;
             _indicatorService = indicatorService;
+            _globalIndicatorService = globalIndicatorService;
             _processorFactory = processorFactory;
         }
 
@@ -59,7 +64,35 @@ namespace Dream.Space.Import.Jobs
                         companies = _companyService.FindCompaniesForJob(findRequest);
                     }
 
-                    sectorResult.Merge();
+                    var tickers = new List<string>();
+                    var indicatorResults = sectorResult.IndicatorResults.Select(i => i.Value).ToList();
+                    foreach (var result in indicatorResults)
+                    {
+                        tickers.AddRange(result.Select(r => r.Ticker).ToList());
+                    }
+
+                    tickers = tickers.Distinct().ToList();
+
+
+                    foreach (var indicatorResult in sectorResult.IndicatorResults)
+                    {
+                        var calculator = _processorFactory.Create(indicatorResult.Value.Indicator);
+                        var result = calculator.Merge(indicatorResult.Value);
+
+                        _globalIndicatorService.Save(new GlobalIndicator
+                        {
+                            SectorId = sector.SectorId,
+                            IndicatorId = indicatorResult.Key,
+                            Values = result,
+                            StartDate = result.Last().Date,
+                            EndDate = result.First().Date,
+                            CalculatedSuccessful = true,
+                            CompanyCount = tickers.Count,
+                            LastCalculated = DateTime.UtcNow
+                        });
+                    }
+
+                    _companyService.CompleteJob(new CompleteJobRequest {JobId = findRequest.JobId, Tickers = tickers});
                 }
             }
 
@@ -73,39 +106,6 @@ namespace Dream.Space.Import.Jobs
         {
             var calculator = _processorFactory.Create(indicator);
             return calculator.Calculate(indicator, company.HistoryQuotes);
-        }
-    }
-
-    public class SectorIndicatorResults
-    {
-        private readonly IndicatorProcessorFactory _processorFactory;
-        public int SectorId { get; }
-
-        public SectorIndicatorResults(int sectorId, IndicatorProcessorFactory processorFactory)
-        {
-            _processorFactory = processorFactory;
-            SectorId = sectorId;
-            IndicatorResults = new Dictionary<int, IndicatorResults>();
-        }
-
-        public void Add(IList<IndicatorModel> result, Indicator indicator, string ticker)
-        {
-            if (!IndicatorResults.ContainsKey(indicator.IndicatorId))
-            {
-                IndicatorResults.Add(indicator.IndicatorId, new IndicatorResults(indicator));
-            }
-            IndicatorResults[indicator.IndicatorId].Add(new IndicatorResult(ticker, result));
-        }
-
-        public Dictionary<int, IndicatorResults> IndicatorResults { get; set; }
-
-        public void Merge()
-        {
-            foreach (var indicatorResult in IndicatorResults)
-            {
-                var calculator = _processorFactory.Create(indicatorResult.Value.Indicator);
-                indicatorResult.Value.Merge(calculator);
-            }
         }
     }
 
