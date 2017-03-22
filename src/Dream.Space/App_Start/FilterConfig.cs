@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Dream.Space.Attributes;
+using Dream.Space.Infrastructure.ErrorHandler;
 
 namespace Dream.Space
 {
@@ -7,7 +8,7 @@ namespace Dream.Space
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new ErrorHandler.AiHandleErrorAttribute());
+            filters.Add(new AiHandleErrorAttribute());
         }
     }
 }

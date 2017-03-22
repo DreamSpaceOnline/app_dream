@@ -10,7 +10,7 @@ using Dream.Space.Models.Quotes;
 namespace Dream.Space.Calculators
 {
 
-    public class NHNLCalculator : IIndicatorCalculator
+    public class NHNLCalculator : IndicatorCalculator
     {
         private readonly NHNL _calculator;
 
@@ -19,19 +19,20 @@ namespace Dream.Space.Calculators
             _calculator = new NHNL();
         }
 
-        public bool CanCalculate(IIndicatorEntity indicator)
+        public override bool CanCalculate(IIndicatorEntity indicator)
         {
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
+        public override List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 
             return _calculator.Calculate(quotes, ExtractPeriod(indicator));
         }
 
-        public List<IndicatorModel> Merge(List<IndicatorResult> indicatorResults)
+        //TODO: FIX IT
+        public override List<IndicatorModel> Merge(List<IndicatorResult> indicatorResults)
         {
             var result = new List<IndicatorModel>();
             if (indicatorResults == null || !indicatorResults.Any())
@@ -45,7 +46,7 @@ namespace Dream.Space.Calculators
                 var value = indicatorResults
                     .Sum(indicatorResult => indicatorResult.Result
                         .Where(r => r.Date == date)
-                        .Select(r => r.Value)
+                        .Select(r => r.Values[IndicatorModel.ValueType.NewLow])
                         .Sum());
 
 
@@ -56,7 +57,14 @@ namespace Dream.Space.Calculators
                 });
             }
 
-            return result;
+            var sma = new SMA().Calculate(
+                result.Select(item => new QuotesModel
+                    {
+                        Date = item.Date,
+                        Close = item.Value
+                    }).ToList(), 10);
+
+            return sma;
         }
 
 

@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IndicatorCalculator.cs" />
+    <Compile Include="SMACalculator.cs" />
     <Compile Include="IndicatorProcessor\IGlobalIndicatorProcessor.cs" />
     <Compile Include="NHNLCalculator.cs" />
     <Compile Include="ImpulseSystemCalculator.cs" />

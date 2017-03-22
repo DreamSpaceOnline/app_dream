@@ -10,7 +10,6 @@ using Dream.Space.Data;
 using Dream.Space.Data.Azure;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
-using Dream.Space.Indicators;
 using Dream.Space.Infrastructure.Settings;
 using Dream.Space.Models.Calculators;
 using Dream.Space.Playground;
@@ -116,7 +115,11 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<MACDCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<SMACalculator>().As<IIndicatorCalculator>();
 
+            builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
+            builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();
+            builder.RegisterType<GlobalIndicatorService>().As<IGlobalIndicatorService>().InstancePerDependency();
 
         }
 

@@ -94,6 +94,9 @@ namespace Dream.Space.Tests
             builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
 
             builder.RegisterType<PlaygroundConfigurationLoader>();
+            builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
+            builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();
+            builder.RegisterType<GlobalIndicatorService>().As<IGlobalIndicatorService>().InstancePerDependency();
 
             return builder.Build();
         }

@@ -8,13 +8,13 @@ using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Calculators
 {
-    public class EMACalculator : IndicatorCalculator
+    public class SMACalculator : IndicatorCalculator
     {
-        private readonly EMA _calculator;
+        private readonly SMA _calculator;
 
-        public EMACalculator()
+        public SMACalculator()
         {
-            _calculator = new EMA();
+            _calculator = new SMA();
         }
 
         public override bool CanCalculate(IIndicatorEntity indicator)
@@ -28,6 +28,7 @@ namespace Dream.Space.Calculators
 
             return _calculator.Calculate(quotes, ExtractPeriod(indicator));
         }
+
 
 
         public void Validate(IIndicatorEntity indicator, List<QuotesModel> quotes)

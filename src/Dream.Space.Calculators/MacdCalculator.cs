@@ -10,7 +10,7 @@ using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Calculators
 {
-    public class MACDCalculator : IIndicatorCalculator
+    public class MACDCalculator : IndicatorCalculator
     {
         private readonly MACD _calculator;
 
@@ -19,12 +19,12 @@ namespace Dream.Space.Calculators
             _calculator = new MACD();
         }
 
-        public bool CanCalculate(IIndicatorEntity indicator)
+        public override bool CanCalculate(IIndicatorEntity indicator)
         {
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
+        public override List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 
@@ -32,33 +32,6 @@ namespace Dream.Space.Calculators
             return _calculator.Calculate(quotes, macdParams);
         }
 
-        public List<IndicatorModel> Merge(List<IndicatorResult> indicatorResults)
-        {
-            var result = new List<IndicatorModel>();
-            if (indicatorResults == null || !indicatorResults.Any())
-            {
-                return result;
-            }
-            var dates = indicatorResults.First().Result.Select(d => d.Date).ToList();
-
-            foreach (var date in dates)
-            {
-                var value = indicatorResults
-                    .Sum(indicatorResult => indicatorResult.Result
-                        .Where(r => r.Date == date)
-                        .Select(r => r.Value)
-                        .Sum());
-
-
-                result.Add(new IndicatorModel
-                {
-                    Date = date,
-                    Value = value
-                });
-            }
-
-            return result;
-        }
 
         private MacdParams ExtractMacdParams(List<IndicatorParam> indicatorParams)
         {

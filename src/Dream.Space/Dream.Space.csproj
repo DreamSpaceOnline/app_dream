@@ -381,7 +381,7 @@
     <Compile Include="Controllers\RuleSetsApiController.cs" />
     <Compile Include="Controllers\StockApiController.cs" />
     <Compile Include="Controllers\StrategiesApiController.cs" />
-    <Compile Include="ErrorHandler\AiHandleErrorAttribute.cs" />
+    <Compile Include="Infrastructure\ErrorHandler\AiHandleErrorAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
