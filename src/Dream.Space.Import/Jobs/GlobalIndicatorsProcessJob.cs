@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dream.Space.Calculators.IndicatorProcessor;
+﻿using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
 using Dream.Space.Models.Companies;
 using Dream.Space.Models.Indicators;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dream.Space.Import.Jobs
 {
@@ -37,6 +37,8 @@ namespace Dream.Space.Import.Jobs
                 var sectors = _companyService.GetCompanySectors();
                 var indicators = _indicatorService.GetGlobalIndicators();
 
+                sectors = sectors.Take(1).ToList();
+
                 foreach (var sector in sectors)
                 {
 
@@ -60,39 +62,45 @@ namespace Dream.Space.Import.Jobs
 
                                 sectorResult.Add(result, indicator, company.Ticker);
                             }
+
+                            log.Info($"Processed {company.Ticker}");
                         }
+
+                        _companyService.CompleteJob(new CompleteJobRequest
+                        {
+                            JobId = findRequest.JobId,
+                            Tickers = companies.Select(c => c.Ticker).ToList()
+                        });
+
                         companies = _companyService.FindCompaniesForJob(findRequest);
                     }
 
-                    var tickers = new List<string>();
                     var indicatorResults = sectorResult.IndicatorResults.Select(i => i.Value).ToList();
-                    foreach (var result in indicatorResults)
+                    if (indicatorResults.Any())
                     {
-                        tickers.AddRange(result.Select(r => r.Ticker).ToList());
-                    }
+                        var tickers = indicatorResults.First().Select(r => r.Ticker).ToList();
 
-                    tickers = tickers.Distinct().ToList();
-
-
-                    foreach (var indicatorResult in sectorResult.IndicatorResults)
-                    {
-                        var calculator = _processorFactory.Create(indicatorResult.Value.Indicator);
-                        var result = calculator.Merge(indicatorResult.Value);
-
-                        _globalIndicatorService.Save(new GlobalIndicator
+                        foreach (var indicatorResult in indicatorResults)
                         {
-                            SectorId = sector.SectorId,
-                            IndicatorId = indicatorResult.Key,
-                            Values = result,
-                            StartDate = result.Last().Date,
-                            EndDate = result.First().Date,
-                            CalculatedSuccessful = true,
-                            CompanyCount = tickers.Count,
-                            LastCalculated = DateTime.UtcNow
-                        });
-                    }
+                            var calculator = _processorFactory.Create(indicatorResult.Indicator);
+                            var result = calculator.Merge(indicatorResult);
 
-                    _companyService.CompleteJob(new CompleteJobRequest {JobId = findRequest.JobId, Tickers = tickers});
+
+                            _globalIndicatorService.Save(new GlobalIndicator
+                            {
+                                SectorId = sector.SectorId,
+                                IndicatorId = indicatorResult.Indicator.IndicatorId,
+                                Values = result,
+                                StartDate = result.Last().Date,
+                                EndDate = result.First().Date,
+                                CalculatedSuccessful = true,
+                                CompanyCount = tickers.Count,
+                                LastCalculated = DateTime.UtcNow
+                            });
+
+                        }
+                    }
+                    
                 }
             }
 

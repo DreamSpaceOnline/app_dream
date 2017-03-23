@@ -48,21 +48,21 @@ namespace Dream.Space.Calculators
 
             foreach (var date in dates)
             {
-                var newLow = indicatorResults
-                    .Sum(indicatorResult => indicatorResult.Result
-                        .Where(r => r.Date == date)
-                        .Select(r => r.Values[IndicatorModel.ValueType.NewLow]).Sum());
-
-                var newHigh = indicatorResults
-                    .Sum(indicatorResult => indicatorResult.Result
-                        .Where(r => r.Date == date)
-                        .Select(r => r.Values[IndicatorModel.ValueType.NewNigh]).Sum());
-
-                result.Add(new IndicatorModel
+                var calculated = indicatorResults.SelectMany(c => c.Result).Where(r => r.Date == date).ToList();
+                if (calculated.Any())
                 {
-                    Date = date,
-                    Value = ((newHigh) / (newHigh + newLow)) * 100
-                });
+                    var newLow = calculated.Select(r => r.Values[IndicatorModel.ValueType.NewLow]).Sum();
+                    var newHigh = calculated.Select(r => r.Values[IndicatorModel.ValueType.NewNigh]).Sum();
+
+
+                    var value = CalculateNHNL(newHigh, newLow);
+
+                    result.Add(new IndicatorModel
+                    {
+                        Date = date,
+                        Value = value
+                    });
+                }
             }
 
             var sma = new SMA().Calculate(
@@ -73,6 +73,16 @@ namespace Dream.Space.Calculators
                     }).ToList(), 10);
 
             return sma;
+        }
+
+        private decimal CalculateNHNL(decimal newHigh, decimal newLow)
+        {
+            if (newHigh + newLow == 0)
+            {
+                return 0;
+            }
+
+            return ((newHigh) / (newHigh + newLow)) * 100;
         }
 
 

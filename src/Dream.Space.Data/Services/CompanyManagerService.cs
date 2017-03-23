@@ -199,7 +199,6 @@ namespace Dream.Space.Data.Services
 
         public void CompleteJob(CompleteJobRequest request)
         {
-            var tickers = request.Tickers;
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICompanyRepository>();

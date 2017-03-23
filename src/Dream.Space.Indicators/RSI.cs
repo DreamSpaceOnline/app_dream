@@ -101,6 +101,16 @@ namespace Dream.Space.Indicators
 
             public decimal Calculate()
             {
+                if (AverageLoss == 0)
+                {
+                    return 100;
+                }
+
+                if (AverageGain == 0)
+                {
+                    return 0;
+                }
+
                 var rs = AverageGain / AverageLoss;
                 return 100 - (100 / (1 + rs));
             }

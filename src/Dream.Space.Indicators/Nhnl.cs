@@ -2,7 +2,6 @@
 using System.Linq;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Quotes;
-using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Indicators
 {
@@ -43,10 +42,11 @@ namespace Dream.Space.Indicators
 
                 model.Values.Add(IndicatorModel.ValueType.NewNigh, isNewHigh);
                 model.Values.Add(IndicatorModel.ValueType.NewLow, isNewLow);
-                result.Add(model);
+
+                result.Insert(0, model);
             }
 
-            return result.OrderByDescending(r => r.Date).ToList();
+            return result;
         }
 
         private bool Validate(List<QuotesModel> quotes, int period)

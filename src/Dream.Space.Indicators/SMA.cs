@@ -37,7 +37,7 @@ namespace Dream.Space.Indicators
                 result.Insert(0, new IndicatorModel { Date = item.Date, Value = periodQuotes.Sum(q => q.Close) / period });
             }
 
-            return result.OrderByDescending(r => r.Date).ToList();
+            return result;
         }
 
         private bool Validate(List<QuotesModel> quotes, int period)

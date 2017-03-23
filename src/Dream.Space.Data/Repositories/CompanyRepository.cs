@@ -125,7 +125,7 @@ namespace Dream.Space.Data.Repositories
 
             var sql = $@"
                 UPDATE  C
-                    SET JobId = {jobId}
+                    SET LastJobId = '{jobId}'
                 FROM dbo.Company C
                 WHERE Ticker IN ({tickers})";
 
