@@ -45,7 +45,7 @@ namespace Dream.Space.Indicators
                 yesterdayEma = ema;
             }
 
-            return result;
+            return result.OrderByDescending(r => r.Date).ToList();
         }
 
         public IndicatorModel Calculate(QuotesModel quotes, List<IndicatorModel> values, int period)

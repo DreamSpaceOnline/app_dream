@@ -31,7 +31,12 @@ namespace Dream.Space.Calculators
             return _calculator.Calculate(quotes, ExtractPeriod(indicator));
         }
 
-        //TODO: FIX IT
+        /// <summary>
+        ///   Record High Percent = {New Highs / (New Highs + New Lows)} x 100 
+        ///   High-Low Index = 10 - day SMA of Record High Percent
+        /// </summary>
+        /// <param name="indicatorResults"></param>
+        /// <returns></returns>
         public override List<IndicatorModel> Merge(List<IndicatorResult> indicatorResults)
         {
             var result = new List<IndicatorModel>();
@@ -43,17 +48,20 @@ namespace Dream.Space.Calculators
 
             foreach (var date in dates)
             {
-                var value = indicatorResults
+                var newLow = indicatorResults
                     .Sum(indicatorResult => indicatorResult.Result
                         .Where(r => r.Date == date)
-                        .Select(r => r.Values[IndicatorModel.ValueType.NewLow])
-                        .Sum());
+                        .Select(r => r.Values[IndicatorModel.ValueType.NewLow]).Sum());
 
+                var newHigh = indicatorResults
+                    .Sum(indicatorResult => indicatorResult.Result
+                        .Where(r => r.Date == date)
+                        .Select(r => r.Values[IndicatorModel.ValueType.NewNigh]).Sum());
 
                 result.Add(new IndicatorModel
                 {
                     Date = date,
-                    Value = value
+                    Value = ((newHigh) / (newHigh + newLow)) * 100
                 });
             }
 

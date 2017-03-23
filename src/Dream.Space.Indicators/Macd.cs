@@ -37,7 +37,7 @@ namespace Dream.Space.Indicators
 
             var result = macdHist.Select(c => new IndicatorModel() {Date = c.Date, Value = c.Value}).ToList();
             
-            return result;
+            return result.OrderByDescending(r => r.Date).ToList(); 
         }
 
         private bool Validate(List<QuotesModel> quotes, MacdParams inputParams)

@@ -56,7 +56,7 @@ namespace Dream.Space.Indicators
             }
 
             var forceIndex = new EMA().Calculate(result, period);
-            return forceIndex;
+            return forceIndex.OrderByDescending(r => r.Date).ToList();
 
         }
 

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IndicatorCalculator.cs" />
+    <Compile Include="RSICalculator.cs" />
     <Compile Include="SMACalculator.cs" />
     <Compile Include="IndicatorProcessor\IGlobalIndicatorProcessor.cs" />
     <Compile Include="NHNLCalculator.cs" />
