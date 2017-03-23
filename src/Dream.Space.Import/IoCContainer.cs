@@ -69,6 +69,7 @@ namespace Dream.Space.Import
             builder.RegisterType<MACDCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<RSICalculator>().As<IIndicatorCalculator>();
 
             return builder.Build();
         }

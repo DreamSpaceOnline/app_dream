@@ -116,6 +116,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<SMACalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<RSICalculator>().As<IIndicatorCalculator>();
 
             builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
             builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();

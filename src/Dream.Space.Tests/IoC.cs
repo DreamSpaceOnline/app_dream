@@ -92,6 +92,7 @@ namespace Dream.Space.Tests
             builder.RegisterType<MACDCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ImpulseSystemCalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<NHNLCalculator>().As<IIndicatorCalculator>();
+            builder.RegisterType<RSICalculator>().As<IIndicatorCalculator>();
 
             builder.RegisterType<PlaygroundConfigurationLoader>();
             builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
