@@ -1,6 +1,6 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { Subscription } from "aurelia-event-aggregator";
-import {PlaygroundViewModel} from "../../../common/types/playground-models";
+import { PlaygroundViewModel, IndicatorValueItem} from "../../../common/types/playground-models";
 import {EventEmitter} from "../../../infrastructure/event-emitter";
 
 @autoinject
@@ -78,13 +78,29 @@ export class StockChart {
                 const indicatorPlot = this.chart.plot(plotNumber);
                 indicator.table = anychart.data.table(0);
 
+                let fieldValues: IndicatorValueItem[] = null;
                 indicator.indicatorValues.forEach(value => {
-                    const row = [[value.date, value.value]];
-                    indicator.table.addData(row);
+
+                    const row = [];
+                    row.push(value.date);
+
+                    value.values.forEach((item) => {
+                        row.push(item.value);
+                    });
+
+                    if (!fieldValues) {
+                        fieldValues = value.values;
+                    }                    
+                    indicator.table.addData([row]);
                 });
 
                 const indicatorMapping = indicator.table.mapAs();
-                indicatorMapping.addField("value", 1);   
+                let index = 0;
+                fieldValues.forEach(item => {
+                    index++;
+                    indicatorMapping.addField(item.name, index);   
+                });
+
                 const indicatorSeries = indicatorPlot.line(indicatorMapping);
                 indicatorSeries.name(indicator.name);
             });

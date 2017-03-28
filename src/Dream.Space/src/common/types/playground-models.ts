@@ -67,6 +67,11 @@ export interface ChartIndicatorInfo {
 
 export interface IndicatorValue {
     date: Date;
-    value: number;
+    values: IndicatorValueItem[];
 }
 
+export interface IndicatorValueItem {
+    kind: number;
+    name: string;
+    value: number;
+}
