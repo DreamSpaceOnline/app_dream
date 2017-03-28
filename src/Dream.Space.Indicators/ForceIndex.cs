@@ -30,11 +30,11 @@ namespace Dream.Space.Indicators
     /// 1. (item.CloseValue - prevItem.CloseValue)*item.Volume
     /// 2. Apply EMA (Period)
     /// </summary>
-    public class ForceIndex : IIndicator<IndicatorModel, int>
+    public class ForceIndex : IIndicator<IndicatorResult, int>
     {
         public string Name => "ForceIndex";
 
-        public List<IndicatorModel> Calculate(List<QuotesModel> quotes, int period)
+        public List<IndicatorResult> Calculate(List<QuotesModel> quotes, int period)
         {
             if (!Validate(quotes, period))
             {

@@ -11,16 +11,17 @@ namespace Dream.Space.Calculators
     {
         public abstract bool CanCalculate(IIndicatorEntity indicator);
 
-        public abstract List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes);
+        public abstract List<IndicatorResult> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes);
 
-        public virtual List<IndicatorModel> Merge(List<IndicatorResult> indicatorResults)
+        public virtual List<IndicatorResult> Merge(List<CompanyIndicatorResult> indicatorResults)
         {
-            var result = new List<IndicatorModel>();
+            var result = new List<IndicatorResult>();
             if (indicatorResults == null || !indicatorResults.Any())
             {
                 return result;
             }
-            var dates = indicatorResults.First().Result.Select(d => d.Date).ToList();
+            var startDate = indicatorResults.Select(c => c.Result.Last()).Min(a => a.Date);
+            var dates = indicatorResults.First().Result.Select(d => d.Date).Where(d => d >= startDate).ToList();
 
             foreach (var date in dates)
             {
@@ -31,9 +32,8 @@ namespace Dream.Space.Calculators
                         .Sum());
 
 
-                result.Add(new IndicatorModel
+                result.Add(new IndicatorResult(date)
                 {
-                    Date = date,
                     Value = value
                 });
             }

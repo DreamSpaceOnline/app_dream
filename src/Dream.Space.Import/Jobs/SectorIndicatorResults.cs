@@ -14,19 +14,19 @@ namespace Dream.Space.Import.Jobs
         {
             _processorFactory = processorFactory;
             SectorId = sectorId;
-            IndicatorResults = new Dictionary<int, IndicatorResults>();
+            IndicatorResults = new Dictionary<int, CompanyIndicatorResults>();
         }
 
-        public void Add(IList<IndicatorModel> result, IIndicatorEntity indicator, string ticker)
+        public void Add(IList<IndicatorResult> result, IIndicatorEntity indicator, string ticker)
         {
             if (!IndicatorResults.ContainsKey(indicator.IndicatorId))
             {
-                IndicatorResults.Add(indicator.IndicatorId, new IndicatorResults(indicator));
+                IndicatorResults.Add(indicator.IndicatorId, new CompanyIndicatorResults(indicator));
             }
-            IndicatorResults[indicator.IndicatorId].Add(new IndicatorResult(ticker, result));
+            IndicatorResults[indicator.IndicatorId].Add(new CompanyIndicatorResult(ticker, result));
         }
 
-        public Dictionary<int, IndicatorResults> IndicatorResults { get; set; }
+        public Dictionary<int, CompanyIndicatorResults> IndicatorResults { get; set; }
 
     }
 }

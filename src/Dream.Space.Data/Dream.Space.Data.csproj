@@ -153,6 +153,10 @@
     <Compile Include="Migrations\201703151534363_AddJobIdColumn.Designer.cs">
       <DependentUpon>201703151534363_AddJobIdColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703281311300_AlterCompany_SP500.cs" />
+    <Compile Include="Migrations\201703281311300_AlterCompany_SP500.Designer.cs">
+      <DependentUpon>201703281311300_AlterCompany_SP500.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -256,6 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703151534363_AddJobIdColumn.resx">
       <DependentUpon>201703151534363_AddJobIdColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703281311300_AlterCompany_SP500.resx">
+      <DependentUpon>201703281311300_AlterCompany_SP500.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

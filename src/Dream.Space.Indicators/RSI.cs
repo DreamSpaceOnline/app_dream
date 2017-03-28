@@ -25,11 +25,11 @@ namespace Dream.Space.Indicators
  */
 
 
-    public class RSI : IIndicator<IndicatorModel, int>
+    public class RSI : IIndicator<IndicatorResult, int>
     {
         public string Name => "RSI";
 
-        public List<IndicatorModel> Calculate(List<QuotesModel> quotes, int period)
+        public List<IndicatorResult> Calculate(List<QuotesModel> quotes, int period)
         {
             if (!Validate(quotes, period))
             {
@@ -39,13 +39,13 @@ namespace Dream.Space.Indicators
             var queue = new Queue<QuotesModel>(quotes.OrderBy(c => c.Date).ToList());
 
             var rs = CalcInitialRS(period, queue);
-            var result = new List<IndicatorModel> {new IndicatorModel {Date = rs.LastDate, Value = rs.Calculate()}};
+            var result = new List<IndicatorResult> {new IndicatorResult(rs.LastDate) { Value = rs.Calculate()}};
 
             foreach (var item in queue)
             {
                 rs.PrepareNext(item);
 
-                result.Insert(0, new IndicatorModel { Date = rs.LastDate, Value = rs.Calculate() });
+                result.Insert(0, new IndicatorResult(rs.LastDate) { Value = rs.Calculate() });
             }
 
 

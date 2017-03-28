@@ -205,5 +205,23 @@ namespace Dream.Space.Data.Services
                 repository.CompleteJob(request.JobId, request.Tickers);
             }
         }
+
+        public void MarkAsSP500(CompanyModel company)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                var entity = repository.Get(company.Ticker);
+                if (entity != null)
+                {
+                    if (!entity.SP500)
+                    {
+                        entity.SP500 = true;
+                        repository.Commit();
+                    }
+
+                }
+            }
+        }
     }
 }

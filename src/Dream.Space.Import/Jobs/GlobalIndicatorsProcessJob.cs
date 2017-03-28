@@ -110,7 +110,7 @@ namespace Dream.Space.Import.Jobs
             }
         }
 
-        private IList<IndicatorModel> CalculateIndicators(CompanyToUpdate company, Indicator indicator)
+        private IList<IndicatorResult> CalculateIndicators(CompanyToUpdate company, Indicator indicator)
         {
             var calculator = _processorFactory.Create(indicator);
             return calculator.Calculate(indicator, company.HistoryQuotes);

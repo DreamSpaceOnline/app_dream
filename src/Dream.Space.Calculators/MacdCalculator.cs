@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Dream.Space.Indicators;
 using Dream.Space.Indicators.IndicatorParams;
-using Dream.Space.Models.Calculators;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Quotes;
@@ -24,7 +23,7 @@ namespace Dream.Space.Calculators
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public override List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
+        public override List<IndicatorResult> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 

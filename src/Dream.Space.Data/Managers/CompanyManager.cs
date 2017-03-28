@@ -18,5 +18,10 @@ namespace Dream.Space.Data.Managers
         {
             _service.Register(_company);
         }
+
+        public void MarkAsSP500()
+        {
+            _service.MarkAsSP500(_company);
+        }
     }
 }

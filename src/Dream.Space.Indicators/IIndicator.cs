@@ -6,7 +6,7 @@ using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Indicators
 {
-    public interface IIndicator<TModel, TParams> where TModel : IIndicatorModel
+    public interface IIndicator<TModel, TParams> where TModel : IIndicatorResult
     {
         List<TModel> Calculate(List<QuotesModel> quotes, TParams inputParams);
         string Name { get; }

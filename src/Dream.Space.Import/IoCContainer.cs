@@ -56,6 +56,7 @@ namespace Dream.Space.Import
             builder.RegisterType<CompanyImportJob>().As<IJob>().As<ICompanyImportJob>();
             builder.RegisterType<QuotesImportJob>().As<IJob>().As<IQuotesImportJob>();
             builder.RegisterType<GlobalIndicatorsProcessJob>().As<IJob>().As<IGlobalIndicatorsProcessJob>();
+            builder.RegisterType<SP500CompanyImportJob>().As<IJob>().As<ISP500CompanyImportJob>();
             builder.RegisterType<IndicatorProcessorFactory>().SingleInstance();
             builder.RegisterType<IndicatorService>().As<IIndicatorService>();
 

@@ -152,7 +152,7 @@ namespace Dream.Space.Playground.Models
             return decimal.MinValue;
         }
 
-        private decimal GetValueFromIndicator(vStrategyRule rule, List<IndicatorModel> values, bool isFirst)
+        private decimal GetValueFromIndicator(vStrategyRule rule, List<IndicatorResult> values, bool isFirst)
         {
             var transform = isFirst ? rule.TransformItemsV1 : rule.TransformItemsV2;
             switch (transform)

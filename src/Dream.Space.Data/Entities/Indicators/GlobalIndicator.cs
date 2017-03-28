@@ -16,9 +16,9 @@ namespace Dream.Space.Data.Entities.Indicators
         public int CompanyCount { get; set; }
 
         [NotMapped]
-        public List<IndicatorModel> Values
+        public List<IndicatorResult> Values
         {
-            get { return JsonConvert.DeserializeObject<List<IndicatorModel>>(ValuesJson); }
+            get { return JsonConvert.DeserializeObject<List<IndicatorResult>>(ValuesJson); }
             set { ValuesJson = JsonConvert.SerializeObject(value); }
         }
 

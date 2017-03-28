@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dream.Space.Indicators;
-using Dream.Space.Models.Calculators;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Quotes;
@@ -24,7 +23,7 @@ namespace Dream.Space.Calculators
             return string.Compare(indicator.Name, _calculator.Name, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public override List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
+        public override List<IndicatorResult> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes)
         {
             Validate(indicator, quotes);
 
@@ -37,29 +36,31 @@ namespace Dream.Space.Calculators
         /// </summary>
         /// <param name="indicatorResults"></param>
         /// <returns></returns>
-        public override List<IndicatorModel> Merge(List<IndicatorResult> indicatorResults)
+        public override List<IndicatorResult> Merge(List<CompanyIndicatorResult> indicatorResults)
         {
-            var result = new List<IndicatorModel>();
+            var result = new List<IndicatorResult>();
             if (indicatorResults == null || !indicatorResults.Any())
             {
                 return result;
             }
-            var dates = indicatorResults.First().Result.Select(d => d.Date).ToList();
+
+            var startDate = indicatorResults.Select(c => c.Result.Last()).Min(a => a.Date);
+            var dates = indicatorResults.First().Result.Select(d => d.Date).Where(d => d >= startDate).ToList();
 
             foreach (var date in dates)
             {
                 var calculated = indicatorResults.SelectMany(c => c.Result).Where(r => r.Date == date).ToList();
                 if (calculated.Any())
                 {
-                    var newLow = calculated.Select(r => r.Values[IndicatorModel.ValueType.NewLow]).Sum();
-                    var newHigh = calculated.Select(r => r.Values[IndicatorModel.ValueType.NewNigh]).Sum();
+                    var nhnlResuts = calculated.Select(r => r.AsNHNLIndicatorResult()).ToList();
+
+                    var newLow = nhnlResuts.Sum(r => r.NewLow);
+                    var newHigh = nhnlResuts.Sum(r => r.NewHigh);
 
 
                     var value = CalculateNHNL(newHigh, newLow);
 
-                    result.Add(new IndicatorModel
-                    {
-                        Date = date,
+                    result.Add(new IndicatorResult(date) { 
                         Value = value
                     });
                 }

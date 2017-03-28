@@ -4,18 +4,17 @@ using Dream.Space.Indicators.Enums;
 using Dream.Space.Indicators.Models;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Quotes;
-using Dream.Space.Reader.Models;
 
 namespace Dream.Space.Indicators.Extensions
 {
     public static class IndicatorModelExtensions
     {
-        public static List<IndicatorModel> Substract(this List<IndicatorModel> substractFrom, List<IndicatorModel> substractThis)
+        public static List<IndicatorResult> Substract(this List<IndicatorResult> substractFrom, List<IndicatorResult> substractThis)
         {
             var result = from fromItem in substractFrom
                          join thisItem in substractThis
                          on fromItem.Date equals thisItem.Date
-                         select new IndicatorModel { Date = fromItem.Date, Value = fromItem.Value - thisItem.Value };
+                         select new IndicatorResult(fromItem.Date) { Value = fromItem.Value - thisItem.Value };
 
             return result.ToList();
         }
@@ -27,10 +26,10 @@ namespace Dream.Space.Indicators.Extensions
         /// </summary>
         /// <param name="impulseData"></param>
         /// <returns></returns>
-        public static List<IndicatorModel> AsImpulseSystemModel(this List<ImpulseData> impulseData)
+        public static List<IndicatorResult> AsImpulseSystemModel(this List<ImpulseData> impulseData)
         {
-            var result = new List<IndicatorModel>();
-            for (int i = 1; i < impulseData.Count; i++)
+            var result = new List<IndicatorResult>();
+            for (var i = 1; i < impulseData.Count; i++)
             {
                 var today = impulseData[i - 1];
                 var prev = impulseData[i];
@@ -44,12 +43,12 @@ namespace Dream.Space.Indicators.Extensions
                 {
                     color = ImpulseType.Red;
                 }
-                result.Add(new IndicatorModel { Date = today.Date, Value = (int)color});
+                result.Add(new IndicatorResult(today.Date) { Value = (int)color});
             }
             return result;
         }
 
-        public static List<QuotesModel> AsQuotesModel(this List<IndicatorModel> list, QuoteModelField mapValueTo)
+        public static List<QuotesModel> AsQuotesModel(this List<IndicatorResult> list, QuoteModelField mapValueTo)
         {
             var result = new List<QuotesModel>();
             foreach (var model in list)

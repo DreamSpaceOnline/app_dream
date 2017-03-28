@@ -22,18 +22,18 @@ namespace Dream.Space.Indicators
     /// EMA = Price(t) * k + EMA(y) * (1 – k)
     /// where: t = today, y = yesterday, N = number of days in EMA, k = 2/(N+1)
     /// </summary>
-    public class EMA : IIndicator<IndicatorModel, int>
+    public class EMA : IIndicator<IndicatorResult, int>
     {
         public string Name => "EMA";
 
-        public List<IndicatorModel> Calculate(List<QuotesModel> quotes, int period)
+        public List<IndicatorResult> Calculate(List<QuotesModel> quotes, int period)
         {
             if (!Validate(quotes, period))
             {
                 return null;
             }
 
-            var result = new List<IndicatorModel>();
+            var result = new List<IndicatorResult>();
             var queue = new Queue<QuotesModel>(quotes.OrderBy(c => c.Date).ToList());
 
             var yesterdayEma = CalcInitialEma(period, queue);
@@ -41,23 +41,22 @@ namespace Dream.Space.Indicators
             foreach (var item in queue)
             {
                 var ema = CalculateEma(item.Close, period, yesterdayEma);
-                result.Insert(0, new IndicatorModel { Date = item.Date, Value = ema});
+                result.Insert(0, new IndicatorResult(item.Date) { Value = ema});
                 yesterdayEma = ema;
             }
 
             return result.OrderByDescending(r => r.Date).ToList();
         }
 
-        public IndicatorModel Calculate(QuotesModel quotes, List<IndicatorModel> values, int period)
+        public IndicatorResult Calculate(QuotesModel quotes, List<IndicatorResult> values, int period)
         {
             if (quotes.Date == values[0].Date)
             {
                 values.RemoveAt(0);
             }
 
-            return new IndicatorModel()
+            return new IndicatorResult(quotes.Date)
             {
-                Date = quotes.Date,
                 Value = CalculateEma(quotes.Close, period, values[0].Value)
             };
         }

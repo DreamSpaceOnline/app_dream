@@ -26,6 +26,7 @@ namespace Dream.Space.Data.Services
         List<CompanyToUpdate> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
         List<CompanySector> GetCompanySectors();
         void CompleteJob(CompleteJobRequest completeJobRequest);
+        void MarkAsSP500(CompanyModel company);
     }
 
     public interface ICompanyManagerService 

@@ -5,21 +5,22 @@ using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Indicators
 {
+
     /// <summary>
     /// period = 20 days, 65 days and 356 days
     /// </summary>
-    public class NHNL : IIndicator<IndicatorModel, int>
+    public class NHNL : IIndicator<IndicatorResult, int>
     {
         public string Name => "NHNL";
 
-        public List<IndicatorModel> Calculate(List<QuotesModel> quotes, int period)
+        public List<IndicatorResult> Calculate(List<QuotesModel> quotes, int period)
         {
             if (!Validate(quotes, period))
             {
                 return null;
             }
 
-            var result = new List<IndicatorModel>();
+            var result = new List<IndicatorResult>();
             var ordered = quotes.OrderBy(q => q.Date).ToList();
 
             for (var index = 0; index < quotes.Count - period; index++)
@@ -35,17 +36,13 @@ namespace Dream.Space.Indicators
                     .Where(q => q.Date != latestQuotes.Date)
                     .All(q => q.Close > latestQuotes.Close) ? -1 : 0;
 
-                var model = new IndicatorModel
-                {
-                    Date = latestQuotes.Date
-                };
+                var model = new IndicatorResult(latestQuotes.Date).AsNHNLIndicatorResult();
 
-                model.Values.Add(IndicatorModel.ValueType.NewNigh, isNewHigh);
-                model.Values.Add(IndicatorModel.ValueType.NewLow, isNewLow);
+                model.NewHigh = isNewHigh;
+                model.NewLow = isNewLow;
 
-                result.Insert(0, model);
+                result.Insert(0, model.Result);
             }
-
             return result;
         }
 

@@ -7,8 +7,8 @@ namespace Dream.Space.Models.Calculators
     public interface IIndicatorCalculator
     {
         bool CanCalculate(IIndicatorEntity indicator);
-        List<IndicatorModel> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes);
-        List<IndicatorModel> Merge(List<IndicatorResult> indicatorResultValue);
+        List<IndicatorResult> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes);
+        List<IndicatorResult> Merge(List<CompanyIndicatorResult> indicatorResultValue);
     }
 
 }

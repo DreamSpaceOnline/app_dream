@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jobs\SP500CompanyImportJob.cs" />
     <Compile Include="Jobs\CompanyImportJob.cs" />
     <Compile Include="IoCContainer.cs" />
     <Compile Include="Jobs\GlobalIndicatorsProcessJob.cs" />

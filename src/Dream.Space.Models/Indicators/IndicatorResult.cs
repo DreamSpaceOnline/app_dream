@@ -1,16 +1,35 @@
-using System.Collections.Generic;
+﻿using System;
 
 namespace Dream.Space.Models.Indicators
 {
-    public class IndicatorResult
+    public class IndicatorResult : IIndicatorResult
     {
-        public string Ticker { get; }
-        public IList<IndicatorModel> Result { get; }
-
-        public IndicatorResult(string ticker, IList<IndicatorModel> result)
+        public IndicatorResult(DateTime date)
         {
-            Ticker = ticker;
-            Result = result;
+            Values = new IndicatorValues(date);
+        }
+
+
+        public decimal Value {
+            get
+            {
+                return Values.GetValue(ValueKind.Value);
+            }
+
+            set
+            {
+                Values.SetValue(ValueKind.Value, value);
+            }
+        }
+
+
+        public DateTime Date { get; set; }
+        public IndicatorValues Values { get; set; }
+
+
+        public NHNLIndicatorResultDecorator AsNHNLIndicatorResult()
+        {
+            return new NHNLIndicatorResultDecorator(this);
         }
     }
 }

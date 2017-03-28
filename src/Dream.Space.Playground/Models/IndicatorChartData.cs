@@ -7,6 +7,6 @@ namespace Dream.Space.Playground.Models
     public class IndicatorChartData
     {
         public Indicator Indicator { get; set; }
-        public List<IndicatorModel> IndicatorValues { get; set; }
+        public List<IndicatorResult> IndicatorValues { get; set; }
     }
 }
