@@ -22,12 +22,6 @@ namespace Dream.Space.Models.Indicators
 
     public class IndicatorValues : List<IndicatorValueItem>
     {
-        public DateTime Date { get; }
-
-        public IndicatorValues(DateTime date)
-        {
-            Date = date;
-        }
 
         public decimal GetValue(ValueKind kind)
         {

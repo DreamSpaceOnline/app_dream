@@ -105,7 +105,7 @@ namespace Dream.Space.Data.Repositories
 
         public List<CompanyToUpdate> FindCompaniesForJob(string jobId,  int count, int sectorId)
         {
-            var records = Dbset.Where(c => c.SectorId == sectorId && c.Filtered && c.LastJobId != jobId)
+            var records = Dbset.Where(c => (c.SectorId == sectorId || sectorId == 0) && c.Filtered && (c.SP500 || sectorId > 0) && c.LastJobId != jobId)
                 .Select(c => new CompanyToUpdate
                 {
                     Ticker = c.Ticker,

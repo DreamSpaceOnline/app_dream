@@ -34,74 +34,68 @@ namespace Dream.Space.Import.Jobs
 
             try
             {
-                var sectors = _companyService.GetCompanySectors();
                 var indicators = _indicatorService.GetGlobalIndicators();
 
-                sectors = sectors.Take(1).ToList();
 
-                foreach (var sector in sectors)
+                var findRequest = new FindCompaniesForJobRequest()
                 {
+                    JobId = Guid.NewGuid().ToString(),
+                    MaxRecordCount = 10,
+                    SectorId = 0
+                };
 
-                    var findRequest = new FindCompaniesForJobRequest()
+                var companies = _companyService.FindCompaniesForJob(findRequest);
+                var sectorResult = new SectorIndicatorResults(0, _processorFactory);
+
+                while (companies != null && companies.Any())
+                {
+                    foreach (var company in companies)
                     {
-                        JobId = Guid.NewGuid().ToString(),
-                        MaxRecordCount = 10,
-                        SectorId = sector.SectorId
-                    };
-
-                    var companies = _companyService.FindCompaniesForJob(findRequest);
-                    var sectorResult = new SectorIndicatorResults(sector.SectorId, _processorFactory);
-
-                    while (companies != null && companies.Any())
-                    {
-                        foreach (var company in companies)
+                        foreach (var indicator in indicators)
                         {
-                            foreach (var indicator in indicators)
-                            {
-                                var result = CalculateIndicators(company, indicator);
+                            var result = CalculateIndicators(company, indicator);
 
-                                sectorResult.Add(result, indicator, company.Ticker);
-                            }
-
-                            log.Info($"Processed {company.Ticker}");
+                            sectorResult.Add(result, indicator, company.Ticker);
                         }
 
-                        _companyService.CompleteJob(new CompleteJobRequest
-                        {
-                            JobId = findRequest.JobId,
-                            Tickers = companies.Select(c => c.Ticker).ToList()
-                        });
-
-                        companies = _companyService.FindCompaniesForJob(findRequest);
+                        log.Info($"Processed {company.Ticker}");
                     }
 
-                    var indicatorResults = sectorResult.IndicatorResults.Select(i => i.Value).ToList();
-                    if (indicatorResults.Any())
+                    _companyService.CompleteJob(new CompleteJobRequest
                     {
-                        var tickers = indicatorResults.First().Select(r => r.Ticker).ToList();
+                        JobId = findRequest.JobId,
+                        Tickers = companies.Select(c => c.Ticker).ToList()
+                    });
 
-                        foreach (var indicatorResult in indicatorResults)
-                        {
-                            var calculator = _processorFactory.Create(indicatorResult.Indicator);
-                            var result = calculator.Merge(indicatorResult);
-
-
-                            _globalIndicatorService.Save(new GlobalIndicator
-                            {
-                                SectorId = sector.SectorId,
-                                IndicatorId = indicatorResult.Indicator.IndicatorId,
-                                Values = result,
-                                StartDate = result.Last().Date,
-                                EndDate = result.First().Date,
-                                CalculatedSuccessful = true,
-                                CompanyCount = tickers.Count,
-                                LastCalculated = DateTime.UtcNow
-                            });
-
-                        }
-                    }
-                    
+                    companies = null; // _companyService.FindCompaniesForJob(findRequest);
                 }
+
+                var indicatorResults = sectorResult.IndicatorResults.Select(i => i.Value).ToList();
+                if (indicatorResults.Any())
+                {
+                    var tickers = indicatorResults.First().Select(r => r.Ticker).ToList();
+
+                    foreach (var indicatorResult in indicatorResults)
+                    {
+                        var calculator = _processorFactory.Create(indicatorResult.Indicator);
+                        var result = calculator.Merge(indicatorResult);
+
+
+                        var response = _globalIndicatorService.Save(new GlobalIndicator
+                        {
+                            SectorId = 0, //sector.SectorId,
+                            IndicatorId = indicatorResult.Indicator.IndicatorId,
+                            Values = result,
+                            StartDate = result.Last().Date,
+                            EndDate = result.First().Date,
+                            CalculatedSuccessful = true,
+                            CompanyCount = tickers.Count,
+                            LastCalculated = DateTime.UtcNow
+                        }).GetAwaiter().GetResult();
+
+                    }
+                }
+                    
             }
 
             catch (Exception ex)

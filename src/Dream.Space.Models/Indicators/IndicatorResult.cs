@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Dream.Space.Models.Indicators
 {
@@ -6,10 +7,11 @@ namespace Dream.Space.Models.Indicators
     {
         public IndicatorResult(DateTime date)
         {
-            Values = new IndicatorValues(date);
+            Values = new IndicatorValues();
+            Date = date;
         }
 
-
+        [JsonIgnore]
         public decimal Value {
             get
             {

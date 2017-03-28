@@ -25,16 +25,13 @@ namespace Dream.Space.Calculators
 
             foreach (var date in dates)
             {
-                var value = indicatorResults
-                    .Sum(indicatorResult => indicatorResult.Result
-                        .Where(r => r.Date == date)
-                        .Select(r => r.Value)
-                        .Sum());
-
+                var value = indicatorResults.SelectMany(indicatorResult => indicatorResult.Result)
+                    .Where(r => r.Date == date)
+                    .Average(r => r.Value);
 
                 result.Add(new IndicatorResult(date)
                 {
-                    Value = value
+                    Value = Math.Round(value, 4)
                 });
             }
 

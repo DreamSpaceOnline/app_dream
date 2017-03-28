@@ -44,26 +44,23 @@ namespace Dream.Space.Calculators
                 return result;
             }
 
-            var startDate = indicatorResults.Select(c => c.Result.Last()).Min(a => a.Date);
+            var startDate = indicatorResults.Select(c => c.Result.Last()).Max(a => a.Date);
             var dates = indicatorResults.First().Result.Select(d => d.Date).Where(d => d >= startDate).ToList();
 
             foreach (var date in dates)
             {
                 var calculated = indicatorResults.SelectMany(c => c.Result).Where(r => r.Date == date).ToList();
-                if (calculated.Any())
-                {
-                    var nhnlResuts = calculated.Select(r => r.AsNHNLIndicatorResult()).ToList();
+                var nhnlResuts = calculated.Select(r => r.AsNHNLIndicatorResult()).ToList();
 
-                    var newLow = nhnlResuts.Sum(r => r.NewLow);
-                    var newHigh = nhnlResuts.Sum(r => r.NewHigh);
+                var newLow = nhnlResuts.Sum(r => r.NewLow);
+                var newHigh = nhnlResuts.Sum(r => r.NewHigh);
 
 
-                    var value = CalculateNHNL(newHigh, newLow);
+                var value = CalculateNHNL(newHigh, newLow);
 
-                    result.Add(new IndicatorResult(date) { 
-                        Value = value
-                    });
-                }
+                result.Add(new IndicatorResult(date) { 
+                    Value = value
+                });
             }
 
             var sma = new SMA().Calculate(

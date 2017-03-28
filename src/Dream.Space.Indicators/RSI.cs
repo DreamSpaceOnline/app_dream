@@ -112,7 +112,8 @@ namespace Dream.Space.Indicators
                 }
 
                 var rs = AverageGain / AverageLoss;
-                return 100 - (100 / (1 + rs));
+                var rsi = 100 - (100 / (1 + rs));
+                return Math.Round(rsi, 4);
             }
 
             public void PrepareNext(QuotesModel quote)
