@@ -319,6 +319,9 @@
     <Content Include="package.json" />
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
+    <Content Include="src\components\market\global-markets.html" />
+    <Content Include="src\components\market\navigation.html" />
+    <Content Include="src\components\market\sub-nav\stock-indices.html" />
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
     <Content Include="src\components\nav-menu\category-nav\category-nav.html" />
     <Content Include="src\components\nav-menu\sub-nav\sub-nav.html" />
@@ -371,6 +374,7 @@
     <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\CompaniesApiController.cs" />
     <Compile Include="Controllers\FileDetails.cs" />
+    <Compile Include="Controllers\GlobalMarketsApiController.cs" />
     <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
@@ -448,6 +452,9 @@
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
+    <TypeScriptCompile Include="src\components\market\global-markets.ts" />
+    <TypeScriptCompile Include="src\components\market\navigation.ts" />
+    <TypeScriptCompile Include="src\components\market\sub-nav\stock-indices.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\category-nav\category-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\sub-nav\sub-nav.ts" />
@@ -636,6 +643,7 @@
     <None Include="Properties\PublishProfiles\DreamSpace - Web Deploy.pubxml" />
     <Content Include="karma.conf.js" />
     <Content Include=".vscode\settings.json" />
+    <Content Include="src\components\market\global-markets.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

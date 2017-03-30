@@ -1,0 +1,20 @@
+﻿<template>
+    <require from="./global-markets.css"></require>
+    
+    <div class="actions" if.bind="powerUser">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Administration
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a click.delegate="refreshSP500Stocks()">Refresh S&P500 Stocks</a></li>
+                <li><a click.delegate="refreshAllStocks()">Refresh All Stocks</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a click.delegate="recalculateSP500Indicators()">Recalculate S&P500 Indicators</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Global markets</h3>
+</template>

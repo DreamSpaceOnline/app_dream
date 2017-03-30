@@ -98,6 +98,9 @@
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
+    <Compile Include="Entities\Jobs\JobStatus.cs" />
+    <Compile Include="Entities\Jobs\ScheduledJob.cs" />
+    <Compile Include="Entities\Jobs\ScheduledJobType.cs" />
     <Compile Include="Entities\Strategies\vStrategyRule.cs" />
     <Compile Include="Entities\Strategies\vStrategy.cs" />
     <Compile Include="Entities\Strategies\vStrategyRuleSet.cs" />
@@ -157,6 +160,10 @@
     <Compile Include="Migrations\201703281311300_AlterCompany_SP500.Designer.cs">
       <DependentUpon>201703281311300_AlterCompany_SP500.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703301524502_CreateScheduledJob.cs" />
+    <Compile Include="Migrations\201703301524502_CreateScheduledJob.Designer.cs">
+      <DependentUpon>201703301524502_CreateScheduledJob.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -165,6 +172,7 @@
     <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
     <Compile Include="Repositories\ICompanySectorRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
+    <Compile Include="Repositories\ScheduledJobRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
     <Compile Include="Repositories\VStrategyRepository.cs" />
     <Compile Include="Repositories\VRuleSetRepository.cs" />
@@ -195,10 +203,12 @@
     <Compile Include="Services\GlobalIndicatorService.cs" />
     <Compile Include="Services\CompanyManagerService.cs" />
     <Compile Include="Requests\CompaniesToProcessRequest.cs" />
+    <Compile Include="Services\GlobalMarketsService.cs" />
     <Compile Include="Services\IArticleService.cs" />
     <Compile Include="Services\IArticleStorageService.cs" />
     <Compile Include="Services\ICompanyIndicatorService.cs" />
     <Compile Include="Services\ICompanyService.cs" />
+    <Compile Include="Services\IGlobalMarketsService.cs" />
     <Compile Include="Services\IIndicatorService.cs" />
     <Compile Include="Services\IRuleService.cs" />
     <Compile Include="Services\IRuleSetService.cs" />
@@ -263,6 +273,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703281311300_AlterCompany_SP500.resx">
       <DependentUpon>201703281311300_AlterCompany_SP500.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703301524502_CreateScheduledJob.resx">
+      <DependentUpon>201703301524502_CreateScheduledJob.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

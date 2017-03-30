@@ -4,6 +4,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
+using Dream.Space.Data.Entities.Jobs;
 using Dream.Space.Data.Entities.Strategies;
 
 namespace Dream.Space.Data
@@ -70,6 +71,9 @@ namespace Dream.Space.Data
             modelBuilder.Entity<Strategy>().HasKey(e => e.StrategyId);
             modelBuilder.Entity<Strategy>().Property(e => e.Name).IsRequired().HasColumnType("varchar").HasMaxLength(255);
 
+            //ScheduledJob
+            modelBuilder.Entity<ScheduledJob>().HasKey(e => e.JobId);
+
             //Strategy
             modelBuilder.Entity<GlobalIndicator>().HasKey(e => new { e.IndicatorId, e.SectorId });
 
@@ -122,5 +126,6 @@ namespace Dream.Space.Data
         public virtual DbSet<vStrategyRuleSet> vStrategyRuleSets { get; set; }
         public virtual DbSet<vStrategyRule> vStrategyRules { get; set; }
         public virtual DbSet<GlobalIndicator> GlobalIndicators { get; set; }
+        public virtual DbSet<ScheduledJob> ScheduledJobs { get; set; }
     }
 }
