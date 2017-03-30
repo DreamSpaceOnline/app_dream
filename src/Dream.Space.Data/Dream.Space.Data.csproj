@@ -171,6 +171,7 @@
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />
     <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
     <Compile Include="Repositories\ICompanySectorRepository.cs" />
+    <Compile Include="Repositories\IScheduledJobRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\ScheduledJobRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
@@ -212,8 +213,10 @@
     <Compile Include="Services\IIndicatorService.cs" />
     <Compile Include="Services\IRuleService.cs" />
     <Compile Include="Services\IRuleSetService.cs" />
+    <Compile Include="Services\IScheduledJobsService.cs" />
     <Compile Include="Services\IStrategyService.cs" />
     <Compile Include="Requests\UpdateQuotesRequest.cs" />
+    <Compile Include="Services\ScheduledJobsService.cs" />
     <Compile Include="Services\StrategyService.cs" />
     <Compile Include="Entities\Strategies\vRuleSet.cs" />
   </ItemGroup>

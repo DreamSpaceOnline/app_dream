@@ -80,9 +80,12 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<VRuleSetRepository>().As<IVRuleSetRepository>().InstancePerDependency();
             builder.RegisterType<VStrategyRuleSetRepository>().As<IVStrategyRuleSetRepository>().InstancePerDependency();
             builder.RegisterType<VStrategyRuleRepository>().As<IVStrategyRuleRepository>().InstancePerDependency();
+            builder.RegisterType<ScheduledJobRepository>().As<IScheduledJobRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
 
+            builder.RegisterType<GlobalMarketsService>().As<IGlobalMarketsService>();
+            builder.RegisterType<ScheduledJobsService>().As<IScheduledJobsService>();
             builder.RegisterType<ArticleService>().As<IArticleService>();
             builder.RegisterType<RuleService>().As<IRuleService>();
             builder.RegisterType<StrategyService>().As<IStrategyService>();
