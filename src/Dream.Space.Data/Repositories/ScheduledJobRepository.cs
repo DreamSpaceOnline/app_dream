@@ -21,7 +21,7 @@ namespace Dream.Space.Data.Repositories
             {
                 jobs.Add(await GetRecentAsync(jobType));    
             }
-            return jobs;
+            return jobs.OrderByDescending(j => j.StartDate).ToList();
         }
 
         public async Task<ScheduledJob> GetRecentAsync(ScheduledJobType jobType)
@@ -45,11 +45,25 @@ namespace Dream.Space.Data.Repositories
             }
         }
 
-        public void DeleteAll()
+        public async Task DeleteHistoryAsync()
         {
             const string sql = @"DELETE FROM ScheduledJob WHERE Status IN (2,3,99)";
 
-            DbContext.Database.ExecuteSqlCommand(sql);
+            await DbContext.Database.ExecuteSqlCommandAsync(sql);
+        }
+
+        public async Task<IList<ScheduledJob>> GetActiveJobsAsync()
+        {
+            var jobs = await Dbset.Where(j => !j.IsFinished()).OrderByDescending(j => j.StartDate).ToListAsync();
+
+            return jobs;
+        }
+
+        public async Task<IList<ScheduledJob>> GetHistoryAsync(ScheduledJobType jobType)
+        {
+            var jobs = await Dbset.Where(j => j.IsFinished() && (j.JobType == jobType || jobType == ScheduledJobType.All)).OrderByDescending(j => j.StartDate).ToListAsync();
+
+            return jobs;
         }
     }
 }

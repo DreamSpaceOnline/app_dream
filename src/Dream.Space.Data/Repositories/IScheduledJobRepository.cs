@@ -13,6 +13,8 @@ namespace Dream.Space.Data.Repositories
         Task CommitAsync();
         void Commit();
         Task DeleteAsync(int id);
-        void DeleteAll();
+        Task DeleteHistoryAsync();
+        Task<IList<ScheduledJob>> GetActiveJobsAsync();
+        Task<IList<ScheduledJob>> GetHistoryAsync(ScheduledJobType jobType);
     }
 }

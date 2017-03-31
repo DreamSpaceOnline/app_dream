@@ -26,5 +26,10 @@ namespace Dream.Space.Data.Entities.Jobs
                     return false;
             }
         }
+
+        public bool Expired()
+        {
+            return DateTime.Today.AddDays(-1) > StartDate;
+        }
     }
 }

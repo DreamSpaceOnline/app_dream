@@ -10,14 +10,14 @@ namespace Dream.Space
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("{assets}", new { assets = @".*\.(css|js|gif|jpg)(/.)?" });
             routes.IgnoreRoute("api/{endpoints}");
+            routes.IgnoreRoute("hangfire*");
 
             routes.MapRoute(
                 name: "HealthCheck",
                 url: "health/{action}",
                 defaults: new { controller = "Health", action = "Check" }
             );
-
-
+  
             routes.MapRoute(
                 name: "AureliaRouting",
                 url: "{*url}",
