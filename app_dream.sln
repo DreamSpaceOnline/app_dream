@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space", "src\Dream.Space\Dream.Space.csproj", "{BFC624D3-DB31-402F-90AA-188339B1A91C}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Import", "src\Dream.Space.Import\Dream.Space.Import.csproj", "{1911B209-79ED-46C4-84CF-004018C6EEBD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Models", "src\Dream.Space.Models\Dream.Space.Models.csproj", "{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream.Space.Jobs", "src\Dream.Space.Jobs\Dream.Space.Jobs.csproj", "{747241FC-7A45-4E40-8F97-1A463A8A4AB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A2CAA28-2C91-459F-81A4-5405C36FCA2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{747241FC-7A45-4E40-8F97-1A463A8A4AB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{747241FC-7A45-4E40-8F97-1A463A8A4AB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{747241FC-7A45-4E40-8F97-1A463A8A4AB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{747241FC-7A45-4E40-8F97-1A463A8A4AB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -537,6 +537,10 @@
       <Project>{d3dd96e0-079e-4a28-acc3-aa5b2ea39c01}</Project>
       <Name>Dream.Space.Indicators</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Jobs\Dream.Space.Jobs.csproj">
+      <Project>{747241fc-7a45-4e40-8f97-1a463a8a4ab4}</Project>
+      <Name>Dream.Space.Jobs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
       <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
       <Name>Dream.Space.Models</Name>

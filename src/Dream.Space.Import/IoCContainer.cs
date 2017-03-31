@@ -4,7 +4,7 @@ using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
-using Dream.Space.Import.Jobs;
+using Dream.Space.Jobs;
 using Dream.Space.Models.Calculators;
 using Dream.Space.Reader;
 using Dream.Space.Reader.Validators;

@@ -11,6 +11,7 @@ using Dream.Space.Data.Azure;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
 using Dream.Space.Infrastructure.Settings;
+using Dream.Space.Jobs;
 using Dream.Space.Models.Calculators;
 using Dream.Space.Playground;
 using Dream.Space.Reader;
@@ -124,6 +125,11 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
             builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();
             builder.RegisterType<GlobalIndicatorService>().As<IGlobalIndicatorService>().InstancePerDependency();
+
+            builder.RegisterType<CompanyImportJob>().As<IJob>().As<ICompanyImportJob>();
+            builder.RegisterType<QuotesImportJob>().As<IJob>().As<IQuotesImportJob>();
+            builder.RegisterType<GlobalIndicatorsProcessJob>().As<IJob>().As<IGlobalIndicatorsProcessJob>();
+            builder.RegisterType<SP500CompanyImportJob>().As<IJob>().As<ISP500CompanyImportJob>();
 
         }
 

@@ -4,7 +4,7 @@ using System.IO;
 using Dream.Space.Data.Services;
 using Dream.Space.Reader;
 
-namespace Dream.Space.Import.Jobs
+namespace Dream.Space.Jobs
 {
     public class SP500CompanyImportJob : ISP500CompanyImportJob
     {

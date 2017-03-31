@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Dream.Space.Import.Jobs;
+using Dream.Space.Jobs;
 
 namespace Dream.Space.Import
 {

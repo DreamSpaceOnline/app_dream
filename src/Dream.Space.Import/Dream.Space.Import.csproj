@@ -56,14 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Jobs\SP500CompanyImportJob.cs" />
-    <Compile Include="Jobs\CompanyImportJob.cs" />
     <Compile Include="IoCContainer.cs" />
-    <Compile Include="Jobs\GlobalIndicatorsProcessJob.cs" />
-    <Compile Include="Jobs\SectorIndicatorResults.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Jobs\QuotesImportJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -80,6 +75,10 @@
     <ProjectReference Include="..\Dream.Space.Data\Dream.Space.Data.csproj">
       <Project>{eb10172d-559a-4e59-bc95-eee805f1a19b}</Project>
       <Name>Dream.Space.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dream.Space.Jobs\Dream.Space.Jobs.csproj">
+      <Project>{747241fc-7a45-4e40-8f97-1a463a8a4ab4}</Project>
+      <Name>Dream.Space.Jobs</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dream.Space.Models\Dream.Space.Models.csproj">
       <Project>{1a2caa28-2c91-459f-81a4-5405c36fca2e}</Project>
