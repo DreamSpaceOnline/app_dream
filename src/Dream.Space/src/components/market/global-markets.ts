@@ -21,4 +21,8 @@ export class GlobalMarkets {
     recalculateSP500Indicators() {
         
     }
+
+    jobsDashboard() {
+        window.location.href = "/hangfire";
+    }
 }

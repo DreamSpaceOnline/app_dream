@@ -25,12 +25,12 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <ApplicationInsightsResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Dream.Space/providers/microsoft.insights/components/Dream.Space</ApplicationInsightsResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Dream.Space/providers/microsoft.insights/components/Dream-Space</ApplicationInsightsResourceId>
     <TargetFrameworkProfile />
     <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <WebGreaseLibPath>..\..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
-    <ApplicationInsightsAnnotationResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Dream.Space/providers/microsoft.insights/components/Dream.Space</ApplicationInsightsAnnotationResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Dream.Space/providers/microsoft.insights/components/Dream-Space</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -372,6 +372,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\ErrorLoggerFilterAttribute.cs" />
+    <Compile Include="Attributes\HangFireAuthorizationFilter.cs" />
     <Compile Include="Attributes\LogActionAttribute.cs" />
     <Compile Include="Controllers\AccountApiController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -649,9 +650,9 @@
     <Content Include="Service References\Application Insights\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\dream-space - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DreamSpace - Web Deploy.pubxml" />
     <Content Include="karma.conf.js" />
-    <Content Include=".vscode\settings.json" />
     <Content Include="src\components\market\global-markets.less" />
   </ItemGroup>
   <PropertyGroup>
