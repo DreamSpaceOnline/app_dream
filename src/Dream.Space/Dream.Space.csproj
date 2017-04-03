@@ -209,6 +209,12 @@
       <HintPath>..\..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog.Extended, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.Extended.4.0.0.1\lib\net45-full\NLog.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.Web.4.1\lib\net35\NLog.Web.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
@@ -395,11 +401,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\Loggers\IProcessorLogger.cs" />
+    <Compile Include="Infrastructure\Loggers\ProcessorLogger.cs" />
+    <Compile Include="Infrastructure\Processors\GlobalIndicators\GlobalIndicatorsProcessorConfig.cs" />
+    <Compile Include="Infrastructure\Processors\GlobalIndicators\GlobalIndicatorsProcessor.cs" />
     <Compile Include="Infrastructure\Settings\AppSettingsWrapper.cs" />
     <Compile Include="Infrastructure\Settings\IAppSettings.cs" />
-    <Compile Include="Infrastructure\Logger\ILogger.cs" />
-    <Compile Include="Infrastructure\Logger\NLogLogger.cs" />
+    <Compile Include="Infrastructure\Loggers\ILogger.cs" />
+    <Compile Include="Infrastructure\Loggers\NLogLogger.cs" />
     <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
+    <Compile Include="Infrastructure\Processors\IProcessor.cs" />
+    <Compile Include="Infrastructure\Processors\WorkerLauncher.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Articles\ArticleModel.cs" />
     <Compile Include="Models\Articles\UpdateArticleOrderModel.cs" />

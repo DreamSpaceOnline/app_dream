@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
@@ -10,6 +11,9 @@ using Dream.Space.Data;
 using Dream.Space.Data.Azure;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Services;
+using Dream.Space.Infrastructure.Loggers;
+using Dream.Space.Infrastructure.Processors;
+using Dream.Space.Infrastructure.Processors.GlobalIndicators;
 using Dream.Space.Infrastructure.Settings;
 using Dream.Space.Jobs;
 using Dream.Space.Models.Calculators;
@@ -113,6 +117,11 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<QuotesFileReader>().As<IQuotesFileReader>().InstancePerDependency();
             builder.RegisterType<FileReaderValidator>().As<IFileReaderValidator>().InstancePerDependency();
 
+            builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
+            builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();
+            builder.RegisterType<GlobalIndicatorService>().As<IGlobalIndicatorService>().InstancePerDependency();
+
+            
             //Calculators
             builder.RegisterType<EMACalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<ForceIndexCalculator>().As<IIndicatorCalculator>();
@@ -122,15 +131,28 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<SMACalculator>().As<IIndicatorCalculator>();
             builder.RegisterType<RSICalculator>().As<IIndicatorCalculator>();
 
-            builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
-            builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();
-            builder.RegisterType<GlobalIndicatorService>().As<IGlobalIndicatorService>().InstancePerDependency();
 
+            //Jobs
             builder.RegisterType<CompanyImportJob>().As<IJob>().As<ICompanyImportJob>();
             builder.RegisterType<QuotesImportJob>().As<IJob>().As<IQuotesImportJob>();
             builder.RegisterType<GlobalIndicatorsProcessJob>().As<IJob>().As<IGlobalIndicatorsProcessJob>();
             builder.RegisterType<SP500CompanyImportJob>().As<IJob>().As<ISP500CompanyImportJob>();
 
+            //Loggers
+            builder.RegisterType<ProcessorLogger>().As<IProcessorLogger>();
+
+            //Processors
+            builder.RegisterType<GlobalIndicatorsProcessor>().As<IProcessor>();
+
+            builder.Register(c =>
+            {
+                var seconds = int.Parse(ConfigurationManager.AppSettings["GlobalIndicatorsProcessorIntervalInSeconds"]);
+                return new GlobalIndicatorsProcessorConfig
+                {
+                    Interval = new TimeSpan(0, 0, seconds)
+                };
+
+            }).SingleInstance();
         }
 
         public static IoCContainer Instance

@@ -1,7 +1,7 @@
 ﻿using System;
 using NLog;
 
-namespace Dream.Space.Infrastructure.Logger
+namespace Dream.Space.Infrastructure.Loggers
 {
     public class NLogLogger : ILogger
     {

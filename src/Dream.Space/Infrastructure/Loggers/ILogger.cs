@@ -1,6 +1,6 @@
 using System;
 
-namespace Dream.Space.Infrastructure.Logger
+namespace Dream.Space.Infrastructure.Loggers
 {
     public interface ILogger
     {
