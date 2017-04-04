@@ -160,18 +160,5 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
     }
 
 
-    public class CompanyIndicatorResult
-    {
 
-
-
-        public string Ticker { get; }
-        public IList<IndicatorResult> Result { get; }
-
-        public CompanyIndicatorResult(string ticker, IList<IndicatorResult> result)
-        {
-            Ticker = ticker;
-            Result = result;
-        }
-    }
 }
