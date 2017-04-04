@@ -12,11 +12,11 @@ namespace Dream.Space.Data.Services
         Task RefreshAllStocksAsync();
         Task RefreshSP500StocksAsync();
         Task RecalculateGlobalIndexesAsync();
-        Task<IList<ScheduledJob>> GetActiveJobsProgressAsync();
         Task<IList<ScheduledJob>> GetJobHistoryAsync(string jobType = null);
         Task CancelScheduledJobAsync(int jobId);
         Task PauseScheduledJobAsync(int jobId);
         Task ResumeScheduledJobAsync(int jobId);
         Task ClearJobsHistoryAsync();
+        Task<IList<ScheduledJob>> GetActiveJobsAsync();
     }
 }

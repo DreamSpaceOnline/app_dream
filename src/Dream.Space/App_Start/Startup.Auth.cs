@@ -1,4 +1,5 @@
 ﻿using System;
+using Dream.Space.App_Start;
 using Dream.Space.Models;
 using Hangfire;
 using Microsoft.AspNet.Identity;
@@ -7,6 +8,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using Dream.Space.Attributes;
+using Dream.Space.Infrastructure.IoC;
 
 namespace Dream.Space
 {
@@ -66,6 +68,10 @@ namespace Dream.Space
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+
+            BackgroundProcesses.Register(IoCContainer.Instance.Container);
+
         }
 
         private void ConfigureHangfire(IAppBuilder app)

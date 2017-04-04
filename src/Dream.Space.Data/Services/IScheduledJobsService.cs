@@ -10,8 +10,11 @@ namespace Dream.Space.Data.Services
         Task CancelJobAsync(int jobId);
         Task PauseJobAsync(int jobId);
         Task ResumeJobAsync(int jobId);
-        Task<IList<ScheduledJob>> GetActiveJobsProgressAsync();
-        Task<IList<ScheduledJob>> GetHistoryAsync(ScheduledJobType jobType = ScheduledJobType.All);
+        Task<IList<ScheduledJob>> GetHistoryAsync(ScheduledJobType jobType);
         Task ClearHistoryAsync();
+        Task CancelExpiredJobsAsync(ScheduledJobType jobType);
+        Task<IList<ScheduledJob>> GetActiveJobsAsync(ScheduledJobType jobType);
+        Task<ScheduledJob> FindAciveJobAsync(ScheduledJobType jobType);
+        Task<ScheduledJob> GetJobAsync(int jobId);
     }
 }

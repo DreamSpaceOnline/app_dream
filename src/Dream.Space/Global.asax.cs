@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Dream.Space.Infrastructure.IoC;
 using NLog;
+using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
 namespace Dream.Space
 {

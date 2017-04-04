@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Jobs;
@@ -16,22 +17,55 @@ namespace Dream.Space.Data.Services
             _container = container;
         }
 
+        public async Task<ScheduledJob> FindAciveJobAsync(ScheduledJobType jobType)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                await repository.CancelExpiredJobsAsync(jobType);
+
+                ScheduledJob existingJob = null;
+                var jobs = await repository.GetActiveJobsAsync(jobType);
+                if (jobs != null && jobs.Any())
+                {
+                    existingJob = jobs.OrderByDescending(j => j.StartDate).First();
+                    foreach (var job in jobs)
+                    {
+                        if (job.JobId != existingJob.JobId)
+                        {
+                            job.Status = JobStatus.Cancelled;
+                            job.CompletedDate = DateTime.UtcNow;
+
+                            repository.Commit();
+                        }
+                    }
+                }
+
+                return existingJob;
+            }
+        }
+
+        public async Task<ScheduledJob> GetJobAsync(int jobId)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                var job = await repository.GetAsync(jobId);
+
+                return job;
+            }
+        }
+
+
         public async Task StartJobAsync(ScheduledJobType jobType)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IScheduledJobRepository>();
-                var job = await repository.GetRecentAsync(jobType);
-                if (job != null)
-                {
-                    if (!job.IsFinished() && job.Expired())
-                    {
-                        job.Status = JobStatus.Cancelled;
-                        repository.Commit();
-                    }
-                }
 
-                if (job == null || job.IsFinished())
+                var existingJob = await FindAciveJobAsync(jobType);
+
+                if (existingJob == null)
                 {
                     repository.Add(new ScheduledJob
                     {
@@ -57,6 +91,8 @@ namespace Dream.Space.Data.Services
                     if (!job.IsFinished())
                     {
                         job.Status = JobStatus.Cancelled;
+                        job.CompletedDate = DateTime.UtcNow;
+
                         repository.Commit();
                     }
                 }
@@ -88,22 +124,12 @@ namespace Dream.Space.Data.Services
                 var job = await repository.GetAsync(jobId);
                 if (job?.Status == JobStatus.Paused)
                 {
-                    job.Status = JobStatus.Paused;
+                    job.Status = JobStatus.Pending;
                     repository.Commit();
                 }
             }
         }
 
-        public async Task<IList<ScheduledJob>> GetActiveJobsProgressAsync()
-        {
-            using (var scope = _container.BeginLifetimeScope())
-            {
-                var repository = scope.Resolve<IScheduledJobRepository>();
-                IList<ScheduledJob> jobs = await repository.GetActiveJobsAsync();
-
-                return jobs;
-            }
-        }
 
         public async Task<IList<ScheduledJob>> GetHistoryAsync(ScheduledJobType jobType)
         {
@@ -123,6 +149,26 @@ namespace Dream.Space.Data.Services
                 var repository = scope.Resolve<IScheduledJobRepository>();
                 await repository.DeleteHistoryAsync();
 
+            }
+        }
+
+        public async Task CancelExpiredJobsAsync(ScheduledJobType jobType)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                await repository.CancelExpiredJobsAsync(jobType);
+            }
+        }
+
+        public async Task<IList<ScheduledJob>> GetActiveJobsAsync(ScheduledJobType jobType)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                var jobs = await repository.GetActiveJobsAsync(jobType);
+
+                return jobs;
             }
         }
     }

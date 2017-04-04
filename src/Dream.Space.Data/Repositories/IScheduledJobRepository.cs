@@ -6,15 +6,14 @@ namespace Dream.Space.Data.Repositories
 {
     public interface IScheduledJobRepository
     {
-        Task<List<ScheduledJob>> GetRecentAsync();
-        Task<ScheduledJob> GetRecentAsync(ScheduledJobType jobType);
         Task<ScheduledJob> GetAsync(int id);
         ScheduledJob Add(ScheduledJob job);
         Task CommitAsync();
         void Commit();
         Task DeleteAsync(int id);
         Task DeleteHistoryAsync();
-        Task<IList<ScheduledJob>> GetActiveJobsAsync();
+        Task<IList<ScheduledJob>> GetActiveJobsAsync(ScheduledJobType jobType);
         Task<IList<ScheduledJob>> GetHistoryAsync(ScheduledJobType jobType);
+        Task CancelExpiredJobsAsync(ScheduledJobType jobType);
     }
 }

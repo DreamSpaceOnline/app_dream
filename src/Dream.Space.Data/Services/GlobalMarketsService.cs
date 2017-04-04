@@ -30,17 +30,10 @@ namespace Dream.Space.Data.Services
             await _scheduledJobs.StartJobAsync(ScheduledJobType.CalculateGlobalIndicators);
         }
 
-        public async Task<IList<ScheduledJob>> GetActiveJobsProgressAsync()
-        {
-            var jobs = await _scheduledJobs.GetActiveJobsProgressAsync();
-
-            return jobs;
-        }
 
         public async Task<IList<ScheduledJob>> GetJobHistoryAsync(string jobType)
         {
-            ScheduledJobType enumJobType;
-            if (!Enum.TryParse(jobType, out enumJobType))
+            if (!Enum.TryParse(jobType, out ScheduledJobType enumJobType))
             {
                 enumJobType = ScheduledJobType.All;
             }
@@ -67,6 +60,11 @@ namespace Dream.Space.Data.Services
         public async Task ClearJobsHistoryAsync()
         {
             await _scheduledJobs.ClearHistoryAsync();
+        }
+
+        public async Task<IList<ScheduledJob>> GetActiveJobsAsync()
+        {
+            return await _scheduledJobs.GetActiveJobsAsync(ScheduledJobType.All);
         }
     }
 }

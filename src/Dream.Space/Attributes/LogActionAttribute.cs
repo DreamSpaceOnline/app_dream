@@ -33,7 +33,7 @@ namespace Dream.Space.Attributes
                 var actionContext = actionExecutedContext.ActionContext;
                 //Logger.Debug($"User:{identity.Name} Action:{actionContext.ControllerContext.ControllerDescriptor.ControllerName}/{actionContext.ActionDescriptor.ActionName}");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Don't let logging break the application
                 //Logger.Exception(ex, "Error occurred logging user action");

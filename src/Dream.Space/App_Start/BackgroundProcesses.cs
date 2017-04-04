@@ -1,20 +1,33 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Autofac;
 using Dream.Space.Infrastructure.IoC;
+using Dream.Space.Infrastructure.Processors;
+using Hangfire;
 
-namespace Dream.Space.Infrastructure.Processors
+namespace Dream.Space.App_Start
 {
-    public class WorkerLauncher
+    public class BackgroundProcesses
     {
+        private static BackgroundProcesses _instance = null;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
-        public bool Started { get; private set; }
-
-        public WorkerLauncher()
+        private BackgroundProcesses()
         {
             _cancellationTokenSource = new CancellationTokenSource();
         }
+
+
+        public static void Register(IContainer container)
+        {
+            if (_instance == null)
+            {
+                _instance = new BackgroundProcesses();
+
+                _instance.Launch();
+            }
+        }
+        
 
         public void Stop()
         {
@@ -27,9 +40,10 @@ namespace Dream.Space.Infrastructure.Processors
 
             foreach (var processor in processors)
             {
+                //BackgroundJob.Enqueue(() => processor.StartAsync(_cancellationTokenSource.Token));
                 processor.Start(_cancellationTokenSource.Token);
             }
-            Started = true;
         }
+
     }
 }

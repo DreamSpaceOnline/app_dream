@@ -88,7 +88,7 @@ namespace Dream.Space.Controllers
         [ResponseType(typeof(IList<ScheduledJob>))]
         public async Task<IHttpActionResult> GetSheduledJobsProgress()
         {
-            var jobs = await _service.GetActiveJobsProgressAsync();
+            var jobs = await _service.GetActiveJobsAsync();
 
             return Ok(jobs);
         }

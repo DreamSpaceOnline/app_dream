@@ -370,6 +370,7 @@
     <Content Include="src\common\styles\_fonts.less" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\BackgroundProcesses.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\CertificateConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -411,7 +412,6 @@
     <Compile Include="Infrastructure\Loggers\NLogLogger.cs" />
     <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
     <Compile Include="Infrastructure\Processors\IProcessor.cs" />
-    <Compile Include="Infrastructure\Processors\WorkerLauncher.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Articles\ArticleModel.cs" />
     <Compile Include="Models\Articles\UpdateArticleOrderModel.cs" />
