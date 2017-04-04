@@ -59,7 +59,7 @@ namespace Dream.Space.Jobs
 
         }
 
-        private void UpdateQuotes(CompanyToUpdate company)
+        private void UpdateQuotes(CompanyQuotesModel company)
         {
             var log = new Logger();
 

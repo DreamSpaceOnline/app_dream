@@ -69,7 +69,7 @@ namespace Dream.Space.Playground
 
             foreach (var indicator in indicators)
             {
-                var calculator = _configuration.IndicatorProcessorFactory.Create(indicator);
+                var calculator = _configuration.CalculatorFactory.Create(indicator);
                 if (calculator != null)
                 {
                     if (result.All(i => i.Indicator.IndicatorId != indicator.IndicatorId))

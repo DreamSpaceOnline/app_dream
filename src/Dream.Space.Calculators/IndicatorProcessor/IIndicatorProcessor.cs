@@ -15,10 +15,10 @@ namespace Dream.Space.Calculators.IndicatorProcessor
     public class IndicatorProcessor : IIndicatorProcessor
     {
         private readonly ICompanyIndicatorService _companyIndicatorService;
-        private readonly IndicatorProcessorFactory _processorFactory;
+        private readonly CalculatorFactory _processorFactory;
         private List<Indicator> _indicators;
 
-        public IndicatorProcessor(ICompanyIndicatorService companyIndicatorService, IndicatorProcessorFactory processorFactory)
+        public IndicatorProcessor(ICompanyIndicatorService companyIndicatorService, CalculatorFactory processorFactory)
         {
             _companyIndicatorService = companyIndicatorService;
             _processorFactory = processorFactory;

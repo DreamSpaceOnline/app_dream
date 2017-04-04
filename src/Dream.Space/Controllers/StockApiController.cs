@@ -37,7 +37,7 @@ namespace Dream.Space.Controllers
 
             if (company != null)
             {
-                var update = new CompanyToUpdate
+                var update = new CompanyQuotesModel
                 {
                     Ticker = company.Ticker,
                     LastUpdated = company.LastUpdated,

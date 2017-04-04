@@ -15,12 +15,12 @@ namespace Dream.Space.Jobs
         private readonly ICompanyService _companyService;
         private readonly IIndicatorService _indicatorService;
         private readonly IGlobalIndicatorService _globalIndicatorService;
-        private readonly IndicatorProcessorFactory _processorFactory;
+        private readonly CalculatorFactory _processorFactory;
 
         public GlobalIndicatorsProcessJob(ICompanyService companyService, 
             IIndicatorService indicatorService,
             IGlobalIndicatorService globalIndicatorService, 
-            IndicatorProcessorFactory processorFactory)
+            CalculatorFactory processorFactory)
         {
             _companyService = companyService;
             _indicatorService = indicatorService;
@@ -45,7 +45,7 @@ namespace Dream.Space.Jobs
                 };
 
                 var companies = _companyService.FindCompaniesForJob(findRequest);
-                var sectorResult = new SectorIndicatorResults(0, _processorFactory);
+                var sectorResult = new GlobalIndicatorResults(0);
 
                 while (companies != null && companies.Any())
                 {
@@ -104,7 +104,7 @@ namespace Dream.Space.Jobs
             }
         }
 
-        private IList<IndicatorResult> CalculateIndicators(CompanyToUpdate company, Indicator indicator)
+        private IList<IndicatorResult> CalculateIndicators(CompanyQuotesModel company, Indicator indicator)
         {
             var calculator = _processorFactory.Create(indicator);
             return calculator.Calculate(indicator, company.HistoryQuotes);

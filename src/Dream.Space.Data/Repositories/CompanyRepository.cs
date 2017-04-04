@@ -11,11 +11,11 @@ namespace Dream.Space.Data.Repositories
     public interface ICompanyRepository : IDreamDbRepository<Company>
     {
         Company Get(string ticker);
-        List<CompanyToUpdate> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count);
+        List<CompanyQuotesModel> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count);
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
-        List<CompanyToUpdate> FindCompaniesForJob(string requestJobId, int maxRecordCount, int sectorId);
+        List<CompanyQuotesModel> FindCompaniesForJob(string requestJobId, int maxRecordCount, int sectorId);
         void CompleteJob(string jobId, IList<string> tickers);
     }
 
@@ -32,11 +32,11 @@ namespace Dream.Space.Data.Repositories
             return record;
         }
 
-        public List<CompanyToUpdate> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count)
+        public List<CompanyQuotesModel> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count)
         {
             var fromDate = DateTime.Now.Subtract(fromTimeAgo).Date;
             var records = Dbset.Where(c => c.Filtered && c.LastUpdated < fromDate)
-                .Select(c => new CompanyToUpdate
+                .Select(c => new CompanyQuotesModel
                 {
                     Ticker = c.Ticker,
                     LastUpdated = c.LastUpdated,
@@ -103,10 +103,10 @@ namespace Dream.Space.Data.Repositories
             return new CompanyHeader(record);
         }
 
-        public List<CompanyToUpdate> FindCompaniesForJob(string jobId,  int count, int sectorId)
+        public List<CompanyQuotesModel> FindCompaniesForJob(string jobId,  int count, int sectorId)
         {
             var records = Dbset.Where(c => (c.SectorId == sectorId || sectorId == 0) && c.Filtered && (c.SP500 || sectorId > 0) && c.LastJobId != jobId)
-                .Select(c => new CompanyToUpdate
+                .Select(c => new CompanyQuotesModel
                 {
                     Ticker = c.Ticker,
                     LastUpdated = c.LastUpdated,

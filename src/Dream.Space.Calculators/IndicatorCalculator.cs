@@ -37,5 +37,38 @@ namespace Dream.Space.Calculators
 
             return result;
         }
+
+        public virtual List<IndicatorResult> Merge(List<IndicatorResult> indicatorResuls)
+        {
+            
+            var grouped = new Dictionary<DateTime, List<IndicatorResult>>();
+            foreach (var item in indicatorResuls)
+            {
+                if (!grouped.ContainsKey(item.Date))
+                {
+                    grouped.Add(item.Date, new List<IndicatorResult>());
+                }
+                grouped[item.Date].Add(item);
+            }
+
+            var result = new List<IndicatorResult>();
+            foreach (var groupedItem in grouped)
+            {
+                var item = Merge(groupedItem);
+                result.Add(item);
+            }
+
+            return result.OrderByDescending(r => r.Date).ToList();
+        }
+
+        public virtual IndicatorResult Merge(KeyValuePair<DateTime, List<IndicatorResult>> groupedItems)
+        {
+            var result = new IndicatorResult(groupedItems.Key);
+            var value = groupedItems.Value.Sum(v => v.Value);
+
+            result.Value = Math.Round(value, 4);
+
+            return result;
+        }
     }
 }

@@ -14,17 +14,17 @@ namespace Dream.Space.Playground
         private CompanyInfo Company { get; set; }
         private List<QuotesModel> Quotes { get; set; }
         private List<Indicator> Indicators { get; set; }
-        private IndicatorProcessorFactory IndicatorProcessorFactory { get; }
+        private CalculatorFactory CalculatorFactory { get; }
 
 
         private readonly IPlaygroundService _playgroundService;
         private readonly ICompanyService _companyService;
 
-        public PlaygroundConfigurationLoader(IPlaygroundService playgroundService, ICompanyService companyService, IndicatorProcessorFactory indicatorProcessorFactory)
+        public PlaygroundConfigurationLoader(IPlaygroundService playgroundService, ICompanyService companyService, CalculatorFactory calculatorFactory)
         {
             _playgroundService = playgroundService;
             _companyService = companyService;
-            IndicatorProcessorFactory = indicatorProcessorFactory;
+            CalculatorFactory = calculatorFactory;
         }
 
         public async Task<PlaygroundConfiguration> Load(string ticker, int strategyId)
@@ -39,7 +39,7 @@ namespace Dream.Space.Playground
             };
             Quotes = company.HistoryQuotes;
 
-            return new PlaygroundConfiguration(Company, Quotes, Indicators, IndicatorProcessorFactory, strategyId, rules);
+            return new PlaygroundConfiguration(Company, Quotes, Indicators, CalculatorFactory, strategyId, rules);
         }
     }
 }

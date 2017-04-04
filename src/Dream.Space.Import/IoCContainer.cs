@@ -57,7 +57,7 @@ namespace Dream.Space.Import
             builder.RegisterType<QuotesImportJob>().As<IJob>().As<IQuotesImportJob>();
             builder.RegisterType<GlobalIndicatorsProcessJob>().As<IJob>().As<IGlobalIndicatorsProcessJob>();
             builder.RegisterType<SP500CompanyImportJob>().As<IJob>().As<ISP500CompanyImportJob>();
-            builder.RegisterType<IndicatorProcessorFactory>().SingleInstance();
+            builder.RegisterType<CalculatorFactory>().SingleInstance();
             builder.RegisterType<IndicatorService>().As<IIndicatorService>();
 
             builder.Register(c => new NasdaqStockClientConfig { Proxy = "" }).SingleInstance();

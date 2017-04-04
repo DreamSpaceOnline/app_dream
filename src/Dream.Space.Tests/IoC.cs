@@ -76,7 +76,7 @@ namespace Dream.Space.Tests
             builder.RegisterType<PlaygroundService>().As<IPlaygroundService>();
             builder.RegisterType<CompanyManagerService>().As<ICompanyService>();
             builder.RegisterType<FileReaderConfiguration>().SingleInstance();
-            builder.RegisterType<IndicatorProcessorFactory>().SingleInstance();
+            builder.RegisterType<CalculatorFactory>().SingleInstance();
             builder.RegisterType<DataCache>().As<IDataCache>().SingleInstance();
 
             builder.Register(c => new YahooFinanceClientConfig() { Proxy = "" }).SingleInstance();

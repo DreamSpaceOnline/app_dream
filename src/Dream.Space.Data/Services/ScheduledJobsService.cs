@@ -56,6 +56,46 @@ namespace Dream.Space.Data.Services
             }
         }
 
+        public async Task<ScheduledJob> FindPendingJobAsync(ScheduledJobType jobType)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                ScheduledJob result = null;
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                await repository.CancelExpiredJobsAsync(jobType);
+
+                var jobs = await repository.GetActiveJobsAsync(jobType);
+                if (jobs != null && jobs.Any())
+                {
+                    var pendingJobs = jobs.Where(j => j.Status == JobStatus.Pending).ToList();
+
+                    if (pendingJobs.Any()) 
+                    {
+                        if (pendingJobs.Count == 1)
+                        {
+                            result = pendingJobs.First();
+                        }
+                        else
+                        {
+                            var mostRecent = pendingJobs.OrderByDescending(j => j.StartDate).First();
+                            foreach (var job in pendingJobs)
+                            {
+                                if (job.JobId != mostRecent.JobId)
+                                {
+                                    job.Status = JobStatus.Cancelled;
+                                    job.CompletedDate = DateTime.UtcNow;
+
+                                    repository.Commit();
+                                }
+                            }
+                            result = mostRecent;
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
 
         public async Task StartJobAsync(ScheduledJobType jobType)
         {

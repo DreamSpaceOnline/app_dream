@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Dream.Space.Models.Companies
 {
-    public class CompanyToUpdate
+    public class CompanyQuotesModel
     {
         public string Ticker { get; set; }
         public DateTime LastUpdated { get; set; }

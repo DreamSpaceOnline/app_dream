@@ -48,7 +48,7 @@
     <Compile Include="Companies\CompanyDetails.cs" />
     <Compile Include="Companies\CompanyHeader.cs" />
     <Compile Include="Companies\CompanyToProcess.cs" />
-    <Compile Include="Companies\CompanyToUpdate.cs" />
+    <Compile Include="Companies\CompanyQuotesModel.cs" />
     <Compile Include="Companies\ICompanyEntity.cs" />
     <Compile Include="Enums\ChartType.cs" />
     <Compile Include="Enums\CompareOperator.cs" />

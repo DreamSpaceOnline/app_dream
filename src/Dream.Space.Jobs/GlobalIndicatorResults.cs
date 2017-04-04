@@ -1,19 +1,22 @@
 using System.Collections.Generic;
-using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Jobs
 {
-    public class SectorIndicatorResults
+    public class GlobalIndicatorResults
     {
-        private readonly IndicatorProcessorFactory _processorFactory;
         public int SectorId { get; }
 
-        public SectorIndicatorResults(int sectorId, IndicatorProcessorFactory processorFactory)
+        public GlobalIndicatorResults(int sectorId):this()
         {
-            _processorFactory = processorFactory;
             SectorId = sectorId;
+        }
+
+        public GlobalIndicatorResults()
+        {
+            SectorId = 0;
             IndicatorResults = new Dictionary<int, CompanyIndicatorResults>();
+
         }
 
         public void Add(IList<IndicatorResult> result, IIndicatorEntity indicator, string ticker)

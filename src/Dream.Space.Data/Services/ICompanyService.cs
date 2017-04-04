@@ -15,7 +15,7 @@ namespace Dream.Space.Data.Services
     {
         Company Register(CompanyModel company);
         Company Get(string ticker);
-        List<CompanyToUpdate> FindCompaniesForUpdate(FindCompaniesForUpdateRequest request);
+        List<CompanyQuotesModel> FindCompaniesForUpdate(FindCompaniesForUpdateRequest request);
         void UpdateQuotes(UpdateQuotesRequest request);
         List<QuotesModel> GetQuotes(string ticker);
         void SetLastCalculated(string ticker);
@@ -23,7 +23,7 @@ namespace Dream.Space.Data.Services
 
         Task<List<CompanyDetails>> SearchAsync(CompanySearchRequest request);
         Task<CompanyHeader> GetAsync(string ticker);
-        List<CompanyToUpdate> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
+        List<CompanyQuotesModel> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
         List<CompanySector> GetCompanySectors();
         void CompleteJob(CompleteJobRequest completeJobRequest);
         void MarkAsSP500(CompanyModel company);

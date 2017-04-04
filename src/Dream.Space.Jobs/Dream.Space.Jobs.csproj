@@ -46,7 +46,7 @@
     <Compile Include="IJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuotesImportJob.cs" />
-    <Compile Include="SectorIndicatorResults.cs" />
+    <Compile Include="GlobalIndicatorResults.cs" />
     <Compile Include="SP500CompanyImportJob.cs" />
   </ItemGroup>
   <ItemGroup>

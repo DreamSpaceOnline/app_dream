@@ -6,11 +6,11 @@ using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Calculators.IndicatorProcessor
 {
-    public class IndicatorProcessorFactory
+    public class CalculatorFactory
     {
         private readonly IEnumerable<IIndicatorCalculator> _calculators;
 
-        public IndicatorProcessorFactory(ILifetimeScope container)
+        public CalculatorFactory(ILifetimeScope container)
         {
             _calculators = container.Resolve<IEnumerable<IIndicatorCalculator>>();
         }

@@ -107,7 +107,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<PlaygroundService>().As<IPlaygroundService>();
             builder.RegisterType<CompanyManagerService>().As<ICompanyService>();
             builder.RegisterType<FileReaderConfiguration>().SingleInstance();
-            builder.RegisterType<IndicatorProcessorFactory>().SingleInstance();
+            builder.RegisterType<CalculatorFactory>().SingleInstance();
             builder.RegisterType<DataCache>().As<IDataCache>().SingleInstance();
             builder.RegisterType<PlaygroundProcessor>();
             builder.RegisterType<PlaygroundConfigurationLoader>();

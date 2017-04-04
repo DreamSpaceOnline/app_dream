@@ -9,12 +9,12 @@ namespace Dream.Space.Playground
 {
     public class PlaygroundConfiguration
     {
-        public PlaygroundConfiguration(CompanyInfo company, List<QuotesModel> quotes, List<Indicator> indicators, IndicatorProcessorFactory indicatorProcessorFactory, int strategyId, List<vStrategyRule> rules)
+        public PlaygroundConfiguration(CompanyInfo company, List<QuotesModel> quotes, List<Indicator> indicators, CalculatorFactory calculatorFactory, int strategyId, List<vStrategyRule> rules)
         {
             Company = company;
             Quotes = quotes;
             Indicators = indicators;
-            IndicatorProcessorFactory = indicatorProcessorFactory;
+            CalculatorFactory = calculatorFactory;
             StrategyId = strategyId;
             Rules = rules;
         }
@@ -22,7 +22,7 @@ namespace Dream.Space.Playground
         public CompanyInfo Company { get; private set; }
         public List<QuotesModel> Quotes { get; private set; }
         public List<Indicator> Indicators { get; private set; }
-        public IndicatorProcessorFactory IndicatorProcessorFactory { get; private set; }
+        public CalculatorFactory CalculatorFactory { get; private set; }
         public int StrategyId { get; }
         public List<vStrategyRule> Rules { get; private set; }
     }

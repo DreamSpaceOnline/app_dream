@@ -406,6 +406,7 @@
     <Compile Include="Infrastructure\Loggers\ProcessorLogger.cs" />
     <Compile Include="Infrastructure\Processors\GlobalIndicators\GlobalIndicatorsProcessorConfig.cs" />
     <Compile Include="Infrastructure\Processors\GlobalIndicators\GlobalIndicatorsProcessor.cs" />
+    <Compile Include="Infrastructure\Processors\ProcessorState.cs" />
     <Compile Include="Infrastructure\Settings\AppSettingsWrapper.cs" />
     <Compile Include="Infrastructure\Settings\IAppSettings.cs" />
     <Compile Include="Infrastructure\Loggers\ILogger.cs" />

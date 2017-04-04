@@ -48,7 +48,7 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public List<CompanyToUpdate> FindCompaniesForUpdate(FindCompaniesForUpdateRequest request)
+        public List<CompanyQuotesModel> FindCompaniesForUpdate(FindCompaniesForUpdateRequest request)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -177,7 +177,7 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public List<CompanyToUpdate> FindCompaniesForJob(FindCompaniesForJobRequest request)
+        public List<CompanyQuotesModel> FindCompaniesForJob(FindCompaniesForJobRequest request)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
