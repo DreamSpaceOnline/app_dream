@@ -96,6 +96,25 @@ namespace Dream.Space.Data.Services
             }
         }
 
+        public async Task CompleteJobAsync(int jobId)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                var job = await repository.GetAsync(jobId);
+                if (job != null)
+                {
+                    if (!job.IsFinished())
+                    {
+                        job.Status = JobStatus.Completed;
+                        job.CompletedDate = DateTime.UtcNow;
+
+                        repository.Commit();
+                    }
+                }
+            }
+        }
+
 
         public async Task StartJobAsync(ScheduledJobType jobType)
         {

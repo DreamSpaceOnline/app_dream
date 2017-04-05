@@ -34,43 +34,15 @@ namespace Dream.Space.Calculators
         ///   Record High Percent = {New Highs / (New Highs + New Lows)} x 100 
         ///   High-Low Index = 10 - day SMA of Record High Percent
         /// </summary>
-        /// <param name="indicatorResults"></param>
         /// <returns></returns>
-        public override List<IndicatorResult> Merge(List<CompanyIndicatorResult> indicatorResults)
+        public override IndicatorResult Merge(KeyValuePair<DateTime, List<IndicatorResult>> groupedItems)
         {
-            var result = new List<IndicatorResult>();
-            if (indicatorResults == null || !indicatorResults.Any())
-            {
-                return result;
-            }
+            var result = new IndicatorResult(groupedItems.Key);
+            var value = groupedItems.Value.Sum(v => v.Value);
 
-            var startDate = indicatorResults.Select(c => c.Result.Last()).Max(a => a.Date);
-            var dates = indicatorResults.First().Result.Select(d => d.Date).Where(d => d >= startDate).ToList();
+            result.Value = Math.Round(value, 4);
 
-            foreach (var date in dates)
-            {
-                var calculated = indicatorResults.SelectMany(c => c.Result).Where(r => r.Date == date).ToList();
-                var nhnlResuts = calculated.Select(r => r.AsNHNLIndicatorResult()).ToList();
-
-                var newLow = nhnlResuts.Sum(r => r.NewLow);
-                var newHigh = nhnlResuts.Sum(r => r.NewHigh);
-
-
-                var value = CalculateNHNL(newHigh, newLow);
-
-                result.Add(new IndicatorResult(date) { 
-                    Value = value
-                });
-            }
-
-            var sma = new SMA().Calculate(
-                result.Select(item => new QuotesModel
-                    {
-                        Date = item.Date,
-                        Close = item.Value
-                    }).ToList(), 10);
-
-            return sma;
+            return result;
         }
 
         private decimal CalculateNHNL(decimal newHigh, decimal newLow)

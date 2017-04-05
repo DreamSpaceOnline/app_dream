@@ -77,6 +77,9 @@ namespace Dream.Space.Data
             //Strategy
             modelBuilder.Entity<GlobalIndicator>().HasKey(e => new { e.IndicatorId, e.SectorId });
 
+            //IndicatorIntermediateResult
+            modelBuilder.Entity<IndicatorIntermediateResult>().HasKey(e => new { e.IndicatorId, e.JobId });
+
             modelBuilder.Entity<Article>().HasKey(t => t.ArticleId);
             modelBuilder.Entity<Article>().HasRequired(a => a.Category).WithMany(t => t.Articles).HasForeignKey(p => p.CategoryId);
             modelBuilder.Entity<Article>().Property(a => a.ArticleId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
@@ -127,5 +130,6 @@ namespace Dream.Space.Data
         public virtual DbSet<vStrategyRule> vStrategyRules { get; set; }
         public virtual DbSet<GlobalIndicator> GlobalIndicators { get; set; }
         public virtual DbSet<ScheduledJob> ScheduledJobs { get; set; }
+        public virtual DbSet<IndicatorIntermediateResult> IndicatorIntermediateResults { get; set; }
     }
 }

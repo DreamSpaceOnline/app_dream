@@ -10,7 +10,6 @@ using Dream.Space.Data.Extensions;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
 using Dream.Space.Infrastructure.Loggers;
-using Dream.Space.Jobs;
 using Dream.Space.Models.Companies;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
@@ -26,6 +25,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
         private readonly ICompanyService _companyService;
         private readonly IIndicatorService _indicatorService;
         private readonly CalculatorFactory _calculatorFactory;
+        private readonly IGlobalIndicatorService _globalIndicatorService;
         private readonly IProcessorLogger _logger;
         public string Name => "Global Indicators Processor";
 
@@ -35,6 +35,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
             ICompanyService companyService,
             IIndicatorService indicatorService,
             CalculatorFactory calculatorFactory,
+            IGlobalIndicatorService globalIndicatorService,
             IProcessorLogger logger)
         {
             _config = config;
@@ -42,6 +43,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
             _companyService = companyService;
             _indicatorService = indicatorService;
             _calculatorFactory = calculatorFactory;
+            _globalIndicatorService = globalIndicatorService;
             _logger = logger;
         }
 
@@ -65,11 +67,41 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                             {
                                 var indicators = _indicatorService.GetGlobalIndicators();
                                 var state = ProcessorState.InProgress;
-                                var cancelled = false;
-                                while (state == ProcessorState.InProgress && !cancelled)
+
+                                while (state == ProcessorState.InProgress && !job.IsFinished())
                                 {
                                     state = await Execute(job, indicators);
-                                    cancelled = await IsJobCancelled(job.JobId);
+                                    job = await _jobsService.GetJobAsync(job.JobId);
+                                }
+
+                                if (state == ProcessorState.Completed)
+                                {
+                                    foreach (var indicator in indicators)
+                                    {
+                                        var indicatorResults = await GetIntermediateResults(job.JobId, indicator.IndicatorId);
+                                        var calculator = _calculatorFactory.Create(indicator);
+                                        indicatorResults = calculator.Combine(indicatorResults);
+
+                                        await _globalIndicatorService.Save(new GlobalIndicator
+                                        {
+                                            SectorId = 0, 
+                                            IndicatorId = indicator.IndicatorId,
+                                            Values = indicatorResults,
+                                            StartDate = indicatorResults.Last().Date,
+                                            EndDate = indicatorResults.First().Date,
+                                            CalculatedSuccessful = true,
+                                            CompanyCount = 0, //to add
+                                            LastCalculated = DateTime.UtcNow
+                                        });
+
+                                        await _jobsService.CompleteJobAsync(job.JobId);
+                                        await ClearIntermediateResults(job.JobId, indicator.IndicatorId);
+
+                                        _logger.Info(new ProcessorInfo
+                                            {
+                                                ProcessName = Name, JobId = job.JobId, JobType = ScheduledJobType.CalculateGlobalIndicators, JobState = JobStatus.Completed
+                                            }, "Job completed successfully");
+                                    }
                                 }
                             }
                         }
@@ -85,28 +117,56 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
         }
 
 
+
+        //TODO: mark processed companies
+        //TODO: mark update progress feedback
         private async Task<ProcessorState> Execute(ScheduledJob job, List<Indicator> indicators)
         {
-            var companies = FetchNext(job);
-            if (companies == null || !companies.Any())
+            try
             {
-                return ProcessorState.Completed;
+                var companies = FetchNext(job.JobId);
+                if (companies == null || !companies.Any())
+                {
+                    return ProcessorState.Completed;
+                }
+
+                var results = await CalculateGlobalIndicators(companies, indicators, job.JobId);
+                foreach (var result in results)
+                {
+                    await _indicatorService.StoreIntermediateResultsAsync(job.JobId, result.Key, result.Value);
+                }
+
+                //TODO: mark processed companies
+
+                _logger.Info(new ProcessorInfo
+                {
+                    JobId = job.JobId,
+                    JobType = job.JobType,
+                    JobState = JobStatus.Error,
+                    ProcessName = Name
+                }, $"Successfully processed companies: {string.Join(", ", companies.Select(c => c.Ticker).ToArray())}");
+                return ProcessorState.InProgress;
+                
             }
-
-            var results = CalculateGlobalIndicators(companies, indicators);
-            var intermidiateResults = await GetIntermidiateResults(job.JobId);
-
-            return ProcessorState.Completed;
+            catch (Exception exception)
+            {
+                _logger.Error(new ProcessorInfo
+                {
+                    JobId = job.JobId,
+                    JobType = job.JobType,
+                    JobState = JobStatus.Error,
+                    ProcessName = Name
+                }, $"Failed to execute {Name}. Reason: {exception.Message}", exception );
+                return ProcessorState.Error;
+            }
         }
 
-        private Task<string> GetIntermidiateResults(int jobId)
-        {
-            throw new NotImplementedException();
-        }
 
-        private GlobalIndicatorResults CalculateGlobalIndicators(IList<CompanyQuotesModel> companies, IList<Indicator> indicators)
+
+        private async Task<Dictionary<int, List<IndicatorResult>>> CalculateGlobalIndicators(IList<CompanyQuotesModel> companies, List<Indicator> indicators, int jobId)
         {
-            var result = new GlobalIndicatorResults();
+            var result = new Dictionary<int, List<IndicatorResult>>();
+
             foreach (var indicator in indicators)
             {
                 var calculator = _calculatorFactory.Create(indicator);
@@ -123,8 +183,15 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                     calculatorResult.AddRange(calculator.Calculate(indicator, quotes));
                 }
 
-                var merged = calculator.Merge(calculatorResult);
-                //Store intermediate results
+                var indicatorResult = calculator.Merge(calculatorResult);
+                var intermediateResult = await GetIntermediateResults(jobId, indicator.IndicatorId);
+                if (intermediateResult != null && intermediateResult.Any())
+                {
+                    indicatorResult.AddRange(intermediateResult);
+                    indicatorResult = calculator.Merge(indicatorResult);
+                }
+
+                result.Add(indicator.IndicatorId, indicatorResult);
             }
 
             return result;
@@ -132,22 +199,27 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
 
 
 
-        public List<CompanyQuotesModel> FetchNext(ScheduledJob job)
+        #region Helper Methods
+
+        public List<CompanyQuotesModel> FetchNext(int jobId)
         {
             return _companyService.FindCompaniesForJob(new FindCompaniesForJobRequest
             {
-                JobId = job.JobId.ToString(),
+                JobId = jobId.ToString(),
                 MaxRecordCount = 10
             });
         }
 
-        #region Helper Methods
-
-        private async Task<bool> IsJobCancelled(int jobId)
+        private async Task<List<IndicatorResult>> GetIntermediateResults(int jobId, int indicatorId)
         {
-            var job = await _jobsService.GetJobAsync(jobId);
-            return job.Status == JobStatus.Cancelled;
+            return await _indicatorService.GetIntermediateResultsAsync(jobId, indicatorId);
         }
+
+        private async Task ClearIntermediateResults(int jobId, int indicatorId)
+        {
+            await _indicatorService.ClearIntermediateResultsAsync(jobId, indicatorId);
+        }
+
 
         private async Task<ScheduledJob> FindPendingJob()
         {

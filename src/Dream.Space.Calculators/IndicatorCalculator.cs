@@ -13,32 +13,7 @@ namespace Dream.Space.Calculators
 
         public abstract List<IndicatorResult> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes);
 
-        public virtual List<IndicatorResult> Merge(List<CompanyIndicatorResult> indicatorResults)
-        {
-            var result = new List<IndicatorResult>();
-            if (indicatorResults == null || !indicatorResults.Any())
-            {
-                return result;
-            }
-            var startDate = indicatorResults.Select(c => c.Result.Last()).Min(a => a.Date);
-            var dates = indicatorResults.First().Result.Select(d => d.Date).Where(d => d >= startDate).ToList();
-
-            foreach (var date in dates)
-            {
-                var value = indicatorResults.SelectMany(indicatorResult => indicatorResult.Result)
-                    .Where(r => r.Date == date)
-                    .Average(r => r.Value);
-
-                result.Add(new IndicatorResult(date)
-                {
-                    Value = Math.Round(value, 4)
-                });
-            }
-
-            return result;
-        }
-
-        public virtual List<IndicatorResult> Merge(List<IndicatorResult> indicatorResuls)
+        public List<IndicatorResult> Merge(List<IndicatorResult> indicatorResuls)
         {
             
             var grouped = new Dictionary<DateTime, List<IndicatorResult>>();
@@ -59,6 +34,11 @@ namespace Dream.Space.Calculators
             }
 
             return result.OrderByDescending(r => r.Date).ToList();
+        }
+
+        public virtual List<IndicatorResult> Combine(List<IndicatorResult> indicatorResults)
+        {
+            return indicatorResults;
         }
 
         public virtual IndicatorResult Merge(KeyValuePair<DateTime, List<IndicatorResult>> groupedItems)

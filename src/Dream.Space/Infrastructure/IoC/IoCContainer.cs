@@ -86,6 +86,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<VStrategyRuleSetRepository>().As<IVStrategyRuleSetRepository>().InstancePerDependency();
             builder.RegisterType<VStrategyRuleRepository>().As<IVStrategyRuleRepository>().InstancePerDependency();
             builder.RegisterType<ScheduledJobRepository>().As<IScheduledJobRepository>().InstancePerDependency();
+            builder.RegisterType<IndicatorIntermediateResultsRepository>().As<IIndicatorIntermediateResultsRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
 
@@ -135,7 +136,6 @@ namespace Dream.Space.Infrastructure.IoC
             //Jobs
             builder.RegisterType<CompanyImportJob>().As<IJob>().As<ICompanyImportJob>();
             builder.RegisterType<QuotesImportJob>().As<IJob>().As<IQuotesImportJob>();
-            builder.RegisterType<GlobalIndicatorsProcessJob>().As<IJob>().As<IGlobalIndicatorsProcessJob>();
             builder.RegisterType<SP500CompanyImportJob>().As<IJob>().As<ISP500CompanyImportJob>();
 
             //Loggers

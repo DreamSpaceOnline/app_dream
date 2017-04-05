@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
@@ -19,6 +19,9 @@ namespace Dream.Space.Data.Services
         Task DeleteIndicatorAsync(int id);
         Task<List<IndicatorCore>> GetIndicatorsAsync();
         List<Indicator> GetGlobalIndicators();
+        Task<List<IndicatorResult>> GetIntermediateResultsAsync(int jobId, int indicatorId);
+        Task StoreIntermediateResultsAsync(int jobId, int indicatorId, List<IndicatorResult> results);
+        Task ClearIntermediateResultsAsync(int jobId, int indicatorId);
     }
 
     public class IndicatorService : IIndicatorService
@@ -71,7 +74,7 @@ namespace Dream.Space.Data.Services
 
             using (var scope = _container.BeginLifetimeScope())
             {
-                Indicator record = null;
+                Indicator record;
                 var repository = scope.Resolve<IIndicatorRepository>();
 
                 if (indicator.IndicatorId == 0)
@@ -122,6 +125,50 @@ namespace Dream.Space.Data.Services
                 var result = repository.GetGlobalAll();
 
                 return result;
+            }
+        }
+
+        public async Task<List<IndicatorResult>> GetIntermediateResultsAsync(int jobId, int indicatorId)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IIndicatorIntermediateResultsRepository>();
+                var result = await repository.GetIntermediateResultsAsync(jobId, indicatorId);
+                if (result != null)
+                {
+                    return result.Values;
+                }
+                return new List<IndicatorResult>();
+            }
+        }
+
+        public async Task StoreIntermediateResultsAsync(int jobId, int indicatorId, List<IndicatorResult> results)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IIndicatorIntermediateResultsRepository>();
+                repository.Add(new IndicatorIntermediateResult
+                {
+                    JobId = jobId,
+                    IndicatorId = indicatorId,
+                    Values = results
+                });
+
+                await repository.CommitAsync();
+            }
+        }
+
+        public async Task ClearIntermediateResultsAsync(int jobId, int indicatorId)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IIndicatorIntermediateResultsRepository>();
+
+                var entity = await repository.GetIntermediateResultsAsync(jobId, indicatorId);
+                if (entity != null && entity.JobId == jobId)
+                {
+                    repository.Delete(entity);
+                }
             }
         }
     }

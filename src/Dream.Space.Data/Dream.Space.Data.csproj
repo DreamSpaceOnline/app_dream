@@ -98,6 +98,7 @@
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
+    <Compile Include="Entities\Indicators\IndicatorIntermediateResult.cs" />
     <Compile Include="Entities\Jobs\JobStatus.cs" />
     <Compile Include="Entities\Jobs\ScheduledJob.cs" />
     <Compile Include="Entities\Jobs\ScheduledJobType.cs" />
@@ -168,6 +169,10 @@
     <Compile Include="Migrations\201704041158584_AlterScheduledJob.Designer.cs">
       <DependentUpon>201704041158584_AlterScheduledJob.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704051534191_CreateIntermediateResults.cs" />
+    <Compile Include="Migrations\201704051534191_CreateIntermediateResults.Designer.cs">
+      <DependentUpon>201704051534191_CreateIntermediateResults.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -176,6 +181,7 @@
     <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
     <Compile Include="Repositories\ICompanySectorRepository.cs" />
     <Compile Include="Repositories\IScheduledJobRepository.cs" />
+    <Compile Include="Repositories\IndicatorIntermediateResultsRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\ScheduledJobRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
@@ -286,6 +292,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704041158584_AlterScheduledJob.resx">
       <DependentUpon>201704041158584_AlterScheduledJob.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704051534191_CreateIntermediateResults.resx">
+      <DependentUpon>201704051534191_CreateIntermediateResults.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

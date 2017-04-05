@@ -8,8 +8,8 @@ namespace Dream.Space.Models.Calculators
     {
         bool CanCalculate(IIndicatorEntity indicator);
         List<IndicatorResult> Calculate(IIndicatorEntity indicator, List<QuotesModel> quotes);
-        List<IndicatorResult> Merge(List<CompanyIndicatorResult> indicatorResultValue);
         List<IndicatorResult> Merge(List<IndicatorResult> indicatorResuls);
+        List<IndicatorResult> Combine(List<IndicatorResult> indicatorResults);
     }
 
 }

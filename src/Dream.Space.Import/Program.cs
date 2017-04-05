@@ -7,8 +7,8 @@ namespace Dream.Space.Import
     {
         static void Main(string[] args)
         {
-            var job = IoCContainer.Instance.Resolve<IGlobalIndicatorsProcessJob>();
-            job.Start();
+            //var job = IoCContainer.Instance.Resolve<IGlobalIndicatorsProcessJob>();
+            //job.Start();
         }
     }
 }
