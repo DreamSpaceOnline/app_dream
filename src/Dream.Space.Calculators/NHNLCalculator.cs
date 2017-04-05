@@ -37,10 +37,31 @@ namespace Dream.Space.Calculators
         /// <returns></returns>
         public override IndicatorResult Merge(KeyValuePair<DateTime, List<IndicatorResult>> groupedItems)
         {
-            var result = new IndicatorResult(groupedItems.Key);
-            var value = groupedItems.Value.Sum(v => v.Value);
+            var newHigh = groupedItems.Value.Select(v => v.AsNHNLIndicatorResult()).Sum(r => r.NewHigh);
+            var newLow = groupedItems.Value.Select(v => v.AsNHNLIndicatorResult()).Sum(r => r.NewLow);
 
-            result.Value = Math.Round(value, 4);
+            var result = new IndicatorResult(groupedItems.Key).AsNHNLIndicatorResult();
+            result.NewLow = newLow;
+            result.NewHigh = newHigh;
+
+            return result.Result;
+        }
+
+        //TODO: Apply SMA(10)
+        public override List<IndicatorResult> Combine(List<IndicatorResult> indicatorResults)
+        {
+            var result = new List<IndicatorResult>();
+
+            foreach (var indicatorResult in indicatorResults)
+            {
+                var item = new IndicatorResult(indicatorResult.Date);
+                var values = indicatorResult.AsNHNLIndicatorResult();
+
+                item.Value =Math.Round(CalculateNHNL(values.NewHigh, values.NewLow), 4);
+                result.Add(item);
+            }
+
+            //Apply SMA(10)
 
             return result;
         }
