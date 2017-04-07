@@ -154,6 +154,14 @@ namespace Dream.Space.Data.Services
 
                     repository.Commit();
                 }
+                else
+                {
+                    if (existingJob.Status == JobStatus.Pending || existingJob.Status == JobStatus.Paused)
+                    {
+                        existingJob.Status = JobStatus.Pending;
+                        repository.Commit();
+                    }
+                }
             }
         }
 
