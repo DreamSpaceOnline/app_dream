@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Managers;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
 using Dream.Space.Models.Companies;
 using Dream.Space.Models.Quotes;
@@ -23,10 +22,10 @@ namespace Dream.Space.Data.Services
 
         Task<List<CompanyDetails>> SearchAsync(CompanySearchRequest request);
         Task<CompanyHeader> GetAsync(string ticker);
-        List<CompanyQuotesModel> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
+        Task<List<CompanyQuotesModel>> FindCompaniesForJob(FindCompaniesForJobRequest findRequest);
         List<CompanySector> GetCompanySectors();
-        void CompleteJob(CompleteJobRequest completeJobRequest);
         void MarkAsSP500(CompanyModel company);
+        Task<int> GetSP500CountAsync();
     }
 
     public interface ICompanyManagerService 

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Managers;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Requests;
 using Dream.Space.Models.Companies;
@@ -177,12 +176,12 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public List<CompanyQuotesModel> FindCompaniesForJob(FindCompaniesForJobRequest request)
+        public async Task<List<CompanyQuotesModel>> FindCompaniesForJob(FindCompaniesForJobRequest request)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICompanyRepository>();
-                var companies = repository.FindCompaniesForJob(request.JobId, request.MaxRecordCount, request.SectorId);
+                var companies = await repository.FindCompaniesForJobAsync(request.JobId, request.MaxRecordCount, request.SectorId);
                 return companies;
             }
         }
@@ -194,15 +193,6 @@ namespace Dream.Space.Data.Services
                 var repository = scope.Resolve<ICompanySectorRepository>();
                 var result = repository.GetAll();
                 return result;
-            }
-        }
-
-        public void CompleteJob(CompleteJobRequest request)
-        {
-            using (var scope = _container.BeginLifetimeScope())
-            {
-                var repository = scope.Resolve<ICompanyRepository>();
-                repository.CompleteJob(request.JobId, request.Tickers);
             }
         }
 
@@ -221,6 +211,17 @@ namespace Dream.Space.Data.Services
                     }
 
                 }
+            }
+        }
+
+        public async Task<int> GetSP500CountAsync()
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                var count = await repository.GetSP500CountAsync();
+
+                return count;
             }
         }
     }

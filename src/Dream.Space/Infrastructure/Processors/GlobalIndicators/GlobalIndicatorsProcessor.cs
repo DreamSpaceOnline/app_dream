@@ -65,12 +65,13 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                             var job = await FindPendingJob();
                             if (job != null)
                             {
+                                var total = await _companyService.GetSP500CountAsync();
                                 var indicators = _indicatorService.GetGlobalIndicators();
                                 var state = ProcessorState.InProgress;
 
                                 while (state == ProcessorState.InProgress && !job.IsFinished())
                                 {
-                                    state = await Execute(job, indicators);
+                                    state = await Execute(job, indicators, total);
                                     job = await _jobsService.GetJobAsync(job.JobId);
                                 }
 
@@ -118,25 +119,24 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
 
 
 
-        //TODO: mark processed companies
-        //TODO: mark update progress feedback
-        private async Task<ProcessorState> Execute(ScheduledJob job, List<Indicator> indicators)
+        private async Task<ProcessorState> Execute(ScheduledJob job, List<Indicator> indicators, int total)
         {
             try
             {
-                var companies = FetchNext(job.JobId);
+                var companies = await FetchNextAsync(job.JobId);
                 if (companies == null || !companies.Any())
                 {
                     return ProcessorState.Completed;
                 }
 
-                var results = await CalculateGlobalIndicators(companies, indicators, job.JobId);
-                foreach (var result in results)
+                var indicatorResults = await CalculateGlobalIndicators(companies, indicators, job.JobId);
+                foreach (var result in indicatorResults)
                 {
                     await _indicatorService.StoreIntermediateResultsAsync(job.JobId, result.Key, result.Value);
                 }
 
-                //TODO: mark processed companies
+                var tickers = companies.Select(c => c.Ticker).ToArray();
+                await _jobsService.UpdateProgressAsync(job.JobId, tickers, total);
 
                 _logger.Info(new ProcessorInfo
                 {
@@ -144,7 +144,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                     JobType = job.JobType,
                     JobState = JobStatus.Error,
                     ProcessName = Name
-                }, $"Successfully processed companies: {string.Join(", ", companies.Select(c => c.Ticker).ToArray())}");
+                }, $"Successfully processed companies: {string.Join(", ", tickers)}");
                 return ProcessorState.InProgress;
                 
             }
@@ -201,9 +201,9 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
 
         #region Helper Methods
 
-        public List<CompanyQuotesModel> FetchNext(int jobId)
+        public async Task<List<CompanyQuotesModel>> FetchNextAsync(int jobId)
         {
-            return _companyService.FindCompaniesForJob(new FindCompaniesForJobRequest
+            return await _companyService.FindCompaniesForJob(new FindCompaniesForJobRequest
             {
                 JobId = jobId.ToString(),
                 MaxRecordCount = 10

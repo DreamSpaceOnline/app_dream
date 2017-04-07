@@ -74,6 +74,10 @@ namespace Dream.Space.Data
             //ScheduledJob
             modelBuilder.Entity<ScheduledJob>().HasKey(e => e.JobId);
 
+            //ScheduledJobDetails
+            modelBuilder.Entity<ScheduledJobDetails>().HasKey(e => new { e.JobId, e.Ticker });
+            modelBuilder.Entity<ScheduledJobDetails>().Property(e => e.Ticker).IsRequired().HasColumnType("varchar").HasMaxLength(50);
+
             //Strategy
             modelBuilder.Entity<GlobalIndicator>().HasKey(e => new { e.IndicatorId, e.SectorId });
 
@@ -131,5 +135,6 @@ namespace Dream.Space.Data
         public virtual DbSet<GlobalIndicator> GlobalIndicators { get; set; }
         public virtual DbSet<ScheduledJob> ScheduledJobs { get; set; }
         public virtual DbSet<IndicatorIntermediateResult> IndicatorIntermediateResults { get; set; }
+        public virtual DbSet<ScheduledJobDetails> ScheduledJobDetail { get; set; }
     }
 }

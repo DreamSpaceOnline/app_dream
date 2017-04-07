@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Companies;
@@ -15,8 +16,9 @@ namespace Dream.Space.Data.Repositories
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
-        List<CompanyQuotesModel> FindCompaniesForJob(string requestJobId, int maxRecordCount, int sectorId);
-        void CompleteJob(string jobId, IList<string> tickers);
+        Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string requestJobId, int maxRecordCount, int sectorId);
+        Task<int> GetSP500CountAsync();
+        Task<int> GetCountAsync(int sectorId);
     }
 
 
@@ -103,34 +105,43 @@ namespace Dream.Space.Data.Repositories
             return new CompanyHeader(record);
         }
 
-        public List<CompanyQuotesModel> FindCompaniesForJob(string jobId,  int count, int sectorId)
+        //TODO:
+        public async Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string jobId,  int count, int sectorId)
         {
-            var records = Dbset.Where(c => (c.SectorId == sectorId || sectorId == 0) && c.Filtered && (c.SP500 || sectorId > 0) && c.LastJobId != jobId)
-                .Select(c => new CompanyQuotesModel
+            var query = $@"
+                SELECT TOP {count} C.* 
+                FROM [dbo].[Company] C
+                LEFT JOIN [dbo].[ScheduledJobDetails] J
+	                ON C.Ticker = J.Ticker AND J.JobId = @JobId
+
+                WHERE C.Filtered = 1
+	                AND (C.SectorId = @SectorId OR @SectorId = 0)
+	                AND J.JobId IS NULL";
+
+            var records = await Dbset.SqlQuery(query, 
+                new SqlParameter("@JobId", jobId), 
+                new SqlParameter("@SectorId", sectorId)
+            ).ToListAsync();
+
+            return records.Select(c =>
+                new CompanyQuotesModel
                 {
                     Ticker = c.Ticker,
                     LastUpdated = c.LastUpdated,
                     HistoryQuotesJson = c.HistoryQuotesJson
-                })
-                .OrderBy(c => c.Ticker)
-                .Take(count)
-                .ToList();
-
-            return records;
+                }).ToList();
         }
 
-        public void CompleteJob(string jobId, IList<string> tickerList)
+        public async Task<int> GetSP500CountAsync()
         {
-            var tickers = string.Join(",", tickerList.Select(t => $"'{t}'").ToArray());
+            var count = await Dbset.CountAsync(c => c.SP500 && c.Filtered);
+            return count;
+        }
 
-            var sql = $@"
-                UPDATE  C
-                    SET LastJobId = '{jobId}'
-                FROM dbo.Company C
-                WHERE Ticker IN ({tickers})";
-
-
-            DbContext.Database.ExecuteSqlCommand(sql);
+        public async Task<int> GetCountAsync(int sectorId)
+        {
+            var count = await Dbset.CountAsync(c => c.Filtered && (c.SectorId == sectorId || sectorId == 0));
+            return count;
         }
     }
 }

@@ -115,6 +115,24 @@ namespace Dream.Space.Data.Services
             }
         }
 
+        public async Task UpdateProgressAsync(int jobId, IList<string> tickers, int total)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobDetailsRepository>();
+                var jobRepository = scope.Resolve<IScheduledJobRepository>();
+
+                await repository.AddRangeAsync(jobId, tickers);
+
+                var processed = await repository.GetCountAsync(jobId);
+
+                var job = await jobRepository.GetAsync(jobId);
+                job.Progress = (int) Math.Round((processed * 1.0 / total) * 100, 0);
+                jobRepository.Commit();
+            }
+
+        }
+
 
         public async Task StartJobAsync(ScheduledJobType jobType)
         {

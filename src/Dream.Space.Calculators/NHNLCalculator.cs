@@ -47,7 +47,6 @@ namespace Dream.Space.Calculators
             return result.Result;
         }
 
-        //TODO: Apply SMA(10)
         public override List<IndicatorResult> Combine(List<IndicatorResult> indicatorResults)
         {
             var result = new List<IndicatorResult>();
@@ -57,13 +56,18 @@ namespace Dream.Space.Calculators
                 var item = new IndicatorResult(indicatorResult.Date);
                 var values = indicatorResult.AsNHNLIndicatorResult();
 
-                item.Value =Math.Round(CalculateNHNL(values.NewHigh, values.NewLow), 4);
+                item.Value = Math.Round(CalculateNHNL(values.NewHigh, values.NewLow), 4);
                 result.Add(item);
             }
 
-            //Apply SMA(10)
+            var sma = new SMA();
+            var smaResult = sma.Calculate(result.Select(c => new QuotesModel
+            {
+                Date = c.Date,
+                Close = c.Value
+            }).ToList(), 10);
 
-            return result;
+            return smaResult;
         }
 
         private decimal CalculateNHNL(decimal newHigh, decimal newLow)

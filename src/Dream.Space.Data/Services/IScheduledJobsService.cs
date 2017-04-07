@@ -18,5 +18,6 @@ namespace Dream.Space.Data.Services
         Task<ScheduledJob> GetJobAsync(int jobId);
         Task<ScheduledJob> FindPendingJobAsync(ScheduledJobType jobType);
         Task CompleteJobAsync(int jobId);
+        Task UpdateProgressAsync(int jobId, IList<string> tickers, int total);
     }
 }
