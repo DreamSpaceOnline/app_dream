@@ -302,7 +302,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\images\emma_bg_.jpg" />
+    <Content Include="Content\images\emma_bg.jpg" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\toastr.css" />
     <Content Include="favicon.ico" />
@@ -331,9 +331,10 @@
     <Content Include="package.json" />
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
-    <Content Include="src\components\market\global-markets.html" />
+    <Content Include="src\components\market\market-indices\sp500\sp500.html" />
+    <Content Include="src\components\market\jobs-dashboard\jobs-dashboard.html" />
     <Content Include="src\components\market\navigation.html" />
-    <Content Include="src\components\market\sub-nav\stock-indices.html" />
+    <Content Include="src\components\market\market-nav\market-nav.html" />
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
     <Content Include="src\components\nav-menu\category-nav\category-nav.html" />
     <Content Include="src\components\nav-menu\sub-nav\sub-nav.html" />
@@ -471,9 +472,10 @@
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
-    <TypeScriptCompile Include="src\components\market\global-markets.ts" />
+    <TypeScriptCompile Include="src\components\market\market-indices\sp500\sp500.ts" />
+    <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs-dashboard.ts" />
     <TypeScriptCompile Include="src\components\market\navigation.ts" />
-    <TypeScriptCompile Include="src\components\market\sub-nav\stock-indices.ts" />
+    <TypeScriptCompile Include="src\components\market\market-nav\market-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\category-nav\category-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\sub-nav\sub-nav.ts" />
@@ -666,7 +668,8 @@
     <None Include="Properties\PublishProfiles\dream-space - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DreamSpace - Web Deploy.pubxml" />
     <Content Include="karma.conf.js" />
-    <Content Include="src\components\market\global-markets.less" />
+    <Content Include="src\components\market\market-indices\market-indices.less" />
+    <Content Include="src\components\market\jobs-dashboard\jobs-dashboard.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

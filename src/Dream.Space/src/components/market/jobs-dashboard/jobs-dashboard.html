@@ -1,0 +1,62 @@
+﻿<template>
+    <require from="./jobs-dashboard.css"></require>
+
+    <div class="row">
+        <div class="col-md-8 col-xs-12 c_dashboard">
+            <header>
+                <h3>Jobs Dashboard</h3>
+            </header>
+        </div>
+
+        <div class="col-md-4 col-xs-12">
+            <div class="side-navigation">
+                <h3>Jobs</h3>
+                <ul>
+                    <li>
+                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                        <a click.delegate="RecalculateGlobalIndicators()" title="Recalculate Global Indicators"
+                           class="">Recalculate Global Indicators</a>
+                    </li>                    
+                    <li>
+                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                        <a click.delegate="refreshSP500Stocks()" title="Refresh S&P 500 Stocks"
+                           class="">Refresh S&P 500 Stocks</a>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                        <a click.delegate="refreshAllStocks()" title="Refresh All Stocks"
+                           class="">Refresh All Stocks</a>
+                    </li>                
+                </ul>
+
+                <h3>Running Jobs</h3>
+                <ul>
+                    <li>
+                        <a click.delegate="RecalculateGlobalIndicators()" title="Recalculate Global Indicators"
+                           class="">Recalculate Global Indicators</a>
+
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+
+                        <s-progress progress.bind="progress"></s-progress>
+                    </li>
+                    <li>
+                        <a click.delegate="refreshSP500Stocks()" title="Refresh S&P 500 Stocks"
+                           class="">Refresh S&P 500 Stocks</a>
+
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                    </li>
+                    <li>
+                        <a click.delegate="refreshAllStocks()" title="Refresh All Stocks"
+                           class="">Refresh All Stocks</a>
+
+                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</template>

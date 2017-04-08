@@ -4,8 +4,8 @@
             <div class="container">
                 <nav class="navbar">
                     <ul class="nav navbar-nav">
-                        <li repeat.for="item of items" class="${item.isActive ? 'active' : ''}">
-                            <a href.bind="item.url">${item.title}</a>
+                        <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}">
+                            <a href.bind="row.href">${row.title}</a>
                         </li>
                     </ul>
                 </nav>
