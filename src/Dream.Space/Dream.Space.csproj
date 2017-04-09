@@ -332,6 +332,7 @@
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.html" />
+    <Content Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.html" />
     <Content Include="src\components\market\jobs-dashboard\navigation.html" />
     <Content Include="src\components\market\market-indices\sp500\sp500.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.html" />
@@ -475,6 +476,7 @@
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.ts" />
+    <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\market-indices\sp500\sp500.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job.ts" />
@@ -522,6 +524,7 @@
     <TypeScriptCompile Include="src\services\account-service.ts" />
     <TypeScriptCompile Include="src\common\types\company-models.ts" />
     <TypeScriptCompile Include="src\services\company-service.ts" />
+    <TypeScriptCompile Include="src\services\job-service.ts" />
     <TypeScriptCompile Include="src\services\storage-service.ts" />
     <TypeScriptCompile Include="src\common\types\indicator-models.ts" />
     <TypeScriptCompile Include="src\services\indicator-service.ts" />

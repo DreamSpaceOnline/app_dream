@@ -7,7 +7,7 @@ export class Navigation {
     router: Router;
 
     configureRouter(config: any, router: Router) {
-        config.title = "Jobs Dashboard";
+        config.title = "Jobs";
 
 
         config.map([

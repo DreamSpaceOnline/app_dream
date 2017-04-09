@@ -1,0 +1,21 @@
+﻿<template>
+    <div class="c_jod_details">
+        <div class="c_jod_details-header" click.trigger="expand()">
+            <button type="button" show.bind="!expanded" click.delegate="delete()" class="btn btn-info btn-xs">Delete</button>
+            <span>Completed: ${completed}</span>
+            <span>Status: ${status}</span>
+            <span>Run time: ${runTime}</span>
+
+            <div class="chevron">
+                <span class="glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}" aria-hidden="true"></span>
+            </div>
+
+        </div>
+        <div class="c_jod_details-details" if.bind="expanded">
+            <div class="form-group" if.bind="expanded">
+                <label>Log</label>
+                <p class="form-control" readonly>sometthing big</p>
+            </div>
+        </div>
+    </div>
+</template>

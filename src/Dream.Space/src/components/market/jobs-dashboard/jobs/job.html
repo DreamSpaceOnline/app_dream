@@ -1,8 +1,24 @@
 ﻿<template>
     <require from="./job.css"></require>
+    <require from="./job-details/job-details"></require>
 
     <header>
         <h3>${title}</h3>
     </header>
 
+    <h4>Current Job</h4>
+    
+    
+    <h4>History</h4>
+
+    <div class="c_job-details-list">
+        <job-details repeat.for="job of jobs" job.bind="job"
+                class="${$index === $parent.jobs.length-1 ? 'no-border': ''}">
+        </job-details>
+        <div class="c_jod_details">
+            <div class="c_jod_details-header right">
+                <button type="button" click.delegate="deleteAll()" class="btn btn-warning btn-xs">Clear</button>
+            </div>
+        </div>
+    </div>
 </template>
