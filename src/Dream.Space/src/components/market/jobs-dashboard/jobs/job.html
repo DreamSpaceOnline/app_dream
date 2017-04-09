@@ -12,10 +12,9 @@
     <h4>History</h4>
 
     <div class="c_job-details-list">
-        <job-details repeat.for="job of jobs" job.bind="job"
-                class="${$index === $parent.jobs.length-1 ? 'no-border': ''}">
-        </job-details>
-        <div class="c_jod_details">
+        <job-details repeat.for="job of jobs" job.bind="job"></job-details>
+
+        <div class="c_jod_details no-border">
             <div class="c_jod_details-header right">
                 <button type="button" click.delegate="deleteAll()" class="btn btn-warning btn-xs">Clear</button>
             </div>
