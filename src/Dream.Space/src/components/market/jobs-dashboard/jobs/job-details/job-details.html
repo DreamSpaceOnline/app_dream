@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="c_jod_details">
         <div class="c_jod_details-header" click.trigger="expand()">
-            <button type="button" show.bind="!expanded" click.delegate="delete()" class="btn btn-info btn-xs">Delete</button>
+            <button type="button" click.delegate="delete()" class="btn btn-info btn-xs">Delete</button>
             <span>Completed: ${completed}</span>
             <span>Status: ${status}</span>
             <span>Run time: ${runTime}</span>
