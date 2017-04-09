@@ -331,8 +331,10 @@
     <Content Include="package.json" />
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
+    <Content Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.html" />
+    <Content Include="src\components\market\jobs-dashboard\navigation.html" />
     <Content Include="src\components\market\market-indices\sp500\sp500.html" />
-    <Content Include="src\components\market\jobs-dashboard\jobs-dashboard.html" />
+    <Content Include="src\components\market\jobs-dashboard\jobs\job.html" />
     <Content Include="src\components\market\navigation.html" />
     <Content Include="src\components\market\market-nav\market-nav.html" />
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
@@ -472,8 +474,10 @@
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
+    <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.ts" />
+    <TypeScriptCompile Include="src\components\market\jobs-dashboard\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\market-indices\sp500\sp500.ts" />
-    <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs-dashboard.ts" />
+    <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job.ts" />
     <TypeScriptCompile Include="src\components\market\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\market-nav\market-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
@@ -669,7 +673,7 @@
     <None Include="Properties\PublishProfiles\DreamSpace - Web Deploy.pubxml" />
     <Content Include="karma.conf.js" />
     <Content Include="src\components\market\market-indices\market-indices.less" />
-    <Content Include="src\components\market\jobs-dashboard\jobs-dashboard.less" />
+    <Content Include="src\components\market\jobs-dashboard\jobs\job.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

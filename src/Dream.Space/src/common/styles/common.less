@@ -43,7 +43,7 @@ h3 {
     h3 {
         padding-top: 20px;
         margin-top: 0;
-        color:@font-color;
+        color: @font-color;
         margin-bottom: 20px;
     }
 
@@ -53,11 +53,11 @@ h3 {
         top: -12px;
         left: 2px;
         margin-bottom: -3px;
-                    
+
         .glyphicon {
             color: @font-color;
             position: relative;
-            font-size:12px;
+            font-size: 12px;
             top: 1px;
             margin-right: 2px;
         }
@@ -75,15 +75,17 @@ h3 {
 
             a {
                 color: @font-color;
+
                 &.active, &:hover {
-                    color:@h3-color;
+                    color: @h3-color;
                     cursor: pointer;
                     /*text-decoration: none;*/
                     -webkit-transition: all 0.35s ease;
                     transition: all 0.35s ease;
                 }
+
                 &.disabled {
-                    opacity:0.6;
+                    opacity: 0.6;
                 }
             }
 
@@ -103,7 +105,14 @@ h3 {
                 border: 1px solid #DDD;
             }
         }
+
+        li.active {
+            a {
+                color: @link-color;
+            }
+        }
     }
+
     .side-navigation-add, .side-navigation-delete {
         .glyphicon {
             position: relative;
@@ -115,7 +124,7 @@ h3 {
     .side-navigation-add {
         .glyphicon {
             color: #008000;
-         }
+        }
     }
 
     .glyphicon-ok {
