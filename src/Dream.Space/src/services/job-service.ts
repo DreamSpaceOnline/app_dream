@@ -1,20 +1,61 @@
-﻿import { JobInfo } from "../components/market/jobs-dashboard/jobs/job-details/job-details";
+﻿import { autoinject } from "aurelia-framework";
+import { HttpClient } from "aurelia-fetch-client";
+import { JobInfo } from "../components/market/jobs-dashboard/jobs/job-details/job-details";
 
+@autoinject()
 export class JobService {
 
-    loadHistory(jobUrl: string) {
-        let jobs: JobInfo[] = [];
+    constructor(private http: HttpClient) {
+    }
 
-        if (jobUrl) {
-            for (let index = 0; index < 5; index++) {
-                let job: JobInfo = {
-                    jobId: 1 + index
-                };
+    public async loadHistory(jobUrl: string) : Promise<JobInfo[]> {
+        const jobType = this.getJobType(jobUrl);
+        const response = await this.http.fetch(`job/history/${jobType}`, { method: "get" });
 
-                jobs.push(job);
-            }
+        return await response.json();
+    }
+
+    public async startJob(jobUrl: string): Promise<JobInfo> {
+        const jobType = this.getJobType(jobUrl);
+        const response = await this.http.fetch(`job/start/${jobType}`, { method: "post" });
+
+        return await response.json();
+    }
+
+    public async currentJob(jobUrl: string): Promise<JobInfo> {
+        const jobType = this.getJobType(jobUrl);
+        const response = await this.http.fetch(`job/current/${jobType}`, { method: "get" });
+
+        return await response.json();
+    }
+
+
+    public async pauseJob(jobId: number) {
+        await this.http.fetch(`job/pause/${jobId}`, { method: "put" });
+
+    }
+
+    public async resumeJob(jobId: number) {
+        await this.http.fetch(`job/resume/${jobId}`, { method: "put" });
+
+    }
+
+    public async cancelJob(jobId: number) {
+        await this.http.fetch(`job/cancel/${jobId}`, { method: "put" });
+
+    }
+
+    getJobType(jobUrl: string): number {
+        switch (jobUrl) {
+            case "recalculate-global-indicators":
+                return 3;
+            case "refresh-sp500-stocks":
+                return 2;
+            case "refresh-all-stocks":
+                return 1;
+            
+            default:
+                return 0;
         }
-
-        return jobs;
     }
 }

@@ -8,6 +8,16 @@
 
     <h4>Current Job</h4>
     
+    <div if.bind="currentJob.jobId > 0">
+        <p>jobId: ${currentJob.jobId}</p>
+        <p>jobType: ${jobTypeName}</p>
+        <p>startDate: ${currentJob.startDate}</p>
+        <p>jobName: ${currentJob.jobName}</p>
+        <p>status: ${jobStatusName}</p>
+        <p>progress: ${currentJob.progress}</p>
+    </div>
+
+    <button type="button" click.delegate="startJob()" class="btn btn-warning btn-xs">Satrt Job</button>
     
     <div if.bind="jobs.length > 0">
         <h4>History</h4>

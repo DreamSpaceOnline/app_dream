@@ -177,6 +177,10 @@
     <Compile Include="Migrations\201704071221213_CreateScheduledJobDetails.Designer.cs">
       <DependentUpon>201704071221213_CreateScheduledJobDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704101442259_AlterScheduledJob1.cs" />
+    <Compile Include="Migrations\201704101442259_AlterScheduledJob1.Designer.cs">
+      <DependentUpon>201704101442259_AlterScheduledJob1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -219,12 +223,12 @@
     <Compile Include="Services\GlobalIndicatorService.cs" />
     <Compile Include="Services\CompanyManagerService.cs" />
     <Compile Include="Requests\CompaniesToProcessRequest.cs" />
-    <Compile Include="Services\GlobalMarketsService.cs" />
+    <Compile Include="Services\JobService.cs" />
     <Compile Include="Services\IArticleService.cs" />
     <Compile Include="Services\IArticleStorageService.cs" />
     <Compile Include="Services\ICompanyIndicatorService.cs" />
     <Compile Include="Services\ICompanyService.cs" />
-    <Compile Include="Services\IGlobalMarketsService.cs" />
+    <Compile Include="Services\IJobService.cs" />
     <Compile Include="Services\IIndicatorService.cs" />
     <Compile Include="Services\IRuleService.cs" />
     <Compile Include="Services\IRuleSetService.cs" />
@@ -303,6 +307,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704071221213_CreateScheduledJobDetails.resx">
       <DependentUpon>201704071221213_CreateScheduledJobDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704101442259_AlterScheduledJob1.resx">
+      <DependentUpon>201704101442259_AlterScheduledJob1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

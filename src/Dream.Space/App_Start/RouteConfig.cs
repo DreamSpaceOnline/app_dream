@@ -10,6 +10,7 @@ namespace Dream.Space
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("{assets}", new { assets = @".*\.(css|js|gif|jpg)(/.)?" });
             routes.IgnoreRoute("api/{endpoints}");
+            routes.IgnoreRoute("api*");
             routes.IgnoreRoute("hangfire*");
 
             routes.MapRoute(

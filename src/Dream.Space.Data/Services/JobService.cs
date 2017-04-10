@@ -5,11 +5,11 @@ using Dream.Space.Data.Entities.Jobs;
 
 namespace Dream.Space.Data.Services
 {
-    public class GlobalMarketsService : IGlobalMarketsService
+    public class JobService : IJobService
     {
         private readonly IScheduledJobsService _scheduledJobs;
 
-        public GlobalMarketsService(IScheduledJobsService scheduledJobs)
+        public JobService(IScheduledJobsService scheduledJobs)
         {
             _scheduledJobs = scheduledJobs;
         }
@@ -31,13 +31,9 @@ namespace Dream.Space.Data.Services
         }
 
 
-        public async Task<IList<ScheduledJob>> GetJobHistoryAsync(string jobType)
+        public async Task<IList<ScheduledJob>> GetJobHistoryAsync(ScheduledJobType jobType)
         {
-            if (!Enum.TryParse(jobType, out ScheduledJobType enumJobType))
-            {
-                enumJobType = ScheduledJobType.All;
-            }
-            var jobs = await _scheduledJobs.GetHistoryAsync(enumJobType);
+            var jobs = await _scheduledJobs.GetHistoryAsync(jobType);
 
             return jobs;
         }
@@ -65,6 +61,17 @@ namespace Dream.Space.Data.Services
         public async Task<IList<ScheduledJob>> GetActiveJobsAsync()
         {
             return await _scheduledJobs.GetActiveJobsAsync(ScheduledJobType.All);
+        }
+
+        public async Task<ScheduledJob> StartScheduledJobAsync(ScheduledJobType jobType)
+        {
+            return await _scheduledJobs.StartJobAsync(jobType);
+        }
+
+        public async Task<ScheduledJob> GetCurrentJobAsync(ScheduledJobType jobType)
+        {
+            var job = await _scheduledJobs.FindAciveJobAsync(jobType);
+            return job;
         }
     }
 }

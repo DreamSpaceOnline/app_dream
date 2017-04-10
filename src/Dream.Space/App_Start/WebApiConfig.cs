@@ -33,7 +33,7 @@ namespace Dream.Space
             var settings = config.Formatters.JsonFormatter.SerializerSettings;
             settings.Formatting = Formatting.Indented;
             settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            settings.Converters.Add(stringEnumConverter);
+            //settings.Converters.Add(stringEnumConverter);
         }
     }
 }

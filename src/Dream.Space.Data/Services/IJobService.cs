@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Jobs;
 
 namespace Dream.Space.Data.Services
 {
-    public interface IGlobalMarketsService
+    public interface IJobService
     {
         Task RefreshAllStocksAsync();
         Task RefreshSP500StocksAsync();
         Task RecalculateGlobalIndexesAsync();
-        Task<IList<ScheduledJob>> GetJobHistoryAsync(string jobType = null);
+        Task<IList<ScheduledJob>> GetJobHistoryAsync(ScheduledJobType jobType = ScheduledJobType.All);
         Task CancelScheduledJobAsync(int jobId);
         Task PauseScheduledJobAsync(int jobId);
         Task ResumeScheduledJobAsync(int jobId);
         Task ClearJobsHistoryAsync();
         Task<IList<ScheduledJob>> GetActiveJobsAsync();
+        Task<ScheduledJob> StartScheduledJobAsync(ScheduledJobType jobType);
+        Task<ScheduledJob> GetCurrentJobAsync(ScheduledJobType jobType);
     }
 }

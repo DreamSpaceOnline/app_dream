@@ -302,7 +302,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\images\emma_bg.jpg" />
+    <Content Include="Content\images\emma_bg_.jpg" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\toastr.css" />
     <Content Include="favicon.ico" />
@@ -392,7 +392,7 @@
     <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\CompaniesApiController.cs" />
     <Compile Include="Controllers\FileDetails.cs" />
-    <Compile Include="Controllers\GlobalMarketsApiController.cs" />
+    <Compile Include="Controllers\JobsApiController.cs" />
     <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\IndicatorsApiController.cs" />

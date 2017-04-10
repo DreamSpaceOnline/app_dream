@@ -32,4 +32,28 @@ export class ErrorInterceptor implements Interceptor {
             return request;
     }
 
+
+    async responseError(response: Response, _request?: Request): Promise<Response> {
+        if (response.status === 400) {
+            let validationError = (await response.json()).message;
+            this.eventEmitter.publish('ValidationError', validationError);
+            return Promise.reject(validationError);
+        }
+
+        if (response.status === 401) {
+            this.eventEmitter.publish("ServerError", { message: "401" });
+            return Promise.reject(null);
+        }
+
+        if (response.status === 403) {
+            this.eventEmitter.publish("ServerError", { message: "NotAuthorised" });
+            return Promise.reject(null);
+        }
+
+        if (response.status >= 500) {
+            this.eventEmitter.publish("ServerError", { message: "Unhandled" });
+            return Promise.reject(null);
+        }
+    }
+
 }

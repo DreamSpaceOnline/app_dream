@@ -134,7 +134,7 @@ namespace Dream.Space.Data.Services
         }
 
 
-        public async Task StartJobAsync(ScheduledJobType jobType)
+        public async Task<ScheduledJob> StartJobAsync(ScheduledJobType jobType)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -144,9 +144,10 @@ namespace Dream.Space.Data.Services
 
                 if (existingJob == null)
                 {
-                    repository.Add(new ScheduledJob
+                    existingJob = repository.Add(new ScheduledJob
                     {
                         StartDate = DateTime.UtcNow,
+                        CompletedDate = null,
                         JobType = jobType,
                         JobName = jobType.ToString(),
                         Status = JobStatus.Pending
@@ -162,8 +163,11 @@ namespace Dream.Space.Data.Services
                         repository.Commit();
                     }
                 }
+
+                return existingJob;
             }
         }
+
 
         public async Task CancelJobAsync(int jobId)
         {

@@ -90,7 +90,7 @@ namespace Dream.Space.Infrastructure.IoC
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
 
-            builder.RegisterType<GlobalMarketsService>().As<IGlobalMarketsService>();
+            builder.RegisterType<JobService>().As<IJobService>();
             builder.RegisterType<ScheduledJobsService>().As<IScheduledJobsService>();
             builder.RegisterType<ArticleService>().As<IArticleService>();
             builder.RegisterType<RuleService>().As<IRuleService>();
