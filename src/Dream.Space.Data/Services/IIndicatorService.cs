@@ -147,13 +147,20 @@ namespace Dream.Space.Data.Services
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IIndicatorIntermediateResultsRepository>();
-                repository.Add(new IndicatorIntermediateResult
+                var record = await repository.GetIntermediateResultsAsync(jobId, indicatorId);
+                if (record == null)
                 {
-                    JobId = jobId,
-                    IndicatorId = indicatorId,
-                    Values = results
-                });
-
+                    repository.Add(new IndicatorIntermediateResult
+                    {
+                        JobId = jobId,
+                        IndicatorId = indicatorId,
+                        Values = results
+                    });
+                }
+                else
+                {
+                    record.Values = results;
+                }
                 await repository.CommitAsync();
             }
         }

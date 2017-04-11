@@ -82,7 +82,7 @@ namespace Dream.Space.Data
             modelBuilder.Entity<GlobalIndicator>().HasKey(e => new { e.IndicatorId, e.SectorId });
 
             //IndicatorIntermediateResult
-            modelBuilder.Entity<IndicatorIntermediateResult>().HasKey(e => new { e.IndicatorId, e.JobId });
+            modelBuilder.Entity<IndicatorIntermediateResult>().HasKey(e => e.Id);
 
             modelBuilder.Entity<Article>().HasKey(t => t.ArticleId);
             modelBuilder.Entity<Article>().HasRequired(a => a.Category).WithMany(t => t.Articles).HasForeignKey(p => p.CategoryId);

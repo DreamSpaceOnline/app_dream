@@ -32,17 +32,20 @@ export class JobService {
 
     public async pauseJob(jobId: number) {
         await this.http.fetch(`job/pause/${jobId}`, { method: "put" });
-
     }
 
     public async resumeJob(jobId: number) {
         await this.http.fetch(`job/resume/${jobId}`, { method: "put" });
-
     }
 
     public async cancelJob(jobId: number) {
         await this.http.fetch(`job/cancel/${jobId}`, { method: "put" });
+    }
 
+    public async getJob(jobId: number): Promise<JobInfo> {
+        const response = await this.http.fetch(`job/info/${jobId}`, { method: "get" });
+
+        return await response.json();
     }
 
     getJobType(jobUrl: string): number {

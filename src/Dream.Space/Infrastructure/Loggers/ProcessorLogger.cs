@@ -5,7 +5,8 @@ namespace Dream.Space.Infrastructure.Loggers
 {
     public class ProcessorLogger: IProcessorLogger
     {
-        private readonly NLog.Logger _logger = LogManager.GetLogger("ProcessorLogger");
+        private const string LoggerName = "ProcessorLogger";
+        private readonly NLog.Logger _logger = LogManager.GetLogger(LoggerName);
 
         public void Info(ProcessorInfo processor, string message)
         {
@@ -29,7 +30,7 @@ namespace Dream.Space.Infrastructure.Loggers
 
         private static LogEventInfo CreateLogEventInfo(LogLevel logLevel, ProcessorInfo processor, string message)
         {
-            var eventInfo = new LogEventInfo(logLevel, string.Empty, message);
+            var eventInfo = new LogEventInfo(logLevel, LoggerName, message);
 
             eventInfo.Properties["Processor"] = processor.ProcessName;
             eventInfo.Properties["JobId"] = processor.JobId;

@@ -17,5 +17,6 @@ namespace Dream.Space.Data.Services
         Task<IList<ScheduledJob>> GetActiveJobsAsync();
         Task<ScheduledJob> StartScheduledJobAsync(ScheduledJobType jobType);
         Task<ScheduledJob> GetCurrentJobAsync(ScheduledJobType jobType);
+        Task<ScheduledJob> GetJobAsync(int jobId);
     }
 }

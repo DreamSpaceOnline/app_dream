@@ -181,7 +181,7 @@ namespace Dream.Space.Data.Services
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICompanyRepository>();
-                var companies = await repository.FindCompaniesForJobAsync(request.JobId, request.MaxRecordCount, request.SectorId);
+                var companies = await repository.FindCompaniesForJobAsync(request.JobId, request.MaxRecordCount, request.SectorId, request.SP500);
                 return companies;
             }
         }

@@ -133,6 +133,24 @@ namespace Dream.Space.Data.Services
 
         }
 
+        public async Task<ScheduledJob> UpdateJobAsync(ScheduledJob job)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                var entity = await repository.GetAsync(job.JobId);
+                if (entity != null)
+                {
+                    entity.Status = job.Status;
+                    entity.Progress = job.Progress;
+
+                    repository.Commit();
+                }
+
+                return entity;
+            }
+        }
+
 
         public async Task<ScheduledJob> StartJobAsync(ScheduledJobType jobType)
         {

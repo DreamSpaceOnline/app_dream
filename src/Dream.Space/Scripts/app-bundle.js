@@ -1185,6 +1185,20 @@ define('services/job-service',["require", "exports", "tslib", "aurelia-framework
                 });
             });
         };
+        JobService.prototype.getJob = function (jobId) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("job/info/" + jobId, { method: "get" })];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
+        };
         JobService.prototype.getJobType = function (jobUrl) {
             switch (jobUrl) {
                 case "recalculate-global-indicators":
@@ -4855,6 +4869,94 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                 });
             });
         };
+        Job.prototype.resumeJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, this.jobService.resumeJob(this.currentJob.jobId)];
+                        case 1:
+                            _b.sent();
+                            _a = this;
+                            return [4 /*yield*/, this.jobService.getJob(this.currentJob.jobId)];
+                        case 2:
+                            _a.currentJob = _b.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Job.prototype.pauseJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, this.jobService.pauseJob(this.currentJob.jobId)];
+                        case 1:
+                            _b.sent();
+                            _a = this;
+                            return [4 /*yield*/, this.jobService.getJob(this.currentJob.jobId)];
+                        case 2:
+                            _a.currentJob = _b.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Job.prototype.cancelJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.jobService.cancelJob(this.currentJob.jobId)];
+                        case 1:
+                            _a.sent();
+                            return [4 /*yield*/, this.loadJobs()];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Job.prototype.viewLog = function (jobId) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    console.log(jobId);
+                    return [2 /*return*/];
+                });
+            });
+        };
+        Object.defineProperty(Job.prototype, "currentJobInProgress", {
+            get: function () {
+                if (this.currentJob && this.currentJob.jobId > 0) {
+                    return this.currentJob.status === job_details_1.JobStatus.InProgress
+                        || this.currentJob.status === job_details_1.JobStatus.Pending;
+                }
+                return false;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "currentJobPaused", {
+            get: function () {
+                if (this.currentJob && this.currentJob.jobId > 0) {
+                    return this.currentJob.status === job_details_1.JobStatus.Paused;
+                }
+                return false;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "currentJobStarted", {
+            get: function () {
+                if (this.currentJob && this.currentJob.jobId > 0) {
+                    return true;
+                }
+                return false;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Job.prototype, "jobTypeName", {
             get: function () {
                 if (this.currentJob) {
@@ -4891,6 +4993,21 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
         });
         return Job;
     }());
+    tslib_1.__decorate([
+        aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
+        tslib_1.__metadata("design:type", Boolean),
+        tslib_1.__metadata("design:paramtypes", [])
+    ], Job.prototype, "currentJobInProgress", null);
+    tslib_1.__decorate([
+        aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
+        tslib_1.__metadata("design:type", Boolean),
+        tslib_1.__metadata("design:paramtypes", [])
+    ], Job.prototype, "currentJobPaused", null);
+    tslib_1.__decorate([
+        aurelia_framework_1.computedFrom("currentJob.jobId"),
+        tslib_1.__metadata("design:type", Boolean),
+        tslib_1.__metadata("design:paramtypes", [])
+    ], Job.prototype, "currentJobStarted", null);
     tslib_1.__decorate([
         aurelia_framework_1.computedFrom("currentJob.jobType"),
         tslib_1.__metadata("design:type", String),
@@ -7302,7 +7419,7 @@ define('text!resources/elements/strategy/strategy-admin.html', ['module'], funct
 define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleset.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"ruleset.expanded !== true && ruleset.editMode === true\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span if.bind=\"ruleset.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"ruleset.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"ruleset.editMode === true\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"ruleset.expanded === true\"><form if.bind=\"ruleset.deleteMode !== true\"><fieldset disabled.bind=\"ruleset.editMode !== true\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"ruleset.deleteMode === true\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
 define('text!components/studies/study.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
-define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div if.bind=\"currentJob.jobId > 0\"><p>jobId: ${currentJob.jobId}</p><p>jobType: ${jobTypeName}</p><p>startDate: ${currentJob.startDate}</p><p>jobName: ${currentJob.jobName}</p><p>status: ${jobStatusName}</p><p>progress: ${currentJob.progress}</p></div><button type=\"button\" click.delegate=\"startJob()\" class=\"btn btn-warning btn-xs\">Satrt Job</button><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning btn-xs\">Clear</button></div></div></div></div></template>"; });
+define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div class=\"form-horizontal\"><fieldset if.bind=\"currentJobStarted\"><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Job Number</label><div class=\"col-sm-10\"><p class=\"form-control\" readonly=\"readonly\">${currentJob.jobId}</p></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Started Date</label><div class=\"col-sm-10\"><p class=\"form-control\" readonly=\"readonly\">${currentJob.startDate}</p></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Status</label><div class=\"col-sm-10\"><p class=\"form-control\" readonly=\"readonly\">${jobStatusName}</p></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Progress</label><div class=\"col-sm-10\"><s-progress progress.bind=\"currentJob.progress\"></s-progress></div></div></fieldset><div class=\"c_job-actions\"><button type=\"button\" if.bind=\"!currentJobStarted\" click.delegate=\"startJob()\" class=\"btn btn-default btn-xs\">Start Job</button> <button type=\"button\" if.bind=\"currentJobPaused\" click.delegate=\"resumeJob()\" class=\"btn btn-default btn-xs\">Resume Job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"cancelJob()\" class=\"btn btn-default btn-xs\">Cancel Job</button> <button type=\"button\" if.bind=\"currentJobInProgress\" click.delegate=\"pauseJob()\" class=\"btn btn-default btn-xs\">Pause Job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"viewLog(currentJob.jobId)\" class=\"btn btn-info btn-xs\">View Log</button></div></div><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning btn-xs\">Clear</button></div></div></div></div></template>"; });
 define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
 define('text!components/market/jobs-dashboard/jobs-nav/jobs-nav.html', ['module'], function(module) { module.exports = "<template><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></template>"; });

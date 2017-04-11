@@ -73,5 +73,11 @@ namespace Dream.Space.Data.Services
             var job = await _scheduledJobs.FindAciveJobAsync(jobType);
             return job;
         }
+
+        public async Task<ScheduledJob> GetJobAsync(int jobId)
+        {
+            var job = await _scheduledJobs.GetJobAsync(jobId);
+            return job;
+        }
     }
 }

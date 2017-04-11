@@ -27,6 +27,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
         private readonly CalculatorFactory _calculatorFactory;
         private readonly IGlobalIndicatorService _globalIndicatorService;
         private readonly IProcessorLogger _logger;
+
         public string Name => "Global Indicators Processor";
 
         public GlobalIndicatorsProcessor(
@@ -95,14 +96,24 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                                             LastCalculated = DateTime.UtcNow
                                         });
 
-                                        await _jobsService.CompleteJobAsync(job.JobId);
                                         await ClearIntermediateResults(job.JobId, indicator.IndicatorId);
 
-                                        _logger.Info(new ProcessorInfo
-                                            {
-                                                ProcessName = Name, JobId = job.JobId, JobType = ScheduledJobType.CalculateGlobalIndicators, JobState = JobStatus.Completed
-                                            }, "Job completed successfully");
                                     }
+
+                                    await _jobsService.CompleteJobAsync(job.JobId);
+                                    _logger.Info(new ProcessorInfo
+                                    {
+                                        ProcessName = Name,
+                                        JobId = job.JobId,
+                                        JobType = ScheduledJobType.CalculateGlobalIndicators,
+                                        JobState = JobStatus.Completed
+                                    }, "Job completed successfully");
+                                }
+
+                                if (state == ProcessorState.Error)
+                                {
+                                    job.Status = JobStatus.Error;
+                                    await _jobsService.UpdateJobAsync(job);
                                 }
                             }
                         }
@@ -112,6 +123,8 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                                 new ProcessorInfo {ProcessName = Name},
                                 $"Failed while executing: {Name}", ex);
                         }
+
+                        //Thread.Sleep(interval);
                     } while (!waitHandle.WaitOne(interval));
                 }
             }, token);
@@ -132,7 +145,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                 var indicatorResults = await CalculateGlobalIndicators(companies, indicators, job.JobId);
                 foreach (var result in indicatorResults)
                 {
-                    await _indicatorService.StoreIntermediateResultsAsync(job.JobId, result.Key, result.Value);
+                        await _indicatorService.StoreIntermediateResultsAsync(job.JobId, result.Key, result.Value);
                 }
 
                 var tickers = companies.Select(c => c.Ticker).ToArray();
@@ -175,12 +188,25 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                 foreach (var company in companies)
                 {
                     var quotes = company.HistoryQuotes;
+                    List<IndicatorResult> calcResult;
+
                     if (indicator.Period == QuotePeriod.Weekly)
                     {
-                        quotes = quotes.ToWeeekly();
+                        calcResult = calculator.Calculate(indicator, quotes.ToWeeekly());
+                    }
+                    else
+                    {
+                        calcResult = calculator.Calculate(indicator, quotes);
                     }
 
-                    calculatorResult.AddRange(calculator.Calculate(indicator, quotes));
+                    if (calcResult != null && calcResult.Any())
+                    {
+                        calculatorResult.AddRange(calcResult);
+                    }
+                    else
+                    {
+                        calcResult = null;
+                    }
                 }
 
                 var indicatorResult = calculator.Merge(calculatorResult);
@@ -206,7 +232,8 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
             return await _companyService.FindCompaniesForJob(new FindCompaniesForJobRequest
             {
                 JobId = jobId.ToString(),
-                MaxRecordCount = 10
+                MaxRecordCount = 10,
+                SP500 = true
             });
         }
 

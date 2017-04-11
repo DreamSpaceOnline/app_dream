@@ -86,6 +86,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<VStrategyRuleSetRepository>().As<IVStrategyRuleSetRepository>().InstancePerDependency();
             builder.RegisterType<VStrategyRuleRepository>().As<IVStrategyRuleRepository>().InstancePerDependency();
             builder.RegisterType<ScheduledJobRepository>().As<IScheduledJobRepository>().InstancePerDependency();
+            builder.RegisterType<ScheduledJobDetailsRepository>().As<IScheduledJobDetailsRepository>().InstancePerDependency();
             builder.RegisterType<IndicatorIntermediateResultsRepository>().As<IIndicatorIntermediateResultsRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();

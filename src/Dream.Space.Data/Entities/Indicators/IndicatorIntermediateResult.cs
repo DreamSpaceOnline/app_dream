@@ -17,5 +17,6 @@ namespace Dream.Space.Data.Entities.Indicators
         public string ValuesJson { get; set; }
         public int JobId { get; set; }
         public int IndicatorId { get; set; }
+        public int Id { get; set; }
     }
 }

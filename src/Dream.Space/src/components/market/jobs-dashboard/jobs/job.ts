@@ -53,6 +53,53 @@ export class Job {
         this.currentJob = await this.jobService.startJob(this.jobUrl);
     }
 
+    async resumeJob() {
+        await this.jobService.resumeJob(this.currentJob.jobId);
+        this.currentJob = await this.jobService.getJob(this.currentJob.jobId);
+    }
+
+    async pauseJob() {
+        await this.jobService.pauseJob(this.currentJob.jobId);
+        this.currentJob = await this.jobService.getJob(this.currentJob.jobId);
+    }
+
+    async cancelJob() {
+        await this.jobService.cancelJob(this.currentJob.jobId);
+        await this.loadJobs();
+    }
+
+    async viewLog(jobId: number) {
+        console.log(jobId);
+        //let logs = await this.jobService.getJobLog(jobId);
+    }
+
+    @computedFrom("currentJob.jobId", "currentJob.status")
+    get currentJobInProgress(): boolean {
+        if (this.currentJob && this.currentJob.jobId > 0) {
+            return this.currentJob.status === JobStatus.InProgress
+                || this.currentJob.status === JobStatus.Pending;
+        }
+
+        return false;
+    }
+
+    @computedFrom("currentJob.jobId", "currentJob.status")
+    get currentJobPaused(): boolean {
+        if (this.currentJob && this.currentJob.jobId > 0) {
+            return this.currentJob.status === JobStatus.Paused;
+        }
+
+        return false;
+    }
+
+    @computedFrom("currentJob.jobId")
+    get currentJobStarted(): boolean {
+        if (this.currentJob && this.currentJob.jobId > 0) {
+            return true;
+        }
+
+        return false;
+    }
 
     @computedFrom("currentJob.jobType")
     get jobTypeName(): string {

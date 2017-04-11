@@ -88,5 +88,14 @@ namespace Dream.Space.Controllers
             return Ok(job);
         }
 
+        [HttpGet]
+        [Route("info/{jobId:int}")]
+        [ResponseType(typeof(ScheduledJob))]
+        public async Task<IHttpActionResult> GetJob(int jobId)
+        {
+            var job = await _service.GetJobAsync(jobId);
+
+            return Ok(job);
+        }
     }
 }

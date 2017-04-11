@@ -16,7 +16,7 @@ namespace Dream.Space.Data.Repositories
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
-        Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string requestJobId, int maxRecordCount, int sectorId);
+        Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string requestJobId, int maxRecordCount, int sectorId, bool sp500);
         Task<int> GetSP500CountAsync();
         Task<int> GetCountAsync(int sectorId);
     }
@@ -106,7 +106,7 @@ namespace Dream.Space.Data.Repositories
         }
 
         //TODO:
-        public async Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string jobId,  int count, int sectorId)
+        public async Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string jobId, int count, int sectorId, bool sp500)
         {
             var query = $@"
                 SELECT TOP {count} C.* 
@@ -116,11 +116,13 @@ namespace Dream.Space.Data.Repositories
 
                 WHERE C.Filtered = 1
 	                AND (C.SectorId = @SectorId OR @SectorId = 0)
+	                AND (C.SP500 = 1 OR @SP500 = 0)
 	                AND J.JobId IS NULL";
 
             var records = await Dbset.SqlQuery(query, 
                 new SqlParameter("@JobId", jobId), 
-                new SqlParameter("@SectorId", sectorId)
+                new SqlParameter("@SectorId", sectorId),
+                new SqlParameter("@SP500", sp500)
             ).ToListAsync();
 
             return records.Select(c =>
