@@ -4846,6 +4846,7 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                             return [4 /*yield*/, this.jobService.loadHistory(this.jobUrl)];
                         case 2:
                             _b.jobs = _c.sent();
+                            this.watchCurrentJob();
                             return [2 /*return*/];
                     }
                 });
@@ -4864,10 +4865,30 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                             return [4 /*yield*/, this.jobService.startJob(this.jobUrl)];
                         case 1:
                             _a.currentJob = _b.sent();
+                            this.watchCurrentJob();
                             return [2 /*return*/];
                     }
                 });
             });
+        };
+        Job.prototype.watchCurrentJob = function () {
+            var _this = this;
+            if (this.currentJob != null && this.currentJob.jobId > 0) {
+                setTimeout(function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    var _a;
+                    return tslib_1.__generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                _a = this;
+                                return [4 /*yield*/, this.jobService.currentJob(this.jobUrl)];
+                            case 1:
+                                _a.currentJob = _b.sent();
+                                this.watchCurrentJob();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); }, 1000);
+            }
         };
         Job.prototype.resumeJob = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {

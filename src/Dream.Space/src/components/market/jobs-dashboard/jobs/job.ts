@@ -43,6 +43,8 @@ export class Job {
     async loadJobs() {
         this.currentJob = await this.jobService.currentJob(this.jobUrl);
         this.jobs = await this.jobService.loadHistory(this.jobUrl);
+
+        this.watchCurrentJob();
     }
 
     deleteAll() {
@@ -51,6 +53,17 @@ export class Job {
 
     async startJob() {
         this.currentJob = await this.jobService.startJob(this.jobUrl);
+        this.watchCurrentJob();
+    }
+
+    watchCurrentJob() {
+        if (this.currentJob != null && this.currentJob.jobId > 0) {
+            setTimeout(async () => {
+                this.currentJob = await this.jobService.currentJob(this.jobUrl);
+
+                this.watchCurrentJob();
+            }, 1000);
+        }
     }
 
     async resumeJob() {
