@@ -16,9 +16,12 @@ using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
 {
-    public class GlobalIndicatorsProcessor : IProcessor
+
+
+    public class GlobalIndicatorsProcessor : IProcessor, IDisposable
     {
         #region Constructor
+        private bool _running = false;
 
         private readonly GlobalIndicatorsProcessorConfig _config;
         private readonly IScheduledJobsService _jobsService;
@@ -27,6 +30,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
         private readonly CalculatorFactory _calculatorFactory;
         private readonly IGlobalIndicatorService _globalIndicatorService;
         private readonly IProcessorLogger _logger;
+        private CancellationTokenSource _cancellationToken;
 
         public string Name => "Global Indicators Processor";
 
@@ -46,90 +50,97 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
             _calculatorFactory = calculatorFactory;
             _globalIndicatorService = globalIndicatorService;
             _logger = logger;
+
+            _cancellationToken = new CancellationTokenSource();
         }
 
 
         #endregion
 
 
-        public void Start(CancellationToken token)
+        public void Start()
         {
-            Task.Run(async () =>
-            {
-                using (var waitHandle = token.WaitHandle)
-                {
-                    var interval = _config.Interval;
-                    do
-                    {
-                        try
-                        {
-                            var job = await FindPendingJob();
-                            if (job != null)
-                            {
-                                var total = await _companyService.GetSP500CountAsync();
-                                var indicators = _indicatorService.GetGlobalIndicators();
-                                var state = ProcessorState.InProgress;
+            _running = true;
 
-                                while (state == ProcessorState.InProgress && !job.IsFinished())
-                                {
-                                    state = await Execute(job, indicators, total);
-                                    job = await _jobsService.GetJobAsync(job.JobId);
-                                }
-
-                                if (state == ProcessorState.Completed)
-                                {
-                                    foreach (var indicator in indicators)
-                                    {
-                                        var indicatorResults = await GetIntermediateResults(job.JobId, indicator.IndicatorId);
-                                        var calculator = _calculatorFactory.Create(indicator);
-                                        indicatorResults = calculator.Combine(indicatorResults);
-
-                                        await _globalIndicatorService.Save(new GlobalIndicator
-                                        {
-                                            SectorId = 0, 
-                                            IndicatorId = indicator.IndicatorId,
-                                            Values = indicatorResults,
-                                            StartDate = indicatorResults.Last().Date,
-                                            EndDate = indicatorResults.First().Date,
-                                            CalculatedSuccessful = true,
-                                            CompanyCount = total,
-                                            LastCalculated = DateTime.UtcNow
-                                        });
-
-                                        await ClearIntermediateResults(job.JobId, indicator.IndicatorId);
-
-                                    }
-
-                                    await _jobsService.CompleteJobAsync(job.JobId);
-                                    _logger.Info(new ProcessorInfo
-                                    {
-                                        ProcessName = Name,
-                                        JobId = job.JobId,
-                                        JobType = ScheduledJobType.CalculateGlobalIndicators,
-                                        JobState = JobStatus.Completed
-                                    }, "Job completed successfully");
-                                }
-
-                                if (state == ProcessorState.Error)
-                                {
-                                    job.Status = JobStatus.Error;
-                                    await _jobsService.UpdateJobAsync(job);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error(
-                                new ProcessorInfo {ProcessName = Name},
-                                $"Failed while executing: {Name}", ex);
-                        }
-
-                        //Thread.Sleep(interval);
-                    } while (!waitHandle.WaitOne(interval));
-                }
-            }, token);
+            Task.Run(async () => await StartTask(), _cancellationToken.Token);
         }
 
+        public void Stop()
+        {
+            Dispose();
+        }
+
+        private async Task StartTask()
+        {
+            while (_running)
+            {
+            
+                try
+                {
+                    var job = await FindPendingJob();
+                    if (job != null)
+                    {
+                        var total = await _companyService.GetSP500CountAsync();
+                        var indicators = _indicatorService.GetGlobalIndicators();
+                        var state = ProcessorState.InProgress;
+
+                        while (state == ProcessorState.InProgress && !job.IsFinished())
+                        {
+                            state = await Execute(job, indicators, total);
+                            job = await _jobsService.GetJobAsync(job.JobId);
+                        }
+
+                        if (state == ProcessorState.Completed)
+                        {
+                            foreach (var indicator in indicators)
+                            {
+                                var indicatorResults = await GetIntermediateResults(job.JobId, indicator.IndicatorId);
+                                var calculator = _calculatorFactory.Create(indicator);
+                                indicatorResults = calculator.Combine(indicatorResults);
+
+                                await _globalIndicatorService.Save(new GlobalIndicator
+                                {
+                                    SectorId = 0,
+                                    IndicatorId = indicator.IndicatorId,
+                                    Values = indicatorResults,
+                                    StartDate = indicatorResults.Last().Date,
+                                    EndDate = indicatorResults.First().Date,
+                                    CalculatedSuccessful = true,
+                                    CompanyCount = total,
+                                    LastCalculated = DateTime.UtcNow
+                                });
+
+                                await ClearIntermediateResults(job.JobId, indicator.IndicatorId);
+
+                            }
+
+                            await _jobsService.CompleteJobAsync(job.JobId);
+                            _logger.Info(new ProcessorInfo
+                            {
+                                ProcessName = Name,
+                                JobId = job.JobId,
+                                JobType = ScheduledJobType.CalculateGlobalIndicators,
+                                JobState = JobStatus.Completed
+                            }, "Job completed successfully");
+                        }
+
+                        if (state == ProcessorState.Error)
+                        {
+                            job.Status = JobStatus.Error;
+                            await _jobsService.UpdateJobAsync(job);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(
+                        new ProcessorInfo { ProcessName = Name },
+                        $"Failed while executing: {Name}", ex);
+                }
+
+                Thread.Sleep(_config.Interval);
+            }
+        }
 
 
         private async Task<ProcessorState> Execute(ScheduledJob job, List<Indicator> indicators, int total)
@@ -203,10 +214,6 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                     {
                         calculatorResult.AddRange(calcResult);
                     }
-                    else
-                    {
-                        calcResult = null;
-                    }
                 }
 
                 var indicatorResult = calculator.Merge(calculatorResult);
@@ -253,6 +260,26 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
             return await _jobsService.FindPendingJobAsync(ScheduledJobType.CalculateGlobalIndicators);
         }
 
+        public void Dispose()
+        {
+            _running = false;
+
+            if (_cancellationToken != null)
+            {
+                try
+                {
+                    _cancellationToken.Cancel();
+                    _cancellationToken.Dispose();
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    _cancellationToken = null;
+                }
+            }
+        }
 
         #endregion
 

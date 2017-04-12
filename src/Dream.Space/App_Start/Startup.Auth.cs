@@ -1,13 +1,11 @@
 ﻿using System;
 using Dream.Space.App_Start;
 using Dream.Space.Models;
-using Hangfire;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
-using Dream.Space.Attributes;
 using Dream.Space.Infrastructure.IoC;
 
 namespace Dream.Space
@@ -17,7 +15,6 @@ namespace Dream.Space
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
-            ConfigureHangfire(app);
 
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(ApplicationDbContext.Create);
@@ -74,20 +71,5 @@ namespace Dream.Space
 
         }
 
-        private void ConfigureHangfire(IAppBuilder app)
-        {
-            GlobalConfiguration.Configuration
-                .UseSqlServerStorage("DefaultConnection");
-
-            var options = new DashboardOptions {
-                AppPath = "/global",
-                Authorization = new[] { new HangFireAuthorizationFilter() }
-            };
-
-            app.UseHangfireDashboard("/hangfire", options);
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
-
-        }
     }
 }

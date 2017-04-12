@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Entity.SqlServer;
 using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
@@ -9,6 +11,15 @@ using Dream.Space.Data.Entities.Strategies;
 
 namespace Dream.Space.Data
 {
+    public class DataContextConfiguration : DbConfiguration
+    {
+        public DataContextConfiguration()
+        {
+            SetExecutionStrategy("System.Data.SqlClient", () => new SqlAzureExecutionStrategy(5, TimeSpan.FromSeconds(10)));
+        }
+    }
+
+    [DbConfigurationType(typeof(DataContextConfiguration))]
     public class DreamDbContext: DbContext
     {
         public DreamDbContext() : base("DefaultConnection")

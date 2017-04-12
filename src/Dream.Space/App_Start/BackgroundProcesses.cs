@@ -3,18 +3,16 @@ using System.Threading;
 using Autofac;
 using Dream.Space.Infrastructure.IoC;
 using Dream.Space.Infrastructure.Processors;
-using Hangfire;
 
 namespace Dream.Space.App_Start
 {
+
     public class BackgroundProcesses
     {
         private static BackgroundProcesses _instance = null;
-        private readonly CancellationTokenSource _cancellationTokenSource;
 
         private BackgroundProcesses()
         {
-            _cancellationTokenSource = new CancellationTokenSource();
         }
 
 
@@ -31,7 +29,6 @@ namespace Dream.Space.App_Start
 
         public void Stop()
         {
-            _cancellationTokenSource.Cancel();
         }
 
         public void Launch()
@@ -40,8 +37,7 @@ namespace Dream.Space.App_Start
 
             foreach (var processor in processors)
             {
-                //BackgroundJob.Enqueue(() => processor.StartAsync(_cancellationTokenSource.Token));
-                processor.Start(_cancellationTokenSource.Token);
+                processor.Start();
             }
         }
 

@@ -6,7 +6,8 @@ namespace Dream.Space.Infrastructure.Processors
 
     public interface IProcessor
     {
-        void Start(CancellationToken token);
+        void Start();
+        void Stop();
         string Name { get; }
     }
 }
