@@ -41,11 +41,11 @@
         </fieldset>
 
         <div class="c_job-actions">
-            <button type="button" if.bind="!currentJobStarted" click.delegate="startJob()" class="btn btn-default btn-xs">Start Job</button>
-            <button type="button" if.bind="currentJobPaused" click.delegate="resumeJob()" class="btn btn-default btn-xs">Resume Job</button>
-            <button type="button" if.bind="currentJobStarted" click.delegate="cancelJob()" class="btn btn-default btn-xs">Cancel Job</button>
-            <button type="button" if.bind="currentJobInProgress" click.delegate="pauseJob()" class="btn btn-default btn-xs">Pause Job</button>
-            <button type="button" if.bind="currentJobStarted" click.delegate="viewLog(currentJob.jobId)" class="btn btn-info btn-xs">View Log</button>
+            <button type="button" if.bind="!currentJobStarted" click.delegate="startJob()" class="btn btn-default">Start new job</button>
+            <button type="button" if.bind="currentJobPaused" click.delegate="resumeJob()" class="btn btn-default">Resume job</button>
+            <button type="button" if.bind="currentJobStarted" click.delegate="cancelJob()" class="btn btn-default">Cancel Job</button>
+            <button type="button" if.bind="currentJobInProgress" click.delegate="pauseJob()" class="btn btn-default">Pause job</button>
+            <button type="button" if.bind="currentJobStarted" click.delegate="viewLog(currentJob.jobId)" class="btn btn-info">View jog</button>
         </div>
     </div>
     
@@ -58,7 +58,7 @@
 
             <div class="c_jod_details no-border">
                 <div class="c_jod_details-header right">
-                    <button type="button" click.delegate="deleteAll()" class="btn btn-warning btn-xs">Clear</button>
+                    <button type="button" click.delegate="deleteAll()" class="btn btn-warning">Clear history</button>
                 </div>
             </div>
         </div>

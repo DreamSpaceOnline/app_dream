@@ -57,6 +57,15 @@ namespace Dream.Space.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [Route("delete/{jobId:int}")]
+        public async Task<IHttpActionResult> DeleteScheduledJob(int jobId)
+        {
+            await _service.DeleteScheduledJobAsync(jobId);
+
+            return Ok();
+        }
+
 
         [HttpPost]
         [Route("start/{jobType:int}")]

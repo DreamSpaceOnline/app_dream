@@ -88,6 +88,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<ScheduledJobRepository>().As<IScheduledJobRepository>().InstancePerDependency();
             builder.RegisterType<ScheduledJobDetailsRepository>().As<IScheduledJobDetailsRepository>().InstancePerDependency();
             builder.RegisterType<IndicatorIntermediateResultsRepository>().As<IIndicatorIntermediateResultsRepository>().InstancePerDependency();
+            builder.RegisterType<ProcessorLogRepository>().As<IProcessorLogRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
 
@@ -122,6 +123,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<CompanySectorRepository>().As<ICompanySectorRepository>().InstancePerDependency();
             builder.RegisterType<GlobalIndicatorRepository>().As<IGlobalIndicatorRepository>().InstancePerDependency();
             builder.RegisterType<GlobalIndicatorService>().As<IGlobalIndicatorService>().InstancePerDependency();
+            builder.RegisterType<ProcessorLogService>().As<IProcessorLogService>().InstancePerDependency();
 
             
             //Calculators

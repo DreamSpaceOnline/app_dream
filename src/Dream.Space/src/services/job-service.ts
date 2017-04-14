@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient } from "aurelia-fetch-client";
-import { JobInfo } from "../components/market/jobs-dashboard/jobs/job-details/job-details";
+import { JobInfo, JobInfoExtentions } from "../common/types/job-models";
 
 @autoinject()
 export class JobService {
@@ -9,26 +9,29 @@ export class JobService {
     }
 
     public async loadHistory(jobUrl: string) : Promise<JobInfo[]> {
-        const jobType = this.getJobType(jobUrl);
+        const jobType = JobInfoExtentions.getJobType(jobUrl);
         const response = await this.http.fetch(`job/history/${jobType}`, { method: "get" });
 
         return await response.json();
     }
 
     public async startJob(jobUrl: string): Promise<JobInfo> {
-        const jobType = this.getJobType(jobUrl);
+        const jobType = JobInfoExtentions.getJobType(jobUrl);
         const response = await this.http.fetch(`job/start/${jobType}`, { method: "post" });
 
         return await response.json();
     }
 
     public async currentJob(jobUrl: string): Promise<JobInfo> {
-        const jobType = this.getJobType(jobUrl);
+        const jobType = JobInfoExtentions.getJobType(jobUrl);
         const response = await this.http.fetch(`job/current/${jobType}`, { method: "get" });
 
         return await response.json();
     }
 
+    public async deleteJob(jobId: number) {
+        await this.http.fetch(`job/delete/${jobId}`, { method: "delete" });
+    }
 
     public async pauseJob(jobId: number) {
         await this.http.fetch(`job/pause/${jobId}`, { method: "put" });
@@ -48,17 +51,5 @@ export class JobService {
         return await response.json();
     }
 
-    getJobType(jobUrl: string): number {
-        switch (jobUrl) {
-            case "recalculate-global-indicators":
-                return 3;
-            case "refresh-sp500-stocks":
-                return 2;
-            case "refresh-all-stocks":
-                return 1;
-            
-            default:
-                return 0;
-        }
-    }
+
 }

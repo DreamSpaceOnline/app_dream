@@ -20,5 +20,6 @@ namespace Dream.Space.Data.Services
         Task CompleteJobAsync(int jobId);
         Task UpdateProgressAsync(int jobId, IList<string> tickers, int total);
         Task<ScheduledJob> UpdateJobAsync(ScheduledJob job);
+        Task DeleteJobAsync(int jobId);
     }
 }

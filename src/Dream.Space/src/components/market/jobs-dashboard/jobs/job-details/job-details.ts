@@ -1,58 +1,58 @@
-﻿import { autoinject, bindable } from "aurelia-framework";
-
+﻿import { autoinject, bindable, computedFrom } from "aurelia-framework";
+import { DateHelper } from "../../../../../common/helpers/date-helper";
+import { JobInfo, JobInfoExtentions } from "../../../../../common/types/job-models";
+import { ProcessorLog } from "../../../../../common/types/log-models";
+import { LogService } from "../../../../../services/log-service";
+import { JobService } from "../../../../../services/job-service";
 @autoinject()
 export class JobDetails {
 
     @bindable job: JobInfo;
-
     expanded = false;
+    deleted = false;
+    jobLogs: ProcessorLog[] = [];
 
-    expand() {
-        this.expanded = !this.expanded;
+    constructor(private logService: LogService, private jobService: JobService) {
+
     }
 
-    delete() {
 
+    async expand() {
+        this.expanded = !this.expanded;
+        if (this.expanded && this.jobLogs != null && this.jobLogs.length === 0 && this.job != null) {
+            this.jobLogs = await this.logService.getJobLogs(this.job.jobId);
+        }
+    }
+
+    async delete() {
+        if (this.job != null && this.job.jobId > 0) {
+            await this.logService.deleteJobLogs(this.job.jobId);
+            await this.jobService.deleteJob(this.job.jobId);
+
+            this.deleted = true;
+        }
     }
 
     get completed() {
-        return "2/10/2017 18:23 PM"; 
+        if (this.job != null) {
+            return DateHelper.getUIDate(this.job.startDate);
+        }
+        return "";
     }
 
-    get status() {
-        return "Successful";
+    runTime() {
+        if (this.job != null) {
+            return DateHelper.runTime(this.job.startDate, this.job.completedDate);
+        } 
+        return "";
     }
 
-    get runTime() {
-        return "1hr 42m";
+
+    @computedFrom("job.status")
+    get status(): string {
+        if (this.job) {
+            return JobInfoExtentions.getJobStatusName(this.job.status);
+        }
+        return "";
     }
-}
-
-
-export interface JobInfo {
-    jobId: number;
-    jobType: JobType;
-    startDate: Date;
-    completedDate?: Date;
-    jobName: string;
-    status: JobStatus;
-    progress: number;
-}
-
-
-export enum JobType {
-    All = 0,
-    RefreshAllStocks = 1,
-    RefreshSP500Stocks = 2,
-    CalculateGlobalIndicators = 3
-}
-
-
-export enum JobStatus {
-    Pending = 0,
-    InProgress = 1,
-    Completed = 2,
-    Cancelled = 3,
-    Paused = 4,
-    Error = 99
 }

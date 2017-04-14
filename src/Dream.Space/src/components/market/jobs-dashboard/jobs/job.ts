@@ -3,7 +3,7 @@ import {AccountService} from "../../../../services/account-service";
 import { JobService } from "../../../../services/job-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
-import { JobInfo, JobType, JobStatus } from "./job-details/job-details";
+import { JobInfo, JobInfoExtentions } from "../../../../common/types/job-models";
 
 @autoinject()
 export class Job {
@@ -88,21 +88,12 @@ export class Job {
 
     @computedFrom("currentJob.jobId", "currentJob.status")
     get currentJobInProgress(): boolean {
-        if (this.currentJob && this.currentJob.jobId > 0) {
-            return this.currentJob.status === JobStatus.InProgress
-                || this.currentJob.status === JobStatus.Pending;
-        }
-
-        return false;
+        return JobInfoExtentions.isJobInProgress(this.currentJob);
     }
 
     @computedFrom("currentJob.jobId", "currentJob.status")
     get currentJobPaused(): boolean {
-        if (this.currentJob && this.currentJob.jobId > 0) {
-            return this.currentJob.status === JobStatus.Paused;
-        }
-
-        return false;
+        return JobInfoExtentions.isJobPaused(this.currentJob);
     }
 
     @computedFrom("currentJob.jobId")
@@ -118,14 +109,7 @@ export class Job {
     get jobTypeName(): string {
 
         if (this.currentJob) {
-            switch (this.currentJob.jobType) {
-                case JobType.All: return "All";
-                case JobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
-                case JobType.RefreshAllStocks: return "Refresh All Stocks";
-                case JobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
-
-                default: return this.currentJob.jobType + "";
-            }
+            return JobInfoExtentions.getJobTypeName(this.currentJob.jobType);
         }
         return "";
     }
@@ -133,16 +117,7 @@ export class Job {
     @computedFrom("currentJob.status")
     get jobStatusName(): string {
         if (this.currentJob) {
-            switch (this.currentJob.status) {
-                case JobStatus.Cancelled: return "Cancelled";
-                case JobStatus.Completed: return "Completed";
-                case JobStatus.Error: return "Error";
-                case JobStatus.InProgress: return "In Progress";
-                case JobStatus.Paused: return "Paused";
-                case JobStatus.Pending: return "Pending";
-
-                default: return this.currentJob.status + "";
-            }
+            return JobInfoExtentions.getJobStatusName(this.currentJob.status);
         }
         return "";
     }

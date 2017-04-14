@@ -8,6 +8,7 @@ using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Entities.Jobs;
 using Dream.Space.Data.Entities.Strategies;
+using Dream.Space.Data.Entities.Logs;
 
 namespace Dream.Space.Data
 {
@@ -95,6 +96,10 @@ namespace Dream.Space.Data
             //IndicatorIntermediateResult
             modelBuilder.Entity<IndicatorIntermediateResult>().HasKey(e => e.Id);
 
+            //ProcessorLog
+            modelBuilder.Entity<ProcessorLog>().HasKey(e => e.Id);
+
+
             modelBuilder.Entity<Article>().HasKey(t => t.ArticleId);
             modelBuilder.Entity<Article>().HasRequired(a => a.Category).WithMany(t => t.Articles).HasForeignKey(p => p.CategoryId);
             modelBuilder.Entity<Article>().Property(a => a.ArticleId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
@@ -147,5 +152,6 @@ namespace Dream.Space.Data
         public virtual DbSet<ScheduledJob> ScheduledJobs { get; set; }
         public virtual DbSet<IndicatorIntermediateResult> IndicatorIntermediateResults { get; set; }
         public virtual DbSet<ScheduledJobDetails> ScheduledJobDetail { get; set; }
+        public virtual DbSet<ProcessorLog> ProcessorLogs { get; set; }
     }
 }

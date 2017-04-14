@@ -1,20 +1,33 @@
 ﻿<template>
-    <div class="c_jod_details">
+    <div class="c_jod_details" if.bind="!deleted">
         <div class="c_jod_details-header" click.trigger="expand()">
-            <button type="button" click.delegate="delete()" class="btn btn-info btn-xs">Delete</button>
-            <span>Completed: ${completed}</span>
-            <span>Status: ${status}</span>
-            <span>Run time: ${runTime}</span>
-
-            <div class="chevron">
-                <span class="glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}" aria-hidden="true"></span>
+            <div class="row">
+                <div class="col-xs-3">
+                    ${completed}
+                </div>
+                <div class="col-xs-3 job-staus-${job.status}">
+                    ${status}
+                    <span if.bind="job.status === 2" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </div>
+                <div class="col-xs-3">
+                    <span if.bind="runTime() != null" class="label label-info">${runTime()}</span>
+                </div>
+                <div class="col-xs-1 chevron">
+                    <span class="glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}" aria-hidden="true"></span>
+                </div>
             </div>
-
         </div>
         <div class="c_jod_details-details" if.bind="expanded">
-            <div class="form-group" if.bind="expanded">
-                <label>Log</label>
-                <p class="form-control" readonly>sometthing big</p>
+            <form>
+                <div class="form-group" if.bind="expanded">
+                    <label>Log</label>
+                    <div repeat.for="log of jobLogs">
+                        <p class="form-control">${log.message}</p>
+                    </div>
+                </div>
+            </form>
+            <div class="c_job-actions">
+                <button type="button" click.delegate="delete()" class="btn btn-warning">Delete log</button>
             </div>
         </div>
     </div>

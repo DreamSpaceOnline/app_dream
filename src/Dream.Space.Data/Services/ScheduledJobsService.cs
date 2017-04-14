@@ -278,5 +278,15 @@ namespace Dream.Space.Data.Services
                 return jobs;
             }
         }
+
+        public async Task DeleteJobAsync(int jobId)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IScheduledJobRepository>();
+                await repository.DeleteAsync(jobId);
+                await repository.CommitAsync();
+            }
+        }
     }
 }

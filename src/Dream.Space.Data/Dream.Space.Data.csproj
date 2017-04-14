@@ -103,6 +103,7 @@
     <Compile Include="Entities\Jobs\ScheduledJob.cs" />
     <Compile Include="Entities\Jobs\ScheduledJobDetails.cs" />
     <Compile Include="Entities\Jobs\ScheduledJobType.cs" />
+    <Compile Include="Entities\Logs\ProcessorLog.cs" />
     <Compile Include="Entities\Strategies\vStrategyRule.cs" />
     <Compile Include="Entities\Strategies\vStrategy.cs" />
     <Compile Include="Entities\Strategies\vStrategyRuleSet.cs" />
@@ -186,6 +187,10 @@
     <Compile Include="Migrations\201704111607067_AlterIndicatorIntermediateResult.Designer.cs">
       <DependentUpon>201704111607067_AlterIndicatorIntermediateResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704141255252_CreateProcessorLog.cs" />
+    <Compile Include="Migrations\201704141255252_CreateProcessorLog.Designer.cs">
+      <DependentUpon>201704141255252_CreateProcessorLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -195,6 +200,7 @@
     <Compile Include="Repositories\ICompanySectorRepository.cs" />
     <Compile Include="Repositories\IScheduledJobRepository.cs" />
     <Compile Include="Repositories\IndicatorIntermediateResultsRepository.cs" />
+    <Compile Include="Repositories\ProcessorLogRepository.cs" />
     <Compile Include="Repositories\ScheduledJobDetailsRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\ScheduledJobRepository.cs" />
@@ -225,6 +231,7 @@
     <Compile Include="Services\ArticleStorageService.cs" />
     <Compile Include="Services\CompanyIndicatorService.cs" />
     <Compile Include="Requests\CompleteJobRequest.cs" />
+    <Compile Include="Services\ProcessorLogService.cs" />
     <Compile Include="Services\GlobalIndicatorService.cs" />
     <Compile Include="Services\CompanyManagerService.cs" />
     <Compile Include="Requests\CompaniesToProcessRequest.cs" />
@@ -318,6 +325,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704111607067_AlterIndicatorIntermediateResult.resx">
       <DependentUpon>201704111607067_AlterIndicatorIntermediateResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704141255252_CreateProcessorLog.resx">
+      <DependentUpon>201704141255252_CreateProcessorLog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

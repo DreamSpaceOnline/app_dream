@@ -388,6 +388,7 @@
     <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\IndicatorsApiController.cs" />
+    <Compile Include="Controllers\LogsApiController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PlaygroundApiController.cs" />
     <Compile Include="Controllers\RulesApiController.cs" />
@@ -462,7 +463,10 @@
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
+    <TypeScriptCompile Include="src\common\types\job-models.ts" />
+    <TypeScriptCompile Include="src\common\types\log-models.ts" />
     <TypeScriptCompile Include="src\components\categories\categories.ts" />
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
@@ -516,6 +520,7 @@
     <TypeScriptCompile Include="src\services\account-service.ts" />
     <TypeScriptCompile Include="src\common\types\company-models.ts" />
     <TypeScriptCompile Include="src\services\company-service.ts" />
+    <TypeScriptCompile Include="src\services\log-service.ts" />
     <TypeScriptCompile Include="src\services\job-service.ts" />
     <TypeScriptCompile Include="src\services\storage-service.ts" />
     <TypeScriptCompile Include="src\common\types\indicator-models.ts" />
