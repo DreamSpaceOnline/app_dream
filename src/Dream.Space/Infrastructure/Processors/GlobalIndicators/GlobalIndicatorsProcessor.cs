@@ -168,7 +168,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                     JobType = job.JobType,
                     JobState = JobStatus.Error,
                     ProcessName = Name
-                }, $"Successfully processed companies: {string.Join(", ", tickers)}");
+                }, $"Calculated data for: {string.Join(", ", tickers)}");
                 return ProcessorState.InProgress;
                 
             }
@@ -180,7 +180,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                     JobType = job.JobType,
                     JobState = JobStatus.Error,
                     ProcessName = Name
-                }, $"Failed to execute {Name}. Reason: {exception.Message}", exception );
+                }, $"{exception.Message}", exception );
                 return ProcessorState.Error;
             }
         }

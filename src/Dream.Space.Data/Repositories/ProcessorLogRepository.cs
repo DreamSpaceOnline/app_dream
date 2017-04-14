@@ -43,9 +43,9 @@ namespace Dream.Space.Data.Repositories
             var records = await Dbset.Where(r => r.JobId == jobId).OrderByDescending(r => r.Logged).ToListAsync();
             if(records.Any(r => r.Level == "Error"))
             {
-                return records.Where(r => r.Level == "Error").ToList();
+                return records.Where(r => r.Level == "Error").OrderBy(r => r.Logged).ToList();
             }
-            return records;
+            return records.Take(1).ToList();
         }
 
         public async Task<ProcessorLog> GetAsync(int logId)

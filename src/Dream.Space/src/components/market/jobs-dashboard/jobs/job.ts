@@ -4,6 +4,7 @@ import { JobService } from "../../../../services/job-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 import { JobInfo, JobInfoExtentions } from "../../../../common/types/job-models";
+import { DateHelper } from "../../../../common/helpers/date-helper";
 
 @autoinject()
 export class Job {
@@ -41,10 +42,18 @@ export class Job {
     }
 
     async loadJobs() {
-        this.currentJob = await this.jobService.currentJob(this.jobUrl);
-        this.jobs = await this.jobService.loadHistory(this.jobUrl);
+        await this.loadCurrentJob();
+        await this.loadHistory();
 
         this.watchCurrentJob();
+    }
+
+    async loadHistory() {
+        this.jobs = await this.jobService.loadHistory(this.jobUrl);
+    }
+
+    async loadCurrentJob() {
+        this.currentJob = await this.jobService.currentJob(this.jobUrl);
     }
 
     deleteAll() {
@@ -56,13 +65,15 @@ export class Job {
         this.watchCurrentJob();
     }
 
-    watchCurrentJob() {
+    async watchCurrentJob() {
         if (this.currentJob != null && this.currentJob.jobId > 0) {
             setTimeout(async () => {
-                this.currentJob = await this.jobService.currentJob(this.jobUrl);
+                await this.loadCurrentJob();
 
                 this.watchCurrentJob();
             }, 1000);
+        } else {
+            await this.loadHistory();
         }
     }
 
@@ -81,11 +92,6 @@ export class Job {
         await this.loadJobs();
     }
 
-    async viewLog(jobId: number) {
-        console.log(jobId);
-        //let logs = await this.jobService.getJobLog(jobId);
-    }
-
     @computedFrom("currentJob.jobId", "currentJob.status")
     get currentJobInProgress(): boolean {
         return JobInfoExtentions.isJobInProgress(this.currentJob);
@@ -98,6 +104,7 @@ export class Job {
 
     @computedFrom("currentJob.jobId")
     get currentJobStarted(): boolean {
+
         if (this.currentJob && this.currentJob.jobId > 0) {
             return true;
         }
@@ -118,6 +125,15 @@ export class Job {
     get jobStatusName(): string {
         if (this.currentJob) {
             return JobInfoExtentions.getJobStatusName(this.currentJob.status);
+        }
+        return "";
+    }
+
+    @computedFrom("currentJob.startDate")
+    get startDate(): string {
+
+        if (this.currentJob) {
+            return DateHelper.getUIDate(this.currentJob.startDate);
         }
         return "";
     }

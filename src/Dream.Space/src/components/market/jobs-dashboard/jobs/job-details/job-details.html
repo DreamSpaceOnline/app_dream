@@ -2,14 +2,14 @@
     <div class="c_jod_details" if.bind="!deleted">
         <div class="c_jod_details-header" click.trigger="expand()">
             <div class="row">
-                <div class="col-xs-3">
+                <div class="col-xs-3 monospace">
                     ${completed}
                 </div>
                 <div class="col-xs-3 job-staus-${job.status}">
                     ${status}
                     <span if.bind="job.status === 2" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-3 monospace">
                     <span if.bind="runTime() != null" class="label label-info">${runTime()}</span>
                 </div>
                 <div class="col-xs-1 chevron">
@@ -19,10 +19,14 @@
         </div>
         <div class="c_jod_details-details" if.bind="expanded">
             <form>
-                <div class="form-group" if.bind="expanded">
-                    <label>Log</label>
-                    <div repeat.for="log of jobLogs">
+                <div repeat.for="log of jobLogs">
+                    <div class="form-group ${log.level.toLowerCase()}">
+                        <label>${log.level}</label>
                         <p class="form-control">${log.message}</p>
+                    </div>
+                    <div class="form-group exception" if.bind="log.exception.length > 0">
+                        <label>Exception</label>
+                        <p class="form-control">${log.exception}</p>
                     </div>
                 </div>
             </form>

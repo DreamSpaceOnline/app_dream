@@ -59,7 +59,11 @@
 }
 
 .c_job-actions {
-    text-align:right;
+    text-align: right;
+    padding-top: 12px;
+    padding-right: 20px;
+    text-align: right;
+    border-top: solid 1px @solid-border-color;
 }
 
 .job-staus-2 {
@@ -76,6 +80,54 @@
 .label {
     font-weight: 300;
     font-size: 13px;
-    padding: 2px 10px;
-    min-width: 60px;
+    padding: 4px 8px;
+}
+
+.form-current-job fieldset {
+    border: solid 1px @solid-border-color;
+    padding: 20px 0 12px;
+}
+
+.monospace {
+    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.form-group {
+    &.exception {
+        .form-control {
+            font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+            font-size: 13px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: 400;
+            line-height: 19px;
+            color: @font-color-pale;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+    }
+
+    &.error {
+        .form-control {
+            color: @font-color-error;
+        }
+    }
+}
+
+.col-progress {
+    text-align: center;
+
+    span {
+        font-size: 13px;
+        position: relative;
+        color: @font-color-ok;
+        font-weight: 500;
+    }
+
+    s-progress {
+        position: relative;
+        top: -8px;
+    }
 }

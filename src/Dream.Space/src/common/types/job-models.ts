@@ -20,7 +20,7 @@ export class JobInfoExtentions {
             case JobStatus.Error: return "Error";
             case JobStatus.InProgress: return "In Progress";
             case JobStatus.Paused: return "Paused";
-            case JobStatus.Pending: return "Pending";
+            case JobStatus.Pending: return "In Progress";
 
             default: return status + "";
         }
