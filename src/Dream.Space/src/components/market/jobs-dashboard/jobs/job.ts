@@ -49,6 +49,7 @@ export class Job {
     }
 
     async loadHistory() {
+        this.jobs = [];
         this.jobs = await this.jobService.loadHistory(this.jobUrl);
     }
 

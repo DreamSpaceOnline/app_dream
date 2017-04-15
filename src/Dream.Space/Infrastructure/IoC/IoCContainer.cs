@@ -22,6 +22,7 @@ using Dream.Space.Reader;
 using Dream.Space.Reader.Validators;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Yahoo.Client;
+using Dream.Space.Infrastructure.Processors.CompanyQuotes;
 
 namespace Dream.Space.Infrastructure.IoC
 {
@@ -146,6 +147,8 @@ namespace Dream.Space.Infrastructure.IoC
 
             //Processors
             builder.RegisterType<GlobalIndicatorsProcessor>().As<IProcessor>();
+            builder.RegisterType<CompanyQuotesProcessor>().As<IProcessor>();
+            builder.RegisterType<CompanySP500QuotesProcessor>().As<IProcessor>();
 
             builder.Register(c =>
             {
@@ -156,6 +159,27 @@ namespace Dream.Space.Infrastructure.IoC
                 };
 
             }).SingleInstance();
+
+            builder.Register(c =>
+            {
+                var seconds = int.Parse(ConfigurationManager.AppSettings["CompanyQuotesProcessorIntervalInSeconds"]);
+                return new CompanyQuotesProcessorConfig
+                {
+                    Interval = new TimeSpan(0, 0, seconds)
+                };
+
+            }).SingleInstance();
+
+            builder.Register(c =>
+            {
+                var seconds = int.Parse(ConfigurationManager.AppSettings["CompanyQuotesProcessorIntervalInSeconds"]);
+                return new CompanySP500QuotesProcessorConfig
+                {
+                    Interval = new TimeSpan(0, 0, seconds)
+                };
+
+            }).SingleInstance();
+
         }
 
         public static IoCContainer Instance

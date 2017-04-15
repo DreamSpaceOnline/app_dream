@@ -401,8 +401,13 @@
     </Compile>
     <Compile Include="Infrastructure\Loggers\IProcessorLogger.cs" />
     <Compile Include="Infrastructure\Loggers\ProcessorLogger.cs" />
+    <Compile Include="Infrastructure\Processors\CompanyQuotes\CompanyQuotesProcessor.cs" />
+    <Compile Include="Infrastructure\Processors\CompanyQuotes\CompanyQuotesProcessorConfig.cs" />
+    <Compile Include="Infrastructure\Processors\CompanyQuotes\CompanySP500QuotesProcessor.cs" />
+    <Compile Include="Infrastructure\Processors\CompanyQuotes\CompanySP500QuotesProcessorConfig.cs" />
     <Compile Include="Infrastructure\Processors\GlobalIndicators\GlobalIndicatorsProcessorConfig.cs" />
     <Compile Include="Infrastructure\Processors\GlobalIndicators\GlobalIndicatorsProcessor.cs" />
+    <Compile Include="Infrastructure\Processors\ProcessorBase.cs" />
     <Compile Include="Infrastructure\Processors\ProcessorState.cs" />
     <Compile Include="Infrastructure\Settings\AppSettingsWrapper.cs" />
     <Compile Include="Infrastructure\Settings\IAppSettings.cs" />

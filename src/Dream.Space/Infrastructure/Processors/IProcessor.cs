@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using Dream.Space.Data.Entities.Jobs;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dream.Space.Infrastructure.Processors
@@ -8,6 +9,7 @@ namespace Dream.Space.Infrastructure.Processors
     {
         void Start();
         void Stop();
-        string Name { get; }
+
+        ScheduledJobType JobType { get; }
     }
 }

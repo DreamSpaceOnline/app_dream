@@ -224,5 +224,16 @@ namespace Dream.Space.Data.Services
                 return count;
             }
         }
+
+        public async Task<int> GetTotalCountAsync()
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                var count = await repository.GetCountAsync(0);
+
+                return count;
+            }
+        }
     }
 }

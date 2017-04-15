@@ -2,8 +2,9 @@ namespace Dream.Space.Infrastructure.Processors
 {
     public enum ProcessorState
     {
-        InProgress = 0,
-        Completed,
-        Error
+        NotSet = 0,
+        InProgress = 1,
+        Completed = 2,
+        Error = 99
     }
 }

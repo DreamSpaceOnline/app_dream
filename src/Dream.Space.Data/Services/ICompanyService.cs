@@ -26,6 +26,7 @@ namespace Dream.Space.Data.Services
         List<CompanySector> GetCompanySectors();
         void MarkAsSP500(CompanyModel company);
         Task<int> GetSP500CountAsync();
+        Task<int> GetTotalCountAsync();
     }
 
     public interface ICompanyManagerService 
