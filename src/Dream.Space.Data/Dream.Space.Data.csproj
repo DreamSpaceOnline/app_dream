@@ -191,6 +191,10 @@
     <Compile Include="Migrations\201704141255252_CreateProcessorLog.Designer.cs">
       <DependentUpon>201704141255252_CreateProcessorLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704191357033_AlterCompany.cs" />
+    <Compile Include="Migrations\201704191357033_AlterCompany.Designer.cs">
+      <DependentUpon>201704191357033_AlterCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -328,6 +332,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704141255252_CreateProcessorLog.resx">
       <DependentUpon>201704141255252_CreateProcessorLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704191357033_AlterCompany.resx">
+      <DependentUpon>201704191357033_AlterCompany.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

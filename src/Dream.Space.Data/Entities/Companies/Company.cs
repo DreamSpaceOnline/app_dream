@@ -50,5 +50,6 @@ namespace Dream.Space.Data.Entities.Companies
         public int SectorId { get; set; }
         public int IndustryId { get; set; }
         public bool SP500 { get; set; }
+        public bool IsIndex { get; set; }
     }
 }
