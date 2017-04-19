@@ -32,6 +32,7 @@ export class JobInfoExtentions {
             case JobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
             case JobType.RefreshAllStocks: return "Refresh All Stocks";
             case JobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
+            case JobType.RefreshIndices: return "Refresh Indices";
 
             default: return jobType + "";
         }

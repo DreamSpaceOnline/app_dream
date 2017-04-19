@@ -73,7 +73,7 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
                     StartDate = indicatorResults.Last().Date,
                     EndDate = indicatorResults.First().Date,
                     CalculatedSuccessful = true,
-                    CompanyCount = _total,
+                    CompanyCount = Total,
                     LastCalculated = DateTime.UtcNow
                 });
 

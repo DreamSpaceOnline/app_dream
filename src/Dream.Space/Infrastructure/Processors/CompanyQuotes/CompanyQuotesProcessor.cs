@@ -86,7 +86,7 @@ namespace Dream.Space.Infrastructure.Processors.CompanyQuotes
                         errorMessage += ". " + exception.Message;
                     }
 
-                    _logger.Error(new ProcessorInfo
+                    Logger.Error(new ProcessorInfo
                     {
                         JobId = job.JobId,
                         JobType = job.JobType,
@@ -97,7 +97,7 @@ namespace Dream.Space.Infrastructure.Processors.CompanyQuotes
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(new ProcessorInfo
+                    Logger.Error(new ProcessorInfo
                     {
                         JobId = job.JobId,
                         JobType = job.JobType,
@@ -108,7 +108,7 @@ namespace Dream.Space.Infrastructure.Processors.CompanyQuotes
 
                 try
                 {
-                    _companyService.UpdateQuotes(new UpdateQuotesRequest(company.Ticker, quotes)
+                    CompanyService.UpdateQuotes(new UpdateQuotesRequest(company.Ticker, quotes)
                     {
                         ErrorMessage = errorMessage
                     });
@@ -116,7 +116,7 @@ namespace Dream.Space.Infrastructure.Processors.CompanyQuotes
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(new ProcessorInfo
+                    Logger.Error(new ProcessorInfo
                     {
                         JobId = job.JobId,
                         JobType = job.JobType,

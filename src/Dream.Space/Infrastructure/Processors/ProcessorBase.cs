@@ -12,38 +12,29 @@ using System.Threading.Tasks;
 
 namespace Dream.Space.Infrastructure.Processors
 {
-
-    public interface IProcessorConfig
-    {
-        TimeSpan Interval { get; }
-        bool IsSP500 { get; }
-    }
-
     public abstract class ProcessorBase : IProcessor, IDisposable
     {
         #region Constructor
 
         private bool _running;
         private CancellationTokenSource _cancellationToken;
-        protected readonly IProcessorLogger _logger;
-        protected readonly IScheduledJobsService _jobsService;
-        private readonly TimeSpan _interval;
-        protected int _total;
-        private bool _isSP500;
-        protected readonly ICompanyService _companyService;
+        protected readonly IProcessorLogger Logger;
+        protected readonly IScheduledJobsService JobsService;
+        protected int Total;
+        protected readonly ICompanyService CompanyService;
+        private IProcessorConfig _config;
 
-        public ProcessorBase(
+        protected ProcessorBase(
                         IProcessorLogger logger, 
                         IScheduledJobsService jobsService,
                         ICompanyService companyService,
                         IProcessorConfig config)
         {
             _cancellationToken = new CancellationTokenSource();
-            _logger = logger;
-            _jobsService = jobsService;
-            _companyService = companyService;
-            _interval = config.Interval;
-            _isSP500 = config.IsSP500;
+            Logger = logger;
+            JobsService = jobsService;
+            CompanyService = companyService;
+            _config = config;
         }
 
         public abstract ScheduledJobType JobType { get; }
@@ -70,9 +61,9 @@ namespace Dream.Space.Infrastructure.Processors
                     if (job != null)
                     {
                         var state = ProcessorState.InProgress;
-                        _total = _isSP500
-                                ? await _companyService.GetSP500CountAsync()
-                                : await _companyService.GetTotalCountAsync();
+                        Total = _config.IsSP500
+                                ? await CompanyService.GetSP500CountAsync()
+                                : await CompanyService.GetTotalCountAsync();
 
                         await InitializeProcessor();
 
@@ -91,9 +82,9 @@ namespace Dream.Space.Infrastructure.Processors
 
                                     await Execute(job, companies);
 
-                                    await _jobsService.UpdateProgressAsync(job.JobId, tickers, _total);
+                                    await JobsService.UpdateProgressAsync(job.JobId, tickers, Total);
 
-                                    _logger.Info(new ProcessorInfo
+                                    Logger.Info(new ProcessorInfo
                                     {
                                         JobId = job.JobId,
                                         JobType = job.JobType,
@@ -102,12 +93,12 @@ namespace Dream.Space.Infrastructure.Processors
                                     }, $"Processing Tickers: {tickers}");
 
                                     state =  ProcessorState.InProgress;
-                                    job = await _jobsService.GetJobAsync(job.JobId);
+                                    job = await JobsService.GetJobAsync(job.JobId);
                                 }
                             }
                             catch (Exception exception)
                             {
-                                _logger.Error(new ProcessorInfo
+                                Logger.Error(new ProcessorInfo
                                 {
                                     JobId = job.JobId,
                                     JobType = job.JobType,
@@ -123,9 +114,9 @@ namespace Dream.Space.Infrastructure.Processors
                             await FinalizeJob(job);
 
 
-                            await _jobsService.CompleteJobAsync(job.JobId);
+                            await JobsService.CompleteJobAsync(job.JobId);
 
-                            _logger.Info(new ProcessorInfo
+                            Logger.Info(new ProcessorInfo
                             {
                                 ProcessName = JobType.ToString(),
                                 JobId = job.JobId,
@@ -133,24 +124,24 @@ namespace Dream.Space.Infrastructure.Processors
                                 JobState = JobStatus.Completed
                             }, "Job completed successfully");
 
-                            await _jobsService.ClearJobProgressAsync(job.JobId);
+                            await JobsService.ClearJobProgressAsync(job.JobId);
                         }
 
                         if (state == ProcessorState.Error)
                         {
                             job.Status = JobStatus.Error;
-                            await _jobsService.UpdateJobAsync(job);
+                            await JobsService.UpdateJobAsync(job);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(
+                    Logger.Error(
                         new ProcessorInfo { ProcessName = JobType.ToString() },
                         ex.Message, ex);
                 }
 
-                Thread.Sleep(_interval);
+                Thread.Sleep(_config.Interval);
             }
         }
 
@@ -169,16 +160,17 @@ namespace Dream.Space.Infrastructure.Processors
 
         protected virtual async Task<ScheduledJob> FindPendingJob()
         {
-            return await _jobsService.FindPendingJobAsync(JobType);
+            return await JobsService.FindPendingJobAsync(JobType);
         }
 
         protected virtual async Task<List<CompanyQuotesModel>> FetchNextAsync(int jobId)
         {
-            return await _companyService.FindCompaniesForJob(new FindCompaniesForJobRequest
+            return await CompanyService.FindCompaniesForJob(new FindCompaniesForJobRequest
             {
                 JobId = jobId.ToString(),
                 MaxRecordCount = 10,
-                SP500 = _isSP500
+                SP500 = _config.IsSP500,
+                IsIndex = _config.IsIndex
             });
         }
 

@@ -51,7 +51,8 @@ export enum JobType {
     All = 0,
     RefreshAllStocks = 1,
     RefreshSP500Stocks = 2,
-    CalculateGlobalIndicators = 3
+    CalculateGlobalIndicators = 3,
+    RefreshIndices = 4,
 }
 
 

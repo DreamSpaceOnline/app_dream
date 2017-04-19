@@ -149,6 +149,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<GlobalIndicatorsProcessor>().As<IProcessor>();
             builder.RegisterType<CompanyQuotesProcessor>().As<IProcessor>();
             builder.RegisterType<CompanySP500QuotesProcessor>().As<IProcessor>();
+            builder.RegisterType<IndicesQuotesProcessor>().As<IProcessor>();
 
             builder.Register(c =>
             {
@@ -174,6 +175,16 @@ namespace Dream.Space.Infrastructure.IoC
             {
                 var seconds = int.Parse(ConfigurationManager.AppSettings["CompanyQuotesProcessorIntervalInSeconds"]);
                 return new CompanySP500QuotesProcessorConfig
+                {
+                    Interval = new TimeSpan(0, 0, seconds)
+                };
+
+            }).SingleInstance();
+
+            builder.Register(c =>
+            {
+                var seconds = int.Parse(ConfigurationManager.AppSettings["CompanyQuotesProcessorIntervalInSeconds"]);
+                return new IndicesQuotesProcessorConfig
                 {
                     Interval = new TimeSpan(0, 0, seconds)
                 };

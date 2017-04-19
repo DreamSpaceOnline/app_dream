@@ -6,5 +6,6 @@ namespace Dream.Space.Infrastructure.Processors.GlobalIndicators
     {
         public TimeSpan Interval { get; set; }
         public bool IsSP500 => true;
+        public bool IsIndex => false;
     }
 }

@@ -16,7 +16,7 @@ namespace Dream.Space.Data.Repositories
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
         Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
         Task<CompanyHeader> GetAsync(string ticker);
-        Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string requestJobId, int maxRecordCount, int sectorId, bool sp500);
+        Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string requestJobId, int maxRecordCount, int sectorId, bool sp500, bool isIndex);
         Task<int> GetSP500CountAsync();
         Task<int> GetCountAsync(int sectorId);
     }
@@ -106,7 +106,7 @@ namespace Dream.Space.Data.Repositories
         }
 
         //TODO:
-        public async Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string jobId, int count, int sectorId, bool sp500)
+        public async Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string jobId, int count, int sectorId, bool sp500, bool isIndex)
         {
             var query = $@"
                 SELECT TOP {count} C.* 
@@ -118,6 +118,21 @@ namespace Dream.Space.Data.Repositories
 	                AND (C.SectorId = @SectorId OR @SectorId = 0)
 	                AND (C.SP500 = 1 OR @SP500 = 0)
 	                AND J.JobId IS NULL";
+
+            if (isIndex)
+            {
+                query = $@"
+                SELECT TOP {count} C.* 
+                FROM [dbo].[Company] C
+                LEFT JOIN [dbo].[ScheduledJobDetails] J
+	                ON C.Ticker = J.Ticker AND J.JobId = @JobId
+
+                WHERE C.Filtered = 1
+	                AND (C.IsIndex = 1)
+	                AND (@SectorId = 0)
+	                AND (@SP500 = 0)
+                    AND J.JobId IS NULL";
+            }
 
             var records = await Dbset.SqlQuery(query, 
                 new SqlParameter("@JobId", jobId), 

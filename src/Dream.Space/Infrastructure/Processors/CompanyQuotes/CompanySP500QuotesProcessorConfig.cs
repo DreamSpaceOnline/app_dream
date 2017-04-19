@@ -7,5 +7,6 @@ namespace Dream.Space.Infrastructure.Processors.CompanyQuotes
         public TimeSpan Interval { get; set; }
 
         public bool IsSP500 => true;
+        public bool IsIndex => false;
     }
 }

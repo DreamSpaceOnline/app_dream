@@ -6,6 +6,7 @@ namespace Dream.Space.Data.Entities.Jobs
 
         RefreshAllStocks = 1,
         RefreshSP500Stocks = 2,
-        CalculateGlobalIndicators = 3
+        CalculateGlobalIndicators = 3,
+        RefreshIndices = 4,
     }
 }

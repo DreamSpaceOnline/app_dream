@@ -6,5 +6,6 @@ namespace Dream.Space.Data.Requests
         public int MaxRecordCount { get; set; }
         public int SectorId { get; set; }
         public bool SP500 { get; set; }
+        public bool IsIndex { get; set; }
     }
 }
