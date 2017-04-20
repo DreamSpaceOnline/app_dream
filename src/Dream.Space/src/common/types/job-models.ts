@@ -64,6 +64,8 @@ export class JobInfoExtentions {
                 return JobType.RefreshSP500Stocks;
             case "refresh-all-stocks":
                 return JobType.RefreshAllStocks;
+            case "refresh-indices":
+                return JobType.RefreshIndices;
 
             default:
                 return 0;
