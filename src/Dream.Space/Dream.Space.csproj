@@ -327,7 +327,9 @@
     <Content Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.html" />
     <Content Include="src\components\market\jobs-dashboard\navigation.html" />
-    <Content Include="src\components\market\market-indices\sp500\sp500.html" />
+    <Content Include="src\components\market\market-indices\indices-nav\indices-nav.html" />
+    <Content Include="src\components\market\market-indices\indices\market-index.html" />
+    <Content Include="src\components\market\market-indices\navigation.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.html" />
     <Content Include="src\components\market\navigation.html" />
     <Content Include="src\components\market\market-nav\market-nav.html" />
@@ -482,7 +484,9 @@
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\navigation.ts" />
-    <TypeScriptCompile Include="src\components\market\market-indices\sp500\sp500.ts" />
+    <TypeScriptCompile Include="src\components\market\market-indices\indices-nav\indices-nav.ts" />
+    <TypeScriptCompile Include="src\components\market\market-indices\indices\market-index.ts" />
+    <TypeScriptCompile Include="src\components\market\market-indices\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job.ts" />
     <TypeScriptCompile Include="src\components\market\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\market-nav\market-nav.ts" />

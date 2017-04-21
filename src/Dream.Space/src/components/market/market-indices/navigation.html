@@ -1,0 +1,17 @@
+﻿<template>
+
+    <require from="./indices-nav/indices-nav"></require>
+
+    <div class="row">
+        <div class="col-md-8 col-xs-12 c_market-indices">
+            <router-view></router-view>
+        </div>
+
+        <div class="col-md-4 col-xs-12">
+            <div class="side-navigation">
+                <indices-nav router.bind="router"></indices-nav>
+            </div>
+        </div>
+    </div>
+
+</template>

@@ -2041,9 +2041,9 @@ define('components/market/navigation',["require", "exports", "tslib", "aurelia-f
         Navigation.prototype.configureRouter = function (config, router) {
             config.title = "Global Markets";
             config.map([
-                { route: ["sp500"], moduleId: "./market-indices/sp500/sp500", name: "market-indices-sp500", title: "S&P 500 Index", nav: true },
+                { route: ["indices"], moduleId: "./market-indices/navigation", name: "market-indices", title: "Market Indices", nav: true },
                 { route: ["jobs"], moduleId: "./jobs-dashboard/navigation", name: "jobs-dashboard", title: "Jobs Dashboard", nav: true },
-                { route: "", redirect: "sp500" }
+                { route: "", redirect: "indices" }
             ]);
             this.router = router;
             this.section = config.title;
@@ -7604,6 +7604,187 @@ define('aurelia-dialog/dialog-service',['exports', 'aurelia-metadata', 'aurelia-
     }
   }
 });
+define('components/market/market-indices/market-indices',["require", "exports"], function (require, exports) {
+    "use strict";
+    var MarketIndices = (function () {
+        function MarketIndices() {
+        }
+        return MarketIndices;
+    }());
+    exports.MarketIndices = MarketIndices;
+});
+
+define('components/market/market-indices/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
+    "use strict";
+    var Navigation = (function () {
+        function Navigation() {
+        }
+        Navigation.prototype.configureRouter = function (config, router) {
+            config.title = "Market Indices";
+            config.map([
+                { route: ["sp500"], moduleId: "./indices/market-index", name: "^GSPC", title: "S&P 500 Index", nav: true },
+                { route: ["ftse100"], moduleId: "./indices/market-index", name: "^FTSE", title: "FTSE 100", nav: true },
+                { route: ["dow-jones"], moduleId: "./indices/market-index", name: "^DJI", title: "Dow Jones Industrial", nav: true },
+                { route: ["nasdaq"], moduleId: "./indices/market-index", name: "^IXIC", title: "NASDAQ Composite", nav: true },
+                { route: ["nyse"], moduleId: "./indices/market-index", name: "^NYA", title: "NYSE Composite", nav: true },
+                { route: "", redirect: "sp500" }
+            ]);
+            this.router = router;
+        };
+        return Navigation;
+    }());
+    Navigation = tslib_1.__decorate([
+        aurelia_framework_1.autoinject
+    ], Navigation);
+    exports.Navigation = Navigation;
+});
+
+define('components/market/market-indices/indices/sp500',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1) {
+    "use strict";
+    var Sp500 = (function () {
+        function Sp500(account) {
+            this.powerUser = false;
+            this.powerUser = account.currentUser.isAuthenticated;
+        }
+        return Sp500;
+    }());
+    Sp500 = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
+    ], Sp500);
+    exports.Sp500 = Sp500;
+});
+
+define('components/market/market-indices/market-index/sp500',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1) {
+    "use strict";
+    var Sp500 = (function () {
+        function Sp500(account) {
+            this.powerUser = false;
+            this.powerUser = account.currentUser.isAuthenticated;
+        }
+        return Sp500;
+    }());
+    Sp500 = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
+    ], Sp500);
+    exports.Sp500 = Sp500;
+});
+
+define('components/market/market-indices/market-index',["require", "exports"], function (require, exports) {
+    "use strict";
+    var MarketIndices = (function () {
+        function MarketIndices() {
+        }
+        return MarketIndices;
+    }());
+    exports.MarketIndices = MarketIndices;
+});
+
+define('components/market/market-indices/market-index/market-index',["require", "exports"], function (require, exports) {
+    "use strict";
+    var MarketIndices = (function () {
+        function MarketIndices() {
+        }
+        return MarketIndices;
+    }());
+    exports.MarketIndices = MarketIndices;
+});
+
+define('components/market/market-indices/index/market-index',["require", "exports"], function (require, exports) {
+    "use strict";
+    var MarketIndices = (function () {
+        function MarketIndices() {
+        }
+        return MarketIndices;
+    }());
+    exports.MarketIndices = MarketIndices;
+});
+
+define('components/market/market-indices/indices/market-index',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "../../../../services/company-service", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, company_service_1, aurelia_event_aggregator_1) {
+    "use strict";
+    var MarketIndex = (function () {
+        function MarketIndex(account, eventAggregator, companyService) {
+            var _this = this;
+            this.companyService = companyService;
+            this.powerUser = false;
+            this.subscription = null;
+            this.router = null;
+            this.title = "";
+            this.indexUrl = "";
+            this.indexInfo = null;
+            this.powerUser = account.currentUser.isAuthenticated;
+            this.subscription = eventAggregator.subscribe("router:navigation:complete", function () {
+                _this.onNavigatioComplete();
+            });
+        }
+        MarketIndex.prototype.onNavigatioComplete = function () {
+            this.title = this.router.currentInstruction.config.title;
+            this.indexUrl = this.router.currentInstruction.config.name;
+            this.loadIndex();
+        };
+        MarketIndex.prototype.activate = function (params, routeconfig, navigationInstruction) {
+            this.router = navigationInstruction.router;
+            if (params && routeconfig) {
+            }
+        };
+        MarketIndex.prototype.detached = function () {
+            this.subscription.dispose();
+        };
+        MarketIndex.prototype.loadIndex = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = this;
+                            return [4 /*yield*/, this.companyService.getCompany(this.indexUrl)];
+                        case 1:
+                            _a.indexInfo = _b.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return MarketIndex;
+    }());
+    MarketIndex = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator, company_service_1.CompanyService])
+    ], MarketIndex);
+    exports.MarketIndex = MarketIndex;
+});
+
+define('components/market/market-indices/indices-nav/jobs-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
+    "use strict";
+    var JobsNav = (function () {
+        function JobsNav() {
+            this.router = null;
+        }
+        return JobsNav;
+    }());
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", aurelia_router_1.Router)
+    ], JobsNav.prototype, "router", void 0);
+    exports.JobsNav = JobsNav;
+});
+
+define('components/market/market-indices/indices-nav/indices-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
+    "use strict";
+    var IndicesNav = (function () {
+        function IndicesNav() {
+            this.router = null;
+        }
+        return IndicesNav;
+    }());
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", aurelia_router_1.Router)
+    ], IndicesNav.prototype, "router", void 0);
+    exports.IndicesNav = IndicesNav;
+});
+
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><require from=\"./components/header/dream-header\"></require><require from=\"./components/footer/dream-footer\"></require><require from=\"./components/nav-menu/main-nav/main-nav\"></require><dream-header router.bind=\"router\"></dream-header><main-nav router.bind=\"router\"></main-nav><router-view></router-view><dream-footer></dream-footer></template>"; });
 define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
@@ -7677,4 +7858,18 @@ define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], functi
 define('text!resources/elements/chart/stock-chart.css', ['module'], function(module) { module.exports = "stock-chart {\n  display: block;\n}\nstock-chart .o_chart-container {\n  height: 600px;\n  width: 100%;\n  margin-bottom: 20px;\n}\n"; });
 define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"delete()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
 define('text!components/market/jobs-dashboard/jobs/job.css', ['module'], function(module) { module.exports = ".c_dashboard {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_job-details-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_job-details-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n.c_job-details-list .c_jod_details {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_job-details-list .c_jod_details .c_jod_details-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .chevron {\n  float: right;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group .btn,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details {\n  padding-top: 10px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_job-actions {\n  padding-top: 12px;\n  padding-right: 20px;\n  text-align: right;\n  border-top: solid 1px rgba(204, 204, 204, 0.36);\n}\n.job-staus-2 {\n  color: #5cb85c;\n}\n.job-staus-3 {\n  color: #f59f25;\n}\n.job-staus-99,\n.chevron {\n  color: #CA1D04;\n}\n.label {\n  font-weight: 300;\n  font-size: 13px;\n  padding: 4px 8px;\n}\n.form-current-job fieldset {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  padding: 20px 0 12px;\n}\n.monospace {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  margin-top: 2px;\n}\n.form-group.exception .form-control {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  font-style: normal;\n  font-variant: normal;\n  font-weight: 400;\n  line-height: 19px;\n  color: rgba(0, 0, 0, 0.55);\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n}\n.form-group.error .form-control {\n  color: #CA1D04;\n}\n.col-progress {\n  text-align: center;\n}\n.col-progress span {\n  font-size: 13px;\n  position: relative;\n  color: #5cb85c;\n  font-weight: 500;\n}\n.col-progress s-progress {\n  position: relative;\n  top: -8px;\n}\n"; });
+define('text!components/market/market-indices/market-indices.html', ['module'], function(module) { module.exports = "<template></template>"; });
+define('text!components/market/market-indices/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"./indices-nav/indices-nav\"></require><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_market-indices\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><indices-nav router.bind=\"router\"></indices-nav></div></div></div></template>"; });
+define('text!components/market/market-indices/indices/sp500.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><header><h3>S&P 500 Index</h3></header></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3></h3></div></div></div></template>"; });
+define('text!components/market/market-indices/market-index.html', ['module'], function(module) { module.exports = "<template></template>"; });
+define('text!components/market/market-indices/market-index/sp500.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><header><h3>S&P 500 Index</h3></header></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3></h3></div></div></div></template>"; });
+define('text!components/market/market-indices/market-index.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/market/market-indices/market-index/market-index.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/market/market-indices/market-index/market-index.html', ['module'], function(module) { module.exports = "<template></template>"; });
+define('text!components/market/market-indices/index/market-index.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/market/market-indices/index/market-index.html', ['module'], function(module) { module.exports = "<template></template>"; });
+define('text!components/market/market-indices/indices/market-index.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
+define('text!components/market/market-indices/indices-nav/jobs-nav.html', ['module'], function(module) { module.exports = "<template><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></template>"; });
+define('text!components/market/market-indices/indices-nav/indices-nav.html', ['module'], function(module) { module.exports = "<template><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></template>"; });
 //# sourceMappingURL=app-bundle.js.map

@@ -17,9 +17,9 @@ export class Navigation {
 
 
         config.map([
-            { route: ["sp500"], moduleId: "./market-indices/sp500/sp500", name: "market-indices-sp500", title: "S&P 500 Index", nav: true },
+            { route: ["indices"], moduleId: "./market-indices/navigation", name: "market-indices", title: "Market Indices", nav: true },
             { route: ["jobs"], moduleId: "./jobs-dashboard/navigation", name: "jobs-dashboard", title: "Jobs Dashboard", nav: true },
-            { route: "", redirect: "sp500" }
+            { route: "", redirect: "indices" }
         ]);
 
         this.router = router;
