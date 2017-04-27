@@ -9,6 +9,7 @@ using Dream.Space.Data.Repositories;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
 using Dream.Space.Models.Quotes;
+using Dream.Space.Models.Strategies.Rules;
 using Dream.Space.Reader;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Requests;
@@ -59,7 +60,7 @@ namespace Dream.Space.Playground
             }
         }
 
-        public async Task<List<vStrategyRule>> LoadStrategyRulesAsync(int strategyId)
+        public async Task<List<IStrategyRuleView>> LoadStrategyRulesAsync(int strategyId)
         {
             using (var scope = _container.BeginLifetimeScope())
             {

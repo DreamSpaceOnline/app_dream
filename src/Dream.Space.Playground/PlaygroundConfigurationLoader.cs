@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Playgrounds;
 using Dream.Space.Models.Quotes;
-using Dream.Space.Playground.Models;
 
 namespace Dream.Space.Playground
 {

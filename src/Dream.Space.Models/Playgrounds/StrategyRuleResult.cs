@@ -1,18 +1,18 @@
 using System;
-using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Models.Enums;
+using Dream.Space.Models.Strategies.Rules;
 
-namespace Dream.Space.Playground.Models
+namespace Dream.Space.Models.Playgrounds
 {
     public class StrategyRuleResult
     {
 
-        public StrategyRuleResult(vStrategyRule rule)
+        public StrategyRuleResult(IStrategyRuleView rule)
         {
             Initialize(rule);
         }
 
-        private void Initialize(vStrategyRule rule)
+        private void Initialize(IStrategyRuleView rule)
         {
             Condition = rule.Condition;
             RuleName = rule.RuleName;

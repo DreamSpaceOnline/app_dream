@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Dream.Space.Playground.Models
+namespace Dream.Space.Models.Playgrounds
 {
     public class StrategyRuleSetResult
     {

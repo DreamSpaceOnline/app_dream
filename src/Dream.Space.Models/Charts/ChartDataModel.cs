@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Dream.Space.Domain.ChartData.Models
+namespace Dream.Space.Models.Charts
 {
     public class ChartDataModel
     {

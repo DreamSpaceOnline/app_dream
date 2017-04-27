@@ -1,6 +1,6 @@
 using Dream.Space.Models.Enums;
 
-namespace Dream.Space.Domain.ChartData.Models
+namespace Dream.Space.Models.Charts
 {
     public class ChartIndicator
     {

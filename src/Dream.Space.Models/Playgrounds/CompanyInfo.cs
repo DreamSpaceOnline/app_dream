@@ -1,4 +1,4 @@
-﻿namespace Dream.Space.Playground.Models
+﻿namespace Dream.Space.Models.Playgrounds
 {
     public class CompanyInfo
     {

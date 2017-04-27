@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Quotes;
+using Dream.Space.Models.Strategies.Rules;
 
-namespace Dream.Space.Playground.Models
+namespace Dream.Space.Models.Playgrounds
 {
     public class StrategyRulesCalculator
     {
-        private readonly List<vStrategyRule> _rules;
+        private readonly List<IStrategyRuleView> _rules;
         private readonly CompanyChartData _charts;
 
-        public StrategyRulesCalculator(List<vStrategyRule> rules, CompanyChartData charts)
+        public StrategyRulesCalculator(List<IStrategyRuleView> rules, CompanyChartData charts)
         {
             _rules = rules;
             _charts = charts;
@@ -45,7 +45,7 @@ namespace Dream.Space.Playground.Models
         }
 
 
-        private decimal GetFirstValue(vStrategyRule rule)
+        private decimal GetFirstValue(IStrategyRuleView rule)
         {
             switch (rule.DataSourceV1)
             {
@@ -59,7 +59,7 @@ namespace Dream.Space.Playground.Models
                     throw new ArgumentOutOfRangeException();
             }
         }
-        private decimal GetSecondValue(vStrategyRule rule)
+        private decimal GetSecondValue(IStrategyRuleView rule)
         {
             switch (rule.DataSourceV2)
             {
@@ -74,7 +74,7 @@ namespace Dream.Space.Playground.Models
             }
         }
 
-        private decimal GetValueFromHistorical(vStrategyRule rule, bool isFirst)
+        private decimal GetValueFromHistorical(IStrategyRuleView rule, bool isFirst)
         {
             var values = isFirst ? _charts.Periods.First(p => p.Period == rule.Period).Quotes.Skip(rule.SkipItemsV1).Take(rule.TakeItemsV1).ToList() 
                 : _charts.Periods.First(p => p.Period == rule.Period).Quotes.Skip(rule.SkipItemsV2).Take(rule.TakeItemsV2).ToList();
@@ -132,7 +132,7 @@ namespace Dream.Space.Playground.Models
             }
         }
 
-        private decimal GetValueFromIndicator(vStrategyRule rule, bool isFirst)
+        private decimal GetValueFromIndicator(IStrategyRuleView rule, bool isFirst)
         {
             var indicator = _charts.Periods.First(p => p.Period == rule.Period).Indicators
                 .Where(i => i.Indicator.IndicatorId == (isFirst ? rule.DataSeriesV1 : rule.DataSeriesV2))
@@ -152,7 +152,7 @@ namespace Dream.Space.Playground.Models
             return decimal.MinValue;
         }
 
-        private decimal GetValueFromIndicator(vStrategyRule rule, List<IndicatorResult> values, bool isFirst)
+        private decimal GetValueFromIndicator(IStrategyRuleView rule, List<IndicatorResult> values, bool isFirst)
         {
             var transform = isFirst ? rule.TransformItemsV1 : rule.TransformItemsV2;
             switch (transform)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Dream.Space.Models.Enums;
+using Dream.Space.Models.Strategies.Rules;
 
 namespace Dream.Space.Data.Entities.Strategies
 {
@@ -12,7 +13,7 @@ namespace Dream.Space.Data.Entities.Strategies
      */
 
     [Table("vStrategyRule")]
-    public class vStrategyRule
+    public class vStrategyRule : IStrategyRuleView
     {
         public int StrategyId { get; set; }
         public bool Optional { get; set; }

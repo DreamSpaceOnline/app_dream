@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Models.Enums;
+using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Data.Repositories
 {
@@ -21,6 +22,7 @@ namespace Dream.Space.Data.Repositories
         Task<List<Indicator>> GetAllAsync();
         Task<List<Indicator>> GetByStrategyIdAsync(int id);
         List<Indicator> GetGlobalAll();
+        Task<IList<IIndicatorEntity>> GetLayoutIndicatorsAsync(int layoutId);
     }
 
 
@@ -62,7 +64,7 @@ namespace Dream.Space.Data.Repositories
 
         public async Task<List<Indicator>> GetByStrategyIdAsync(int id)
         {
-            var query = @"
+            const string query = @"
                 SELECT DISTINCT I.*
                 FROM [dbo].[Indicator] I
 	                INNER JOIN (
@@ -89,6 +91,21 @@ namespace Dream.Space.Data.Repositories
         {
             var indicators = Dbset.Where(i => !i.Deleted && i.Global).ToList();
             return indicators;
+        }
+
+        public async Task<IList<IIndicatorEntity>> GetLayoutIndicatorsAsync(int layoutId)
+        {
+            const string query = @"
+                SELECT I.*
+                FROM dbo.Indicator I
+	                INNER JOIN dbo.LayoutIndicator L 
+		                ON L.IndicatorId = I.IndicatorId
+                WHERE L.LayoutId = @LayoutId
+	                AND	I.Deleted = 0 ";
+
+            var records = await Dbset.SqlQuery(query, new[] { new SqlParameter("@LayoutId", layoutId) }).ToListAsync();
+
+            return records.Select(r => r as IIndicatorEntity).ToList();
         }
     }
 }

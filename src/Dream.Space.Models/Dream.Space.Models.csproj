@@ -45,6 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculators\IIndicatorCalculator.cs" />
+    <Compile Include="Charts\ChartDataModel.cs" />
+    <Compile Include="Charts\ChartDataResult.cs" />
+    <Compile Include="Charts\ChartIndicator.cs" />
+    <Compile Include="Charts\ChartLayout.cs" />
+    <Compile Include="Charts\ChartPlotData.cs" />
+    <Compile Include="Charts\DataResult.cs" />
+    <Compile Include="Charts\ResultStatus.cs" />
     <Compile Include="Companies\CompanyDetails.cs" />
     <Compile Include="Companies\CompanyHeader.cs" />
     <Compile Include="Companies\CompanyToProcess.cs" />
@@ -67,11 +74,21 @@
     <Compile Include="Indicators\CompanyIndicatorResult.cs" />
     <Compile Include="Indicators\CompanyIndicatorResults.cs" />
     <Compile Include="Indicators\NHNLIndicatorResultDecorator.cs" />
+    <Compile Include="Playgrounds\ChartData.cs" />
+    <Compile Include="Playgrounds\CompanyChartData.cs" />
+    <Compile Include="Playgrounds\CompanyInfo.cs" />
+    <Compile Include="Playgrounds\GlobalIndexChartData.cs" />
+    <Compile Include="Playgrounds\IndicatorChartData.cs" />
+    <Compile Include="Playgrounds\StrategyRuleResult.cs" />
+    <Compile Include="Playgrounds\StrategyRulesCalculator.cs" />
+    <Compile Include="Playgrounds\StrategyRuleSetResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quotes\QuotesModel.cs" />
     <Compile Include="Strategies\IStrategyEntity.cs" />
     <Compile Include="Strategies\IStrategyView.cs" />
+    <Compile Include="Strategies\RuleSets\IStrategyRuleSetView.cs" />
     <Compile Include="Strategies\Rules\IRuleSetView.cs" />
+    <Compile Include="Strategies\Rules\IStrategyRuleView.cs" />
     <Compile Include="Strategies\Rules\RuleModel.cs" />
     <Compile Include="Strategies\Rules\RuleSetModel.cs" />
     <Compile Include="Strategies\StrategyModel.cs" />

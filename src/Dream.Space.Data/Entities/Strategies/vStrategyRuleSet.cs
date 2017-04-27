@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Dream.Space.Models.Strategies.RuleSets;
 
 namespace Dream.Space.Data.Entities.Strategies
 {
     [Table("vStrategyRuleSet")]
-    public class vStrategyRuleSet
+    public class vStrategyRuleSet : IStrategyRuleSetView
     {
         public int StrategyId { get; set; }
         public bool StrategyActive { get; set; }

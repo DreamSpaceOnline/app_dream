@@ -22,6 +22,7 @@ namespace Dream.Space.Data.Services
         Task<List<IndicatorResult>> GetIntermediateResultsAsync(int jobId, int indicatorId);
         Task StoreIntermediateResultsAsync(int jobId, int indicatorId, List<IndicatorResult> results);
         Task ClearIntermediateResultsAsync(int jobId, int indicatorId);
+        Task<IList<IIndicatorEntity>> GetLayoutIndicatorsAsync(int layoutId);
     }
 
     public class IndicatorService : IIndicatorService
@@ -176,6 +177,17 @@ namespace Dream.Space.Data.Services
                 {
                     repository.Delete(entity);
                 }
+            }
+        }
+
+        public async Task<IList<IIndicatorEntity>> GetLayoutIndicatorsAsync(int layoutId)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IIndicatorRepository>();
+                var result = await repository.GetLayoutIndicatorsAsync(layoutId);
+
+                return result;
             }
         }
     }

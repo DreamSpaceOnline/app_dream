@@ -1,7 +1,5 @@
 ﻿using Autofac;
-using Dream.Space.Domain.ChartData;
-using Dream.Space.Domain.ChartData.Requests;
-using Dream.Space.Models.Enums;
+using Dream.Space.Data.Services;
 using NUnit.Framework;
 
 namespace Dream.Space.Tests.Services
@@ -20,11 +18,7 @@ namespace Dream.Space.Tests.Services
         [Test]
         public void GetData_()
         {
-            var response = _service.GetChartData(new GetChartDataRequest()
-            {
-                QuotePeriod = QuotePeriod.Daily,
-                Ticker = "A"
-            });
+
         }
 
 

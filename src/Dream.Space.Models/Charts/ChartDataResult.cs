@@ -1,4 +1,4 @@
-﻿namespace Dream.Space.Domain.ChartData.Models
+﻿namespace Dream.Space.Models.Charts
 {
     public class ChartDataResult : DataResult<ChartDataModel>
     {

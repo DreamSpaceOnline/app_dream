@@ -99,6 +99,9 @@ namespace Dream.Space.Data
             //ProcessorLog
             modelBuilder.Entity<ProcessorLog>().HasKey(e => e.Id);
 
+            //LayoutIndicator
+            modelBuilder.Entity<LayoutIndicator>().HasKey(e => e.Id);
+
 
             modelBuilder.Entity<Article>().HasKey(t => t.ArticleId);
             modelBuilder.Entity<Article>().HasRequired(a => a.Category).WithMany(t => t.Articles).HasForeignKey(p => p.CategoryId);
@@ -153,5 +156,6 @@ namespace Dream.Space.Data
         public virtual DbSet<IndicatorIntermediateResult> IndicatorIntermediateResults { get; set; }
         public virtual DbSet<ScheduledJobDetails> ScheduledJobDetail { get; set; }
         public virtual DbSet<ProcessorLog> ProcessorLogs { get; set; }
+        public virtual DbSet<LayoutIndicator> LayoutIndicators { get; set; }
     }
 }

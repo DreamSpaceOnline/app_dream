@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Dream.Space.Data.Extensions;
+using Dream.Space.Models.Playgrounds;
 using Dream.Space.Playground;
-using Dream.Space.Playground.Models;
 
 namespace Dream.Space.Controllers
 {

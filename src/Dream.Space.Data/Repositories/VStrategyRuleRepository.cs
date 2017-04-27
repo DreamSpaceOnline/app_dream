@@ -3,12 +3,13 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Strategies;
+using Dream.Space.Models.Strategies.Rules;
 
 namespace Dream.Space.Data.Repositories
 {
     public interface IVStrategyRuleRepository
     {
-        Task<List<vStrategyRule>> GetRulesAsync(int strategyId);
+        Task<List<IStrategyRuleView>> GetRulesAsync(int strategyId);
     }
 
 
@@ -18,9 +19,9 @@ namespace Dream.Space.Data.Repositories
         {
         }
 
-        public async Task<List<vStrategyRule>> GetRulesAsync(int strategyId)
+        public async Task<List<IStrategyRuleView>> GetRulesAsync(int strategyId)
         {
-            var records = await Dbset.Where(r => r.StrategyId == strategyId).OrderBy(r => r.OrderId).ThenBy(r => r.RuleSetId).ToListAsync();
+            var records = await Dbset.Where(r => r.StrategyId == strategyId).OrderBy(r => r.OrderId).ThenBy(r => r.RuleSetId).Select(r => r as IStrategyRuleView).ToListAsync();
             return records;
         }
 
