@@ -48,7 +48,7 @@
     <Compile Include="Charts\ChartDataModel.cs" />
     <Compile Include="Charts\ChartDataResult.cs" />
     <Compile Include="Charts\ChartIndicator.cs" />
-    <Compile Include="Charts\ChartLayout.cs" />
+    <Compile Include="Charts\ChartLayoutModel.cs" />
     <Compile Include="Charts\ChartPlotData.cs" />
     <Compile Include="Charts\DataResult.cs" />
     <Compile Include="Charts\ResultStatus.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="Enums\QuotePeriod.cs" />
     <Compile Include="Enums\RuleFunction.cs" />
     <Compile Include="Enums\TransformFunction.cs" />
+    <Compile Include="Indicators\IChartLayoutEntity.cs" />
     <Compile Include="Indicators\IIndicatorEntity.cs" />
     <Compile Include="Indicators\IIndicatorResult.cs" />
     <Compile Include="Indicators\IndicatorCore.cs" />

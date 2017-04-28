@@ -97,6 +97,7 @@
     <Compile Include="Entities\Companies\CompanyIndustry.cs" />
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
+    <Compile Include="Entities\Indicators\ChartLayout.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
     <Compile Include="Entities\Indicators\IndicatorIntermediateResult.cs" />
     <Compile Include="Entities\Indicators\LayoutIndicator.cs" />
@@ -200,6 +201,10 @@
     <Compile Include="Migrations\201704271555435_CreateLayoutIndicator.Designer.cs">
       <DependentUpon>201704271555435_CreateLayoutIndicator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704281442007_CreateChartLayout.cs" />
+    <Compile Include="Migrations\201704281442007_CreateChartLayout.Designer.cs">
+      <DependentUpon>201704281442007_CreateChartLayout.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -211,6 +216,7 @@
     <Compile Include="Repositories\IndicatorIntermediateResultsRepository.cs" />
     <Compile Include="Repositories\ProcessorLogRepository.cs" />
     <Compile Include="Repositories\ScheduledJobDetailsRepository.cs" />
+    <Compile Include="Repositories\ChartLayoutRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\ScheduledJobRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
@@ -346,6 +352,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704271555435_CreateLayoutIndicator.resx">
       <DependentUpon>201704271555435_CreateLayoutIndicator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704281442007_CreateChartLayout.resx">
+      <DependentUpon>201704281442007_CreateChartLayout.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
