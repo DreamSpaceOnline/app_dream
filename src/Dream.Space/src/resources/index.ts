@@ -36,5 +36,7 @@ export function configure(config: FrameworkConfiguration) {
     config.globalResources(["./elements/progress/s-progress"]);
 
     config.globalResources(["./attributes/first-letter-span"]);
+    config.globalResources(["./elements/navigation/side-nav"]);
+    config.globalResources(["./elements/navigation/sub-nav"]);
 
 }

@@ -19,6 +19,7 @@ export class Navigation {
         config.map([
             { route: ["indices"], moduleId: "./market-indices/navigation", name: "market-indices", title: "Market Indices", nav: true },
             { route: ["jobs"], moduleId: "./jobs-dashboard/navigation", name: "jobs-dashboard", title: "Jobs Dashboard", nav: true },
+            { route: ["layouts"], moduleId: "./chart-layouts/navigation", name: "chart-layouts", title: "Chart Layouts", nav: true },
             { route: "", redirect: "indices" }
         ]);
 

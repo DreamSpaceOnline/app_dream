@@ -324,17 +324,18 @@
     <Content Include="package.json" />
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
-    <Content Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.html" />
+    <Content Include="src\components\market\chart-layouts\layouts\chart-layout.html" />
+    <Content Include="src\components\market\chart-layouts\navigation.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.html" />
     <Content Include="src\components\market\jobs-dashboard\navigation.html" />
-    <Content Include="src\components\market\market-indices\indices-nav\indices-nav.html" />
     <Content Include="src\components\market\market-indices\indices\market-index.html" />
     <Content Include="src\components\market\market-indices\navigation.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.html" />
     <Content Include="src\components\market\navigation.html" />
-    <Content Include="src\components\market\market-nav\market-nav.html" />
+    <Content Include="src\resources\elements\navigation\sub-nav.html" />
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
     <Content Include="src\components\nav-menu\category-nav\category-nav.html" />
+    <Content Include="src\resources\elements\navigation\side-nav.html" />
     <Content Include="src\components\nav-menu\sub-nav\sub-nav.html" />
     <Content Include="src\components\strategies\indicators\indicators.html" />
     <Content Include="src\components\strategies\navigation.html" />
@@ -436,7 +437,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Infrastructure\Publishers\" />
-    <Folder Include="src\components\nav-menu\side-nav\" />
     <Folder Include="src\resources\binding-behaviors\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
@@ -472,17 +472,18 @@
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
-    <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs-nav\jobs-nav.ts" />
+    <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layout.ts" />
+    <TypeScriptCompile Include="src\components\market\chart-layouts\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\navigation.ts" />
-    <TypeScriptCompile Include="src\components\market\market-indices\indices-nav\indices-nav.ts" />
     <TypeScriptCompile Include="src\components\market\market-indices\indices\market-index.ts" />
     <TypeScriptCompile Include="src\components\market\market-indices\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job.ts" />
     <TypeScriptCompile Include="src\components\market\navigation.ts" />
-    <TypeScriptCompile Include="src\components\market\market-nav\market-nav.ts" />
+    <TypeScriptCompile Include="src\resources\elements\navigation\sub-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\category-nav\category-nav.ts" />
+    <TypeScriptCompile Include="src\resources\elements\navigation\side-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\sub-nav\sub-nav.ts" />
     <TypeScriptCompile Include="src\components\strategies\indicators\indicators.ts" />
     <TypeScriptCompile Include="src\components\strategies\navigation.ts" />
@@ -525,6 +526,7 @@
     <TypeScriptCompile Include="src\services\company-service.ts" />
     <TypeScriptCompile Include="src\services\log-service.ts" />
     <TypeScriptCompile Include="src\services\job-service.ts" />
+    <TypeScriptCompile Include="src\services\layout-service.ts" />
     <TypeScriptCompile Include="src\services\storage-service.ts" />
     <TypeScriptCompile Include="src\common\types\indicator-models.ts" />
     <TypeScriptCompile Include="src\services\indicator-service.ts" />
@@ -677,6 +679,7 @@
     <Content Include="karma.conf.js" />
     <Content Include="src\components\market\market-indices\market-indices.less" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.less" />
+    <Content Include="src\components\market\chart-layouts\chart-layouts.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,7 +1,7 @@
 ﻿import { bindable } from "aurelia-framework";
 import { Router } from "aurelia-router";
 
-export class JobsNav {
+export class SubtNav {
 
     @bindable router: Router = null;
 }
