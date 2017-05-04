@@ -4,22 +4,24 @@ import { LayoutService } from "../../../../services/layout-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 import { LayoutInfo } from "../../../../common/types/layout-models";
+import {EnumValues, IdName } from "../../../../common/helpers/enum-helper";
+import {QuotePeriod} from "../../../../common/types/enums";
 
 @autoinject()
 export class ChartLayouts {
+
     powerUser = false;
-    subscription: Subscription = null;
+    subscriptions: Subscription[] = [];
     router: Router = null;
     layouts: LayoutInfo[] = [];
     title = "";
-    layoutUrl = "";
+    period: IdName;
 
-    constructor(account: AccountService, eventAggregator: EventAggregator, private layoutService: LayoutService) {
+    newLayout: LayoutInfo;
+
+    constructor(account: AccountService, private eventAggregator: EventAggregator, private layoutService: LayoutService) {
         this.powerUser = account.currentUser.isAuthenticated;
-
-        this.subscription = eventAggregator.subscribe("router:navigation:complete", () => {
-            this.onNavigatioComplete();
-        });
+        this.subscribe();
 
         if (this.layoutService) {
             
@@ -28,7 +30,9 @@ export class ChartLayouts {
 
     onNavigatioComplete() {
         this.title = this.router.currentInstruction.config.title;
-        this.layoutUrl = this.router.currentInstruction.config.name;
+        const periodUrl = this.router.currentInstruction.config.name;
+        this.period = EnumValues.getQuotePeriod(periodUrl);
+
         this.loadLayouts();
     }
 
@@ -39,12 +43,28 @@ export class ChartLayouts {
         }
     }
 
-    detached() {
-        this.subscription.dispose();
+
+    subscribe() {
+        this.subscriptions.push(this.eventAggregator.subscribe("router:navigation:complete", () => {
+            this.onNavigatioComplete();
+        }));
     }
 
+    detached() {
+        if (this.subscriptions.length > 0) {
+            this.subscriptions.forEach(subscription => {
+                subscription.dispose();
+            });
+        }
+    }
 
     async loadLayouts() {
-        this.layouts = await this.layoutService.getLayouts(this.layoutUrl);
+        this.layouts = await this.layoutService.getLayouts(this.period.id);
     }   
+
+    addLayout() {
+        this.newLayout = new LayoutInfo();
+        this.newLayout.period = this.period.id;
+    }
+
 }

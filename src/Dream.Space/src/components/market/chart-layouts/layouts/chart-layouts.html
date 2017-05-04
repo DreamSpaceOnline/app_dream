@@ -14,8 +14,8 @@
 
             <div class="c_layout c_layout-add" show.bind="editMode">
                 
-                <div class="c_layout-header" click.delegate="addIndicator()">
-                    <a>Attach Indicator</a>
+                <div class="c_layout-header" click.delegate="addLayout()">
+                    <a>Add Layout</a>
                     <a class="chevron">
                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                     </a>
@@ -23,34 +23,27 @@
             
                 <div class="c_layout-details" show.bind="addingMode === true && editMode">
                     <form>
+
                         <fieldset>
                             <div class="form-group">
-                                <label>Period</label>
-                                <select class="form-control" value.bind="attachedIndicator.period" change.delegate="onPeriodSelected()">
-                                    <option> - Select Period -</option>
-                                    <option repeat.for="period of periods" model.bind="period.id">${period.name}</option>
-                                </select>
+                                <label for="txtName">Layout Name</label>
+                                <input type="text" class="form-control" id="txtName" value.bind="newLayout.name & validate" />
                             </div>
                             <div class="form-group">
-                                <label>Indicator</label>
-                                <select class="form-control" value.bind="attachedIndicator.indicatorId" change.delegate="onIndicatorSelected()">
-                                    <option> - Select Indicator -</option>
-                                    <option repeat.for="periodIndicator of periodIndicators" model.bind="periodIndicator.indicatorId">${periodIndicator.name}</option>
-                                </select>
-                            </div>
-                            <div class="form-group" if.bind="attachedIndicator.indicatorId > 0">
-                                <label>Description</label>
-                                <p class="form-control" readonly>${attachedIndicator.description}</p>
+                                <label for="txtDescription">Description</label>
+                                <textarea rows="4" class="form-control" id="txtDescription" value.bind="newLayout.description & validate"></textarea>
                             </div>
                         </fieldset>
+
                         <div class="c_layout-actions">
-                            <button type="button" click.delegate="confirmAddIndicator()" class="btn btn-warning">Attach</button>
-                            <button type="button" click.delegate="cancelAddIndicator()" class="btn btn-default">Cancel</button>
+                            <button type="button" click.delegate="confirmAddLayout()" class="btn btn-warning">Attach</button>
+                            <button type="button" click.delegate="cancelAddLayout()" class="btn btn-default">Cancel</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
         <div class="c_layout-actions">
             <button type="button" click.delegate="startEdit()" if.bind="!editMode" class="btn btn-danger">Edit</button>
             <button type="button" click.delegate="trySaveRuleSets()" if.bind="editMode" class="btn btn-danger">Save</button>
