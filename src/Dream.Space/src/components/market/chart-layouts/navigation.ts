@@ -11,8 +11,8 @@ export class Navigation {
 
 
         config.map([
-            { route: ["weekly"], moduleId: "./layouts/chart-layout", name: "Weekly", title: "Weekly Charts Layout", nav: true },
-            { route: ["daily"], moduleId: "./layouts/chart-layout", name: "Daily", title: "Daily Charts Layout", nav: true },
+            { route: ["weekly"], moduleId: "./layouts/chart-layouts", name: "Weekly", title: "Weekly Chart Layouts", nav: true },
+            { route: ["daily"], moduleId: "./layouts/chart-layouts", name: "Daily", title: "Daily Chart Layouts", nav: true },
             { route: "", redirect: "weekly" }
         ]);
 

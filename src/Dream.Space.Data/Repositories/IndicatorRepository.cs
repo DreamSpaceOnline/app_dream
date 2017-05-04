@@ -23,6 +23,7 @@ namespace Dream.Space.Data.Repositories
         Task<List<Indicator>> GetByStrategyIdAsync(int id);
         List<Indicator> GetGlobalAll();
         Task<IList<IIndicatorEntity>> GetLayoutIndicatorsAsync(int layoutId);
+        Task<IList<IIndicatorEntity>> GetLayoutIndicatorsForPeriodAsync(QuotePeriod period);
     }
 
 
@@ -103,7 +104,23 @@ namespace Dream.Space.Data.Repositories
                 WHERE L.LayoutId = @LayoutId
 	                AND	I.Deleted = 0 ";
 
-            var records = await Dbset.SqlQuery(query, new[] { new SqlParameter("@LayoutId", layoutId) }).ToListAsync();
+            var records = await Dbset.SqlQuery(query, new object[] { new SqlParameter("@LayoutId", layoutId) }).ToListAsync();
+
+            return records.Select(r => r as IIndicatorEntity).ToList();
+        }
+
+        public async Task<IList<IIndicatorEntity>> GetLayoutIndicatorsForPeriodAsync(QuotePeriod period)
+        {
+            const string query = @"
+                SELECT I.*
+                FROM dbo.Indicator I
+	                INNER JOIN dbo.LayoutIndicator L 
+		                ON L.IndicatorId = I.IndicatorId
+                WHERE   L.Deleted = 0 
+                    AND	I.Deleted = 0 
+                    AND	I.Period = @Period ";
+
+            var records = await Dbset.SqlQuery(query, new object[] { new SqlParameter("@Period", (int)period) }).ToListAsync();
 
             return records.Select(r => r as IIndicatorEntity).ToList();
         }

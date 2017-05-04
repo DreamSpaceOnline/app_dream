@@ -1,13 +1,18 @@
 ﻿using System.Data.Entity;
 using System.Threading.Tasks;
-using Dream.Space.Data.Entities.Indicators;
-using Dream.Space.Models.Indicators;
+using Dream.Space.Data.Entities.Layouts;
+using Dream.Space.Models.Layourts;
+using System.Collections.Generic;
+using System.Linq;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Data.Repositories
 {
     public interface IChartLayoutRepository
     {
         Task<IChartLayoutEntity> GetAsync(int id);
+        Task<IList<IChartLayoutEntity>> GetForPeriodAsync(QuotePeriod period);
+        Task<IChartLayoutEntity> GetDefaultAsync(QuotePeriod period);
     }
 
 
@@ -23,5 +28,18 @@ namespace Dream.Space.Data.Repositories
             return record;
         }
 
+        public async Task<IList<IChartLayoutEntity>> GetForPeriodAsync(QuotePeriod period)
+        {
+            var records = await Dbset.Where(r => r.Period == period).ToListAsync();
+            return records.Select(r => r as IChartLayoutEntity).ToList();
+        }
+
+        public async Task<IChartLayoutEntity> GetDefaultAsync(QuotePeriod period)
+        {
+            var record = await Dbset.FirstOrDefaultAsync(r => r.Period == period && r.Default) ??
+                         await Dbset.FirstOrDefaultAsync(r => r.Period == period);
+
+            return record;
+        }
     }
 }

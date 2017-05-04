@@ -325,6 +325,7 @@
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
     <Content Include="src\components\market\chart-layouts\layouts\chart-layout.html" />
+    <Content Include="src\components\market\chart-layouts\layouts\chart-layouts.html" />
     <Content Include="src\components\market\chart-layouts\navigation.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.html" />
     <Content Include="src\components\market\jobs-dashboard\navigation.html" />
@@ -384,13 +385,13 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ArticlesApiController.cs" />
     <Compile Include="Controllers\BlobApiController.cs" />
-    <Compile Include="Controllers\ChartDataApiController.cs" />
     <Compile Include="Controllers\CompaniesApiController.cs" />
     <Compile Include="Controllers\FileDetails.cs" />
     <Compile Include="Controllers\JobsApiController.cs" />
     <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\IndicatorsApiController.cs" />
+    <Compile Include="Controllers\LayoutApiController.cs" />
     <Compile Include="Controllers\LogsApiController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PlaygroundApiController.cs" />
@@ -467,12 +468,14 @@
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
+    <TypeScriptCompile Include="src\common\types\layout-models.ts" />
     <TypeScriptCompile Include="src\common\types\log-models.ts" />
     <TypeScriptCompile Include="src\components\categories\categories.ts" />
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layout.ts" />
+    <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layouts.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job-details\job-details.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\navigation.ts" />

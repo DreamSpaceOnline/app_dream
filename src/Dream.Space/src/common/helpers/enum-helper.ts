@@ -94,6 +94,19 @@ export class EnumValues {
         return result;
     }
 
+    static getQuotePeriod(period: string): IdName {
+        const values = EnumHelper.getNamesAndValues(QuotePeriod);
+        let result: IdName = { id: values[0].value, name: values[0].name };
+
+        values.forEach(item => {
+            if (item.name.toLowerCase() === period.toLowerCase()) {
+                result = {id: item.value, name : item.name};
+            }
+        });
+
+        return result;
+    }
+
     static geChartUpdateModes(): IdName[] {
         const values = EnumHelper.getNamesAndValues(ChartUpdateMode);
         const result: IdName[] = [];

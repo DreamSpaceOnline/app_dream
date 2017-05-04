@@ -4,6 +4,7 @@ import { JobInfo, JobInfoExtentions } from "../../../../../common/types/job-mode
 import { ProcessorLog } from "../../../../../common/types/log-models";
 import { LogService } from "../../../../../services/log-service";
 import { JobService } from "../../../../../services/job-service";
+
 @autoinject()
 export class JobDetails {
 

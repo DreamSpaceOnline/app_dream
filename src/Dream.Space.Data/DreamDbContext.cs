@@ -7,6 +7,7 @@ using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Entities.Jobs;
+using Dream.Space.Data.Entities.Layouts;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Entities.Logs;
 
