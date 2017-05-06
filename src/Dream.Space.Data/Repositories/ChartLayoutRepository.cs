@@ -13,6 +13,8 @@ namespace Dream.Space.Data.Repositories
         Task<IChartLayoutEntity> GetAsync(int id);
         Task<IList<IChartLayoutEntity>> GetForPeriodAsync(QuotePeriod period);
         Task<IChartLayoutEntity> GetDefaultAsync(QuotePeriod period);
+        ChartLayout Add(ChartLayout chartLayout);
+        void Commit();
     }
 
 

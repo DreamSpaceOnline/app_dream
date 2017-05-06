@@ -10,12 +10,12 @@
 
         <div class="c_layout-list">
 
-            <chart-layout repeat.for="layout of layouts" class="${$index === $parent.layouts.length-1 && !editMode ? 'no-border': ''}" layout.bind="layout"></chart-layout>
+            <chart-layout class="c_layout" repeat.for="layout of layouts" layout.bind="layout"></chart-layout>
 
-            <div class="c_layout c_layout-add" show.bind="editMode">
+            <div class="c_layout c_layout-add" show.bind="true">
                 
                 <div class="c_layout-header" click.delegate="addLayout()">
-                    <a>Add Layout</a>
+                    <a>Create New Layout</a>
                     <a class="chevron">
                         <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                     </a>
@@ -27,7 +27,7 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="txtName">Layout Name</label>
-                                <input type="text" class="form-control" id="txtName" value.bind="newLayout.name & validate" />
+                                <input type="text" class="form-control" id="txtName" value.bind="newLayout.title & validate" />
                             </div>
                             <div class="form-group">
                                 <label for="txtDescription">Description</label>
@@ -36,7 +36,7 @@
                         </fieldset>
 
                         <div class="c_layout-actions">
-                            <button type="button" click.delegate="confirmAddLayout()" class="btn btn-warning">Attach</button>
+                            <button type="button" click.delegate="confirmAddLayout()" class="btn btn-danger">Create</button>
                             <button type="button" click.delegate="cancelAddLayout()" class="btn btn-default">Cancel</button>
                         </div>
                     </form>
@@ -44,11 +44,11 @@
             </div>
         </div>
 
-        <div class="c_layout-actions">
+        <!--<div class="c_layout-actions">
             <button type="button" click.delegate="startEdit()" if.bind="!editMode" class="btn btn-danger">Edit</button>
-            <button type="button" click.delegate="trySaveRuleSets()" if.bind="editMode" class="btn btn-danger">Save</button>
+            <button type="button" click.delegate="trySaveLayout()" if.bind="editMode" class="btn btn-danger">Save</button>
             <button type="button" click.delegate="cancelEdit()" if.bind="editMode" class="btn btn-default">Cancel</button>
-        </div>
+        </div>-->
 
     </div>
 </template>

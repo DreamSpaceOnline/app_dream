@@ -6,6 +6,7 @@ namespace Dream.Space.Models.Layourts
     {
         int LayoutId { get; set; }
         string Title { get; set; }
+        string Description{ get; set; }
         bool Deleted { get; set; }
         QuotePeriod Period { get; set; }
         bool Default { get; set; }

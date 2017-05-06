@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -12,8 +13,11 @@ namespace Dream.Space.Data.Repositories
     public interface ILayoutIndicatorRepository
     {
         Task<ILayoutIndicatorEntity> GetAsync(int id);
+        Task<ILayoutIndicatorEntity> GetAsync(int layoutId, int indicatorId);
         Task<IList<ILayoutIndicatorEntity>> GetForLayoutAsync(int layoutId);
         Task<IList<ILayoutIndicatorEntity>> GetForPeriodAsync(QuotePeriod period);
+        LayoutIndicator Add(LayoutIndicator layoutIndicator);
+        void Commit();
     }
 
 
@@ -29,6 +33,12 @@ namespace Dream.Space.Data.Repositories
             return record;
         }
 
+        public async Task<ILayoutIndicatorEntity> GetAsync(int layoutId, int indicatorId)
+        {
+            var record = await Dbset.FirstOrDefaultAsync(r => r.LayoutId == layoutId && r.IndicatorId == indicatorId);
+            return record;
+        }
+
         public async Task<IList<ILayoutIndicatorEntity>> GetForLayoutAsync(int layoutId)
         {
             var records = await Dbset.Where(r => r.LayoutId == layoutId).ToListAsync();
@@ -39,7 +49,7 @@ namespace Dream.Space.Data.Repositories
         {
             const string query = @"
                 SELECT I.*
-                FROM dbo.Layout L
+                FROM dbo.ChartLayout L
 	                INNER JOIN dbo.LayoutIndicator I
 		                ON L.LayoutId = I.LayoutId
                 WHERE   L.Deleted = 0 

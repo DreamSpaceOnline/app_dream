@@ -21,11 +21,11 @@ namespace Dream.Space.Controllers
         [HttpGet]
         [Route("period/{period:int}")]
         [ResponseType(typeof(IList<ChartLayoutModel>))]
-        public async Task<IHttpActionResult> GetLayoutForPeriod(int period)
+        public async Task<IHttpActionResult> GetLayoutsForPeriod(int period)
         {
-            var layout = await _service.GetLayoutsForPeriodAsync((QuotePeriod) period);
+            var layouts = await _service.GetLayoutsForPeriodAsync((QuotePeriod) period);
 
-            return Ok(layout);
+            return Ok(layouts);
         }
 
         [HttpGet]
@@ -46,6 +46,16 @@ namespace Dream.Space.Controllers
             var layout = await _service.GetDefaultLayoutAsync((QuotePeriod) period);
 
             return Ok(layout);
+        }
+
+        [HttpPost]
+        [Route("")]
+        [ResponseType(typeof(ChartLayoutModel))]
+        public async Task<IHttpActionResult> SaveLayout([FromBody] ChartLayoutModel model)
+        {
+            await _service.SaveLayoutAsync(model);
+
+            return Ok(model);
         }
 
     }

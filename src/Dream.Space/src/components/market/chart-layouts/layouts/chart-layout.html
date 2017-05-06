@@ -1,3 +1,67 @@
 ﻿<template>
-    
+    <require from="./chart-layout-indicator"></require>
+
+    <div class="c_layout-header" click.delegate="toggleExpand()">
+        <span>${layout.title}</span>
+        <a class="chevron">
+            <span class="glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="c_layout-details" show.bind="expanded">
+        <form >
+            <fieldset disabled.bind="!editMode">
+                <div class="form-group" show.bind="editMode">
+                    <label for="txtName">Layout Name</label>
+                    <input type="text" class="form-control" id="txtName" value.bind="layout.title & validate" />
+                </div>
+                <div class="form-group">
+                    <label show.bind="editMode" for="txtDescription">Description</label>
+                    <textarea rows="4" class="form-control" id="txtDescription" value.bind="layout.description & validate"></textarea>
+                </div>
+
+                <h4>Indicators</h4>
+               
+                <div class="c_layout_indicator-list ">
+                    <chart-layout-indicator class="c_layout ${$last && !editMode ? 'no-border':''}" repeat.for="indicator of layout.indicators" indicator.bind="indicator"></chart-layout-indicator>
+
+                    <div class="c_layout c_layout-add" show.bind="editMode">
+
+                        <div class="c_layout-header" click.delegate="addIndicator()">
+                            <a>Attach Indicator</a>
+                            <a class="chevron">
+                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                            </a>
+                        </div>
+
+                        <div class="c_layout-details" show.bind="addingMode && editMode">
+                            <div class="form-group">
+                                <label for="ddlIndicators">Select Indicator</label>
+
+                                <select id="ddlIndicators" class="form-control" value.bind="newIndicatorId">
+                                    <option repeat.for="item of definedIndicators" model.bind="item.id">${item.name}</option>
+                                </select>
+
+                            </div>
+
+                            <div class="c_layout-actions no-border">
+                                <button type="button" click.delegate="confirmAddIndicator()" class="btn btn-xs btn-warning">Attach</button>
+                                <button type="button" click.delegate="cancelAddIndicator()" class="btn btn-xs btn-default">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </fieldset>
+
+            <div class="c_layout-actions">
+                <button type="button" if.bind="!editMode" click.delegate="startEdit()" class="btn btn-danger">Edit</button>
+                <button type="button" if.bind="editMode" click.delegate="confirmSave()" class="btn btn-danger">Save</button>
+                <button type="button" if.bind="editMode" click.delegate="cancelSave()" class="btn btn-default">Cancel</button>
+            </div>
+        </form>
+
+    </div>
 </template>

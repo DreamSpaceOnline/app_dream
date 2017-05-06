@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Layourts;
+using Dream.Space.Data.Entities.Layouts;
 
 namespace Dream.Space.Data.Services
 {
@@ -13,6 +15,7 @@ namespace Dream.Space.Data.Services
         Task<ChartLayoutModel> GetDefaultLayoutAsync(QuotePeriod period);
         Task<IList<ChartLayoutModel>> GetLayoutsForPeriodAsync(QuotePeriod period);
         Task<ChartLayoutModel> GetLayoutAsync(int layoutId);
+        Task SaveLayoutAsync(ChartLayoutModel model);
     }
 
     public class ChartLayoutService : IChartLayoutService
@@ -43,7 +46,8 @@ namespace Dream.Space.Data.Services
                     Deleted = layout.Deleted,
                     Title = layout.Title,
                     Period = layout.Period,
-                    Default = layout.Default
+                    Default = layout.Default,
+                    Description = layout.Description
                 }));
 
                 var indicatorRepository = scope.Resolve<IIndicatorRepository>();
@@ -53,9 +57,22 @@ namespace Dream.Space.Data.Services
 
                 foreach (var layout in result)
                 {
-                    layout.Indicators = indicators
-                        .Where(ind => layoutIndicators
-                            .Any(l => l.IndicatorId == ind.IndicatorId)).ToList();
+                    var li = layoutIndicators
+                        .Where(l => l.LayoutId == layout.LayoutId)
+                        .Join(indicators,
+                            l => l.IndicatorId,
+                            i => i.IndicatorId,
+                            (l, i) => new LayoutIndicatorModel()
+                            {
+                                Id = l.Id,
+                                Indicator = i,
+                                IndicatorId = l.IndicatorId,
+                                LayoutId = l.LayoutId,
+                                Name = i.Description
+                            } 
+                        );
+
+                    layout.Indicators = li.ToList();
                 }
             }
 
@@ -79,11 +96,31 @@ namespace Dream.Space.Data.Services
                 result.LayoutId = layout.LayoutId;
                 result.Deleted = layout.Deleted;
                 result.Title = layout.Title;
+                result.Period = layout.Period;
+                result.Default = layout.Default;
+                result.Description = layout.Description;
 
                 var indicatorRepository = scope.Resolve<IIndicatorRepository>();
                 var indicators = await indicatorRepository.GetLayoutIndicatorsAsync(result.LayoutId);
 
-                result.Indicators = indicators;
+                var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
+                var layoutIndicators = await layoutRepository.GetForLayoutAsync(layout.LayoutId);
+
+                var li = layoutIndicators
+                        .Join(indicators,
+                            l => l.IndicatorId,
+                            i => i.IndicatorId,
+                            (l, i) => new LayoutIndicatorModel()
+                            {
+                                Id = l.Id,
+                                Indicator = i,
+                                IndicatorId = l.IndicatorId,
+                                LayoutId = l.LayoutId,
+                                Name = i.Description
+                            } 
+                        );
+
+                result.Indicators = li.ToList();
             }
 
             return result;
@@ -106,14 +143,84 @@ namespace Dream.Space.Data.Services
                 result.LayoutId = layout.LayoutId;
                 result.Deleted = layout.Deleted;
                 result.Title = layout.Title;
+                result.Period = layout.Period;
+                result.Default = layout.Default;
+                result.Description = layout.Description;
 
                 var indicatorRepository = scope.Resolve<IIndicatorRepository>();
                 var indicators = await indicatorRepository.GetLayoutIndicatorsAsync(result.LayoutId);
 
-                result.Indicators = indicators;
+                var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
+                var layoutIndicators = await layoutRepository.GetForLayoutAsync(layoutId);
+
+                var li = layoutIndicators
+                        .Join(indicators,
+                            l => l.IndicatorId,
+                            i => i.IndicatorId,
+                            (l, i) => new LayoutIndicatorModel()
+                            {
+                                Id = l.Id,
+                                Indicator = i,
+                                IndicatorId = l.IndicatorId,
+                                LayoutId = l.LayoutId,
+                                Name = i.Description
+                            } 
+                        );
+
+                result.Indicators = li.ToList();
             }
 
             return result;
+        }
+
+        public async Task SaveLayoutAsync(ChartLayoutModel model)
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<IChartLayoutRepository>();
+                IChartLayoutEntity layout = null;
+
+                if (model.LayoutId > 0)
+                {
+                    layout = await repository.GetAsync(model.LayoutId);
+                } else
+                {
+                    layout = repository.Add(new ChartLayout());
+                }
+
+                if(layout != null)
+                {
+                    layout.Title = model.Title;
+                    layout.Description = model.Description;
+                    layout.Period = model.Period;
+
+                    repository.Commit();
+        
+                    if(model.LayoutId == 0)
+                    {
+                        model.LayoutId = layout.LayoutId;
+                    }
+
+                    if (model.Indicators.Any())
+                    {
+                        var indicatorRepository = scope.Resolve<ILayoutIndicatorRepository>();
+                        foreach (var indicator in model.Indicators)
+                        {
+                            var entity = await indicatorRepository.GetAsync(model.LayoutId, indicator.IndicatorId);
+                            if(entity == null)
+                            {
+                                entity = indicatorRepository.Add(new LayoutIndicator {
+                                    IndicatorId = indicator.IndicatorId,
+                                    LayoutId = model.LayoutId
+                                });
+                            }
+                            entity.Name = indicator.Name;
+
+                            indicatorRepository.Commit();
+                        }
+                    }
+                }
+            }
         }
     }
 }

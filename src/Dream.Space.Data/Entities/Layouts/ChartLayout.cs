@@ -1,4 +1,5 @@
-﻿using Dream.Space.Models.Enums;
+﻿using System;
+using Dream.Space.Models.Enums;
 using Dream.Space.Models.Layourts;
 
 namespace Dream.Space.Data.Entities.Layouts
@@ -10,5 +11,6 @@ namespace Dream.Space.Data.Entities.Layouts
         public bool Deleted { get; set; }
         public QuotePeriod Period { get; set; }
         public bool Default { get; set; }
+        public string Description { get; set; }
     }
 }

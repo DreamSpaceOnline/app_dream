@@ -112,10 +112,12 @@ namespace Dream.Space.Data.Repositories
         public async Task<IList<IIndicatorEntity>> GetLayoutIndicatorsForPeriodAsync(QuotePeriod period)
         {
             const string query = @"
-                SELECT I.*
+              SELECT I.*
                 FROM dbo.Indicator I
-	                INNER JOIN dbo.LayoutIndicator L 
-		                ON L.IndicatorId = I.IndicatorId
+	                INNER JOIN dbo.LayoutIndicator LI 
+		                ON LI.IndicatorId = I.IndicatorId
+					INNER JOIN dbo.ChartLayout L 
+						ON L.LayoutId = LI.LayoutId
                 WHERE   L.Deleted = 0 
                     AND	I.Deleted = 0 
                     AND	I.Period = @Period ";

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Dream.Space.Models.Enums;
-using Dream.Space.Models.Indicators;
 
 namespace Dream.Space.Models.Layourts
 {
@@ -8,12 +7,14 @@ namespace Dream.Space.Models.Layourts
     {
         public ChartLayoutModel()
         {
-            Indicators = new List<IIndicatorEntity>();
+            Indicators = new List<LayoutIndicatorModel>();
         }
-        public IList<IIndicatorEntity> Indicators { get; set; }
+        public List<LayoutIndicatorModel> Indicators { get; set; }
 
         public int LayoutId { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
+
         public bool Deleted { get; set; }
         public QuotePeriod Period { get; set; }
         public bool Default { get; set; }

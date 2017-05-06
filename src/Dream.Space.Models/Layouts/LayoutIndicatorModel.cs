@@ -1,20 +1,14 @@
 ﻿using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Layourts;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Dream.Space.Data.Entities.Layouts
+namespace Dream.Space.Models.Layourts
 {
-    public class LayoutIndicator: ILayoutIndicatorEntity
+    public class LayoutIndicatorModel : ILayoutIndicatorEntity
     {
         public int Id { get; set; }
         public int LayoutId { get; set; }
         public int IndicatorId { get; set; }
-
-        [NotMapped]
         public IIndicatorEntity Indicator { get; set; }
-
-        [NotMapped]
         public string Name { get; set; }
-
     }
 }

@@ -10,5 +10,6 @@ namespace Dream.Space.Models.Indicators
         List<IndicatorParam> Params { get; set; }
         string Name { get; set; }
         string JsonParams { get; set; }
+        string Description { get; set; }
     }
 }
