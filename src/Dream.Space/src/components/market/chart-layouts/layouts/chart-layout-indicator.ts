@@ -4,6 +4,7 @@ import { LayoutIndicatorInfo } from "../../../../common/types/layout-models";
 @autoinject()
 export class ChartLayoutIndicator {
     @bindable indicator: LayoutIndicatorInfo;
+    @bindable editMode: boolean;
 
     expanded = false;
 
@@ -13,5 +14,14 @@ export class ChartLayoutIndicator {
 
     toggleExpand() {
         this.expanded = !this.expanded;
+    }
+
+
+    onMoveUp() {
+
+    }
+
+    onMoveDown() {
+
     }
 }

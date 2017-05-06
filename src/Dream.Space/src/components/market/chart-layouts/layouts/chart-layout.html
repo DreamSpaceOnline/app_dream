@@ -23,7 +23,7 @@
                 <h4>Indicators</h4>
                
                 <div class="c_layout_indicator-list ">
-                    <chart-layout-indicator class="c_layout ${$last && !editMode ? 'no-border':''}" repeat.for="indicator of layout.indicators" indicator.bind="indicator"></chart-layout-indicator>
+                    <chart-layout-indicator class="c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}" repeat.for="indicator of layout.indicators" indicator.bind="indicator" edit-mode.bind="editMode"></chart-layout-indicator>
 
                     <div class="c_layout c_layout-add" show.bind="editMode">
 
