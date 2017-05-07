@@ -5,6 +5,9 @@ import { ValidationRules, ValidationController, validateTrigger } from "aurelia-
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
 import { LayoutService } from "../../../../services/layout-service";
 import { SettingsService } from "../../../../services/settings-service";
+import { EventEmitter, LayoutIndicatorMoved } from "../../../../infrastructure/event-emitter";
+import * as Enums from "../../../../common/types/enums";
+import { Subscription } from "aurelia-event-aggregator";
 
 
 @autoinject()
@@ -13,15 +16,33 @@ export class ChartLayout {
     @bindable layout: LayoutInfo;
     originalLayout: LayoutInfo;
     definedIndicators: IndicatorCore[];
+    subscriptions: Subscription[] = [];
 
     expanded = false;
     editMode = false;
     addingMode = false;
     newIndicatorId: number = 0;
 
-    constructor(private validation: ValidationController, private layoutService: LayoutService, private globalSettings: SettingsService) {
+    constructor(private validation: ValidationController, private layoutService: LayoutService,
+        private globalSettings: SettingsService, private eventEmitter: EventEmitter) {
+
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
+        this.subscribe();
+    }
+
+    subscribe() {
+        this.subscriptions.push(this.eventEmitter.subscribe("LayoutIndicatorMoved", (event) => {
+            this.onLayoutIndicatorMoved(event);
+        }));
+    }
+
+    detached() {
+        if (this.subscriptions.length > 0) {
+            this.subscriptions.forEach(subscription => {
+                subscription.dispose();
+            });
+        }
     }
 
     layoutChanged() {
@@ -87,7 +108,6 @@ export class ChartLayout {
             indicator.indicatorId = ind.id;
             indicator.layoutId = this.layout.layoutId;
             indicator.name = ind.name;
-            indicator.id = 0;
             indicator.indicator = new IndicatorInfo();
 
             this.layout.indicators.push(indicator);
@@ -103,4 +123,22 @@ export class ChartLayout {
     cancelAddIndicator() {
         this.addingMode = false;
     }
+
+
+    onLayoutIndicatorMoved(event: LayoutIndicatorMoved) {
+        let index = this.layout.indicators.findIndex(indicator => indicator.indicatorId === event.indicatorId && indicator.layoutId === event.layoutId);
+
+        if (event.direction === Enums.Direction.Up) {
+
+            if (index > 0) {
+                this.layout.indicators.splice(index - 1, 0, this.layout.indicators.splice(index, 1)[0]);
+            }
+
+        } else {
+            if (index > -1 && index < this.layout.indicators.length - 1) {
+                this.layout.indicators.splice(index + 1, 0, this.layout.indicators.splice(index, 1)[0]);
+            }
+        }
+    }
+
 } 

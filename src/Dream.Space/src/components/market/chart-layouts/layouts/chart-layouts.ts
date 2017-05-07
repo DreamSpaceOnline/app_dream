@@ -8,7 +8,6 @@ import { EnumValues, IdName } from "../../../../common/helpers/enum-helper";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
 
-//import {QuotePeriod} from "../../../../common/types/enums";
 
 @autoinject()
 export class ChartLayouts {
@@ -24,7 +23,10 @@ export class ChartLayouts {
 
     newLayout: LayoutInfo;
 
-    constructor(account: AccountService, private eventAggregator: EventAggregator, private layoutService: LayoutService, private validation: ValidationController) {
+    constructor(account: AccountService, private eventAggregator: EventAggregator,
+        private layoutService: LayoutService, private validation: ValidationController ) {
+
+
         this.powerUser = account.currentUser.isAuthenticated;
         this.subscribe();
 
@@ -57,6 +59,7 @@ export class ChartLayouts {
             this.onNavigatioComplete();
         }));
     }
+
 
     detached() {
         if (this.subscriptions.length > 0) {
@@ -114,4 +117,5 @@ export class ChartLayouts {
 
         this.addingMode = false;
     }
+
 }

@@ -5,6 +5,11 @@ export type HeadingType = 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 export type ChartUpdateModeName = "Reset" | "Insert" | "Append";
 export type ChartTypeName = "line" | "ohlc" | "candlestick" | "Column" | "area";
 
+export enum Direction {
+    Up = 0,
+    Down = 1
+}
+
 export enum QuotePeriod {
     Daily = 0,
     Weekly = 1

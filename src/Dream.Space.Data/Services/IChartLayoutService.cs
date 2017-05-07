@@ -65,14 +65,16 @@ namespace Dream.Space.Data.Services
                             (l, i) => new LayoutIndicatorModel()
                             {
                                 Id = l.Id,
-                                Indicator = i,
+                                Indicator = new IndicatorModel(i),
                                 IndicatorId = l.IndicatorId,
                                 LayoutId = l.LayoutId,
-                                Name = i.Description
+                                Name = i.Description,
+                                OrderId = l.OrderId,
+                                LineColor = l.LineColor
                             } 
                         );
 
-                    layout.Indicators = li.ToList();
+                    layout.Indicators = li.OrderBy(i => i.OrderId).ToList();
                 }
             }
 
@@ -113,14 +115,16 @@ namespace Dream.Space.Data.Services
                             (l, i) => new LayoutIndicatorModel()
                             {
                                 Id = l.Id,
-                                Indicator = i,
+                                Indicator = new IndicatorModel(i),
                                 IndicatorId = l.IndicatorId,
                                 LayoutId = l.LayoutId,
-                                Name = i.Description
-                            } 
+                                Name = i.Description,
+                                OrderId = l.OrderId,
+                                LineColor = l.LineColor
+                            }
                         );
 
-                result.Indicators = li.ToList();
+                result.Indicators = li.OrderBy(i => i.OrderId).ToList();
             }
 
             return result;
@@ -160,14 +164,16 @@ namespace Dream.Space.Data.Services
                             (l, i) => new LayoutIndicatorModel()
                             {
                                 Id = l.Id,
-                                Indicator = i,
+                                Indicator = new IndicatorModel(i),
                                 IndicatorId = l.IndicatorId,
                                 LayoutId = l.LayoutId,
-                                Name = i.Description
-                            } 
+                                Name = i.Description,
+                                OrderId = l.OrderId,
+                                LineColor = l.LineColor
+                            }
                         );
 
-                result.Indicators = li.ToList();
+                result.Indicators = li.OrderBy(i => i.OrderId).ToList();
             }
 
             return result;
@@ -214,7 +220,8 @@ namespace Dream.Space.Data.Services
                                     LayoutId = model.LayoutId
                                 });
                             }
-                            entity.Name = indicator.Name;
+                            entity.OrderId = model.Indicators.IndexOf(indicator);
+                            entity.LineColor = indicator.LineColor;
 
                             indicatorRepository.Commit();
                         }

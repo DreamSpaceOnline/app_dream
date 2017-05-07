@@ -213,6 +213,18 @@
     <Compile Include="Migrations\201705061246092_AlterChartLayout.Designer.cs">
       <DependentUpon>201705061246092_AlterChartLayout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705071002084_AlterLayoutIndicator.cs" />
+    <Compile Include="Migrations\201705071002084_AlterLayoutIndicator.Designer.cs">
+      <DependentUpon>201705071002084_AlterLayoutIndicator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705071121098_AlterLayoutIndicator1.cs" />
+    <Compile Include="Migrations\201705071121098_AlterLayoutIndicator1.Designer.cs">
+      <DependentUpon>201705071121098_AlterLayoutIndicator1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705071147421_AlterLayoutInd.cs" />
+    <Compile Include="Migrations\201705071147421_AlterLayoutInd.Designer.cs">
+      <DependentUpon>201705071147421_AlterLayoutInd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -369,6 +381,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705061246092_AlterChartLayout.resx">
       <DependentUpon>201705061246092_AlterChartLayout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705071002084_AlterLayoutIndicator.resx">
+      <DependentUpon>201705071002084_AlterLayoutIndicator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705071121098_AlterLayoutIndicator1.resx">
+      <DependentUpon>201705071121098_AlterLayoutIndicator1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705071147421_AlterLayoutInd.resx">
+      <DependentUpon>201705071147421_AlterLayoutInd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

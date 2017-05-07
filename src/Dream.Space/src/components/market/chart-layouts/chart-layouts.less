@@ -22,6 +22,32 @@ chart-layout, chart-layout-indicator {
         padding: 10px 10px;
         border-bottom: 1px solid @solid-border-color;
 
+        .ordered-chevron {
+            float: right;
+            position: relative;
+            top: -26px;
+            left: 12px;
+
+            .glyphicon {
+                top: 1px;
+            }
+
+
+            .btn-group-vertical {
+                margin-left: 5px;
+
+                .btn-xs {
+                    padding: 0px 4px;
+                    height: 16px;
+                }
+
+                .glyphicon {
+                    font-size: 8px;
+                    top: -3px;
+                }
+            }
+        }
+
         &.c_layout-add, .c_layout-add {
             cursor: pointer;
             border-bottom: 0px solid @solid-border-color;

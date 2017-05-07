@@ -1,26 +1,28 @@
 ﻿<template>
     <div class="c_layout-header" click.delegate="toggleExpand()">
         <span>${indicator.name}</span>
-        <div class="chevron">
-            <span class="glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}" aria-hidden="true"></span>
-            <div class="btn-group-vertical" role="group" aria-label="..." show.bind="editMode">
-                <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveUp()">
-                    <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
-                </button>
-                <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveDown()">
-                    <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                </button>
-            </div>
+    </div>
 
+    <div class="ordered-chevron">
+        <span class="glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}" aria-hidden="true"></span>
+        <div class="btn-group-vertical" role="group" aria-label="..." show.bind="editMode">
+            <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveUp()">
+                <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveDown()">
+                <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    
+   
     <div class="c_layout-details" show.bind="expanded">
         <form>
-            <fieldset>
-                <div class="form-group" show.bind="editMode">
-                    <label for="txtName">Name</label>
-                    <input type="text" class="form-control" id="txtName" value.bind="indicator.name" />
+            <fieldset disabled.bind="!editMode">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="txtColor">Chart color</label>
+                        <input type="text" class="form-control" id="txtColor" value.bind="indicator.lineColor" />
+                    </div>
                 </div>
             </fieldset>
         </form>

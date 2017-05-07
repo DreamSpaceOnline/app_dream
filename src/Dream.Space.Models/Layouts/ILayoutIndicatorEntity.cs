@@ -6,8 +6,10 @@ namespace Dream.Space.Models.Layourts
     {
         int Id { get; set; }
         int LayoutId { get; set; }
+        int OrderId { get; set; }
         int IndicatorId { get; set; }
         IIndicatorEntity Indicator { get; set; }
         string Name { get; set; }
+        string LineColor { get; set; }
     }
 }
