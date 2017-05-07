@@ -4197,6 +4197,30 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                     ]
                 },
                 {
+                    name: "UpperChannel", defaults: [
+                        { paramName: "Period", value: 26 }
+                    ]
+                },
+                {
+                    name: "LowerChannel", defaults: [
+                        { paramName: "Period", value: 26 }
+                    ]
+                },
+                {
+                    name: "SMA", defaults: [
+                        { paramName: "Period", value: 13 }
+                    ]
+                },
+                {
+                    name: "RSI", defaults: [
+                        { paramName: "Period", value: 14 }
+                    ]
+                },
+                {
+                    name: "NHNL", defaults: [
+                        { paramName: "Period", value: 26 }
+                    ]
+                }, {
                     name: "MACD", defaults: [
                         { paramName: "FastEmaPeriod", value: 12 },
                         { paramName: "SlowEmaPeriod", value: 26 },
