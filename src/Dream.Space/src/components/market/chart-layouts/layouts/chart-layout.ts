@@ -1,6 +1,8 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
-import { LayoutInfo, LayoutIndicatorInfo } from "../../../../common/types/layout-models";
-import { IndicatorCore, IndicatorInfo } from "../../../../common/types/indicator-models";
+//import { LayoutInfo, LayoutIndicatorInfo } from "../../../../common/types/layout-models";
+//import { IndicatorCore, IndicatorInfo } from "../../../../common/types/indicator-models";
+import { LayoutInfo } from "../../../../common/types/layout-models";
+import { IndicatorCore } from "../../../../common/types/indicator-models";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
 import { LayoutService } from "../../../../services/layout-service";
@@ -97,23 +99,24 @@ export class ChartLayout {
     }
 
     confirmAddIndicator() {
-        if (this.newIndicatorId > 0) {
-            if (this.layout.indicators == null) {
-                this.layout.indicators = [];
-            }
 
-            let ind = this.getIndicatorCore(this.newIndicatorId);
+        //if (this.newIndicatorId > 0) {
+        //    if (this.layout.indicators == null) {
+        //        this.layout.indicators = [];
+        //    }
 
-            let indicator = new LayoutIndicatorInfo();
-            indicator.indicatorId = ind.id;
-            indicator.layoutId = this.layout.layoutId;
-            indicator.name = ind.name;
-            indicator.indicator = new IndicatorInfo();
+        //    let ind = this.getIndicatorCore(this.newIndicatorId);
 
-            this.layout.indicators.push(indicator);
+        //    let indicator = new LayoutIndicatorInfo();
+        //    indicator.indicatorId = ind.id;
+        //    indicator.layoutId = this.layout.layoutId;
+        //    indicator.name = ind.name;
+        //    indicator.indicator = new IndicatorInfo();
 
-            this.addingMode = false;
-        }
+        //    this.layout.indicators.push(indicator);
+
+        //    this.addingMode = false;
+        //}
     }
 
     getIndicatorCore(indicatorId: number): IndicatorCore {
@@ -126,18 +129,18 @@ export class ChartLayout {
 
 
     onLayoutIndicatorMoved(event: LayoutIndicatorMoved) {
-        let index = this.layout.indicators.findIndex(indicator => indicator.indicatorId === event.indicatorId && indicator.layoutId === event.layoutId);
+//        let index = this.layout.indicators.findIndex(indicator => indicator.indicatorId === event.indicatorId && indicator.layoutId === event.layoutId);
 
         if (event.direction === Enums.Direction.Up) {
 
-            if (index > 0) {
-                this.layout.indicators.splice(index - 1, 0, this.layout.indicators.splice(index, 1)[0]);
-            }
+        //    if (index > 0) {
+        //        this.layout.indicators.splice(index - 1, 0, this.layout.indicators.splice(index, 1)[0]);
+        //    }
 
-        } else {
-            if (index > -1 && index < this.layout.indicators.length - 1) {
-                this.layout.indicators.splice(index + 1, 0, this.layout.indicators.splice(index, 1)[0]);
-            }
+        //} else {
+        //    if (index > -1 && index < this.layout.indicators.length - 1) {
+        //        this.layout.indicators.splice(index + 1, 0, this.layout.indicators.splice(index, 1)[0]);
+        //    }
         }
     }
 

@@ -100,6 +100,7 @@
     <Compile Include="Entities\Layouts\ChartLayout.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
     <Compile Include="Entities\Indicators\IndicatorIntermediateResult.cs" />
+    <Compile Include="Entities\Layouts\ChartPlot.cs" />
     <Compile Include="Entities\Layouts\LayoutIndicator.cs" />
     <Compile Include="Entities\Jobs\JobStatus.cs" />
     <Compile Include="Entities\Jobs\ScheduledJob.cs" />
@@ -225,6 +226,14 @@
     <Compile Include="Migrations\201705071147421_AlterLayoutInd.Designer.cs">
       <DependentUpon>201705071147421_AlterLayoutInd.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705081615506_CreateChartPlot.cs" />
+    <Compile Include="Migrations\201705081615506_CreateChartPlot.Designer.cs">
+      <DependentUpon>201705081615506_CreateChartPlot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705081626348_AlterLayoutIndicator2.cs" />
+    <Compile Include="Migrations\201705081626348_AlterLayoutIndicator2.Designer.cs">
+      <DependentUpon>201705081626348_AlterLayoutIndicator2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -238,6 +247,7 @@
     <Compile Include="Repositories\ProcessorLogRepository.cs" />
     <Compile Include="Repositories\ScheduledJobDetailsRepository.cs" />
     <Compile Include="Repositories\ChartLayoutRepository.cs" />
+    <Compile Include="Repositories\ChartPlotRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleRepository.cs" />
     <Compile Include="Repositories\ScheduledJobRepository.cs" />
     <Compile Include="Repositories\VStrategyRuleSetRepository.cs" />
@@ -390,6 +400,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705071147421_AlterLayoutInd.resx">
       <DependentUpon>201705071147421_AlterLayoutInd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705081615506_CreateChartPlot.resx">
+      <DependentUpon>201705081615506_CreateChartPlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705081626348_AlterLayoutIndicator2.resx">
+      <DependentUpon>201705081626348_AlterLayoutIndicator2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

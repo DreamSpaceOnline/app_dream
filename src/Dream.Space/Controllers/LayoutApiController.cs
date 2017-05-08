@@ -4,7 +4,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Dream.Space.Data.Services;
 using Dream.Space.Models.Enums;
-using Dream.Space.Models.Layourts;
+using Dream.Space.Models.Layouts;
 
 namespace Dream.Space.Controllers
 {

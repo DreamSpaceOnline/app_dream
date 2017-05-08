@@ -106,6 +106,9 @@ namespace Dream.Space.Data
             //ChartLayout
             modelBuilder.Entity<ChartLayout>().HasKey(e => e.LayoutId);
 
+            //ChartPlot
+            modelBuilder.Entity<ChartPlot>().HasKey(e => e.PlotId);
+
             modelBuilder.Entity<Article>().HasKey(t => t.ArticleId);
             modelBuilder.Entity<Article>().HasRequired(a => a.Category).WithMany(t => t.Articles).HasForeignKey(p => p.CategoryId);
             modelBuilder.Entity<Article>().Property(a => a.ArticleId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
@@ -161,5 +164,6 @@ namespace Dream.Space.Data
         public virtual DbSet<ProcessorLog> ProcessorLogs { get; set; }
         public virtual DbSet<LayoutIndicator> LayoutIndicators { get; set; }
         public virtual DbSet<ChartLayout> ChartLayouts { get; set; }
+        public virtual DbSet<ChartPlot> ChartPlots { get; set; }
     }
 }

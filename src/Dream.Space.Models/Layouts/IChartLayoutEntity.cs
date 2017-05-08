@@ -1,6 +1,6 @@
 ﻿using Dream.Space.Models.Enums;
 
-namespace Dream.Space.Models.Layourts
+namespace Dream.Space.Models.Layouts
 {
     public interface IChartLayoutEntity
     {

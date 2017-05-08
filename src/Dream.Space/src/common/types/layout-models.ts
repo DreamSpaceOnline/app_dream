@@ -8,7 +8,7 @@ export class LayoutInfo {
     deleted: boolean;
     default: boolean;
     period: Enums.QuotePeriod;
-    indicators: LayoutIndicatorInfo[];
+    plots: ChartPlotInfo[];
 
     constructor() {
         this.layoutId = 0;
@@ -17,6 +17,24 @@ export class LayoutInfo {
         this.deleted = false;
         this.default = false;
         this.period = Enums.QuotePeriod.Daily;
+        this.plots = [];
+    }
+}
+
+export class ChartPlotInfo {
+    id: number;
+    title: string;
+    layoutId: number;
+    plotId: number;
+    orderId: number;
+    indicators: LayoutIndicatorInfo[];
+
+    constructor() {
+        this.id = 0;
+        this.plotId = 0;
+        this.layoutId = 0;
+        this.orderId = 0;
+        this.title = "";
         this.indicators = [];
     }
 }

@@ -325,6 +325,7 @@
     <Content Include="packages.config" />
     <Content Include="src\app.html" />
     <Content Include="src\components\market\chart-layouts\layouts\chart-layout-indicator.html" />
+    <Content Include="src\components\market\chart-layouts\layouts\chart-layout-plot.html" />
     <Content Include="src\components\market\chart-layouts\layouts\chart-layout.html" />
     <Content Include="src\components\market\chart-layouts\layouts\chart-layouts.html" />
     <Content Include="src\components\market\chart-layouts\navigation.html" />
@@ -476,6 +477,7 @@
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layout-indicator.ts" />
+    <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layout-plot.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layout.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layouts.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\navigation.ts" />

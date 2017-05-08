@@ -1,6 +1,6 @@
 ﻿using System;
 using Dream.Space.Models.Enums;
-using Dream.Space.Models.Layourts;
+using Dream.Space.Models.Layouts;
 
 namespace Dream.Space.Data.Entities.Layouts
 {

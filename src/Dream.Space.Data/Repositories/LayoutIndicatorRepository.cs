@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Layouts;
 using Dream.Space.Models.Enums;
-using Dream.Space.Models.Layourts;
+using Dream.Space.Models.Layouts;
 
 namespace Dream.Space.Data.Repositories
 {
@@ -35,13 +35,21 @@ namespace Dream.Space.Data.Repositories
 
         public async Task<ILayoutIndicatorEntity> GetAsync(int layoutId, int indicatorId)
         {
-            var record = await Dbset.FirstOrDefaultAsync(r => r.LayoutId == layoutId && r.IndicatorId == indicatorId);
+            var record = await Dbset.FirstOrDefaultAsync(r => r.PlotId == layoutId && r.IndicatorId == indicatorId);
             return record;
         }
 
         public async Task<IList<ILayoutIndicatorEntity>> GetForLayoutAsync(int layoutId)
         {
-            var records = await Dbset.Where(r => r.LayoutId == layoutId).ToListAsync();
+            const string query = @"
+                SELECT I.*
+                FROM dbo.ChartPlot P
+	                INNER JOIN dbo.LayoutIndicator I
+		                ON I.PlotId = P.PlotId
+                WHERE   P.LayoutId = @LayoutId  ";
+
+            var records = await Dbset.SqlQuery(query, new object[] { new SqlParameter("@LayoutId", layoutId) }).ToListAsync();
+
             return records.Select(r => r as ILayoutIndicatorEntity).ToList();
         }
 
@@ -51,7 +59,7 @@ namespace Dream.Space.Data.Repositories
                 SELECT I.*
                 FROM dbo.ChartLayout L
 	                INNER JOIN dbo.LayoutIndicator I
-		                ON L.LayoutId = I.LayoutId
+		                ON L.PlotId = I.PlotId
                 WHERE   L.Deleted = 0 
                     AND	L.Period = @Period ";
 

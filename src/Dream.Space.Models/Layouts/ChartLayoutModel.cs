@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Dream.Space.Models.Enums;
 
-namespace Dream.Space.Models.Layourts
+namespace Dream.Space.Models.Layouts
 {
     public class ChartLayoutModel: IChartLayoutEntity
     {
         public ChartLayoutModel()
         {
-            Indicators = new List<LayoutIndicatorModel>();
+            Plots = new List<ChartPlotModel>();
         }
-        public List<LayoutIndicatorModel> Indicators { get; set; }
+        public IList<ChartPlotModel> Plots { get; set; }
 
         public int LayoutId { get; set; }
         public string Title { get; set; }

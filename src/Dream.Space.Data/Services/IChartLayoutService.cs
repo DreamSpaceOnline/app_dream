@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Models.Enums;
-using Dream.Space.Models.Layourts;
 using Dream.Space.Data.Entities.Layouts;
+using Dream.Space.Models.Layouts;
 
 namespace Dream.Space.Data.Services
 {
@@ -50,31 +50,9 @@ namespace Dream.Space.Data.Services
                     Description = layout.Description
                 }));
 
-                var indicatorRepository = scope.Resolve<IIndicatorRepository>();
-                var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
-                var indicators = await indicatorRepository.GetLayoutIndicatorsForPeriodAsync(period);
-                var layoutIndicators = await layoutRepository.GetForPeriodAsync(period);
-
                 foreach (var layout in result)
                 {
-                    var li = layoutIndicators
-                        .Where(l => l.LayoutId == layout.LayoutId)
-                        .Join(indicators,
-                            l => l.IndicatorId,
-                            i => i.IndicatorId,
-                            (l, i) => new LayoutIndicatorModel()
-                            {
-                                Id = l.Id,
-                                Indicator = new IndicatorModel(i),
-                                IndicatorId = l.IndicatorId,
-                                LayoutId = l.LayoutId,
-                                Name = i.Description,
-                                OrderId = l.OrderId,
-                                LineColor = l.LineColor
-                            } 
-                        );
-
-                    layout.Indicators = li.OrderBy(i => i.OrderId).ToList();
+                    layout.Plots = await GetChartPlotsForLayout(scope, layout.LayoutId);
                 }
             }
 
@@ -101,30 +79,50 @@ namespace Dream.Space.Data.Services
                 result.Period = layout.Period;
                 result.Default = layout.Default;
                 result.Description = layout.Description;
+                result.Plots = await GetChartPlotsForLayout(scope, result.LayoutId);
+            }
 
-                var indicatorRepository = scope.Resolve<IIndicatorRepository>();
-                var indicators = await indicatorRepository.GetLayoutIndicatorsAsync(result.LayoutId);
+            return result;
+        }
 
-                var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
-                var layoutIndicators = await layoutRepository.GetForLayoutAsync(layout.LayoutId);
+        private async Task<IList<ChartPlotModel>> GetChartPlotsForLayout(ILifetimeScope scope, int layoutId)
+        {
+            var result = new List<ChartPlotModel>();
 
-                var li = layoutIndicators
-                        .Join(indicators,
-                            l => l.IndicatorId,
-                            i => i.IndicatorId,
-                            (l, i) => new LayoutIndicatorModel()
-                            {
-                                Id = l.Id,
-                                Indicator = new IndicatorModel(i),
-                                IndicatorId = l.IndicatorId,
-                                LayoutId = l.LayoutId,
-                                Name = i.Description,
-                                OrderId = l.OrderId,
-                                LineColor = l.LineColor
-                            }
-                        );
+            var plotRepository = scope.Resolve<IChartPlotRepository>();
+            var plots = await plotRepository.GetAllAsync(layoutId);
 
-                result.Indicators = li.OrderBy(i => i.OrderId).ToList();
+            var indicatorRepository = scope.Resolve<IIndicatorRepository>();
+            var indicators = await indicatorRepository.GetIndicatorsForLayoutAsync(layoutId);
+
+            var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
+            var layoutIndicators = await layoutRepository.GetForLayoutAsync(layoutId);
+
+            var li = layoutIndicators
+                    .Join(indicators,
+                        l => l.IndicatorId,
+                        i => i.IndicatorId,
+                        (l, i) => new LayoutIndicatorModel()
+                        {
+                            Id = l.Id,
+                            Indicator = new IndicatorModel(i),
+                            IndicatorId = l.IndicatorId,
+                            PlotId = l.PlotId,
+                            Name = i.Description,
+                            OrderId = l.OrderId,
+                            LineColor = l.LineColor
+                        }
+                    ).ToList();
+
+            foreach (var plot in plots)
+            {
+
+                var plotModel = new ChartPlotModel(plot)
+                {
+                    Indicators = li.Where(i => i.PlotId == plot.PlotId).ToList()
+                };
+
+                result.Add(plotModel);
             }
 
             return result;
@@ -150,30 +148,7 @@ namespace Dream.Space.Data.Services
                 result.Period = layout.Period;
                 result.Default = layout.Default;
                 result.Description = layout.Description;
-
-                var indicatorRepository = scope.Resolve<IIndicatorRepository>();
-                var indicators = await indicatorRepository.GetLayoutIndicatorsAsync(result.LayoutId);
-
-                var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
-                var layoutIndicators = await layoutRepository.GetForLayoutAsync(layoutId);
-
-                var li = layoutIndicators
-                        .Join(indicators,
-                            l => l.IndicatorId,
-                            i => i.IndicatorId,
-                            (l, i) => new LayoutIndicatorModel()
-                            {
-                                Id = l.Id,
-                                Indicator = new IndicatorModel(i),
-                                IndicatorId = l.IndicatorId,
-                                LayoutId = l.LayoutId,
-                                Name = i.Description,
-                                OrderId = l.OrderId,
-                                LineColor = l.LineColor
-                            }
-                        );
-
-                result.Indicators = li.OrderBy(i => i.OrderId).ToList();
+                result.Plots = await GetChartPlotsForLayout(scope, layoutId);
             }
 
             return result;
@@ -207,25 +182,51 @@ namespace Dream.Space.Data.Services
                         model.LayoutId = layout.LayoutId;
                     }
 
-                    if (model.Indicators.Any())
+                    if (model.Plots.Any())
                     {
+                        var plotRepository = scope.Resolve<IChartPlotRepository>();
                         var indicatorRepository = scope.Resolve<ILayoutIndicatorRepository>();
-                        foreach (var indicator in model.Indicators)
-                        {
-                            var entity = await indicatorRepository.GetAsync(model.LayoutId, indicator.IndicatorId);
-                            if(entity == null)
-                            {
-                                entity = indicatorRepository.Add(new LayoutIndicator {
-                                    IndicatorId = indicator.IndicatorId,
-                                    LayoutId = model.LayoutId
-                                });
-                            }
-                            entity.OrderId = model.Indicators.IndexOf(indicator);
-                            entity.LineColor = indicator.LineColor;
 
-                            indicatorRepository.Commit();
+                        foreach (var plot in model.Plots)
+                        {
+                            var entity = await plotRepository.GetAsync(plot.PlotId) ??
+                                         plotRepository.Add(new ChartPlot
+                                         {
+                                             LayoutId = plot.LayoutId,
+                                         });
+
+                            entity.OrderId = model.Plots.IndexOf(plot);
+                            entity.Height = plot.Height;
+                            plotRepository.Commit();
+
+                            if (plot.PlotId == 0)
+                            {
+                                plot.PlotId = entity.PlotId;
+                            }
+
+                            foreach (var indicator in plot.Indicators)
+                            {
+                                var record = await indicatorRepository.GetAsync(indicator.PlotId, indicator.IndicatorId) ??
+                                             indicatorRepository.Add(new LayoutIndicator
+                                             {
+                                                 IndicatorId = indicator.IndicatorId,
+                                                 PlotId = indicator.PlotId
+                                             });
+
+                                record.OrderId = plot.Indicators.IndexOf(indicator);
+                                record.LineColor = indicator.LineColor;
+
+                                indicatorRepository.Commit();
+
+                                if (indicator.Id == 0)
+                                {
+                                    indicator.Id = record.Id;
+                                }
+                            }
                         }
+
                     }
+
                 }
             }
         }

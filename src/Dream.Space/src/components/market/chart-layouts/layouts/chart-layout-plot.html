@@ -1,0 +1,53 @@
+﻿<template>
+    <require from="./chart-layout-indicator"></require>
+
+    <div class="c_layout-header" click.delegate="toggleExpand()">
+        <span>${plot.name}</span>
+    </div>
+
+    <div class="ordered-chevron">
+        <span class="glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}" aria-hidden="true"></span>
+        <div class="btn-group-vertical" role="group" aria-label="..." show.bind="editMode">
+            <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveUp()">
+                <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveDown()">
+                <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="c_layout-details" show.bind="expanded">
+        <h4>Indicators</h4>
+
+        <div class="c_layout_indicator-list ">
+            <chart-layout-indicator class="c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}" repeat.for="indicator of plot.indicators" indicator.bind="indicator" edit-mode.bind="editMode"></chart-layout-indicator>
+
+            <div class="c_layout c_layout-add" show.bind="editMode">
+
+                <div class="c_layout-header" click.delegate="addIndicator()">
+                    <a>Attach Indicator</a>
+                    <a class="chevron">
+                        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    </a>
+                </div>
+
+                <div class="c_layout-details" show.bind="addingMode && editMode">
+                    <div class="form-group">
+                        <label for="ddlIndicators">Select Indicator</label>
+
+                        <select id="ddlIndicators" class="form-control" value.bind="newIndicatorId">
+                            <option repeat.for="item of definedIndicators" model.bind="item.id">${item.name}</option>
+                        </select>
+
+                    </div>
+
+                    <div class="c_layout-actions no-border">
+                        <button type="button" click.delegate="confirmAddIndicator()" class="btn btn-xs btn-warning">Attach</button>
+                        <button type="button" click.delegate="cancelAddIndicator()" class="btn btn-xs btn-default">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
