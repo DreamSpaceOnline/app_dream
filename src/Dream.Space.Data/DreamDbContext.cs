@@ -100,8 +100,8 @@ namespace Dream.Space.Data
             //ProcessorLog
             modelBuilder.Entity<ProcessorLog>().HasKey(e => e.Id);
 
-            //LayoutIndicator
-            modelBuilder.Entity<LayoutIndicator>().HasKey(e => e.Id);
+            //ChartIndicator
+            modelBuilder.Entity<ChartIndicator>().HasKey(e => e.Id);
 
             //ChartLayout
             modelBuilder.Entity<ChartLayout>().HasKey(e => e.LayoutId);
@@ -162,7 +162,7 @@ namespace Dream.Space.Data
         public virtual DbSet<IndicatorIntermediateResult> IndicatorIntermediateResults { get; set; }
         public virtual DbSet<ScheduledJobDetails> ScheduledJobDetail { get; set; }
         public virtual DbSet<ProcessorLog> ProcessorLogs { get; set; }
-        public virtual DbSet<LayoutIndicator> LayoutIndicators { get; set; }
+        public virtual DbSet<ChartIndicator> ChartIndicators { get; set; }
         public virtual DbSet<ChartLayout> ChartLayouts { get; set; }
         public virtual DbSet<ChartPlot> ChartPlots { get; set; }
     }

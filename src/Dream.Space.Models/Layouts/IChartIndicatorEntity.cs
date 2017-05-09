@@ -1,6 +1,6 @@
 ﻿namespace Dream.Space.Models.Layouts
 {
-    public interface ILayoutIndicatorEntity
+    public interface IChartIndicatorEntity
     {
         int Id { get; set; }
         int PlotId { get; set; }

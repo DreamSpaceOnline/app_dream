@@ -95,7 +95,7 @@ namespace Dream.Space.Data.Services
             var indicatorRepository = scope.Resolve<IIndicatorRepository>();
             var indicators = await indicatorRepository.GetIndicatorsForLayoutAsync(layoutId);
 
-            var layoutRepository = scope.Resolve<ILayoutIndicatorRepository>();
+            var layoutRepository = scope.Resolve<IChartIndicatorRepository>();
             var layoutIndicators = await layoutRepository.GetForLayoutAsync(layoutId);
 
             var li = layoutIndicators
@@ -185,7 +185,7 @@ namespace Dream.Space.Data.Services
                     if (model.Plots.Any())
                     {
                         var plotRepository = scope.Resolve<IChartPlotRepository>();
-                        var indicatorRepository = scope.Resolve<ILayoutIndicatorRepository>();
+                        var indicatorRepository = scope.Resolve<IChartIndicatorRepository>();
 
                         foreach (var plot in model.Plots)
                         {
@@ -207,7 +207,7 @@ namespace Dream.Space.Data.Services
                             foreach (var indicator in plot.Indicators)
                             {
                                 var record = await indicatorRepository.GetAsync(indicator.PlotId, indicator.IndicatorId) ??
-                                             indicatorRepository.Add(new LayoutIndicator
+                                             indicatorRepository.Add(new ChartIndicator
                                              {
                                                  IndicatorId = indicator.IndicatorId,
                                                  PlotId = indicator.PlotId

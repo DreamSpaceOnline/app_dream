@@ -4,7 +4,7 @@ using Dream.Space.Models.Layouts;
 
 namespace Dream.Space.Data.Entities.Layouts
 {
-    public class LayoutIndicator: ILayoutIndicatorEntity
+    public class ChartIndicator: IChartIndicatorEntity
     {
         public int Id { get; set; }
         public int PlotId { get; set; }

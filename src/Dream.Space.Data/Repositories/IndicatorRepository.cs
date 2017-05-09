@@ -99,7 +99,7 @@ namespace Dream.Space.Data.Repositories
             const string query = @"
                 SELECT I.*
                 FROM dbo.Indicator I
-	                INNER JOIN dbo.LayoutIndicator LI
+	                INNER JOIN dbo.ChartIndicator LI
 		                ON LI.IndicatorId = I.IndicatorId
 	                INNER JOIN dbo.ChartPlot P 
 		                ON LI.PlotId = P.PlotId
@@ -116,7 +116,7 @@ namespace Dream.Space.Data.Repositories
             const string query = @"
               SELECT I.*
                 FROM dbo.Indicator I
-	                INNER JOIN dbo.LayoutIndicator LI 
+	                INNER JOIN dbo.ChartIndicator LI 
 		                ON LI.IndicatorId = I.IndicatorId
 					INNER JOIN dbo.ChartLayout L 
 						ON L.PlotId = LI.PlotId

@@ -91,7 +91,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<IndicatorIntermediateResultsRepository>().As<IIndicatorIntermediateResultsRepository>().InstancePerDependency();
             builder.RegisterType<ProcessorLogRepository>().As<IProcessorLogRepository>().InstancePerDependency();
             builder.RegisterType<ChartLayoutRepository>().As<IChartLayoutRepository>().InstancePerDependency();
-            builder.RegisterType<LayoutIndicatorRepository>().As<ILayoutIndicatorRepository>().InstancePerDependency();
+            builder.RegisterType<ChartIndicatorRepository>().As<IChartIndicatorRepository>().InstancePerDependency();
             builder.RegisterType<ChartPlotRepository>().As<IChartPlotRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();

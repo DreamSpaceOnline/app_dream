@@ -76,7 +76,7 @@
     <Compile Include="Indicators\CompanyIndicatorResults.cs" />
     <Compile Include="Indicators\NHNLIndicatorResultDecorator.cs" />
     <Compile Include="Layouts\IChartPlotEntity.cs" />
-    <Compile Include="Layouts\ILayoutIndicatorEntity.cs" />
+    <Compile Include="Layouts\IChartIndicatorEntity.cs" />
     <Compile Include="Layouts\IndicatorModel.cs" />
     <Compile Include="Layouts\LayoutIndicatorModel.cs" />
     <Compile Include="Playgrounds\ChartData.cs" />

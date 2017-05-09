@@ -27,22 +27,24 @@ export class ChartPlotInfo {
     layoutId: number;
     plotId: number;
     orderId: number;
-    indicators: LayoutIndicatorInfo[];
+    height: number;
+    indicators: ChartIndicatorInfo[];
 
     constructor() {
         this.id = 0;
         this.plotId = 0;
         this.layoutId = 0;
         this.orderId = 0;
+        this.height = 0;
         this.title = "";
         this.indicators = [];
     }
 }
  
-export class LayoutIndicatorInfo {
+export class ChartIndicatorInfo {
 
     id: number;
-    layoutId: number;
+    plotId: number;
     indicatorId: number;
     orderId: number;
     indicator: IndicatorInfo;
@@ -51,7 +53,7 @@ export class LayoutIndicatorInfo {
 
     constructor() {
         this.id = 0;
-        this.layoutId = 0;
+        this.plotId = 0;
         this.orderId = 0;
         this.indicator = null;
         this.name = "";

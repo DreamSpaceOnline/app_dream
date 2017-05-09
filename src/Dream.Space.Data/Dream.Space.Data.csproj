@@ -101,7 +101,7 @@
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
     <Compile Include="Entities\Indicators\IndicatorIntermediateResult.cs" />
     <Compile Include="Entities\Layouts\ChartPlot.cs" />
-    <Compile Include="Entities\Layouts\LayoutIndicator.cs" />
+    <Compile Include="Entities\Layouts\ChartIndicator.cs" />
     <Compile Include="Entities\Jobs\JobStatus.cs" />
     <Compile Include="Entities\Jobs\ScheduledJob.cs" />
     <Compile Include="Entities\Jobs\ScheduledJobDetails.cs" />
@@ -234,11 +234,15 @@
     <Compile Include="Migrations\201705081626348_AlterLayoutIndicator2.Designer.cs">
       <DependentUpon>201705081626348_AlterLayoutIndicator2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705091002149_CreateChartIndicator.cs" />
+    <Compile Include="Migrations\201705091002149_CreateChartIndicator.Designer.cs">
+      <DependentUpon>201705091002149_CreateChartIndicator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
-    <Compile Include="Repositories\LayoutIndicatorRepository.cs" />
+    <Compile Include="Repositories\ChartIndicatorRepository.cs" />
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />
     <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
     <Compile Include="Repositories\ICompanySectorRepository.cs" />
@@ -406,6 +410,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705081626348_AlterLayoutIndicator2.resx">
       <DependentUpon>201705081626348_AlterLayoutIndicator2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705091002149_CreateChartIndicator.resx">
+      <DependentUpon>201705091002149_CreateChartIndicator.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

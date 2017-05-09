@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UpperChannel.cs" />
     <Compile Include="RSI.cs" />
     <Compile Include="SMA.cs" />
     <Compile Include="ForceIndex.cs" />
