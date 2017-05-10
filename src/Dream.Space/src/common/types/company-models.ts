@@ -23,6 +23,7 @@ export class QuoteInfo {
     low: number;
     date: Date;
     volume: number;
+    impulse:number;
 }
 
 export class CompanyInfo extends CompanyHeader {

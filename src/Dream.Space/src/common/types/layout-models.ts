@@ -83,6 +83,7 @@ export class CompanyHeaderInfo {
 
 export class ChartLayoutPeriodData {
     period: Enums.QuotePeriod;
+
     quotes: QuoteInfo[];
     plots : ChartPlotData[];
 
@@ -91,6 +92,7 @@ export class ChartLayoutPeriodData {
         this.quotes = [];
         this.plots = [];
     }
+
 }
 
 export class ChartPlotData {

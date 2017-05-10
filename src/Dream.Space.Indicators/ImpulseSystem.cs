@@ -40,7 +40,17 @@ namespace Dream.Space.Indicators
                          select new ImpulseData { Date = h.Date, Histogram = h.Value, Ema = e.Value})
                     .ToList();
 
-            return impulseData.AsImpulseSystemModel().OrderByDescending(r => r.Date).ToList(); 
+            var result = impulseData.AsImpulseSystemModel().OrderByDescending(r => r.Date).ToList();
+
+            foreach (var quote in quotes)
+            {
+                var data = result.FirstOrDefault(i => i.Date == quote.Date);
+                if (data != null)
+                {
+                    quote.Impulse = data.Value;
+                }
+            }
+            return result;
         }
 
     }
