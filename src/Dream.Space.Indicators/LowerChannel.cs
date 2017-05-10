@@ -6,9 +6,9 @@ using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Indicators
 {
-    public class UpperChannel : IIndicator<IndicatorResult, int>
+    public class LowerChannel : IIndicator<IndicatorResult, int>
     {
-        public string Name => "UpperChannel";
+        public string Name => "LowerChannel";
 
         public List<IndicatorResult> Calculate(List<QuotesModel> quotes, int period)
         {
@@ -28,7 +28,7 @@ namespace Dream.Space.Indicators
                 margin = margin + initialMargin * (decimal) 0.1;
             }
 
-            emaResult.ForEach(r => r.Value = r.Value + margin);
+            emaResult.ForEach(r => r.Value = r.Value - margin);
 
             return emaResult.OrderByDescending(r => r.Date).ToList();
         }
@@ -42,8 +42,8 @@ namespace Dream.Space.Indicators
                 quote => quote.Date,
                 (ema, quote) =>
 
-                    new {date = ema.Date, high = quote.High, ema = ema.Value}
-            ).Count(r => r.ema + margin > r.high)* 1.0;
+                    new {date = ema.Date, low = quote.Low, ema = ema.Value}
+            ).Count(r => r.ema - margin < r.low)* 1.0;
 
 
             return (int) (count / emaResult.Count * 100);

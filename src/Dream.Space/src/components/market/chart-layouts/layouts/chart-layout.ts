@@ -1,7 +1,7 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
-//import { LayoutInfo, LayoutIndicatorInfo } from "../../../../common/types/layout-models";
+//import { ChartLayoutInfo, LayoutIndicatorInfo } from "../../../../common/types/layout-models";
 //import { IndicatorCore, IndicatorInfo } from "../../../../common/types/indicator-models";
-import { LayoutInfo } from "../../../../common/types/layout-models";
+import { ChartLayoutInfo as LayoutInfo } from "../../../../common/types/layout-models";
 import { IndicatorCore } from "../../../../common/types/indicator-models";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";

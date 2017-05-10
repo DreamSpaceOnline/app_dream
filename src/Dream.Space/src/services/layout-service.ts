@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { HttpClient, json } from "aurelia-fetch-client";
-import { LayoutInfo } from "../common/types/layout-models";
+import { ChartLayoutInfo as LayoutInfo } from "../common/types/layout-models";
 
 @autoinject
 export class LayoutService {

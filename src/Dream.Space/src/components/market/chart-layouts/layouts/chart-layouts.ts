@@ -3,7 +3,7 @@ import { AccountService } from "../../../../services/account-service";
 import { LayoutService } from "../../../../services/layout-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
-import { LayoutInfo } from "../../../../common/types/layout-models";
+import { ChartLayoutInfo as LayoutInfo } from "../../../../common/types/layout-models";
 import { EnumValues, IdName } from "../../../../common/helpers/enum-helper";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";

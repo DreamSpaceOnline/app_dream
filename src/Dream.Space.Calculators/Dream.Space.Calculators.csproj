@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="IndicatorCalculator.cs" />
     <Compile Include="RSICalculator.cs" />
+    <Compile Include="LowerChannelCalculator.cs" />
+    <Compile Include="UpperChannelCalculator.cs" />
     <Compile Include="SMACalculator.cs" />
     <Compile Include="IndicatorProcessor\IGlobalIndicatorProcessor.cs" />
     <Compile Include="NHNLCalculator.cs" />
