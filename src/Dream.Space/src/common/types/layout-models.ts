@@ -109,17 +109,7 @@ export class ChartPlotData {
     }
 }
 
-export class ChartIndicatorData extends ChartIndicatorInfo {
-    data: IndicatorData[];
-
-
-    constructor() {
-        super();
-        this.data = [];
-    }
-}
-
-export class IndicatorData {
+export class ChartIndicatorData  {
     indicatorId: number;
     name: string;
     data: IndicatorValue[];
@@ -130,6 +120,8 @@ export class IndicatorData {
         this.data = [];
     }
 }
+
+
 
 export class IndicatorValue {
     date: Date;
@@ -145,4 +137,13 @@ export class IndicatorValueItem {
     kind: number;
     name: string;
     value: number;
+    lineColor: string;
+    chartType: Enums.ChartTypeName;
+
+    constructor() {
+        this.name = "";
+        this.lineColor = "";
+        this.value = 0;
+        this.chartType = "line";
+    }
 }

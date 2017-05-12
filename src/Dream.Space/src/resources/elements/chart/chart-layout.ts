@@ -1,6 +1,7 @@
 ﻿import { bindable } from "aurelia-framework";
-import {ChartLayoutData, ChartLayoutPeriodData, ChartPlotData } from "../../../common/types/layout-models";
-import {QuoteInfo} from "../../../common/types/company-models";
+import { ChartLayoutData, ChartLayoutPeriodData, ChartPlotData, IndicatorValueItem } from "../../../common/types/layout-models";
+import { QuoteInfo } from "../../../common/types/company-models";
+import { QuotePeriod } from "../../../common/types/enums";
 
 export class ChartLayout {
     @bindable data: ChartLayoutData = null;
@@ -9,6 +10,7 @@ export class ChartLayout {
     attached() {
         this.isAttached = true;
     }
+
 
     dataChanged() {
         if (this.isAttached ) {
@@ -23,36 +25,161 @@ export class ChartLayout {
         this.data.periods.forEach(period => {
             $(`#container-${period.period}`).empty();
 
-            this.renderPeriod(period);
+            const chart = anychart.stock();
+            this.renderPeriod(chart, period);
+
+            chart.container(`container-${period.period}`);
+            chart.draw();
         });
     }
 
 
-    renderPeriod(period: ChartLayoutPeriodData) {
+    renderPeriod(chart: anychart.charts.Stock, period: ChartLayoutPeriodData) {
         if (period.quotes.length === 0 || period.plots.length === 0) return;
 
-        const chart = anychart.stock();
+        const zeroPlot = this.attachQuotes(chart, period.quotes, period.period);
 
-        this.attachQuotes(chart, period.quotes);
+        let plotNumber = 0;
 
-        period.plots.forEach(plot => {
-            this.attachChartPlot(chart, plot);
+        period.plots.forEach(p => {
+            let plot: anychart.core.stock.Plot;
+
+            if (plotNumber === 0) {
+                plot = zeroPlot;
+            } else {
+                plot = chart.plot(plotNumber);
+            }
+
+            this.attachChartPlot(chart, p, plot);
+
+            if (p.height > 0) {
+                plot.height(p.height);
+            }
+
+            plotNumber++;
         });
 
-
-        chart.container(`container-${period.period}`);
-        chart.draw();
     }
 
-    attachQuotes(chart: anychart.charts.Stock,  quotes: QuoteInfo[]) {
-        if (chart != null && quotes != null) { }
 
+    attachQuotes(chart: anychart.charts.Stock, quotes: QuoteInfo[], period: QuotePeriod): anychart.core.stock.Plot {
+        if (chart == null || !chart) {
+            return null; }
+
+        const tableUp = anychart.data.table();
+        const tableDown = anychart.data.table();
+        const tableNeutral = anychart.data.table();
+
+        quotes.forEach(item => {
+            const row = [[item.date, item.open, item.high, item.low, item.close, item.volume]];
+            if (item.impulse === 0) {
+                tableNeutral.addData(row);
+            }
+            if (item.impulse === 1) {
+                tableUp.addData(row);
+            }
+            if (item.impulse === -1) {
+                tableDown.addData(row);
+            }
+        });
+
+        const mappingUp = this.createQuotesMappings(tableUp);
+        const mappingDown = this.createQuotesMappings(tableDown);
+        const mappingNeutral = this.createQuotesMappings(tableNeutral);
+    
+        const seriesUp = chart.plot(0).ohlc(mappingUp);
+        seriesUp.fallingStroke("green");
+        seriesUp.risingStroke("green");
+
+        const seriesDown = chart.plot(0).ohlc(mappingDown);
+        seriesDown.fallingStroke("red");
+        seriesDown.risingStroke("red");
+
+        const serieNeutral = chart.plot(0).ohlc(mappingNeutral);
+        serieNeutral.fallingStroke("teal");
+        serieNeutral.risingStroke("teal");
+
+        const seriesName = this.data.company.name + " (" + period + ")";
+        serieNeutral.name(seriesName);
+
+        const legend = serieNeutral.legendItem();
+        legend.text(seriesName);
+
+        const plot = chart.plot(0);
+        plot.grid(0).enabled(true);
+        plot.grid(0).stroke("#EEE");
+
+        return plot;
+    }
+
+
+    createQuotesMappings(table: anychart.data.Table): anychart.data.TableMapping {
+        const mapping = table.mapAs();
+        mapping.addField("open", 1, anychart.enums.AggregationType.FIRST);
+        mapping.addField("high", 2, anychart.enums.AggregationType.MAX);
+        mapping.addField("low", 3, anychart.enums.AggregationType.MIN);
+        mapping.addField("close", 4, anychart.enums.AggregationType.LAST);
+
+        return mapping;
+    }
+
+
+    attachChartPlot(chart: anychart.charts.Stock, plotData: ChartPlotData, plotChart: anychart.core.stock.Plot) {
+        if (chart == null || !chart || plotData == null || !plotData || plotChart == null || !plotChart) {
+            return;
+        }
+
+
+        plotData.indicators.forEach(indicator => {
+
+            const table = anychart.data.table(0);
+
+            indicator.data.forEach(value => {
+
+                const row = [];
+                row.push(value.date);
+
+                value.values.forEach((item) => {
+                    row.push(item.value);
+                });
+
+                table.addData([row]);
+            });
+
+            indicator.data[0].values.forEach(item => {
+                const mapping = table.mapAs();
+                mapping.addField("value", indicator.data[0].values.indexOf(item) + 1);
+
+                this.drawIndicator(plotChart, mapping, item);
+            });
+
+        });
+    }
+
+
+    drawIndicator(plotChart: anychart.core.stock.Plot, mapping: anychart.data.TableMapping, value: IndicatorValueItem) {
+
+        switch (value.chartType) {
+            case "column":
+                var column = plotChart.column(mapping);
+                column.name(value.name);
+
+                if (value.lineColor !== "") {
+                    column.stroke(value.lineColor);
+                }
+
+                break;
+        default: // "line""
+                var line = plotChart.line(mapping);
+                line.name(value.name);
+
+                if (value.lineColor !== "") {
+                    line.stroke(value.lineColor);
+                }
+
+                break;
+        }
 
     }
 
-    attachChartPlot(chart: anychart.charts.Stock, plot: ChartPlotData) {
-        if (chart != null && plot != null) { }
-
-
-    }
 }
