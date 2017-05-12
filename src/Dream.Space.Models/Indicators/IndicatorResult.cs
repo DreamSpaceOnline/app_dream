@@ -1,4 +1,5 @@
 ﻿using System;
+using Dream.Space.Models.Enums;
 using Newtonsoft.Json;
 
 namespace Dream.Space.Models.Indicators

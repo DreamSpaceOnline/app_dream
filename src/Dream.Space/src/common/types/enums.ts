@@ -3,7 +3,13 @@ export type ArticleBlockType = "Paragraph" | "Heading" | "Image" | "List" | "Uns
 export type ArticleBlockAction = "Remove" | "MoveUp" | "MoveDown" | "Unset";
 export type HeadingType = 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 export type ChartUpdateModeName = "Reset" | "Insert" | "Append";
-export type ChartTypeName = "line" | "ohlc" | "column";
+export type ChartTypeName = "Line" | "OHLC" | "Column";
+
+export enum ChartType {
+    OHLC = 0,
+    Line = 1,
+    Column = 2
+}
 
 export enum Direction {
     Up = 0,

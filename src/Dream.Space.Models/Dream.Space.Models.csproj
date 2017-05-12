@@ -48,6 +48,9 @@
     <Compile Include="Charts\ChartDataModel.cs" />
     <Compile Include="Charts\ChartDataResult.cs" />
     <Compile Include="Charts\ChartIndicator.cs" />
+    <Compile Include="Enums\ValueKind.cs" />
+    <Compile Include="Indicators\IndicatorValueItem.cs" />
+    <Compile Include="Layouts\ChartLayoutData.cs" />
     <Compile Include="Layouts\ChartLayoutModel.cs" />
     <Compile Include="Charts\ChartPlotData.cs" />
     <Compile Include="Charts\DataResult.cs" />

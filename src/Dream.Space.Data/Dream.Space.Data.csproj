@@ -276,6 +276,7 @@
     <Compile Include="Repositories\CompanyRepository.cs" />
     <Compile Include="Repositories\DreamDbRepository.cs" />
     <Compile Include="Requests\GetChartDataRequest.cs" />
+    <Compile Include="Requests\GetChartLayoutDataRequest.cs" />
     <Compile Include="Requests\UpdateMetricsFailedRequest.cs" />
     <Compile Include="Requests\UpdateMetricsRequest.cs" />
     <Compile Include="Services\ArticleService.cs" />

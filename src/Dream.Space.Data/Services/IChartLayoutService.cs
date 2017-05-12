@@ -6,6 +6,7 @@ using Autofac;
 using Dream.Space.Data.Repositories;
 using Dream.Space.Models.Enums;
 using Dream.Space.Data.Entities.Layouts;
+using Dream.Space.Data.Requests;
 using Dream.Space.Models.Layouts;
 
 namespace Dream.Space.Data.Services
@@ -16,6 +17,8 @@ namespace Dream.Space.Data.Services
         Task<IList<ChartLayoutModel>> GetLayoutsForPeriodAsync(QuotePeriod period);
         Task<ChartLayoutModel> GetLayoutAsync(int layoutId);
         Task SaveLayoutAsync(ChartLayoutModel model);
+        Task<ChartLayoutData> GetChartLayoutDataAsync(GetChartLayoutDataRequest request);
+
     }
 
     public class ChartLayoutService : IChartLayoutService
@@ -229,6 +232,22 @@ namespace Dream.Space.Data.Services
 
                 }
             }
+        }
+
+        public async Task<ChartLayoutData> GetChartLayoutDataAsync(GetChartLayoutDataRequest request)
+        {
+            var layout = await GetLayoutAsync(request.LayoutId);
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var repository = scope.Resolve<ICompanyRepository>();
+                var company = repository.Get(request.Ticker);
+
+                var layoutData = new ChartLayoutData();
+
+            }
+
+            return new ChartLayoutData();
+            //var 
         }
     }
 }

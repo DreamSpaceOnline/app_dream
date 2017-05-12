@@ -1,25 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Models.Indicators
 {
-    public enum ValueKind
-    {
-        Value = 0,
-        NewNigh = 1,
-        NewLow = 2,
-        UpperBand = 3,
-        LowerBand = 4
-    }
-
-    public class IndicatorValueItem
-    {
-        public ValueKind Kind { get; set; }
-        public string Name => Kind.ToString();
-        public decimal Value { get; set; }
-    }
-
     public class IndicatorValues : List<IndicatorValueItem>
     {
 

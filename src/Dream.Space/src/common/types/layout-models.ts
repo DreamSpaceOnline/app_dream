@@ -138,12 +138,12 @@ export class IndicatorValueItem {
     name: string;
     value: number;
     lineColor: string;
-    chartType: Enums.ChartTypeName;
+    chartType: Enums.ChartType;
 
     constructor() {
         this.name = "";
         this.lineColor = "";
         this.value = 0;
-        this.chartType = "line";
+        this.chartType = Enums.ChartType.Line;
     }
 }

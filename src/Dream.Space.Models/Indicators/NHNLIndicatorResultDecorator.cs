@@ -1,4 +1,5 @@
 using System;
+using Dream.Space.Models.Enums;
 
 namespace Dream.Space.Models.Indicators
 {
