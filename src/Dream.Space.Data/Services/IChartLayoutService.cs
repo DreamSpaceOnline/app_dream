@@ -48,7 +48,7 @@ namespace Dream.Space.Data.Services
                     LayoutId = layout.LayoutId,
                     Deleted = layout.Deleted,
                     Title = layout.Title,
-                    Period = layout.Period,
+                    //Period = layout.Period,
                     Default = layout.Default,
                     Description = layout.Description
                 }));
@@ -79,7 +79,7 @@ namespace Dream.Space.Data.Services
                 result.LayoutId = layout.LayoutId;
                 result.Deleted = layout.Deleted;
                 result.Title = layout.Title;
-                result.Period = layout.Period;
+                //result.Period = layout.Period;
                 result.Default = layout.Default;
                 result.Description = layout.Description;
                 result.Plots = await GetChartPlotsForLayout(scope, result.LayoutId);
@@ -148,7 +148,7 @@ namespace Dream.Space.Data.Services
                 result.LayoutId = layout.LayoutId;
                 result.Deleted = layout.Deleted;
                 result.Title = layout.Title;
-                result.Period = layout.Period;
+                //result.Period = layout.Period;
                 result.Default = layout.Default;
                 result.Description = layout.Description;
                 result.Plots = await GetChartPlotsForLayout(scope, layoutId);
@@ -176,7 +176,7 @@ namespace Dream.Space.Data.Services
                 {
                     layout.Title = model.Title;
                     layout.Description = model.Description;
-                    layout.Period = model.Period;
+                    //layout.Period = model.Period;
 
                     repository.Commit();
         
@@ -242,12 +242,24 @@ namespace Dream.Space.Data.Services
                 var repository = scope.Resolve<ICompanyRepository>();
                 var company = repository.Get(request.Ticker);
 
-                var layoutData = new ChartLayoutData();
+                IList<ChartPlotData> plots = layout.Plots.Select(p => new ChartPlotData(p)).ToList();
 
+                var periods = new List<ChartLayoutPeriodData>
+                {
+                    new ChartLayoutPeriodData
+                    {
+                        Period = layout.Period,
+                        Plots = plots
+                    }
+                };
+                var layoutData = new ChartLayoutData
+                {
+                    Company = new CompanyHeaderInfo {Ticker = company.Ticker, Name = company.Name},
+                    Periods = periods
+                };
+
+                return layoutData;
             }
-
-            return new ChartLayoutData();
-            //var 
         }
     }
 }

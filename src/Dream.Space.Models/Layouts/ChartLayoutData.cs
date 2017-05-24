@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dream.Space.Models.Enums;
 using Dream.Space.Models.Indicators;
 using Dream.Space.Models.Quotes;
@@ -39,6 +40,12 @@ namespace Dream.Space.Models.Layouts
 
     public class ChartPlotData
     {
+        public ChartPlotData(ChartPlotModel plotModel) 
+        {
+            PlotId = plotModel.PlotId;
+            Height = plotModel.Height;
+            Indicators = plotModel.Indicators.Select(i => new ChartIndicatorData(i)).ToList();
+        }
         public ChartPlotData()
         {
             Indicators = new List<ChartIndicatorData>();    
@@ -51,6 +58,12 @@ namespace Dream.Space.Models.Layouts
 
     public class ChartIndicatorData
     {
+        public ChartIndicatorData(LayoutIndicatorModel indicator) : this()
+        {
+            IndicatorId = indicator.IndicatorId;
+            Name = indicator.Name;
+        }
+
         public ChartIndicatorData()
         {
             Data = new List<IndicatorDataResult>();    

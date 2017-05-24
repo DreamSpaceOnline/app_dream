@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Layouts;
 using System.Collections.Generic;
@@ -32,16 +33,19 @@ namespace Dream.Space.Data.Repositories
 
         public async Task<IList<IChartLayoutEntity>> GetForPeriodAsync(QuotePeriod period)
         {
-            var records = await Dbset.Where(r => r.Period == period).ToListAsync();
-            return records.Select(r => r as IChartLayoutEntity).ToList();
+            //var records = await Dbset.Where(r => r.Period == period).ToListAsync();
+            //return records.Select(r => r as IChartLayoutEntity).ToList();
+            throw new NotImplementedException();
         }
 
         public async Task<IChartLayoutEntity> GetDefaultAsync(QuotePeriod period)
         {
-            var record = await Dbset.FirstOrDefaultAsync(r => r.Period == period && r.Default) ??
-                         await Dbset.FirstOrDefaultAsync(r => r.Period == period);
+            //var record = await Dbset.FirstOrDefaultAsync(r => r.Period == period && r.Default) ??
+            //             await Dbset.FirstOrDefaultAsync(r => r.Period == period);
 
-            return record;
+            //return record;
+            throw new NotImplementedException();
+
         }
     }
 }

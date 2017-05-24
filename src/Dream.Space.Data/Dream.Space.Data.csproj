@@ -100,6 +100,7 @@
     <Compile Include="Entities\Layouts\ChartLayout.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
     <Compile Include="Entities\Indicators\IndicatorIntermediateResult.cs" />
+    <Compile Include="Entities\Layouts\ChartLayoutPeriod.cs" />
     <Compile Include="Entities\Layouts\ChartPlot.cs" />
     <Compile Include="Entities\Layouts\ChartIndicator.cs" />
     <Compile Include="Entities\Jobs\JobStatus.cs" />
@@ -237,6 +238,10 @@
     <Compile Include="Migrations\201705091002149_CreateChartIndicator.cs" />
     <Compile Include="Migrations\201705091002149_CreateChartIndicator.Designer.cs">
       <DependentUpon>201705091002149_CreateChartIndicator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705241434064_AlterLayout1.cs" />
+    <Compile Include="Migrations\201705241434064_AlterLayout1.Designer.cs">
+      <DependentUpon>201705241434064_AlterLayout1.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
@@ -414,6 +419,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705091002149_CreateChartIndicator.resx">
       <DependentUpon>201705091002149_CreateChartIndicator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705241434064_AlterLayout1.resx">
+      <DependentUpon>201705241434064_AlterLayout1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
