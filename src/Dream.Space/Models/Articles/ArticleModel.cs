@@ -8,11 +8,13 @@ namespace Dream.Space.Models.Articles
     {
         public int ArticleId { get; set; }
         public string Title { get; set; }
+        public string Summary { get; set; }
         public string Url { get; set; }
         public int CategoryId { get; set; }
         public int OrderId { get; set; }
         public List<dynamic> Blocks { get; set; }
         public bool IsFeatured { get; set; }
+        public bool Deleted { get; set; }
 
         public ArticleModel()
         {
@@ -29,6 +31,7 @@ namespace Dream.Space.Models.Articles
                 CategoryId = article.CategoryId;
                 OrderId = article.OrderId;
                 Blocks = JsonConvert.DeserializeObject<List<dynamic>>(article.JsonArticleBlocks);
+                Deleted = article.Deleted;
             }
         }
     }

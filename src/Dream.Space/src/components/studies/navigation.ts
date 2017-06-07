@@ -1,20 +1,17 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router } from "aurelia-router";
-import {ArticleService} from "../../services/article-service";
 import {SettingsService} from "../../services/settings-service";
-import {SectionInfo, ArticleCategory } from "../../common/types/article-models";
+import {ArticlesApiClient, Category, Section } from "../../services/services-generated";
 
 @autoinject
 export class Navigation {
 
     router: Router;
-    section: SectionInfo;
-    //menus: MenuNavigationItem [];
-    menu: MenuNavigationItem;
+    section: Section;
+    menu: IMenuNavigationItem;
     
-    constructor(private articleService: ArticleService, private settings: SettingsService) {
+    constructor(private readonly articleService: ArticlesApiClient, private readonly settings: SettingsService) {
         this.section = this.settings.getStudiesSection();
-        //this.menus = [];
 
         this.menu = {
             editMode: false,
@@ -27,9 +24,8 @@ export class Navigation {
     }
 
     async loadCategories(sectionId) {
-        let categories = await this.articleService.getCategories(sectionId);
+        const categories = await this.articleService.getCategories(sectionId);
         this.menu.items = categories;
-        //this.menus.push(this.menu);
     }
 
     configureRouter(config, router: Router) {
@@ -46,16 +42,18 @@ export class Navigation {
     selectMenuItem(categoryUrl) {
         if (this.menu && this.menu.items) {
             this.menu.items.forEach(item => {
-                item.isActive = item.url === categoryUrl;
+                if (item.url === categoryUrl) {
+                    
+                }
             });
         }
     }
 
 }
 
-export interface MenuNavigationItem {
+export interface IMenuNavigationItem {
     editMode: boolean;
-    section;
+    section: Section;
     editModeUrl: string;
-    items: ArticleCategory[];
+    items:Category[];
 }

@@ -7,7 +7,7 @@ export class SubNav {
     @bindable router;
     powerUser: boolean;
 
-    constructor(private account: AccountService, private eventAggregator: EventAggregator) {
+    constructor(private readonly account: AccountService, private readonly eventAggregator: EventAggregator) {
         this.powerUser = this.account.currentUser.isAuthenticated;
     }
 

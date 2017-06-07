@@ -2,26 +2,25 @@
 import { autoinject } from "aurelia-framework";
 import { ValidationController, validateTrigger } from "aurelia-validation"
 import * as Bootstrapformrenderer from "../../form-validation/bootstrap-form-renderer";
-import {SectionInfo, ArticleCategory } from "../../common/types/article-models";
-import {ArticleService} from "../../services/article-service";
-import {SettingsService} from "../../services/settings-service";
 import {AccountService} from "../../services/account-service";
+import {ArticlesApiClient, Section, Category } from "../../services/services-generated";
+import {SettingsService} from "../../services/settings-service";
 
 @autoinject
 export class Categories {
 
     powerUser: boolean;
     editMode: boolean;
-    section: SectionInfo;
+    section: Section;
     sectionId: number;
-    categories: ArticleCategory[];
-    sections: SectionInfo[];
+    categories:Category[];
+    sections: Section[];
 
     constructor(
-        private articleService: ArticleService,
-        private settings: SettingsService,
-        private account: AccountService,
-        private validation: ValidationController
+        private readonly articleService: ArticlesApiClient,
+        private readonly settings: SettingsService,
+        private readonly account: AccountService,
+        private readonly validation: ValidationController
     ) {
 
         this.powerUser = this.account.currentUser.isAuthenticated;
@@ -50,7 +49,7 @@ export class Categories {
     }
 
     getSectionUrl(section) {
-        return '/categories/' + section.SectionId;
+        return "/categories/" + section.SectionId;
     }
 
 }

@@ -1,15 +1,11 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { HttpClient } from 'aurelia-fetch-client';
-import { SectionInfo } from "../common/types/article-models";
-import { IndicatorCore } from "../common/types/indicator-models";
-import { IndicatorService } from "./indicator-service";
 import {EnumValues, IdName } from "../common/helpers/enum-helper";
-import {QuotePeriod} from "../common/types/enums";
+import {IndicatorCore, IndicatorsApiClient, QuotePeriod, ArticlesApiClient, Section } from "./services-generated";
 
 @autoinject
 export class SettingsService {
 
-    sections: SectionInfo[];
+    sections: Section[];
     periods: IdName[];
     initialized: boolean;
     homePage: string;
@@ -17,11 +13,11 @@ export class SettingsService {
     defaultPeriod: IdName;
 
 
-    constructor(private http: HttpClient, private indicatorService: IndicatorService) {
+    constructor(private readonly indicatorService: IndicatorsApiClient, private readonly articleService: ArticlesApiClient) {
 
         this.sections = [];
         this.initialized = false;
-        this.homePage = 'studies';
+        this.homePage = "studies";
         this.indicators = [];
 
         this.periods = EnumValues.getQuotePeriods();
@@ -43,10 +39,8 @@ export class SettingsService {
     }
 
     async initialize() {
-        let sectionsResponse = await this.http.fetch("article/sections");
-        this.sections = await sectionsResponse.json() as SectionInfo[];
-
-        this.indicators = await this.indicatorService.getNames();
+        this.sections = await this.articleService.getSections();
+        this.indicators = await this.indicatorService.getIndicators();
         this.initialized = true;
     }
 

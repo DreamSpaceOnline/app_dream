@@ -1,13 +1,11 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { AccountService } from "../../../../services/account-service";
-import { LayoutService } from "../../../../services/layout-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
-import { ChartLayoutInfo as LayoutInfo } from "../../../../common/types/layout-models";
 import { EnumValues, IdName } from "../../../../common/helpers/enum-helper";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
-
+import {ChartLayoutModel, LayoutApiClient } from "../../../../services/services-generated";
 
 @autoinject()
 export class ChartLayouts {
@@ -15,16 +13,16 @@ export class ChartLayouts {
     powerUser = false;
     subscriptions: Subscription[] = [];
     router: Router = null;
-    layouts: LayoutInfo[] = [];
+    layouts: ChartLayoutModel[] = [];
     title = "";
     period: IdName;
     editMode = false;
     addingMode = false;
 
-    newLayout: LayoutInfo;
+    newLayout: ChartLayoutModel;
 
-    constructor(account: AccountService, private eventAggregator: EventAggregator,
-        private layoutService: LayoutService, private validation: ValidationController ) {
+    constructor(account: AccountService, private readonly eventAggregator: EventAggregator,
+        private readonly layoutService: LayoutApiClient, private readonly validation: ValidationController ) {
 
 
         this.powerUser = account.currentUser.isAuthenticated;
@@ -32,10 +30,6 @@ export class ChartLayouts {
 
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
-
-        if (this.layoutService) {
-            
-        }
     }
 
     onNavigatioComplete() {
@@ -70,12 +64,12 @@ export class ChartLayouts {
     }
 
     async loadLayouts() {
-        this.layouts = await this.layoutService.getLayouts(this.period.id);
+        this.layouts = await this.layoutService.getLayoutsForPeriod(this.period.id);
     }   
 
     addLayout() {
         this.addingMode = true;
-        this.newLayout = new LayoutInfo();
+        this.newLayout = new ChartLayoutModel();
         this.newLayout.period = this.period.id;
 
         this.startEdit(this.newLayout);
@@ -96,12 +90,12 @@ export class ChartLayouts {
         }
     }
 
-    startEdit(layout: LayoutInfo) {
+    startEdit(layout: ChartLayoutModel) {
         this.editMode = true;
 
         ValidationRules
-            .ensure((u: LayoutInfo) => u.title).displayName("Layout name").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: LayoutInfo) => u.description).displayName("Description").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ChartLayoutModel) => u.title).displayName("Layout name").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ChartLayoutModel) => u.description).displayName("Description").required().withMessage(`\${$displayName} cannot be blank.`)
             .on(layout);
 
         this.validation.reset();

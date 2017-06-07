@@ -2,14 +2,11 @@
 import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-
-
-import { Navigation } from './navigation'
+import { Navigation } from "./navigation"
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
-import {ArticleService} from "../../services/article-service";
 import {BootstrapFormRenderer} from "../../form-validation/bootstrap-form-renderer";
 import {AccountService} from "../../services/account-service";
-import {ArticleInfo, ArticleCategoryInfo } from "../../common/types/article-models";
+import {ArticlesApiClient, ArticleModel, Category } from "../../services/services-generated";
 
 @autoinject
 export class Study {
@@ -19,17 +16,17 @@ export class Study {
     articleUrl: string;
     subscriptions: {}[];
     editMode: boolean;
-    article: ArticleInfo;
-    category: ArticleCategoryInfo;
-    articles: ArticleInfo[];
-    originalArticle: ArticleInfo;
+    article: ArticleModel;
+    category: Category;
+    articles: ArticleModel[];
+    originalArticle: ArticleModel;
 
     constructor(
-        private eventAggregator: EventAggregator,
-        private articleService: ArticleService,
-        private navigation: Navigation,
-        private account: AccountService,
-        private validation: ValidationController) {
+        private readonly eventAggregator: EventAggregator,
+        private readonly articleService: ArticlesApiClient,
+        private readonly navigation: Navigation,
+        private readonly account: AccountService,
+        private readonly validation: ValidationController) {
 
         this.powerUser = this.account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
@@ -69,7 +66,7 @@ export class Study {
         if (this.category && this.category.categoryId > 0) {
             this.navigation.selectMenuItem(this.category.url);
 
-            let result =  await this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl);
+            const result = await this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl);
             if(result.articleId > 0) {
                 this.article = result;
                 this.setEditMode(false);
@@ -91,9 +88,9 @@ export class Study {
         this.setEditMode(true);
 
         ValidationRules
-            .ensure((u:ArticleInfo) => u.title).displayName('Strategy name').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u:ArticleInfo) => u.summary).displayName('Summary').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u:ArticleInfo) => u.url).displayName('Strategy url').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ArticleModel) => u.title).displayName('Strategy name').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ArticleModel) => u.summary).displayName('Summary').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ArticleModel) => u.url).displayName('Strategy url').required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.article);
 
     }
@@ -103,7 +100,7 @@ export class Study {
 
         if (this.article.articleId > 0) {
             this.article = this.originalArticle;
-            this.article.editMode = false;
+            this.editMode = false;
         } else {
             this.article.deleted = true;
         }
@@ -113,29 +110,29 @@ export class Study {
 
 
     addArticle() {
-        this.article = {
-            articleId: 0,
-            categoryId: this.category.categoryId,
-            isFeatured: false,
-            deleted: false,
-            title: "New Article",
-            url: "new-article",
-            blocks: [],
-            summary: "",
-            editMode: false,
-            selected: false
-        };
+        this.article = new ArticleModel();
+        this.article.articleId = 0;
+        this.article.categoryId = this.category.categoryId;
+        this.article.isFeatured = false;
+        this.article.deleted = false;
+        this.article.title = "New Article";
+        this.article.url = "new-article";
+        this.article.blocks = [];
+        this.article.summary = "";
+    
 
         this.startEdit();
         this.validation.validate();
     }
 
     selectSideNavigationItem() {
-        let self = this;
+        const self = this;
 
         if (this.articles && this.articles.length > 0) {
             this.articles.forEach(item => {
-                item.selected = item.articleId === self.article.articleId;
+                if (item.articleId === self.article.articleId) {
+                    
+                }
             });
         }
     }
@@ -143,7 +140,7 @@ export class Study {
     navigateToArticle(url) {
         if (url && url.length > 0) {
             this.setEditMode(false);
-            let articleUrl = '/' + this.navigation.section.url + '/' + this.category.url + '/' + url;
+            const articleUrl = `/${this.navigation.section.url}/${this.category.url}/${url}`;
             this.router.navigate(articleUrl);
         }
     }
@@ -152,7 +149,7 @@ export class Study {
         if (this.article && this.article.articleId > 0) {
             await this.articleService.deleteArticle(this.article.articleId);
         } else {
-            toastr.warning('Article is not selected', 'Delete Failed');
+            toastr.warning("Article is not selected", "Delete Failed");
         }
     }
 
@@ -160,7 +157,7 @@ export class Study {
         this.validation.validate()
             .then(response => {
                 let valid = false;
-                if (response.valid === true) {
+                if (response.valid) {
                     if (this.articlePartsValidate()) {
                         valid = true;
                     }
@@ -169,17 +166,17 @@ export class Study {
                     this.saveArticle();
 
                 } else {
-                    toastr.warning('Please correct validation errors.', 'Validation Errors');
+                    toastr.warning("Please correct validation errors.", "Validation Errors");
                 }
             });
     }
 
     articlePartsValidate() {
         if (this.article.blocks.length > 0) {
-            let index = this.article.blocks.findIndex(b => !b.valid);
+            const index = this.article.blocks.findIndex(b => !b.valid);
             return index === -1;
         } else {
-            toastr.warning('Article is empty', 'Validation Errors');
+            toastr.warning("Article is empty", "Validation Errors");
             return false;
         }
     }
@@ -187,9 +184,9 @@ export class Study {
     async saveArticle() {
         this.setEditMode(false);
 
-        let a = await this.articleService.saveArticle(this.article)
+        const a = await this.articleService.saveArticle(this.article);
         if(a.url && a.url.length > 0) {
-            toastr.success(`Article staved successfully!`, 'Strategy saved');
+            toastr.success(`Article staved successfully!`, "Strategy saved");
             this.navigateToArticle(a.url);
         }
 

@@ -1,15 +1,14 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-import { RuleSetService } from "../../../services/rule-set-service";
 import {SettingsService} from "../../../services/settings-service";
 import {AccountService} from "../../../services/account-service";
 import {IdName} from "../../../common/helpers/enum-helper";
-import {RuleSetViewModel} from "../../../common/types/rule-models";
+import {RuleSetsApiClient, RuleSetModel } from "../../../services/services-generated";
 
 @autoinject
 export class RuleSets {
 
-    rulesets: RuleSetViewModel[] = [];
+    rulesets: RuleSetModel[] = [];
 
     powerUser: boolean;
     errors: {}[] = [];
@@ -19,8 +18,8 @@ export class RuleSets {
     routeName: string;
 
     constructor(
-        private ruleSetService: RuleSetService,
-        private globalSettings: SettingsService,
+        private readonly ruleSetService: RuleSetsApiClient,
+        private readonly globalSettings: SettingsService,
         account: AccountService
     ) {
         this.powerUser = account.currentUser.isAuthenticated;
@@ -37,7 +36,7 @@ export class RuleSets {
             this.loadRuleSets(this.activePeriod.id);
 
         } else {
-            let defaultUrl = '/strategies/rule-sets/' + this.activePeriod.name.toLowerCase();
+            const defaultUrl = "/strategies/rule-sets/" + this.activePeriod.name.toLowerCase();
             this.router.navigate(defaultUrl);
         }
 
@@ -61,11 +60,11 @@ export class RuleSets {
     }
 
     addRuleSet() {
-        const ruleset = new RuleSetViewModel();
+        const ruleset = new RuleSetModel();
         ruleset.name = "New Rule set";
-        ruleset.expanded = true;
+        //ruleset.expanded = true;
         ruleset.period = this.activePeriod.id;
-        ruleset.editMode = true;
+        //ruleset.editMode = true;
     
 
         this.rulesets.push(ruleset);
@@ -81,7 +80,7 @@ export class RuleSets {
     }
 
     async loadRuleSets(periodId) {
-        this.rulesets = await this.ruleSetService.getRuleSetsForPeriod(periodId);
+        this.rulesets = await this.ruleSetService.getRuleSets(periodId);
     }
 
 }

@@ -1,11 +1,10 @@
 ﻿import * as toastr from "toastr";
 import { autoinject, bindable } from "aurelia-framework";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
-import { IndicatorService } from "../../../services/indicator-service";
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { AccountService } from "../../../services/account-service";
 import { SettingsService } from "../../../services/settings-service";
-import { IndicatorInfo, IndicatorModel } from "../../../common/types/indicator-models";
+import { IndicatorModel, IndicatorsApiClient, Indicator as IndicatorInfo, IndicatorParam } from "../../../services/services-generated";
 
 @autoinject()
 export class Indicator {
@@ -18,17 +17,15 @@ export class Indicator {
     errors: {}[];
     indicatorDataSeries: {}[];
     periods: {}[];
-    formulaes: { name: string;
-        defaults: {}[];
-    }[];
+    formulas: { name: string; defaults: IndicatorParam []} [] = [];
     plotNumbers: {}[];
     chartTypes: {}[];
 
     constructor(
-        private indicatorService: IndicatorService,
-        private account: AccountService,
-        private validation: ValidationController,
-        private globalSettings: SettingsService
+        private readonly indicatorService: IndicatorsApiClient,
+        private readonly account: AccountService,
+        private readonly validation: ValidationController,
+        private readonly globalSettings: SettingsService
     ) {
         this.powerUser = this.account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
@@ -38,57 +35,64 @@ export class Indicator {
         this.indicatorDataSeries = [];
         this.periods = this.globalSettings.periods;
 
-        this.formulaes = [
-            {
-                name: "EMA", defaults: [
-                    { paramName: "Period", value: 13 }
-                ]
-            },
-            {
-                name: "UpperChannel", defaults: [
-                    { paramName: "Period", value: 26 }
-                ]
-            },
-            {
-                name: "LowerChannel", defaults: [
-                    { paramName: "Period", value: 26 }
-                ]
-            },
-            {
-                name: "SMA", defaults: [
-                    { paramName: "Period", value: 13 }
-                ]
-            },
-            {
-                name: "RSI", defaults: [
-                    { paramName: "Period", value: 14 }
-                ]
-            },
-            {
-                name: "NHNL", defaults: [
-                    { paramName: "Period", value: 26 }
-                ]
-            }, {
-                name: "MACD", defaults: [
-                    { paramName: "FastEmaPeriod", value: 12 },
-                    { paramName: "SlowEmaPeriod", value: 26 },
-                    { paramName: "SignalEmaPeriod", value: 9 }
-                ]
-            },
-            {
-                name: "ImpulseSystem", defaults: [
-                    { paramName: "FastEmaPeriod", value: 12 },
-                    { paramName: "SlowEmaPeriod", value: 26 },
-                    { paramName: "SignalEmaPeriod", value: 9 },
-                    { paramName: "EmaPeriod", value: 13 }
-                ]
-            },
-            {
-                name: "ForceIndex", defaults: [
-                    { paramName: "Period", value: 13 }
-                ]
-            }
-        ];
+        this.formulas.push({
+            name: "EMA",
+            defaults: [
+                new IndicatorParam()
+            ]
+        });
+
+        //this.formulas = [
+        //    {
+        //        name: "EMA", defaults: [
+        //            { paramName: "Period", value: 13 }
+        //        ] 
+        //    },
+        //    {
+        //        name: "UpperChannel", defaults:  [
+        //            { paramName: "Period", value: 26 }
+        //        ]
+        //    },
+        //    {
+        //        name: "LowerChannel", defaults: [
+        //            { paramName: "Period", value: 26 }
+        //        ]
+        //    },
+        //    {
+        //        name: "SMA", defaults: [
+        //            { paramName: "Period", value: 13 }
+        //        ]
+        //    },
+        //    {
+        //        name: "RSI", defaults: [
+        //            { paramName: "Period", value: 14 }
+        //        ]
+        //    },
+        //    {
+        //        name: "NHNL", defaults: [
+        //            { paramName: "Period", value: 26 }
+        //        ]
+        //    }, {
+        //        name: "MACD", defaults: [
+        //            { paramName: "FastEmaPeriod", value: 12 },
+        //            { paramName: "SlowEmaPeriod", value: 26 },
+        //            { paramName: "SignalEmaPeriod", value: 9 }
+        //        ]
+        //    },
+        //    {
+        //        name: "ImpulseSystem", defaults: [
+        //            { paramName: "FastEmaPeriod", value: 12 },
+        //            { paramName: "SlowEmaPeriod", value: 26 },
+        //            { paramName: "SignalEmaPeriod", value: 9 },
+        //            { paramName: "EmaPeriod", value: 13 }
+        //        ]
+        //    },
+        //    {
+        //        name: "ForceIndex", defaults: [
+        //            { paramName: "Period", value: 13 }
+        //        ]
+        //    }
+        //];
 
         this.plotNumbers = [0, 1, 2, 3];
         this.chartTypes = [
@@ -100,12 +104,12 @@ export class Indicator {
         ];
     }
 
-    indicatorChanged(indicatorItem) {
+    indicatorChanged(indicatorItem: any) {
         if (indicatorItem) {
             let newIndicator = Object.assign({}, indicatorItem);
             this.indicatorInfo = newIndicator;
 
-            if (this.indicatorInfo.isNew) {
+            if (this.indicatorInfo.indicatorId === 0) {
                 this.indicatorInfo.name = this.formulaes[0].name;
                 this.indicatorInfo.params = this.formulaes[0].defaults;
             }

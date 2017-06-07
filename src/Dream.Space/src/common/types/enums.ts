@@ -16,11 +16,6 @@ export enum Direction {
     Down = 1
 }
 
-export enum QuotePeriod {
-    Daily = 0,
-    Weekly = 1
-}
-
 export enum ChartUpdateMode {
     Reset = 0,
     Insert = 1,
@@ -58,20 +53,3 @@ export enum RuleDataSource {
     Constant = 2
 }
 
-export enum JobType {
-    All = 0,
-    RefreshAllStocks = 1,
-    RefreshSP500Stocks = 2,
-    CalculateGlobalIndicators = 3,
-    RefreshIndices = 4,
-}
-
-
-export enum JobStatus {
-    Pending = 0,
-    InProgress = 1,
-    Completed = 2,
-    Cancelled = 3,
-    Paused = 4,
-    Error = 99
-}

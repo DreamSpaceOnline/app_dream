@@ -1,22 +1,17 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
-//import { ChartLayoutInfo, LayoutIndicatorInfo } from "../../../../common/types/layout-models";
-//import { IndicatorCore, IndicatorInfo } from "../../../../common/types/indicator-models";
-import { ChartLayoutInfo as LayoutInfo } from "../../../../common/types/layout-models";
-import { IndicatorCore } from "../../../../common/types/indicator-models";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
-import { LayoutService } from "../../../../services/layout-service";
 import { SettingsService } from "../../../../services/settings-service";
 import { EventEmitter, LayoutIndicatorMoved } from "../../../../infrastructure/event-emitter";
 import * as Enums from "../../../../common/types/enums";
 import { Subscription } from "aurelia-event-aggregator";
-
+import {IndicatorCore, LayoutApiClient, ChartLayoutModel } from "../../../../services/services-generated";
 
 @autoinject()
 export class ChartLayout {
 
-    @bindable layout: LayoutInfo;
-    originalLayout: LayoutInfo;
+    @bindable layout: ChartLayoutModel;
+    originalLayout: ChartLayoutModel;
     definedIndicators: IndicatorCore[];
     subscriptions: Subscription[] = [];
 
@@ -25,8 +20,8 @@ export class ChartLayout {
     addingMode = false;
     newIndicatorId: number = 0;
 
-    constructor(private validation: ValidationController, private layoutService: LayoutService,
-        private globalSettings: SettingsService, private eventEmitter: EventEmitter) {
+    constructor(private readonly validation: ValidationController, private readonly layoutService: LayoutApiClient,
+        private readonly globalSettings: SettingsService, private readonly eventEmitter: EventEmitter) {
 
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
@@ -59,11 +54,11 @@ export class ChartLayout {
 
     startEdit() {
         this.editMode = true;
-        this.originalLayout = Object.assign({}, this.layout) as LayoutInfo;
+        this.originalLayout = Object.assign({}, this.layout) as ChartLayoutModel;
 
         ValidationRules
-            .ensure((u: LayoutInfo) => u.title).displayName("Layout name").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: LayoutInfo) => u.description).displayName("Description").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ChartLayoutModel) => u.title).displayName("Layout name").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ChartLayoutModel) => u.description).displayName("Description").required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.layout);
     }
 

@@ -1,15 +1,4 @@
-﻿import { JobType, JobStatus } from "./enums";
-
-export interface JobInfo {
-    jobId: number;
-    jobType: JobType;
-    startDate: Date;
-    completedDate?: Date;
-    jobName: string;
-    status: JobStatus;
-    progress: number;
-}
-
+﻿import {ScheduledJob, JobStatus, ScheduledJobType } from "../../services/services-generated";
 
 export class JobInfoExtentions {
 
@@ -26,19 +15,19 @@ export class JobInfoExtentions {
         }
     }
 
-    static getJobTypeName(jobType: JobType): string {
+    static getJobTypeName(jobType: ScheduledJobType): string {
         switch (jobType) {
-            case JobType.All: return "All";
-            case JobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
-            case JobType.RefreshAllStocks: return "Refresh All Stocks";
-            case JobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
-            case JobType.RefreshIndices: return "Refresh Indices";
+            case ScheduledJobType.All: return "All";
+            case ScheduledJobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
+            case ScheduledJobType.RefreshAllStocks: return "Refresh All Stocks";
+            case ScheduledJobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
+            case ScheduledJobType.RefreshIndices: return "Refresh Indices";
 
             default: return jobType + "";
         }
     }
 
-    static isJobInProgress(job: JobInfo): boolean {
+    static isJobInProgress(job: ScheduledJob): boolean {
         if (job && job.jobId > 0) {
             return job.status === JobStatus.InProgress
                 || job.status === JobStatus.Pending;
@@ -47,7 +36,7 @@ export class JobInfoExtentions {
         return false;
     }
 
-    static isJobPaused(job: JobInfo): boolean {
+    static isJobPaused(job: ScheduledJob): boolean {
         if (job && job.jobId > 0) {
             return job.status === JobStatus.Paused;
         }
@@ -56,16 +45,16 @@ export class JobInfoExtentions {
     }
 
 
-    static getJobType(jobUrl: string): JobType {
+    static getJobType(jobUrl: string): ScheduledJobType {
         switch (jobUrl) {
             case "recalculate-global-indicators":
-                return JobType.CalculateGlobalIndicators;
+                return ScheduledJobType.CalculateGlobalIndicators;
             case "refresh-sp500-stocks":
-                return JobType.RefreshSP500Stocks;
+                return ScheduledJobType.RefreshSP500Stocks;
             case "refresh-all-stocks":
-                return JobType.RefreshAllStocks;
+                return ScheduledJobType.RefreshAllStocks;
             case "refresh-indices":
-                return JobType.RefreshIndices;
+                return ScheduledJobType.RefreshIndices;
 
             default:
                 return 0;

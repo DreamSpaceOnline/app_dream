@@ -1,10 +1,10 @@
 ﻿import { autoinject, computedFrom } from "aurelia-framework";
 import {AccountService} from "../../../../services/account-service";
-import { JobService } from "../../../../services/job-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
-import { JobInfo, JobInfoExtentions } from "../../../../common/types/job-models";
 import { DateHelper } from "../../../../common/helpers/date-helper";
+import {JobsApiClient, ScheduledJob } from "../../../../services/services-generated";
+import {JobInfoExtentions} from "../../../../common/types/job-models";
 
 @autoinject()
 export class Job {
@@ -12,11 +12,11 @@ export class Job {
     title = "Job Dashboard";
     subscription: Subscription;
     router: Router;
-    jobs: JobInfo[] = [];
-    currentJob: JobInfo;
+    jobs: ScheduledJob[] = [];
+    currentJob: ScheduledJob;
     jobUrl = "";
 
-    constructor(account: AccountService, private jobService: JobService, eventAggregator: EventAggregator) {
+    constructor(account: AccountService, private jobService: JobsApiClient, eventAggregator: EventAggregator) {
         this.powerUser = account.currentUser.isAuthenticated;
 
         this.subscription = eventAggregator.subscribe("router:navigation:complete", () => {
@@ -50,11 +50,13 @@ export class Job {
 
     async loadHistory() {
         this.jobs = [];
-        this.jobs = await this.jobService.loadHistory(this.jobUrl);
+        const jobType = JobInfoExtentions.getJobType(this.jobUrl);
+        this.jobs = await this.jobService.getSheduledJobHistory(jobType);
     }
 
     async loadCurrentJob() {
-        this.currentJob = await this.jobService.currentJob(this.jobUrl);
+        const jobType = JobInfoExtentions.getJobType(this.jobUrl);
+        this.currentJob = await this.jobService.getCurrentJob(jobType);
     }
 
     deleteAll() {
@@ -62,7 +64,8 @@ export class Job {
     }
 
     async startJob() {
-        this.currentJob = await this.jobService.startJob(this.jobUrl);
+        const jobType = JobInfoExtentions.getJobType(this.jobUrl);
+        this.currentJob = await this.jobService.startScheduledJobs(jobType);
         this.watchCurrentJob();
     }
 
@@ -79,17 +82,17 @@ export class Job {
     }
 
     async resumeJob() {
-        await this.jobService.resumeJob(this.currentJob.jobId);
+        await this.jobService.resumeScheduledJob(this.currentJob.jobId);
         this.currentJob = await this.jobService.getJob(this.currentJob.jobId);
     }
 
     async pauseJob() {
-        await this.jobService.pauseJob(this.currentJob.jobId);
+        await this.jobService.pauseScheduledJob(this.currentJob.jobId);
         this.currentJob = await this.jobService.getJob(this.currentJob.jobId);
     }
 
     async cancelJob() {
-        await this.jobService.cancelJob(this.currentJob.jobId);
+        await this.jobService.cancelScheduledJob(this.currentJob.jobId);
         await this.loadJobs();
     }
 

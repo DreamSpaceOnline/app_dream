@@ -1,21 +1,20 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-import {RuleService} from "../../../services/rule-service";
 import {SettingsService} from "../../../services/settings-service";
 import {IdName} from "../../../common/helpers/enum-helper";
-import {RuleViewModel} from "../../../common/types/rule-models";
+import {RulesApiClient, Rule } from "../../../services/services-generated";
 
 @autoinject
 export class Rules {
 
-    rules: RuleViewModel[] = [];
+    rules: Rule[] = [];
     activePeriod: IdName;
     periods: IdName[] = [];
     router: Router;
     errors: {}[] = [];
     routeName: string;
 
-    constructor(private ruleService: RuleService, private globalSettings: SettingsService) {
+    constructor(private readonly ruleService: RulesApiClient, private readonly globalSettings: SettingsService) {
         this.activePeriod = this.globalSettings.defaultPeriod;
         this.periods = this.globalSettings.periods;
     }
@@ -29,7 +28,7 @@ export class Rules {
             this.loadRules(this.activePeriod.id);
 
         } else {
-            let defaultUrl = '/strategies/rules/' + this.activePeriod.name.toLowerCase();
+            const defaultUrl = "/strategies/rules/" + this.activePeriod.name.toLowerCase();
             this.router.navigate(defaultUrl);
         }
 
@@ -53,11 +52,11 @@ export class Rules {
     }
 
     addRule() {
-        const rule = new RuleViewModel();
+        const rule = new Rule();
         rule.name = "New Rule";
-        rule.expanded = true;
+        //rule.expanded = true;
         rule.period = this.activePeriod.id;
-        rule.editMode = true;
+        //rule.editMode = true;
 
         this.rules.push(rule);
     }
@@ -72,7 +71,7 @@ export class Rules {
     }
 
     async loadRules(periodId) {
-        this.rules = await this.ruleService.getRulesForPeriod(periodId);
+        this.rules = await this.ruleService.getRules(periodId);
     }
 
 }

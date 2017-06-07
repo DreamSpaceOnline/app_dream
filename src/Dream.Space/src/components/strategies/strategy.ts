@@ -3,11 +3,9 @@ import { autoinject } from "aurelia-framework";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-
-import { StrategyService} from "../../services/strategy-service";
 import { BootstrapFormRenderer} from "../../form-validation/bootstrap-form-renderer";
 import { AccountService} from "../../services/account-service";
-import { StrategySummary, StrategyViewModel } from "../../common/types/strategy-models";
+import { StrategySummary, StrategiesApiClient, StrategyModel } from "../../services/services-generated";
 
 @autoinject
 export class Strategy {
@@ -17,14 +15,14 @@ export class Strategy {
     subscriptions: Subscription[] = [];
     errors: {}[] = [];
     summaries: StrategySummary[] = [];
-    strategy: StrategyViewModel;
-    originalStrategy: StrategyViewModel;
+    strategy: StrategyModel;
+    originalStrategy: StrategyModel;
     router: Router;
     routeName: string;
 
     constructor(
         private eventAggregator: EventAggregator,
-        private strategyService: StrategyService,
+        private strategyService: StrategiesApiClient,
         account: AccountService,
         private validation: ValidationController
     ) {
@@ -37,12 +35,12 @@ export class Strategy {
         this.router = navigationInstruction.router;
         this.routeName = routeConfig.name;
 
-        this.summaries = await this.strategyService.getSummaries();
+        this.summaries = await this.strategyService.geStrategySummaries();
         await this.loadStrategy(params.strategyUrl);
     }
 
     addStrategy() {
-        this.strategy = new StrategyViewModel();
+        this.strategy = new StrategyModel();
         this.startEdit();
         this.validation.validate();
     }
@@ -81,7 +79,7 @@ export class Strategy {
     async loadStrategy(url) {
         if (url && url.length > 0) {
             try {
-                this.strategy = await this.strategyService.getByUrl(url);
+                this.strategy = await this.strategyService.getStrategyByUrl(url);
                 if (!this.strategy.blocks) {
                     this.strategy.blocks = [];
                 }
@@ -96,7 +94,10 @@ export class Strategy {
 
     selectActiveSummary(id) {
         this.summaries.forEach(item => {
-            item.selected = item.strategyId === id;
+            if (item.strategyId === id) {
+                
+            }
+            //item.selected = item.strategyId === id;
         });
 
     }
@@ -119,9 +120,9 @@ export class Strategy {
         this.setEditMode(true);
 
         ValidationRules
-            .ensure((u: StrategyViewModel) => u.title).displayName("Strategy name").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: StrategyViewModel) => u.summary).displayName("Summary").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: StrategyViewModel) => u.url).displayName("Strategy url").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: StrategyModel) => u.title).displayName("Strategy name").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: StrategyModel) => u.summary).displayName("Summary").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: StrategyModel) => u.url).displayName("Strategy url").required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.strategy);
 
     }
@@ -131,7 +132,7 @@ export class Strategy {
 
         if (this.strategy.strategyId > 0) {
             this.strategy = this.originalStrategy;
-            this.strategy.editMode = false;
+            this.editMode = false;
         } else {
             this.strategy.deleted = true;
         }
@@ -171,7 +172,7 @@ export class Strategy {
         this.setEditMode(false);
 
         try {
-            const response = await this.strategyService.update(this.strategy);
+            const response = await this.strategyService.saveStrategy(this.strategy);
             if (response.url.length > 0) {
                 toastr.success(`Strategy staved successfully!`, 'Strategy saved');
                 this.navigateToStrategy(response.url);

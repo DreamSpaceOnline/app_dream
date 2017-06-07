@@ -1,21 +1,19 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-import { IndicatorService } from "../../../services/indicator-service";
 import { SettingsService } from "../../../services/settings-service";
 import { IdName } from "../../../common/helpers/enum-helper";
-import { IndicatorModel } from "../../../common/types/indicator-models";
-import { QuotePeriod } from "../../../common/types/enums";
+import { IndicatorsApiClient, QuotePeriod, Indicator } from "../../../services/services-generated";
 
 @autoinject
 export class Indicators {
 
-    indicators: IndicatorModel[] = [];
+    indicators: Indicator[] = [];
     activePeriod: IdName;
     periods: IdName[] = [];
     router: Router;
     routeName: string;
 
-    constructor(private indicatorService: IndicatorService, private globalSettings: SettingsService) {
+    constructor(private readonly indicatorService: IndicatorsApiClient, private readonly globalSettings: SettingsService) {
         this.activePeriod = this.globalSettings.defaultPeriod;
         this.periods = this.globalSettings.periods;
     }
@@ -53,9 +51,9 @@ export class Indicators {
     }
 
     addIndicator() {
-        const indicator = new IndicatorModel();
-        indicator.isNew = true;
-        indicator.expanded = true;
+        const indicator = new Indicator();
+        //indicator.isNew = true;
+        //indicator.expanded = true;
         indicator.period = this.activePeriod.id as QuotePeriod;
         indicator.description = "New Indicator";
         indicator.params = [];
@@ -64,7 +62,7 @@ export class Indicators {
     }
 
     loadIndicatorsForPeriod(period) {
-        let url = `/strategies/indicators/${period.url}`;
+        const url = `/strategies/indicators/${period.url}`;
         this.router.navigate(url);
     }
 
@@ -73,7 +71,7 @@ export class Indicators {
     }
 
     async loadIndicators(periodId) {
-        this.indicators = await this.indicatorService.getIndicatorsForPeriod(periodId);
+        this.indicators = await this.indicatorService.getIndicatorsAll(periodId);
     }
 
 

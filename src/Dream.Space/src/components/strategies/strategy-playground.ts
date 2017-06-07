@@ -1,37 +1,32 @@
 ﻿import * as toastr from "toastr";
 import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-import { StrategyService} from "../../services/strategy-service";
-import { CompanyService} from "../../services/company-service";
-import { StockService} from "../../services/stock-service";
-import { PlaygroundService} from "../../services/playground-service";
 import { SettingsService} from "../../services/settings-service";
 import { IdName} from "../../common/helpers/enum-helper";
-import { PlaygroundViewModel} from "../../common/types/playground-models";
-import { StrategySummary} from "../../common/types/strategy-models";
-import { CompanyHeader, CompanyViewModel } from "../../common/types/company-models";
+import {StrategySummary, StrategiesApiClient, CompaniesApiClient, StockApiClient, PlaygroundApiClient, Company,
+    CompanySearchRequest, CompanyChartData, CompanyDetails } from "../../services/services-generated";
 //import { EventEmitter } from "../../infrastructure/event-emitter";
 
 @autoinject
 export class StrategyPlayground {
 
     router: Router;
-    playgroundModel: PlaygroundViewModel;
+    playgroundModel: CompanyChartData;
     periods: IdName[] = [];
     strategy: StrategySummary;
-    company: CompanyViewModel;
+    company: Company;
     searchCriteria = "";
-    companies: CompanyHeader[] = [];
+    companies: CompanyDetails[] = [];
     chartWeeklyContainer = "weekly-container";
     playgroundLoaded = false;
     routeName: string;
 
     constructor(
-        private strategyService: StrategyService,
-        private companyService: CompanyService,
-        private stockService: StockService,
-        private playgroundService: PlaygroundService,
-        private settings: SettingsService//,
+        private readonly strategyService: StrategiesApiClient,
+        private readonly companyService: CompaniesApiClient,
+        private readonly stockService: StockApiClient,
+        private readonly playgroundService: PlaygroundApiClient,
+        private readonly settings: SettingsService//,
         //private eventEmitter: EventEmitter
     ) {
         this.periods = this.settings.periods;
@@ -45,7 +40,7 @@ export class StrategyPlayground {
 
         if (params.strategyUrl) {
             try {
-                const response = await this.strategyService.getSummaryByUrl(params.strategyUrl);
+                const response = await this.strategyService.getStrategySummaryByUrl(params.strategyUrl);
                 if (response && response.strategyId > 0) {
                     this.strategy = response;
 
@@ -68,7 +63,11 @@ export class StrategyPlayground {
 
 
     async searchCompanies() {
-        this.companies = await this.companyService.searchCompanies(this.searchCriteria, 15);
+        const request = new CompanySearchRequest();
+        request.ticker = this.searchCriteria;
+        request.maxCount = 15;
+
+        this.companies = await this.companyService.search(request);
     }
 
     selectCompany(company) {
@@ -84,7 +83,7 @@ export class StrategyPlayground {
         try {
             await this.stockService.updateQuotes(ticker);
             this.company = await this.companyService.getCompany(ticker);
-            this.company.show = true;
+            //this.company.show = true;
 
         } catch (e) {
             toastr.error(`Failed to load company for ticker ${ticker}`, "Exception");
@@ -132,7 +131,7 @@ export class StrategyPlayground {
 
     async loadNext() {
         try {
-            const playground = await this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId);
+            const playground = await this.playgroundService.next(this.company.ticker, this.strategy.strategyId);
             if (playground && playground.company) {
                 this.playgroundModel = playground;
             }
@@ -144,7 +143,7 @@ export class StrategyPlayground {
 
     async loadPrev() {
         try {
-            const playground = await this.playgroundService.loadPrev(this.company.ticker, this.strategy.strategyId);
+            const playground = await this.playgroundService.prev(this.company.ticker, this.strategy.strategyId);
             if (playground && playground.company) {
                 this.playgroundModel = playground;
             }

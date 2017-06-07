@@ -1,13 +1,9 @@
 ﻿import * as toastr from "toastr";
 import { autoinject } from "aurelia-framework";
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
-import { StrategyService} from "../../services/strategy-service";
-import { RuleSetService} from "../../services/rule-set-service";
 import { SettingsService} from "../../services/settings-service";
 import { IdName} from "../../common/helpers/enum-helper";
-import { StrategySummary} from "../../common/types/strategy-models";
-import { RuleSetInfo, StrategyRuleSetViewModel } from "../../common/types/rule-models";
-import {QuotePeriod} from "../../common/types/enums";
+import {StrategySummary, StrategiesApiClient, RuleSetsApiClient, VStrategyRuleSet, RuleSetModel } from "../../services/services-generated";
 
 @autoinject
 export class StrategyRuleSets {
@@ -16,21 +12,17 @@ export class StrategyRuleSets {
     periods: IdName[] = [];
     strategy: StrategySummary;
     editMode = false;
-    rulesets: StrategyRuleSetViewModel [] = [];
-    originalRulesets: StrategyRuleSetViewModel [] = [];
-    periodRuleSets: RuleSetInfo[] = [];
-    attachedRuleSet: {
-        ruleSetId: number;
-        name:string;
-        period: QuotePeriod;
-        description: string;
-    };
+    rulesets: VStrategyRuleSet[] = [];
+    originalRulesets: VStrategyRuleSet[] = [];
+    periodRuleSets: RuleSetModel[] = [];
+    attachedRuleSet: RuleSetModel;
+
     addingMode = false;
 
     constructor(
-        private eventAggregator: EventAggregator,
-        private strategyService: StrategyService,
-        private ruleSetService: RuleSetService,
+        private readonly eventAggregator: EventAggregator,
+        private readonly strategyService: StrategiesApiClient,
+        private readonly ruleSetService: RuleSetsApiClient,
         settings: SettingsService
     ) {
         this.periods = settings.periods;
@@ -80,7 +72,7 @@ export class StrategyRuleSets {
     async activate(params) {
         if (params.strategyUrl) {
             try {
-                const strategy = await this.strategyService.getSummaryByUrl(params.strategyUrl);
+                const strategy = await this.strategyService.getStrategySummaryByUrl(params.strategyUrl);
                 if (strategy && strategy.strategyId) {
                     this.strategy = strategy;
 
@@ -97,7 +89,7 @@ export class StrategyRuleSets {
     }
 
     async loadRuleSets(strategyId: number) {
-        this.rulesets = await this.ruleSetService.getRuleSetsForStrategy(strategyId);
+        this.rulesets = await this.ruleSetService.getStrategyRuleSets(strategyId);
     }
 
     startEdit() {
@@ -119,18 +111,19 @@ export class StrategyRuleSets {
 
         if (this.rulesets.length > 0) {
             this.rulesets.forEach(item => {
-                item.editMode = mode;
+                if (item.ruleSetId) {
+                    //item.editMode = mode;
+                }
             });
         }
     }
 
     addRuleSet() {
-        this.attachedRuleSet = {
-            ruleSetId: 0,
-            period: -1,
-            description: "",
-            name: ""
-        };
+        this.attachedRuleSet = new RuleSetModel();
+        this.attachedRuleSet.ruleSetId = 0;
+        this.attachedRuleSet.period = -1;
+        this.attachedRuleSet.description = "";
+        this.attachedRuleSet.name = "";
 
         this.addingMode = true;
     }
@@ -139,11 +132,8 @@ export class StrategyRuleSets {
         this.addingMode = false;
     }
 
-    onPeriodSelected() {
-        this.ruleSetService.getRuleSetsForPeriod(this.attachedRuleSet.period)
-            .then(data => {
-                this.periodRuleSets = data;
-            });
+    async onPeriodSelected() {
+        this.periodRuleSets = await this.ruleSetService.getRuleSets(this.attachedRuleSet.period);
     }
 
     onRuleSetSelected() {
@@ -155,8 +145,8 @@ export class StrategyRuleSets {
 
     confirmAddRuleSet() {
 
-        const ruleset = new StrategyRuleSetViewModel();
-        ruleset.editMode = true;
+        const ruleset = new VStrategyRuleSet();
+        //ruleset.editMode = true;
         ruleset.ruleSetName = this.attachedRuleSet.name;
         ruleset.ruleSetDescription = this.attachedRuleSet.description;
         ruleset.ruleSetPeriod = this.attachedRuleSet.period;
@@ -205,7 +195,7 @@ export class StrategyRuleSets {
         });
 
         try {
-            await this.ruleSetService.saveRuleSetsForStrategy(this.strategy.strategyId, this.rulesets);
+            await this.ruleSetService.saveStrategyRuleSets(this.strategy.strategyId, this.rulesets);
             this.setEditMode(false);
             toastr.success("Rule Sets are successfully saved", "Rule Sets Attached");
 

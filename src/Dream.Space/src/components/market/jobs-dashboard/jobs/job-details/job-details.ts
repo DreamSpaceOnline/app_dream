@@ -1,19 +1,17 @@
 ﻿import { autoinject, bindable, computedFrom } from "aurelia-framework";
 import { DateHelper } from "../../../../../common/helpers/date-helper";
-import { JobInfo, JobInfoExtentions } from "../../../../../common/types/job-models";
-import { ProcessorLog } from "../../../../../common/types/log-models";
-import { LogService } from "../../../../../services/log-service";
-import { JobService } from "../../../../../services/job-service";
+import { JobInfoExtentions } from "../../../../../common/types/job-models";
+import { ScheduledJob, ProcessorLog, JobsApiClient, LogsApiClient } from "../../../../../services/services-generated";
 
 @autoinject()
 export class JobDetails {
 
-    @bindable job: JobInfo;
+    @bindable job: ScheduledJob;
     expanded = false;
     deleted = false;
     jobLogs: ProcessorLog[] = [];
 
-    constructor(private logService: LogService, private jobService: JobService) {
+    constructor(private readonly logService: LogsApiClient, private readonly jobService: JobsApiClient) {
 
     }
 
@@ -25,8 +23,9 @@ export class JobDetails {
         }
     }
 
-    async delete() {
+    async delete() : void {
         if (this.job != null && this.job.jobId > 0) {
+
             await this.logService.deleteJobLogs(this.job.jobId);
             await this.jobService.deleteJob(this.job.jobId);
 

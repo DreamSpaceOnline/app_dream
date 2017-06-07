@@ -1,8 +1,8 @@
 import * as toastr from "toastr";
 import {bindable, autoinject} from 'aurelia-framework';
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {StorageService} from "../../../services/storage-service";
 import {ArticleBlockInfo} from "../../../common/types/article-models";
+import {BlobApiClient, FileDetails } from "../../../services/services-generated";
 
 @autoinject
 export class ArticlePartImage {
@@ -12,7 +12,7 @@ export class ArticlePartImage {
     textValid:boolean;
     imageValid: boolean;
 
-    constructor(private blobServices: StorageService, private bindingEngine: BindingEngine) {
+    constructor(private readonly blobServices: BlobApiClient, private readonly bindingEngine: BindingEngine) {
         this.subscriptions = [];
     }
 
@@ -57,21 +57,24 @@ export class ArticlePartImage {
         if (this.selectedFiles.length > 0) {
             toastr.warning("Uploading selected file", "Uploading...");
 
-            let reader = new FileReader();
-            let file = this.selectedFiles.item(0);
-            let self = this;
-            reader.addEventListener("loadend", function() {
-                if (reader.readyState === 2) {
-                    self.blobServices.uploadFile(file.name, reader.result)
-                        .then(imageUrl => {
-                            if (imageUrl) {
-                                self.part.imageUrl = imageUrl;
-                                toastr.success('Image uploaded successfully', 'Image Uploaded');
-                            } else {
-                                toastr.error('Sorry, this image is too big. Must be 2MB max.', 'Failed to Uploaded');
-                            }
+            const reader = new FileReader();
+            const file = this.selectedFiles.item(0);
 
-                        });
+            reader.addEventListener("loadend", async () => {
+                if (reader.readyState === 2) {
+                    const payload = new FileDetails();
+                    payload.fileName = file.name;
+                    payload.fileBody = reader.result;
+
+
+                    const imageUrl = await this.blobServices.uploadSingle(payload);
+                    if (imageUrl) {
+                        this.part.imageUrl = imageUrl;
+                        toastr.success('Image uploaded successfully', 'Image Uploaded');
+                    } else {
+                        toastr.error('Sorry, this image is too big. Must be 2MB max.', 'Failed to Uploaded');
+                    }
+
                 }
             });
 

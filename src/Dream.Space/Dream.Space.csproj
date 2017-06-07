@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\NSwag.MSBuild.10.6.0\build\NSwag.MSBuild.props" Condition="Exists('..\..\packages\NSwag.MSBuild.10.6.0\build\NSwag.MSBuild.props')" />
   <Import Project="..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
@@ -469,10 +470,9 @@
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
+    <TypeScriptCompile Include="src\common\types\article-models.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
-    <TypeScriptCompile Include="src\common\types\layout-models.ts" />
-    <TypeScriptCompile Include="src\common\types\log-models.ts" />
     <TypeScriptCompile Include="src\components\categories\categories.ts" />
     <TypeScriptCompile Include="src\components\categories\navigation.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
@@ -523,31 +523,14 @@
     <TypeScriptCompile Include="src\resources\elements\rule-set\rule-set.ts" />
     <TypeScriptCompile Include="src\resources\elements\rule\rule.ts" />
     <TypeScriptCompile Include="src\resources\index.ts" />
-    <TypeScriptCompile Include="src\common\types\article-models.ts" />
     <TypeScriptCompile Include="src\resources\elements\strategy\side-navigation.ts" />
     <TypeScriptCompile Include="src\resources\elements\strategy\strategy-admin.ts" />
     <TypeScriptCompile Include="src\resources\elements\strategy\strategy-navigation.ts" />
     <TypeScriptCompile Include="src\resources\elements\strategy\strategy-rule-set.ts" />
-    <TypeScriptCompile Include="src\services\article-service.ts" />
     <TypeScriptCompile Include="src\common\types\account-models.ts" />
     <TypeScriptCompile Include="src\services\account-service.ts" />
-    <TypeScriptCompile Include="src\common\types\company-models.ts" />
-    <TypeScriptCompile Include="src\services\company-service.ts" />
-    <TypeScriptCompile Include="src\services\log-service.ts" />
-    <TypeScriptCompile Include="src\services\job-service.ts" />
-    <TypeScriptCompile Include="src\services\layout-service.ts" />
-    <TypeScriptCompile Include="src\services\storage-service.ts" />
-    <TypeScriptCompile Include="src\common\types\indicator-models.ts" />
-    <TypeScriptCompile Include="src\services\indicator-service.ts" />
-    <TypeScriptCompile Include="src\common\types\playground-models.ts" />
-    <TypeScriptCompile Include="src\services\playground-service.ts" />
-    <TypeScriptCompile Include="src\common\types\rule-models.ts" />
-    <TypeScriptCompile Include="src\services\rule-service.ts" />
-    <TypeScriptCompile Include="src\services\rule-set-service.ts" />
+    <TypeScriptCompile Include="src\services\services-generated.ts" />
     <TypeScriptCompile Include="src\services\settings-service.ts" />
-    <TypeScriptCompile Include="src\services\stock-service.ts" />
-    <TypeScriptCompile Include="src\common\types\strategy-models.ts" />
-    <TypeScriptCompile Include="src\services\strategy-service.ts" />
     <TypeScriptCompile Include="test\unit\app.spec.ts" />
     <TypeScriptCompile Include="test\unit\setup.ts" />
   </ItemGroup>
@@ -683,12 +666,14 @@
     <Content Include="Service References\Application Insights\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="nswag.json" />
     <None Include="Properties\PublishProfiles\dream-space - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DreamSpace - Web Deploy.pubxml" />
     <Content Include="karma.conf.js" />
     <Content Include="src\components\market\market-indices\market-indices.less" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.less" />
     <Content Include="src\components\market\chart-layouts\chart-layouts.less" />
+    <Content Include="src\services\swagger.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -722,6 +707,49 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\..\packages\NSwag.MSBuild.10.6.0\build\NSwag.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NSwag.MSBuild.10.6.0\build\NSwag.MSBuild.props'))" />
+  </Target>
+  <ItemGroup>
+    <SwaggerControllers Include="Dream.Space.Controllers.ArticlesApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.BlobApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.CompaniesApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.IndicatorsApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.JobsApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.LayoutApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.LogsApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.RulesApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.RuleSetsApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.StockApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.PlaygroundApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+    <SwaggerControllers Include="Dream.Space.Controllers.StrategiesApiController">
+      <InProject>False</InProject>
+    </SwaggerControllers>
+  </ItemGroup>
+  <Target Name="AfterBuild">
+    <Exec Condition="'$(NCrunch)' != '1'" Command="$(NSwagExe) webapi2swagger /Controllers:@(SwaggerControllers -> '%(Identity)', ',') /DefaultPropertyNameHandling:CamelCase /DefaultEnumHandling:String /assembly:$(OutDir)/Dream.Space.dll /output:src/services/swagger.json" />
+    <Exec Condition="'$(NCrunch)' != '1'" Command="$(NSwagExe) run nswag.json" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,6 +1,6 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { Router } from "aurelia-router";
-import { DialogService } from 'aurelia-dialog';
+import { DialogService } from "aurelia-dialog";
 import {AccountService} from "../../services/account-service";
 import {UserLogin, UserLoginModel } from "../../dialogs/login/user-login";
 import {UserInfo} from "../../common/types/account-models";
@@ -13,14 +13,14 @@ export class DreamHeader {
     loginUrl: string;
 
 
-    constructor(private account: AccountService, private dialogService: DialogService) {
+    constructor(private readonly account: AccountService, private readonly dialogService: DialogService) {
         this.user = this.account.currentUser;
     }
 
     attached() {
         this.isAuthenticated = this.user.isAuthenticated;
 
-        this.loginUrl = this.router.generate("user") + '/profile';
+        this.loginUrl = this.router.generate("user") + "/profile";
     }
 
     async logout() {

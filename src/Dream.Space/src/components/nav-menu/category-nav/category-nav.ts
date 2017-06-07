@@ -15,7 +15,7 @@ export class CategoryNav {
     }
 
     getUrl(menuItem) {
-        return "" + this.menu.section.url + "/" + menuItem.url;
+        return `${this.menu.section.url}/${menuItem.url}`;
     }
 
 }
