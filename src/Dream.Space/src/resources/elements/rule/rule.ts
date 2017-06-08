@@ -1,42 +1,47 @@
 ﻿import * as toastr from "toastr";
 import { autoinject, bindable } from "aurelia-framework";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
-import { RuleService } from "../../../services/rule-service";
 import { AccountService } from "../../../services/account-service";
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { SettingsService } from "../../../services/settings-service";
-import { RuleInfo, RuleViewModel } from "../../../common/types/rule-models";
 import { IdName, EnumValues } from "../../../common/helpers/enum-helper";
-import {RuleDataSource} from "../../../common/types/enums";
+import { RulesApiClient, Rule as RuleInfo, DataSourceType } from "../../../services/services-generated";
 
 @autoinject
 export class Rule {
 
     @bindable rule: RuleInfo;
 
+    expanded: boolean;
+    editMode: boolean;
+    deleteMode: boolean;
     powerUser: boolean;
+
     errors: {}[];
     indicatorDataSeries: {}[];
     periods: {}[];
     compareTypes: IdName[];
-    ruleInfo: RuleViewModel;
-    originalRule: RuleViewModel;
+    ruleInfo: RuleInfo;
+    originalRule: RuleInfo;
 
     dataSources: {}[];
     priceDataSeries: {}[];
     transformFunctions: {}[];
 
+    dataSeriesV1: {}[];
+    dataSeriesV2: {}[];
+
     constructor(
-        private ruleService: RuleService,
-        private account: AccountService,
-        private validation: ValidationController,
-        private globalSettings: SettingsService
+        private readonly ruleService: RulesApiClient,
+        private readonly account: AccountService,
+        private readonly validation: ValidationController,
+        private readonly globalSettings: SettingsService
     ) {
         this.powerUser = this.account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
         this.errors = [];
-        this.ruleInfo = new RuleViewModel();
+        this.ruleInfo = new RuleInfo();
 
         this.periods = this.globalSettings.periods;
         this.compareTypes = EnumValues.getCompareOperators();
@@ -56,8 +61,8 @@ export class Rule {
     }
 
     onExpanded() {
-        this.ruleInfo.expanded = !this.ruleInfo.expanded;
-        if (!this.ruleInfo.expanded && this.ruleInfo.ruleId > 0 && this.ruleInfo.editMode) {
+        this.expanded = !this.expanded;
+        if (!this.expanded && this.ruleInfo.ruleId > 0 && this.editMode) {
             this.cancelEdit();
         }
     }
@@ -75,45 +80,45 @@ export class Rule {
         this.setDataSeries(this.ruleInfo);
     }
 
-    setDataSeries(rule: RuleViewModel) {
+    setDataSeries(rule: RuleInfo) {
         if (rule) {
 
-            if (rule.dataSourceV1 === RuleDataSource.Indicator) {
-                rule.dataSeriesOptionsV1 = this.indicatorDataSeries;
+            if (rule.dataSourceV1 === DataSourceType.Indicator) {
+                this.dataSeriesV1 = this.indicatorDataSeries;
             }
-            if (rule.dataSourceV1 === RuleDataSource.HistoricalData) { 
-                rule.dataSeriesOptionsV1 = this.priceDataSeries;
+            if (rule.dataSourceV1 === DataSourceType.HistoricalData) { 
+                this.dataSeriesV1 = this.priceDataSeries;
             }
-            if (rule.dataSourceV1 === RuleDataSource.Constant) {
-                rule.dataSeriesOptionsV1 = [];
+            if (rule.dataSourceV1 === DataSourceType.Constant) {
+                this.dataSeriesV1 = [];
             }
 
-            if (rule.dataSourceV2 === RuleDataSource.Indicator) { 
-                rule.dataSeriesOptionsV2 = this.indicatorDataSeries;
+            if (rule.dataSourceV2 === DataSourceType.Indicator) { 
+                this.dataSeriesV2 = this.indicatorDataSeries;
             }
-            if (rule.dataSourceV2 === RuleDataSource.HistoricalData) { 
-                rule.dataSeriesOptionsV2 = this.priceDataSeries;
+            if (rule.dataSourceV2 === DataSourceType.HistoricalData) { 
+                this.dataSeriesV2 = this.priceDataSeries;
             }
-            if (rule.dataSourceV2 === RuleDataSource.Constant) { 
-                rule.dataSeriesOptionsV2 = [];
+            if (rule.dataSourceV2 === DataSourceType.Constant) { 
+                this.dataSeriesV2 = [];
             }
         }
     }
 
     startEdit() {
-        this.originalRule = Object.assign({}, this.ruleInfo) as RuleViewModel;
-        this.ruleInfo.editMode = true;
+        this.originalRule = Object.assign({}, this.ruleInfo) as RuleInfo;
+        this.editMode = true;
 
         ValidationRules
-            .ensure((u: RuleViewModel) => u.name).displayName("Rule name").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: RuleViewModel) => u.description).displayName("Rule description").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: RuleViewModel) => u.skipItemsV1).displayName("Skip value").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleInfo) => u.name).displayName("Rule name").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleInfo) => u.description).displayName("Rule description").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleInfo) => u.skipItemsV1).displayName("Skip value").required().withMessage(`\${$displayName} cannot be blank.`)
             .satisfies(value => value >= 0 && value < 1000).withMessage(`\${$displayName} must be between 0 - 999.`)
-            .ensure((u: RuleViewModel) => u.skipItemsV2).displayName("Skip value").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleInfo) => u.skipItemsV2).displayName("Skip value").required().withMessage(`\${$displayName} cannot be blank.`)
             .satisfies(value => value >= 0 && value < 1000).withMessage(`\${$displayName} must be between 0 - 999.`)
-            .ensure((u: RuleViewModel) => u.takeItemsV1).displayName("Take value").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleInfo) => u.takeItemsV1).displayName("Take value").required().withMessage(`\${$displayName} cannot be blank.`)
             .satisfies(value => value >= 0 && value < 1000).withMessage(`\${$displayName} must be between 0 - 999.`)
-            .ensure((u: RuleViewModel) => u.takeItemsV2).displayName("Take value").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleInfo) => u.takeItemsV2).displayName("Take value").required().withMessage(`\${$displayName} cannot be blank.`)
             .satisfies(value => value >= 0 && value < 1000).withMessage(`\${$displayName} must be between 0 - 999.`)
             .on(this.ruleInfo);
 
@@ -122,7 +127,7 @@ export class Rule {
     cancelEdit() {
         if (this.ruleInfo.ruleId > 0) {
             this.ruleInfo = this.originalRule;
-            this.ruleInfo.editMode = false;
+            this.editMode = false;
         } else {
             this.ruleInfo.deleted = true;
         }
@@ -130,13 +135,13 @@ export class Rule {
     }
 
     cancelDelete() {
-        this.ruleInfo.deleteMode = false;
-        this.ruleInfo.expanded = false;
+        this.deleteMode = false;
+        this.expanded = false;
     }
 
     startDelete() {
-        this.ruleInfo.deleteMode = true;
-        this.ruleInfo.expanded = true;
+        this.deleteMode = true;
+        this.expanded = true;
     }
 
     async confirmDelete() {
@@ -163,8 +168,8 @@ export class Rule {
     async saveRule() {
         const response = await this.ruleService.saveRule(this.ruleInfo);
         if(response.ruleId > 0) {
-            this.ruleInfo.editMode = false;
-            this.ruleInfo.expanded = false;
+            this.editMode = false;
+            this.expanded = false;
             toastr.success(`Rule ${response.name} saved successfully!`, 'Rule Saved');
         } else {
             toastr.error("Failed to save rule", "Error");

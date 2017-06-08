@@ -470,7 +470,6 @@
     <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
-    <TypeScriptCompile Include="src\common\types\article-models.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
     <TypeScriptCompile Include="src\components\categories\categories.ts" />

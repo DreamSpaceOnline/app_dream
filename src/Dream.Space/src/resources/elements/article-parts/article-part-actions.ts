@@ -1,22 +1,23 @@
 import {bindable} from "aurelia-framework";
-import {ArticleBlockInfo} from "../../../common/types/article-models";
+import {ArticleBlock} from "../../../services/services-generated";
 
+//TODO: use EventEmitter
 export class ArticlePartActions {
-    @bindable part: ArticleBlockInfo;
+    @bindable part: ArticleBlock;
 
     remove() {
         if (this.part) {
-            this.part.action = "Remove";
+            //this.part.action = "Remove";
         }
     }
     moveUp() {
         if (this.part) {
-            this.part.action = "MoveUp";
+            //this.part.action = "MoveUp";
         }
     }
     moveDown() {
         if (this.part) {
-            this.part.action = "MoveDown";
+            //this.part.action = "MoveDown";
         }
     }
 }

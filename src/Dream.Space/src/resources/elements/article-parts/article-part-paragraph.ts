@@ -1,14 +1,14 @@
 import {autoinject, bindable } from "aurelia-framework";
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {ArticleBlockInfo} from "../../../common/types/article-models";
+import {ArticleBlock} from "../../../services/services-generated";
 
 @autoinject()
 export class ArticlePartParagraph {
-    @bindable part: ArticleBlockInfo;
+    @bindable part: ArticleBlock;
     subscriptions: Disposable[];
     textValid: boolean;
 
-    constructor (private bindingEngine: BindingEngine) {
+    constructor (private readonly bindingEngine: BindingEngine) {
         this.subscriptions = [];
     }
 

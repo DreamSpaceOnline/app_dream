@@ -1,22 +1,26 @@
 ﻿import * as toastr from "toastr";
 import { autoinject, bindable } from "aurelia-framework";
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
-import { RuleSetService } from '../../../services/rule-set-service';
-import { RuleService } from '../../../services/rule-service';
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { AccountService } from "../../../services/account-service";
 import { SettingsService } from "../../../services/settings-service";
-import { RuleSetInfo, RuleInfo, RuleModel, RuleSetViewModel } from "../../../common/types/rule-models";
 import { IdName } from "../../../common/helpers/enum-helper";
+import { RuleSetsApiClient, RuleModel, RulesApiClient, Rule as RuleInfo, RuleSetModel } from "../../../services/services-generated";
 
 @autoinject
 export class RuleSet {
 
-    @bindable ruleset: RuleSetInfo;
-    ruleSetInfo: RuleSetViewModel;
-    originalRuleSet: RuleSetViewModel;
+    @bindable ruleset: RuleSetModel;
+    
+    originalRuleSet: RuleSetModel;
     powerUser: boolean;
+    expanded: boolean;
+    editMode: boolean;
+    deleteMode: boolean;
+    addMode: boolean;
+    ruleSetInfo: RuleSetModel;
+
     errors: {}[] = [];
     subscriptions: Subscription[] = [];
     periods: IdName[] = [];
@@ -25,12 +29,12 @@ export class RuleSet {
     attachedRule:RuleInfo;
 
     constructor(
-        private eventAggregator: EventAggregator,
-        private ruleSetService: RuleSetService,
-        private ruleService: RuleService,
-        private account: AccountService,
-        private validation: ValidationController,
-        private globalSettings: SettingsService
+        private readonly eventAggregator: EventAggregator,
+        private readonly ruleSetService: RuleSetsApiClient,
+        private readonly ruleService: RulesApiClient,
+        private readonly account: AccountService,
+        private readonly validation: ValidationController,
+        private readonly globalSettings: SettingsService
     ) {
         this.powerUser = this.account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
@@ -38,16 +42,16 @@ export class RuleSet {
         this.periods = this.globalSettings.periods;
     }
 
-    rulesetChanged(ruleSetItem: RuleSetInfo) {
+    rulesetChanged(ruleSetItem: RuleSetModel) {
         if (ruleSetItem) {
-            let newRule = Object.assign({}, ruleSetItem);
+            const newRule = Object.assign({}, ruleSetItem);
             this.ruleSetInfo = newRule;
         }
     }
 
     onExpanded() {
-        this.ruleSetInfo.expanded = !this.ruleSetInfo.expanded;
-        if (!this.ruleSetInfo.expanded && this.ruleSetInfo.ruleSetId > 0 && this.ruleSetInfo.editMode === true) {
+        this.expanded = !this.expanded;
+        if (!this.expanded && this.ruleSetInfo.ruleSetId > 0 && this.editMode) {
             this.cancelEdit();
         }
     }
@@ -55,12 +59,12 @@ export class RuleSet {
 
     startEdit() {
         this.originalRuleSet = Object.assign({}, this.ruleSetInfo);
-        this.ruleSetInfo.editMode = true;
+        this.editMode = true;
         this.eventAggregator.publish('rule-set-edit-mode-' + this.ruleSetInfo.ruleSetId, true);
 
         ValidationRules
-            .ensure( (u: RuleSetViewModel) => u.name).displayName('Rule Set Name').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure( (u: RuleSetViewModel) => u.description).displayName('Description').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleSetModel) => u.name).displayName('Rule Set Name').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: RuleSetModel) => u.description).displayName('Description').required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.ruleSetInfo);
 
     }
@@ -68,7 +72,7 @@ export class RuleSet {
     cancelEdit() {
         if (this.ruleSetInfo.ruleSetId > 0) {
             this.ruleSetInfo = this.originalRuleSet;
-            this.ruleSetInfo.editMode = false;
+            this.editMode = false;
             this.eventAggregator.publish('rule-set-edit-mode-' + this.ruleSetInfo.ruleSetId, false);
 
         } else {
@@ -78,13 +82,13 @@ export class RuleSet {
     }
 
     cancelDelete() {
-        this.ruleSetInfo.deleteMode = false;
-        this.ruleSetInfo.expanded = false;
+        this.deleteMode = false;
+        this.expanded = false;
     }
 
     startDelete() {
-        this.ruleSetInfo.deleteMode = true;
-        this.ruleSetInfo.expanded = true;
+        this.deleteMode = true;
+        this.expanded = true;
     }
 
     async confirmDelete() {
@@ -99,11 +103,11 @@ export class RuleSet {
     }
 
     async addRule() {
-        this.ruleSetInfo.isAdding = !this.ruleSetInfo.isAdding;
-        if (this.ruleSetInfo.isAdding && this.rules.length === 0) {
+        this.addMode = !this.addMode;
+        if (this.addMode && this.rules.length === 0) {
 
             try {
-                const response = await this.ruleService.getRulesForPeriod(this.ruleSetInfo.period);
+                const response = await this.ruleService.getRules(this.ruleSetInfo.period);
                 this.rules = response;
 
                 if (this.rules.length > 0) {
@@ -121,18 +125,18 @@ export class RuleSet {
     }
 
     cancelAddRule() {
-        this.ruleSetInfo.isAdding = false;
+        this.addMode = false;
     }
 
     confirmAddRule() {
-        this.ruleSetInfo.isAdding = false;
-        const rule: RuleModel = {
-            name: this.attachedRule.name,
-            ruleId: this.attachedRule.ruleId,
-            description: this.attachedRule.description,
-            ruleSetId: this.ruleSetInfo.ruleSetId
-        };
+        this.addMode = false;
 
+        const rule = new RuleModel();
+        rule.name = this.attachedRule.name;
+        rule.ruleId = this.attachedRule.ruleId;
+        rule.description = this.attachedRule.description;
+        rule.ruleSetId = this.ruleSetInfo.ruleSetId;
+    
         this.ruleSetInfo.rules.push(rule);
     }
 
@@ -150,8 +154,8 @@ export class RuleSet {
         try {
             const response = await this.ruleSetService.saveRuleSet(this.ruleSetInfo);
             if (response.ruleSetId > 0) {
-                this.ruleSetInfo.editMode = false;
-                this.ruleSetInfo.expanded = false;
+                this.editMode = false;
+                this.expanded = false;
 
                 toastr.success(`Rule set ${response.name} saved successfully!`, "Rule set Saved");
                 this.eventAggregator.publish("rule-set-edit-mode-" + this.ruleSetInfo.ruleSetId, false);

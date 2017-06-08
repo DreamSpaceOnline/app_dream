@@ -1,34 +1,37 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
-import {RuleModel} from "../../../common/types/rule-models";
+import {RuleModel} from "../../../services/services-generated";
 
 @autoinject
 export class RuleSetItem {
     @bindable rule: RuleModel;
     subscriptions: Subscription[] = [];
-    editMode: boolean = false;
 
-    constructor(private eventAggregator: EventAggregator) {
+    editMode: boolean = false;
+    deleteMode: boolean;
+    expanded: boolean;
+
+    constructor(private readonly eventAggregator: EventAggregator) {
     }
 
     onExpanded() {
-        this.rule.expanded = !this.rule.expanded;
+        this.expanded = !this.expanded;
     }
 
     startDelete() {
-        this.rule.deleteMode = true;
-        this.rule.expanded = true;
+        this.deleteMode = true;
+        this.expanded = true;
     }
 
     confirmDelete() {
-        this.rule.deleteMode = false;
-        this.rule.expanded = false;
+        this.deleteMode = false;
+        this.expanded = false;
         this.rule.deleted = true;
     }
 
     cancelDelete() {
-        this.rule.deleteMode = false;
-        this.rule.expanded = false;
+        this.deleteMode = false;
+        this.expanded = false;
     }
 
     onMoveUp() {
@@ -60,10 +63,10 @@ export class RuleSetItem {
     attached() {
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe('rule-set-edit-mode-' + this.rule.ruleSetId, flag => this.setEditMode(flag)));
+            this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, flag => this.setEditMode(flag)));
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe('rule-set-edit-mode-' + this.rule.ruleSetId, flag => this.setEditMode(flag)));
+            this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, flag => this.setEditMode(flag)));
 
     }
 }

@@ -1,11 +1,11 @@
 import {bindable, autoinject} from 'aurelia-framework';
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {ArticleBlockInfo} from "../../../common/types/article-models";
+import { ArticleBlock, ArticleBlockItem } from "../../../services/services-generated";
 
 @autoinject
 export class ArticlePartList {
     
-    @bindable part:ArticleBlockInfo;
+    @bindable part:ArticleBlock;
     itemsChangedSubscription: Disposable;
     itemsSubscriptions: Disposable[];
 
@@ -35,7 +35,11 @@ export class ArticlePartList {
     }
 
     addItem() {
-        this.part.items.push({ text: '', valid: false });
+        const item = new ArticleBlockItem();
+        item.text = "";
+        item.valid = false;
+
+        this.part.items.push(item);
     }
     
     deleteItem(index) {

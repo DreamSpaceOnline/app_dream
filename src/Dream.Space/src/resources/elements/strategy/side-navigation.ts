@@ -1,8 +1,7 @@
 ﻿import * as toastr from "toastr";
 import { autoinject, bindable } from "aurelia-framework";
 import { Router } from 'aurelia-router';
-import {StrategySummary} from "../../../common/types/strategy-models";
-import {StrategyService} from "../../../services/strategy-service";
+import {StrategySummary, StrategiesApiClient } from "../../../services/services-generated";
 
 @autoinject
 export class SideNavigation {
@@ -11,7 +10,7 @@ export class SideNavigation {
     summaries: StrategySummary[] = [];
     currentModuleName: string;
 
-    constructor(private strategyService: StrategyService, private router: Router ) {
+    constructor(private readonly strategyService: StrategiesApiClient, private readonly router: Router ) {
         this.currentModuleName = this.router.currentInstruction.config.name;
     }
 
@@ -21,7 +20,7 @@ export class SideNavigation {
             if (this.summaryNotFound(newValue)) {
 
                 try {
-                    this.summaries = await this.strategyService.getSummaries();
+                    this.summaries = await this.strategyService.geStrategySummaries();
                     this.setActiveStrategy(newValue);
                 } catch (e) {
                     toastr.error("Failed to load summaries", "Load Summaries Failed");
@@ -54,7 +53,9 @@ export class SideNavigation {
 
             if (this.summaries) {
                 this.summaries.forEach(item => {
-                    item.selected = item.url.toLowerCase() === url.toLowerCase();
+                    if (item.url.toLowerCase() === url.toLowerCase()) {
+                        //
+                    }
                 });
             }
         }
@@ -62,14 +63,14 @@ export class SideNavigation {
 
     navigateToDefaultStrategy() {
         if (this.summaries && this.summaries.length > 0) {
-            let strategyUrl = `/strategies/${this.currentModuleName}/${this.summaries[0].url}`;
+            const strategyUrl = `/strategies/${this.currentModuleName}/${this.summaries[0].url}`;
             this.router.navigate(strategyUrl);
         }
     }
 
     navigateToStrategy(url) {
         if (url && url.length > 0) {
-            let strategyUrl = `/strategies/${this.currentModuleName}/${url}`;
+            const strategyUrl = `/strategies/${this.currentModuleName}/${url}`;
             this.router.navigate(strategyUrl);
         }
     }

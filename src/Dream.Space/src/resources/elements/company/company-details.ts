@@ -1,8 +1,9 @@
 ﻿import { bindable } from "aurelia-framework";
 import * as moment from "moment";
+import {Company} from "../../../services/services-generated";
 
 export class CompanyDetails {
-    @bindable company;
+    @bindable company: Company;
 
     formatDate(date) {
         let date1 = moment(date);

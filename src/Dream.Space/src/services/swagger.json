@@ -1683,12 +1683,96 @@
         },
         "blocks": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/ArticleBlock"
+          }
         },
         "isFeatured": {
           "type": "boolean"
         },
         "deleted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ArticleBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valid",
+        "blockType"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "blockType": {
+          "$ref": "#/definitions/ArticleBlockType"
+        },
+        "text": {
+          "type": "string"
+        },
+        "headingType": {
+          "$ref": "#/definitions/HeadingType"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArticleBlockItem"
+          }
+        }
+      }
+    },
+    "ArticleBlockType": {
+      "type": "string",
+      "x-enumNames": [
+        "Paragraph",
+        "Heading",
+        "Image",
+        "List",
+        "Unset"
+      ],
+      "enum": [
+        "Paragraph",
+        "Heading",
+        "Image",
+        "List",
+        "Unset"
+      ],
+      "description": ""
+    },
+    "HeadingType": {
+      "type": "string",
+      "x-enumNames": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5"
+      ],
+      "enum": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5"
+      ],
+      "description": ""
+    },
+    "ArticleBlockItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valid"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "valid": {
           "type": "boolean"
         }
       }

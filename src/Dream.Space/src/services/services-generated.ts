@@ -2449,7 +2449,7 @@ export class ArticleModel implements IArticleModel {
     url?: string | undefined;
     categoryId: number;
     orderId: number;
-    blocks?: any[] | undefined;
+    blocks?: ArticleBlock[] | undefined;
     isFeatured: boolean;
     deleted: boolean;
 
@@ -2473,7 +2473,7 @@ export class ArticleModel implements IArticleModel {
             if (data["blocks"] && data["blocks"].constructor === Array) {
                 this.blocks = [];
                 for (let item of data["blocks"])
-                    this.blocks.push(item);
+                    this.blocks.push(ArticleBlock.fromJS(item));
             }
             this.isFeatured = data["isFeatured"];
             this.deleted = data["deleted"];
@@ -2497,7 +2497,7 @@ export class ArticleModel implements IArticleModel {
         if (this.blocks && this.blocks.constructor === Array) {
             data["blocks"] = [];
             for (let item of this.blocks)
-                data["blocks"].push(item);
+                data["blocks"].push(item.toJSON());
         }
         data["isFeatured"] = this.isFeatured;
         data["deleted"] = this.deleted;
@@ -2512,9 +2512,127 @@ export interface IArticleModel {
     url?: string | undefined;
     categoryId: number;
     orderId: number;
-    blocks?: any[] | undefined;
+    blocks?: ArticleBlock[] | undefined;
     isFeatured: boolean;
     deleted: boolean;
+}
+
+export class ArticleBlock implements IArticleBlock {
+    valid: boolean;
+    blockType: ArticleBlockType;
+    text?: string | undefined;
+    headingType?: HeadingType | undefined;
+    imageUrl?: string | undefined;
+    items?: ArticleBlockItem[] | undefined;
+
+    constructor(data?: IArticleBlock) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.valid = data["valid"];
+            this.blockType = data["blockType"];
+            this.text = data["text"];
+            this.headingType = data["headingType"];
+            this.imageUrl = data["imageUrl"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [];
+                for (let item of data["items"])
+                    this.items.push(ArticleBlockItem.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ArticleBlock {
+        let result = new ArticleBlock();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["valid"] = this.valid;
+        data["blockType"] = this.blockType;
+        data["text"] = this.text;
+        data["headingType"] = this.headingType;
+        data["imageUrl"] = this.imageUrl;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IArticleBlock {
+    valid: boolean;
+    blockType: ArticleBlockType;
+    text?: string | undefined;
+    headingType?: HeadingType | undefined;
+    imageUrl?: string | undefined;
+    items?: ArticleBlockItem[] | undefined;
+}
+
+export enum ArticleBlockType {
+    Paragraph = <any>"Paragraph", 
+    Heading = <any>"Heading", 
+    Image = <any>"Image", 
+    List = <any>"List", 
+    Unset = <any>"Unset", 
+}
+
+export enum HeadingType {
+    H1 = <any>"H1", 
+    H2 = <any>"H2", 
+    H3 = <any>"H3", 
+    H4 = <any>"H4", 
+    H5 = <any>"H5", 
+}
+
+export class ArticleBlockItem implements IArticleBlockItem {
+    text?: string | undefined;
+    valid: boolean;
+
+    constructor(data?: IArticleBlockItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.text = data["text"];
+            this.valid = data["valid"];
+        }
+    }
+
+    static fromJS(data: any): ArticleBlockItem {
+        let result = new ArticleBlockItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        data["valid"] = this.valid;
+        return data; 
+    }
+}
+
+export interface IArticleBlockItem {
+    text?: string | undefined;
+    valid: boolean;
 }
 
 export class UpdateArticleOrderModel implements IUpdateArticleOrderModel {

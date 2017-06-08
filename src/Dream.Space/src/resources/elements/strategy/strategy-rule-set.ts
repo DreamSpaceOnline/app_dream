@@ -1,16 +1,18 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import {StrategyRuleSetInfo} from "../../../common/types/rule-models";
-import {IdName} from "../../../common/helpers/enum-helper";
-import {SettingsService} from "../../../services/settings-service";
+import { IdName } from "../../../common/helpers/enum-helper";
+import { SettingsService } from "../../../services/settings-service";
+import {VStrategyRuleSet} from "../../../services/services-generated";
 
 @autoinject
 
 export class StrategyRuleSet {
-    @bindable ruleset: StrategyRuleSetInfo;
+    @bindable ruleset: VStrategyRuleSet;
     periods: IdName[];
+    expanded: boolean;
+    deleteMode: boolean;
 
-    constructor(private eventAggregator: EventAggregator, settings: SettingsService) {
+    constructor(private readonly eventAggregator: EventAggregator, settings: SettingsService) {
         this.periods = settings.periods;
     }
 
@@ -20,17 +22,17 @@ export class StrategyRuleSet {
     }
 
     onExpanded() {
-        this.ruleset.expanded = !!!this.ruleset.expanded;
+        this.expanded = !this.expanded;
     }
 
     cancelDelete() {
-        this.ruleset.deleteMode = false;
-        this.ruleset.expanded = false;
+        this.deleteMode = false;
+        this.expanded = false;
     }
 
     startDelete() {
-        this.ruleset.deleteMode = true;
-        this.ruleset.expanded = true;
+        this.deleteMode = true;
+        this.expanded = true;
     }
 
     setOptionalStatus(flag) {

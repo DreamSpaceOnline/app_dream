@@ -4,22 +4,48 @@ import { ValidationRules, ValidationController, validateTrigger } from "aurelia-
 import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
 import { AccountService } from "../../../services/account-service";
 import { SettingsService } from "../../../services/settings-service";
-import { IndicatorModel, IndicatorsApiClient, Indicator as IndicatorInfo, IndicatorParam } from "../../../services/services-generated";
+import { IndicatorsApiClient, Indicator as IndicatorInfo, IndicatorParam } from "../../../services/services-generated";
+import * as Enumhelper from "../../../common/helpers/enum-helper";
+
+export class Formula {
+    name: string;
+    defaults: IndicatorParam[];
+}
 
 @autoinject()
 export class Indicator {
 
     @bindable indicator: IndicatorInfo;
-    indicatorInfo: IndicatorModel;
-    originalIndicator: IndicatorModel;
+    indicatorInfo: IndicatorInfo;
+    originalIndicator: IndicatorInfo;
 
+    editMode:boolean;
+    expanded: boolean;
     powerUser: boolean;
+    deleteMode: boolean;
+
     errors: {}[];
     indicatorDataSeries: {}[];
-    periods: {}[];
-    formulas: { name: string; defaults: IndicatorParam []} [] = [];
+    periods: Enumhelper.IdName[];
+    formulas: Formula[] = [];
     plotNumbers: {}[];
     chartTypes: {}[];
+
+    createIndicatorParam(paramName: string, paramValue: number): IndicatorParam {
+        const param = new IndicatorParam();
+        param.paramName = paramName;
+        param.value = paramValue;
+
+        return param;
+    }
+
+    createFormula(formulaName: string, params: IndicatorParam[]) : Formula {
+        const formula = new Formula();
+        formula.name = formulaName;
+        formula.defaults = params;
+
+        return formula;
+    }
 
     constructor(
         private readonly indicatorService: IndicatorsApiClient,
@@ -35,64 +61,40 @@ export class Indicator {
         this.indicatorDataSeries = [];
         this.periods = this.globalSettings.periods;
 
-        this.formulas.push({
-            name: "EMA",
-            defaults: [
-                new IndicatorParam()
-            ]
-        });
-
-        //this.formulas = [
-        //    {
-        //        name: "EMA", defaults: [
-        //            { paramName: "Period", value: 13 }
-        //        ] 
-        //    },
-        //    {
-        //        name: "UpperChannel", defaults:  [
-        //            { paramName: "Period", value: 26 }
-        //        ]
-        //    },
-        //    {
-        //        name: "LowerChannel", defaults: [
-        //            { paramName: "Period", value: 26 }
-        //        ]
-        //    },
-        //    {
-        //        name: "SMA", defaults: [
-        //            { paramName: "Period", value: 13 }
-        //        ]
-        //    },
-        //    {
-        //        name: "RSI", defaults: [
-        //            { paramName: "Period", value: 14 }
-        //        ]
-        //    },
-        //    {
-        //        name: "NHNL", defaults: [
-        //            { paramName: "Period", value: 26 }
-        //        ]
-        //    }, {
-        //        name: "MACD", defaults: [
-        //            { paramName: "FastEmaPeriod", value: 12 },
-        //            { paramName: "SlowEmaPeriod", value: 26 },
-        //            { paramName: "SignalEmaPeriod", value: 9 }
-        //        ]
-        //    },
-        //    {
-        //        name: "ImpulseSystem", defaults: [
-        //            { paramName: "FastEmaPeriod", value: 12 },
-        //            { paramName: "SlowEmaPeriod", value: 26 },
-        //            { paramName: "SignalEmaPeriod", value: 9 },
-        //            { paramName: "EmaPeriod", value: 13 }
-        //        ]
-        //    },
-        //    {
-        //        name: "ForceIndex", defaults: [
-        //            { paramName: "Period", value: 13 }
-        //        ]
-        //    }
-        //];
+        this.formulas = [
+            this.createFormula("EMA", [
+                this.createIndicatorParam("Period", 13)
+            ]),
+            this.createFormula("UpperChannel", [
+                this.createIndicatorParam("Period", 26)
+            ]),
+            this.createFormula("LowerChannel", [
+                this.createIndicatorParam("Period", 26)
+            ]),
+            this.createFormula("SMA", [
+                this.createIndicatorParam("Period", 13)
+            ]),
+            this.createFormula("RSI", [
+                this.createIndicatorParam("Period", 14)
+            ]),
+            this.createFormula("NHNL", [
+                this.createIndicatorParam("Period", 26)
+            ]),
+            this.createFormula("MACD", [
+                this.createIndicatorParam("FastEmaPeriod", 12),
+                this.createIndicatorParam("SlowEmaPeriod", 26),
+                this.createIndicatorParam("SignalEmaPeriod", 9)
+            ]),
+            this.createFormula("ImpulseSystem", [
+                this.createIndicatorParam("FastEmaPeriod", 12),
+                this.createIndicatorParam("SlowEmaPeriod", 26),
+                this.createIndicatorParam("SignalEmaPeriod", 9),
+                this.createIndicatorParam("EmaPeriod", 13)
+            ]),
+            this.createFormula("ForceIndex", [
+                this.createIndicatorParam("Period", 13)
+            ])
+        ];
 
         this.plotNumbers = [0, 1, 2, 3];
         this.chartTypes = [
@@ -110,21 +112,21 @@ export class Indicator {
             this.indicatorInfo = newIndicator;
 
             if (this.indicatorInfo.indicatorId === 0) {
-                this.indicatorInfo.name = this.formulaes[0].name;
-                this.indicatorInfo.params = this.formulaes[0].defaults;
+                this.indicatorInfo.name = this.formulas[0].name;
+                this.indicatorInfo.params = this.formulas[0].defaults;
             }
         }
     }
 
     onExpanded() {
-        this.indicatorInfo.expanded = !this.indicatorInfo.expanded;
-        if (!this.indicatorInfo.expanded && this.indicatorInfo.indicatorId > 0 && this.indicatorInfo.editMode) {
+        this.expanded = !this.expanded;
+        if (!this.expanded && this.indicatorInfo.indicatorId > 0 && this.editMode) {
             this.cancelEdit();
         }
     }
 
     onFormulaChange() {
-        let defParams = this.formulaes.filter(c => c.name === this.indicatorInfo.name);
+        let defParams = this.formulas.filter(c => c.name === this.indicatorInfo.name);
         if (defParams && defParams.length > 0) {
             this.indicatorInfo.params = defParams[0].defaults;
         } else {
@@ -134,12 +136,13 @@ export class Indicator {
 
     startEdit() {
         this.originalIndicator = Object.assign({}, this.indicatorInfo);
-        this.indicatorInfo.editMode = true;
+        this.editMode = true;
 
         ValidationRules
-            .ensure( (m: IndicatorModel) => m.description).displayName("Indicator Name").required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((m: IndicatorModel) => m.chartColor).displayName('Line Color').required().withMessage(`\${$displayName} cannot be blank.`)
-                .matches(/^#[0-9a-fA-F]{6}$/).withMessage(`\${$displayName} value should be in format: #AAFF99.`)
+            .ensure((m: IndicatorInfo) => m.description).displayName("Indicator Name").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((m: IndicatorInfo) => m.chartColor).displayName('Line Color').required().withMessage(`\${$displayName} cannot be blank.`)
+            .matches(/^#[0-9a-fA-F]{6}$/).withMessage(`\${$displayName} value should be in format: #AAFF99.`)
+
             .on(this.indicatorInfo);
 
     }
@@ -147,7 +150,7 @@ export class Indicator {
     cancelEdit() {
         if (this.indicatorInfo.indicatorId > 0) {
             this.indicatorInfo = this.originalIndicator;
-            this.indicatorInfo.editMode = false;
+            this.editMode = false;
         } else {
             this.indicatorInfo.deleted = true;
         }
@@ -155,13 +158,13 @@ export class Indicator {
     }
 
     cancelDelete() {
-        this.indicatorInfo.deleteMode = false;
-        this.indicatorInfo.expanded = false;
+        this.deleteMode = false;
+        this.expanded = false;
     }
 
     startDelete() {
-        this.indicatorInfo.deleteMode = true;
-        this.indicatorInfo.expanded = true;
+        this.deleteMode = true;
+        this.expanded = true;
     }
 
     async confirmDelete() {
@@ -193,8 +196,8 @@ export class Indicator {
 
         const response = await this.indicatorService.saveIndicator(this.indicatorInfo);
         if (response.name) {
-            this.indicatorInfo.editMode = false;
-            this.indicatorInfo.expanded = false;
+            this.editMode = false;
+            this.expanded = false;
             toastr.success(`indicator ${response.name} saved successfully!`, "Indicator Saved");
         }
     }

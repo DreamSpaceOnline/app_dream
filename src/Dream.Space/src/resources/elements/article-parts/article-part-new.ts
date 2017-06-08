@@ -1,9 +1,9 @@
 import {bindable} from "aurelia-framework";
-import {ArticleBlockInfo} from "../../../common/types/article-models";
-import { ArticleBlockType, ArticleBlockAction } from "../../../common/types/enums";
+import { ArticleBlockAction } from "../../../common/types/enums";
+import { ArticleBlock, ArticleBlockType } from "../../../services/services-generated";
 
 export class ArticlePartNew {
-    @bindable part: ArticleBlockInfo;
+    @bindable part: ArticleBlock;
 
     partTypes: ArticleBlockType[];
     partAction: ArticleBlockAction;
@@ -11,21 +11,21 @@ export class ArticlePartNew {
     selectedType: ArticleBlockType;
 
     constructor () {
-        this.partTypes = ["Paragraph" , "Heading" , "Image" , "List"];
+        this.partTypes = [ArticleBlockType.Unset, ArticleBlockType.Heading, ArticleBlockType.Image, ArticleBlockType.List];
 
         this.canAdd = false;
-        this.selectedType = "Unset";
+        this.selectedType = ArticleBlockType.Unset;
     }
 
     onTypeChange() {
-        this.canAdd = this.selectedType !== "Unset";
+        this.canAdd = this.selectedType !== ArticleBlockType.Unset;
     }
 
     add() {
-        this.part.type = this.selectedType;
+        this.part.blockType = this.selectedType;
     }
 
     cancel() {
-        this.part.action = "Remove";
+        //this.part.action = "Remove";
     }
 }

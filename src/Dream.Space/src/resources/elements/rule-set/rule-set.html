@@ -1,17 +1,17 @@
 ﻿<template>
     <div class="c_rule_set" if.bind="ruleSetInfo.deleted !== true">
         <div class="c_rule_set-header" click.trigger="onExpanded()">
-            <button type="button" show.bind="ruleSetInfo.expanded !== true" click.delegate="startDelete()" class="btn btn-danger btn-xs">Delete</button>
+            <button type="button" show.bind="!expanded" click.delegate="startDelete()" class="btn btn-danger btn-xs">Delete</button>
             <span>${ruleSetInfo.name}</span>
 
             <a class="chevron">
-                <span if.bind="ruleSetInfo.expanded === true" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                <span if.bind="ruleSetInfo.expanded !== true" class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                <span if.bind="expanded" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+                <span if.bind="!expanded" class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
             </a>
         </div>
-        <div class="c_rule_set-details" if.bind="ruleSetInfo.expanded === true">
-            <form submit.delegate="trySaveRuleSet()" if.bind="ruleSetInfo.deleteMode !== true">
-                <fieldset disabled.bind="ruleSetInfo.editMode !== true">
+        <div class="c_rule_set-details" if.bind="expanded">
+            <form submit.delegate="trySaveRuleSet()" if.bind="!ruleSetInfo.deleteMode">
+                <fieldset disabled.bind="!editMode">
                     <div class="form-group">
                         <label for="txtName-${ruleSetInfo.ruleSetId}">Rule Set Name</label>
                         <input type="text" class="form-control" id="txtName-${ruleSetInfo.ruleSetId}" value.bind="ruleSetInfo.name & validate" />
@@ -33,7 +33,7 @@
 
                 <div class="c_rule_set-list">
                     <rule-set-item class="c_rule_set-item" repeat.for="rule of ruleSetInfo.rules" rule.bind="rule"></rule-set-item>
-                    <div class="c_rule_set c_rule_set-add" show.bind="ruleSetInfo.editMode === true">
+                    <div class="c_rule_set c_rule_set-add" show.bind="editMode">
                         <div class="c_rule_set-header" click.delegate="addRule()">
                             <a>Attach rule</a>
                             <a class="chevron">
@@ -41,7 +41,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="c_rule_set-details" if.bind="ruleSetInfo.isAdding === true && ruleSetInfo.editMode === true">
+                    <div class="c_rule_set-details" if.bind="addMode && editMode">
 
                         <div class="form-group">
                             <label for="ddlRules-${ruleSetInfo.ruleSetId}">Period:</label>
@@ -66,12 +66,12 @@
                     </li>
                 </ul>
                 <div class="c_rule_set-actions">
-                    <button type="submit" class="btn btn-danger" if.bind="ruleSetInfo.editMode === true">Save</button>
-                    <button type="button" click.delegate="cancelEdit()" if.bind="ruleSetInfo.editMode === true" class="btn btn-default">Cancel</button>
-                    <button type="button" click.delegate="startEdit()" if.bind="ruleSetInfo.editMode !== true" class="btn btn-danger">Edit</button>
+                    <button type="submit" class="btn btn-danger" if.bind="editMode">Save</button>
+                    <button type="button" click.delegate="cancelEdit()" if.bind="editMode" class="btn btn-default">Cancel</button>
+                    <button type="button" click.delegate="startEdit()" if.bind="!editMode" class="btn btn-danger">Edit</button>
                 </div>
             </form>
-            <div class="c_rule_set-actions" if.bind="ruleSetInfo.deleteMode === true">
+            <div class="c_rule_set-actions" if.bind="deleteMode">
                 <p>
                     <br />
                     I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.

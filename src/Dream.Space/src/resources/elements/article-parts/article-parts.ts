@@ -1,12 +1,12 @@
 import { autoinject, bindable } from "aurelia-framework";
 import { BindingEngine, Disposable } from 'aurelia-binding';
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
-import { ArticleBlockInfo } from "../../../common/types/article-models";
 import { ArticleBlockAction } from "../../../common/types/enums";
+import { ArticleBlock, ArticleBlockType} from "../../../services/services-generated";
 
 @autoinject
 export class ArticleParts {
-    @bindable parts: ArticleBlockInfo[];
+    @bindable parts: ArticleBlock[];
     editMode: boolean;
 
     partsSubscriptions: Subscription[];
@@ -65,14 +65,12 @@ export class ArticleParts {
     }
 
     addPart() {
-        let part: ArticleBlockInfo = {
-            type: "Unset",
-            editMode: true,
-            text:"",
-            action: "Unset"
-        };
 
-        let index = this.parts.findIndex(p => p.type === part.type);
+        const part = new ArticleBlock();
+        part.blockType = ArticleBlockType.Unset;
+        part.text = "";
+
+        const index = this.parts.findIndex(p => p.blockType === part.blockType);
         if (index === -1) {
             this.parts.push(part);
         }
@@ -117,7 +115,7 @@ export class ArticleParts {
     }
 
     removeDeletedPart() {
-        let index = this.parts.findIndex(p => p.action === "Remove");
+        const index = this.parts.findIndex(p => p.action === "Remove");
         if (index !== -1) {
             this.parts.splice(index, 1);
         }

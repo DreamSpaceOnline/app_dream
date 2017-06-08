@@ -1,13 +1,13 @@
 ﻿<template>
-    <div class="c_rule_set" if.bind="ruleset.deleted !== true">
+    <div class="c_rule_set" if.bind="!ruleset.deleted">
         <div class="c_rule_set-header" click.trigger="onExpanded()">
-            <button type="button" show.bind="ruleset.expanded !== true && ruleset.editMode === true" click.delegate="startDelete()" class="btn btn-warning btn-xs">Detach</button>
+            <button type="button" show.bind="!expanded && editMode" click.delegate="startDelete()" class="btn btn-warning btn-xs">Detach</button>
             <span>${ruleset.ruleSetName}</span>
 
             <div class="chevron">
-                <span if.bind="ruleset.expanded === true" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                <span if.bind="ruleset.expanded !== true" class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
-                <div class="btn-group-vertical" role="group" aria-label="..." show.bind="ruleset.editMode === true">
+                <span class="glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}" aria-hidden="true"></span>
+
+                <div class="btn-group-vertical" role="group" aria-label="..." show.bind="editMode">
                     <button type="button" class="btn btn-xs btn-default" click.trigger="onMoveUp()">
                         <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
                     </button>
@@ -18,9 +18,9 @@
             </div>
 
         </div>
-        <div class="c_rule_set-details" if.bind="ruleset.expanded === true">
-            <form if.bind="ruleset.deleteMode !== true">
-                <fieldset disabled.bind="ruleset.editMode !== true">
+        <div class="c_rule_set-details" if.bind="expanded">
+            <form if.bind="!deleteMode">
+                <fieldset disabled.bind="!editMode">
                     <div class="form-group">
                         <label>Description</label>
                         <p class="form-control" readonly>${ruleset.ruleSetDescription}</p>
@@ -47,7 +47,7 @@
                     </div>
                 </fieldset>
             </form>
-            <div class="c_rule_set-actions" if.bind="ruleset.deleteMode === true">
+            <div class="c_rule_set-actions" if.bind="deleteMode">
                 <p>
                     <br />
                     Rule set will be detached from the rule set. You can add it later at any time.

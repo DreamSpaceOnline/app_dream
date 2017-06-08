@@ -1,19 +1,19 @@
 import { autoinject, bindable } from "aurelia-framework";
 import { BindingEngine, Disposable } from 'aurelia-binding';
-import { ArticleBlockInfo } from "../../../common/types/article-models";
-import { HeadingType } from "../../../common/types/enums";
+import {ArticleBlock, HeadingType } from "../../../services/services-generated";
 
 @autoinject
 export class ArticlePartHeading {
-    @bindable part: ArticleBlockInfo;
+    @bindable part: ArticleBlock;
 
     headingTypes: HeadingType[];
     textValid: boolean;
     typeValid: boolean;
     subscriptions: Disposable[];
 
-    constructor (private bindingEngine: BindingEngine) {
-        this.headingTypes = ['H1','H2','H3','H4','H5'];
+    constructor (private readonly bindingEngine: BindingEngine) {
+        this.headingTypes = [HeadingType.H1, HeadingType.H2, HeadingType.H3, HeadingType.H4, HeadingType.H5];
+
         this.textValid = true;
         this.typeValid = true;
         this.subscriptions = [];
@@ -21,7 +21,7 @@ export class ArticlePartHeading {
 
     attached() {
         if (!this.part.headingType) {
-            this.part.headingType = 'H3';
+            this.part.headingType = HeadingType.H3;
         }
 
         if (!this.part.text) {
@@ -49,7 +49,7 @@ export class ArticlePartHeading {
     }    
     
     validate() {
-        this.typeValid = this.part.headingType.length === 2;
+        this.typeValid = (this.part.headingType) ? true : false;
         this.textValid = this.part.text.length > 0;
 
         this.part.valid = this.typeValid && this.textValid;

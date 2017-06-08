@@ -1,12 +1,11 @@
 import * as toastr from "toastr";
 import {bindable, autoinject} from 'aurelia-framework';
 import {BindingEngine, Disposable} from 'aurelia-binding';
-import {ArticleBlockInfo} from "../../../common/types/article-models";
-import {BlobApiClient, FileDetails } from "../../../services/services-generated";
+import {BlobApiClient, FileDetails, ArticleBlock } from "../../../services/services-generated";
 
 @autoinject
 export class ArticlePartImage {
-    @bindable part: ArticleBlockInfo;
+    @bindable part: ArticleBlock;
     subscriptions: Disposable[];
     selectedFiles: any;
     textValid:boolean;
