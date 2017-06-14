@@ -1,9 +1,9 @@
 ﻿import { bindable } from "aurelia-framework";
-import {MenuNavigationItem} from "../../studies/navigation";
+import { IMenuNavigationItem } from "../navigation";
 
 export class CategoryNav {
 
-    @bindable menu: MenuNavigationItem;
+    @bindable menu: IMenuNavigationItem;
     categoriesUrl: string;
 
     constructor() {

@@ -1,10 +1,9 @@
-﻿
-import { autoinject } from "aurelia-framework";
+﻿import { autoinject } from "aurelia-framework";
 import { ValidationController, validateTrigger } from "aurelia-validation"
-import * as Bootstrapformrenderer from "../../form-validation/bootstrap-form-renderer";
-import {AccountService} from "../../services/account-service";
-import {ArticlesApiClient, Section, Category } from "../../services/services-generated";
-import {SettingsService} from "../../services/settings-service";
+import * as Bootstrapformrenderer from "../../../form-validation/bootstrap-form-renderer";
+import {SettingsService} from "../../../services/settings-service";
+import {AccountService} from "../../../services/account-service";
+import {Section, Category, ArticlesApiClient } from "../../../services/services-generated";
 
 @autoinject
 export class Categories {

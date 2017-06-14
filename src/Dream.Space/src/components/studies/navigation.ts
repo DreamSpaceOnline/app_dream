@@ -33,7 +33,8 @@ export class Navigation {
 
 
         config.map([
-            { route: ["", ':category', ':category/:article'], moduleId: "./study", name: "study" }
+            { route: ["", ":category", ":category/:article"], moduleId: "./study/study", name: "study" },
+            { route: ["categories"], moduleId: "./categories/categories", name: "categories", title: "Manage categories", nav: true }
         ]);
 
         this.router = router;

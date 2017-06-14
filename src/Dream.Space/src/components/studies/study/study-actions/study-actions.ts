@@ -1,0 +1,31 @@
+﻿import { autoinject } from "aurelia-framework";
+import { Router } from "aurelia-router";
+import { EventEmitter } from "../../../../infrastructure/event-emitter";
+import { AccountService } from "../../../../services/account-service";
+
+@autoinject()
+export class StudyActions {
+    powerUser: boolean;
+    editMode: boolean;
+
+    constructor(private readonly eventEmitter: EventEmitter,
+        private readonly router: Router,
+        private readonly account: AccountService) {
+
+        this.powerUser = this.account.currentUser.isAuthenticated;
+    }
+
+    startEdit() {
+        this.eventEmitter.publish("Article-StartEdit");
+    }
+
+    cancelEdit() {
+        this.eventEmitter.publish("Article-CancelEdit");    }
+
+    saveArticle() {
+        this.eventEmitter.publish("Article-Save");    }
+    
+    manageCategories() {
+        this.router.navigateToRoute("categories");
+    }
+}

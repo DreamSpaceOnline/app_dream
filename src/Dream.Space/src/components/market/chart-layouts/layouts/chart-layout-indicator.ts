@@ -1,16 +1,16 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
-import { LayoutIndicatorInfo } from "../../../../common/types/layout-models";
-import { EventEmitter, LayoutIndicatorMoved } from "../../../../infrastructure/event-emitter";
+import { EventEmitter, ILayoutIndicatorMoved } from "../../../../infrastructure/event-emitter";
 import * as Enums from "../../../../common/types/enums";
+import { LayoutIndicatorModel } from "../../../../services/services-generated";
 
 @autoinject()
 export class ChartLayoutIndicator {
-    @bindable indicator: LayoutIndicatorInfo;
+    @bindable indicator: LayoutIndicatorModel;
     @bindable editMode: boolean;
 
     expanded = false;
 
-    constructor(private eventEmitter: EventEmitter) {
+    constructor(private readonly eventEmitter: EventEmitter) {
 
     }
 
@@ -20,20 +20,20 @@ export class ChartLayoutIndicator {
 
 
     onMoveUp() {
-        const event: LayoutIndicatorMoved = {
+        const event: ILayoutIndicatorMoved = {
             direction: Enums.Direction.Up,
             indicatorId: this.indicator.indicatorId,
-            layoutId: this.indicator.layoutId
+            layoutId: this.indicator.plotId
         };
 
         this.eventEmitter.publish("LayoutIndicatorMoved", event);
     }
 
     onMoveDown() {
-        const event: LayoutIndicatorMoved = {
+        const event: ILayoutIndicatorMoved = {
             direction: Enums.Direction.Down,
             indicatorId: this.indicator.indicatorId,
-            layoutId: this.indicator.layoutId
+            layoutId: this.indicator.plotId
         };
 
         this.eventEmitter.publish("LayoutIndicatorMoved", event);

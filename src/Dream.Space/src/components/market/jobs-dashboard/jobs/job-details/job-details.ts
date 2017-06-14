@@ -23,11 +23,11 @@ export class JobDetails {
         }
     }
 
-    async delete() : void {
+    async deleteJob() {
         if (this.job != null && this.job.jobId > 0) {
 
             await this.logService.deleteJobLogs(this.job.jobId);
-            await this.jobService.deleteJob(this.job.jobId);
+            await this.jobService.deleteScheduledJob(this.job.jobId);
 
             this.deleted = true;
         }

@@ -31,7 +31,10 @@ export class ArticleParts {
         this.editMode = flag;
         if (this.parts) {
             this.parts.forEach(item => {
-                item.editMode = flag;
+                if (item) {
+                    
+                }
+                //item.editMode = flag;
             });
         }
     }
@@ -115,27 +118,27 @@ export class ArticleParts {
     }
 
     removeDeletedPart() {
-        const index = this.parts.findIndex(p => p.action === "Remove");
-        if (index !== -1) {
-            this.parts.splice(index, 1);
-        }
+        //const index = this.parts.findIndex(p => p.action === "Remove");
+        //if (index !== -1) {
+        //    this.parts.splice(index, 1);
+        //}
     }
 
 
     movePartUp() {
-        let index = this.parts.findIndex(p => p.action === "MoveUp");
-        if(index > 0) {
-            this.parts.splice(index - 1, 0, this.parts.splice(index, 1)[0]);
-            this.parts[index - 1].action = "Unset";
-        }
+        //let index = this.parts.findIndex(p => p.action === "MoveUp");
+        //if(index > 0) {
+        //    this.parts.splice(index - 1, 0, this.parts.splice(index, 1)[0]);
+        //    this.parts[index - 1].action = "Unset";
+        //}
     }
 
     movePartDown() {
-        let index = this.parts.findIndex(p => p.action === "MoveDown");
-        if(index > -1 && index < this.parts.length - 1) {
-            this.parts.splice(index + 1, 0, this.parts.splice(index, 1)[0]);
-            this.parts[index + 1].action = "Unset";
-        }
+        //let index = this.parts.findIndex(p => p.action === "MoveDown");
+        //if(index > -1 && index < this.parts.length - 1) {
+        //    this.parts.splice(index + 1, 0, this.parts.splice(index, 1)[0]);
+        //    this.parts[index + 1].action = "Unset";
+        //}
     }
 
 

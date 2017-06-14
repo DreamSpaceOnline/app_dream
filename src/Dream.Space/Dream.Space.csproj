@@ -318,8 +318,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\app-bundle.js" />
     <Content Include="Scripts\vendor-bundle.js" />
-    <Content Include="src\components\categories\categories.html" />
-    <Content Include="src\components\categories\navigation.html" />
+    <Content Include="src\components\studies\categories\categories.html" />
     <Content Include="src\components\footer\dream-footer.html" />
     <Content Include="src\components\header\dream-header.html" />
     <Content Include="package.json" />
@@ -336,10 +335,11 @@
     <Content Include="src\components\market\market-indices\navigation.html" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.html" />
     <Content Include="src\components\market\navigation.html" />
+    <Content Include="src\components\studies\study\study-actions\study-actions.html" />
     <Content Include="src\resources\elements\chart\chart-layout.html" />
     <Content Include="src\resources\elements\navigation\sub-nav.html" />
     <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
-    <Content Include="src\components\nav-menu\category-nav\category-nav.html" />
+    <Content Include="src\components\studies\category-nav\category-nav.html" />
     <Content Include="src\resources\elements\navigation\side-nav.html" />
     <Content Include="src\components\nav-menu\sub-nav\sub-nav.html" />
     <Content Include="src\components\strategies\indicators\indicators.html" />
@@ -350,13 +350,12 @@
     <Content Include="src\components\strategies\strategy-rule-sets.html" />
     <Content Include="src\components\strategies\strategy.html" />
     <Content Include="src\components\studies\navigation.html" />
-    <Content Include="src\components\studies\study.html" />
+    <Content Include="src\components\studies\study\study.html" />
     <Content Include="src\components\user\login.html" />
     <Content Include="src\components\user\navigation.html" />
     <Content Include="src\components\user\profile.html" />
     <Content Include="src\dialogs\login\user-login.html" />
     <Content Include="src\resources\elements\chart\stock-chart.html" />
-    <Content Include="src\resources\elements\chart\stock-chart.less" />
     <Content Include="src\resources\elements\company\company-details.html" />
     <Content Include="src\resources\elements\indicator\indicator.html" />
     <Content Include="src\resources\elements\progress\s-progress.html" />
@@ -472,8 +471,7 @@
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
-    <TypeScriptCompile Include="src\components\categories\categories.ts" />
-    <TypeScriptCompile Include="src\components\categories\navigation.ts" />
+    <TypeScriptCompile Include="src\components\studies\categories\categories.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
     <TypeScriptCompile Include="src\components\market\chart-layouts\layouts\chart-layout-indicator.ts" />
@@ -487,10 +485,11 @@
     <TypeScriptCompile Include="src\components\market\market-indices\navigation.ts" />
     <TypeScriptCompile Include="src\components\market\jobs-dashboard\jobs\job.ts" />
     <TypeScriptCompile Include="src\components\market\navigation.ts" />
+    <TypeScriptCompile Include="src\components\studies\study\study-actions\study-actions.ts" />
     <TypeScriptCompile Include="src\resources\elements\chart\chart-layout.ts" />
     <TypeScriptCompile Include="src\resources\elements\navigation\sub-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
-    <TypeScriptCompile Include="src\components\nav-menu\category-nav\category-nav.ts" />
+    <TypeScriptCompile Include="src\components\studies\category-nav\category-nav.ts" />
     <TypeScriptCompile Include="src\resources\elements\navigation\side-nav.ts" />
     <TypeScriptCompile Include="src\components\nav-menu\sub-nav\sub-nav.ts" />
     <TypeScriptCompile Include="src\components\strategies\indicators\indicators.ts" />
@@ -501,7 +500,7 @@
     <TypeScriptCompile Include="src\components\strategies\strategy-rule-sets.ts" />
     <TypeScriptCompile Include="src\components\strategies\strategy.ts" />
     <TypeScriptCompile Include="src\components\studies\navigation.ts" />
-    <TypeScriptCompile Include="src\components\studies\study.ts" />
+    <TypeScriptCompile Include="src\components\studies\study\study.ts" />
     <TypeScriptCompile Include="src\components\user\login.ts" />
     <TypeScriptCompile Include="src\components\user\navigation.ts" />
     <TypeScriptCompile Include="src\components\user\profile.ts" />
@@ -514,7 +513,6 @@
     <TypeScriptCompile Include="src\infrastructure\event-emitter.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\resources\attributes\first-letter-span.ts" />
-    <TypeScriptCompile Include="src\resources\elements\chart\stock-chart.ts" />
     <TypeScriptCompile Include="src\resources\elements\company\company-details.ts" />
     <TypeScriptCompile Include="src\resources\elements\indicator\indicator.ts" />
     <TypeScriptCompile Include="src\resources\elements\progress\s-progress.ts" />
@@ -584,7 +582,7 @@
     <Content Include="src\components\nav-menu\main-nav\main-nav.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\components\nav-menu\category-nav\category-nav.less" />
+    <Content Include="src\components\studies\category-nav\category-nav.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\common\styles\_sub-nav.less" />
@@ -612,7 +610,7 @@
     <TypeScriptCompile Include="src\resources\elements\article-parts\article-part-paragraph.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\components\studies\study.less" />
+    <Content Include="src\components\studies\study\study.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\common\styles\_article.less" />
@@ -630,7 +628,7 @@
     <Content Include="src\common\styles\_form.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\components\categories\categories.less" />
+    <Content Include="src\components\studies\categories\categories.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\components\strategies\strategy-playground.less" />

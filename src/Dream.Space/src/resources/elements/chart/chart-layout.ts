@@ -1,10 +1,8 @@
 ﻿import { bindable } from "aurelia-framework";
-import { ChartLayoutData, ChartLayoutPeriodData, ChartPlotData, IndicatorValueItem } from "../../../common/types/layout-models";
-import { QuoteInfo } from "../../../common/types/company-models";
-import { QuotePeriod } from "../../../common/types/enums";
+import { QuotePeriod, IndicatorValueItem, ChartType, QuotesModel } from "../../../services/services-generated";
 
 export class ChartLayout {
-    @bindable data: ChartLayoutData = null;
+    @bindable data: any = null;
     isAttached = false;
 
     attached() {
@@ -34,7 +32,7 @@ export class ChartLayout {
     }
 
 
-    renderPeriod(chart: anychart.charts.Stock, period: ChartLayoutPeriodData) {
+    renderPeriod(chart: anychart.charts.Stock, period: any) {
         if (period.quotes.length === 0 || period.plots.length === 0) return;
 
         const zeroPlot = this.attachQuotes(chart, period.quotes, period.period);
@@ -62,7 +60,7 @@ export class ChartLayout {
     }
 
 
-    attachQuotes(chart: anychart.charts.Stock, quotes: QuoteInfo[], period: QuotePeriod): anychart.core.stock.Plot {
+    attachQuotes(chart: anychart.charts.Stock, quotes: QuotesModel[], period: QuotePeriod): anychart.core.stock.Plot {
         if (chart == null || !chart) {
             return null; }
 
@@ -124,7 +122,7 @@ export class ChartLayout {
     }
 
 
-    attachChartPlot(chart: anychart.charts.Stock, plotData: ChartPlotData, plotChart: anychart.core.stock.Plot) {
+    attachChartPlot(chart: anychart.charts.Stock, plotData: any, plotChart: anychart.core.stock.Plot) {
         if (chart == null || !chart || plotData == null || !plotData || plotChart == null || !plotChart) {
             return;
         }
@@ -160,7 +158,7 @@ export class ChartLayout {
     drawIndicator(plotChart: anychart.core.stock.Plot, mapping: anychart.data.TableMapping, value: IndicatorValueItem) {
 
         switch (value.chartType) {
-            case "column":
+            case ChartType.Column:
                 var column = plotChart.column(mapping);
                 column.name(value.name);
 

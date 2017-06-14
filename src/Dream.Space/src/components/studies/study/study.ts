@@ -2,11 +2,11 @@
 import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
-import { Navigation } from "./navigation"
+import { Navigation } from "../navigation"
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
-import {BootstrapFormRenderer} from "../../form-validation/bootstrap-form-renderer";
-import {AccountService} from "../../services/account-service";
-import {ArticlesApiClient, ArticleModel, Category } from "../../services/services-generated";
+import {BootstrapFormRenderer} from "../../../form-validation/bootstrap-form-renderer";
+import {AccountService} from "../../../services/account-service";
+import {ArticlesApiClient, ArticleModel, Category } from "../../../services/services-generated";
 
 @autoinject
 export class Study {

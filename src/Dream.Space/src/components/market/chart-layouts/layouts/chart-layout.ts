@@ -2,7 +2,7 @@
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
 import { SettingsService } from "../../../../services/settings-service";
-import { EventEmitter, LayoutIndicatorMoved } from "../../../../infrastructure/event-emitter";
+import { EventEmitter, ILayoutIndicatorMoved } from "../../../../infrastructure/event-emitter";
 import * as Enums from "../../../../common/types/enums";
 import { Subscription } from "aurelia-event-aggregator";
 import {IndicatorCore, LayoutApiClient, ChartLayoutModel } from "../../../../services/services-generated";
@@ -123,7 +123,7 @@ export class ChartLayout {
     }
 
 
-    onLayoutIndicatorMoved(event: LayoutIndicatorMoved) {
+    onLayoutIndicatorMoved(event: ILayoutIndicatorMoved) {
 //        let index = this.layout.indicators.findIndex(indicator => indicator.indicatorId === event.indicatorId && indicator.layoutId === event.layoutId);
 
         if (event.direction === Enums.Direction.Up) {

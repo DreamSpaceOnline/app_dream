@@ -1,4 +1,5 @@
-﻿import {TransformFunction, CompareOperator, QuotePeriod, ChartUpdateMode, QuoteType, RuleDataSource } from "../types/enums";
+﻿import { TransformFunction, CompareOperator, ChartUpdateMode, QuoteType, RuleDataSource } from "../types/enums";
+import { QuotePeriod } from "../../services/services-generated";
 
 export class EnumHelper {
     static getNamesAndValues(e: any) {
