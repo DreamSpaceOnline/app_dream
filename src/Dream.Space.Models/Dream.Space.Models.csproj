@@ -45,6 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Articles\ArticleBlock.cs" />
+    <Compile Include="Articles\ArticleHeader.cs" />
+    <Compile Include="Articles\ArticleModel.cs" />
+    <Compile Include="Articles\CategoryModel.cs" />
+    <Compile Include="Articles\IArticleEntity.cs" />
+    <Compile Include="Articles\ICategoryEntity.cs" />
+    <Compile Include="Articles\ISectionEntity.cs" />
+    <Compile Include="Articles\SectionModel.cs" />
     <Compile Include="Calculators\IIndicatorCalculator.cs" />
     <Compile Include="Charts\ChartDataModel.cs" />
     <Compile Include="Charts\ChartDataResult.cs" />

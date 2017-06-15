@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Articles;
+using Dream.Space.Models.Articles;
 
 namespace Dream.Space.Data.Repositories
 {
@@ -14,7 +15,7 @@ namespace Dream.Space.Data.Repositories
         Article Add(Article article);
         Task<Article> GetFeaturedAsync(int categoryId, bool withFallback);
         Task SetFeaturedAsync(int articleId, int recordCategoryId);
-        Task<List<Article>> GetByCategoryAsync(int categoryId);
+        Task<List<ArticleHeader>> GetByCategoryAsync(int categoryId);
         Task<Article> GetByCategoryAsync(int categoryId, string articleUrl);
         void Delete(Article record);
     }
@@ -54,9 +55,9 @@ namespace Dream.Space.Data.Repositories
             await DbContext.Database.ExecuteSqlCommandAsync(sql, parameters);
         }
 
-        public async Task<List<Article>> GetByCategoryAsync(int categoryId)
+        public async Task<List<ArticleHeader>> GetByCategoryAsync(int categoryId)
         {
-            var record = await Dbset.Where(r => r.CategoryId == categoryId).OrderBy(r => r.OrderId).ToListAsync();
+            var record = await Dbset.Where(r => r.CategoryId == categoryId).Select(a => new ArticleHeader(a)).OrderBy(r => r.OrderId).ToListAsync();
             return record;
         }
 

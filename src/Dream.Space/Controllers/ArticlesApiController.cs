@@ -34,9 +34,7 @@ namespace Dream.Space.Controllers
         public async Task<IHttpActionResult> GetArticle(int id)
         {
             var article = await _service.GetArticleAsync(id);
-            var model = new ArticleModel(article);
-
-            return Ok(model);
+            return Ok(article);
         }
 
         [HttpPut]
@@ -65,7 +63,7 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [Route("section/{sectionUrl}")]
-        [ResponseType(typeof(Section))]
+        [ResponseType(typeof(SectionModel))]
         public async Task<IHttpActionResult> GetSection(string sectionUrl)
         {
             var section = await _service.GetSectionAsync(sectionUrl);
@@ -74,7 +72,7 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [Route("sections")]
-        [ResponseType(typeof(List<Section>))]
+        [ResponseType(typeof(List<SectionModel>))]
         public async Task<IHttpActionResult> GetSections()
         {
             var sections = await _service.GetSectionsAsync();
@@ -87,9 +85,7 @@ namespace Dream.Space.Controllers
         public async Task<IHttpActionResult> GetFeaturedArticle(int categoryId)
         {
             var article = await _service.GetFeaturedArticleAsync(categoryId);
-            var model = new ArticleModel(article);
-
-            return Ok(model);
+            return Ok(article);
         }
 
         [HttpGet]
@@ -98,20 +94,16 @@ namespace Dream.Space.Controllers
         public async Task<IHttpActionResult> GetArticleByUrl(int categoryId, string articleUrl)
         {
             var article = await _service.GetArticleAsync(categoryId, articleUrl);
-            var model = new ArticleModel(article);
-
-            return Ok(model);
+            return Ok(article);
         }
 
         [HttpGet]
         [Route("{categoryId:int:min(1)}/all")]
-        [ResponseType(typeof(List<ArticleModel>))]
+        [ResponseType(typeof(List<ArticleHeader>))]
         public async Task<IHttpActionResult> GetArticles(int categoryId)
         {
             var articles = await _service.GetArticlesAsync(categoryId);
-            var models = articles.Select(article => new ArticleModel(article)).ToList();
-
-            return Ok(models);
+            return Ok(articles);
         }
 
         [HttpPost]
@@ -124,7 +116,7 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [Route("categories/{sectionId:int:min(1)}")]
-        [ResponseType(typeof(List<Category>))]
+        [ResponseType(typeof(List<CategoryModel>))]
         public async Task<IHttpActionResult> GetCategories(int sectionId)
         {
             var result = await _service.GetCategoriesAsync(sectionId);
@@ -133,7 +125,7 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [Route("category/{categoryUrl}")]
-        [ResponseType(typeof(Category))]
+        [ResponseType(typeof(CategoryModel))]
         public async Task<IHttpActionResult> GetCategory(string categoryUrl)
         {
             var result = await _service.GetCategoryAsync(categoryUrl);
@@ -146,31 +138,18 @@ namespace Dream.Space.Controllers
         public async Task<IHttpActionResult> SaveArticle([FromBody] ArticleModel model)
         {
 
-            var article = new Article
-            {
-                ArticleId = model.ArticleId,
-                IsFeatured = model.IsFeatured,
-                CategoryId = model.CategoryId,
-                JsonArticleBlocks = JsonConvert.SerializeObject(model.Blocks),
-                OrderId = model.OrderId,
-                Title = model.Title,
-                Url = model.Url
-            };
-
-            await _service.SaveArticleAsync(article);
-            var result = new ArticleModel(article);
-
-            return Ok(result);
+            var article = await _service.SaveArticleAsync(model);
+            return Ok(article);
         }
 
         [HttpPost]
         [Route("category")]
-        [ResponseType(typeof(Category))]
-        public async Task<IHttpActionResult> SaveCategory([FromBody] Category model)
+        [ResponseType(typeof(CategoryModel))]
+        public async Task<IHttpActionResult> SaveCategory([FromBody] CategoryModel model)
         {
-            await _service.SaveCategoryAsync(model);
+            var category = await _service.SaveCategoryAsync(model);
 
-            return Ok(model);
+            return Ok(category);
         }
 
     }

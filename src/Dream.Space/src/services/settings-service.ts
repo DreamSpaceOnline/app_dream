@@ -1,11 +1,11 @@
 ﻿import { autoinject } from "aurelia-framework";
 import {EnumValues, IdName } from "../common/helpers/enum-helper";
-import {IndicatorCore, IndicatorsApiClient, QuotePeriod, ArticlesApiClient, Section } from "./services-generated";
+import {IndicatorCore, IndicatorsApiClient, QuotePeriod, ArticlesApiClient, SectionModel } from "./services-generated";
 
 @autoinject
 export class SettingsService {
 
-    sections: Section[];
+    sections: SectionModel[];
     periods: IdName[];
     initialized: boolean;
     homePage: string;

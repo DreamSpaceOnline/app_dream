@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Models.Articles;
+using Newtonsoft.Json;
 
 namespace Dream.Space.Data.Services
 {
@@ -16,21 +19,25 @@ namespace Dream.Space.Data.Services
         }
 
 
-        public async Task<Article> GetArticleAsync(int id)
+        public async Task<ArticleModel> GetArticleAsync(int id)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IArticleRepository>();
                 var entity = await repository.GetAsync(id);
-                return entity;
+                if (entity != null)
+                {
+                    return new ArticleModel(entity);
+                }
+                return null;
             }
         }
 
-        public async Task SaveArticleAsync(Article article)
+        public async Task<ArticleModel> SaveArticleAsync(ArticleModel article)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
-                Article record = null;
+                Article record;
                 var repository = scope.Resolve<IArticleRepository>();
 
                 if (article.ArticleId == 0)
@@ -47,19 +54,21 @@ namespace Dream.Space.Data.Services
                     record.CategoryId = article.CategoryId;
                     record.Title = article.Title;
                     record.Url = article.Url;
-                    record.JsonArticleBlocks = article.JsonArticleBlocks;
+                    record.JsonArticleBlocks = JsonConvert.SerializeObject(article.ArticleBlocks);
 
                     await repository.CommitAsync();
                 }
+
+                return new ArticleModel(record);
             }
         }
 
 
-        public async Task SaveCategoryAsync(Category category)
+        public async Task<CategoryModel> SaveCategoryAsync(CategoryModel category)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
-                Category record = null;
+                Category record;
                 var repository = scope.Resolve<ICategoryRepository>();
 
                 if (category.CategoryId == 0)
@@ -80,16 +89,22 @@ namespace Dream.Space.Data.Services
 
                     await repository.CommitAsync();
                 }
+
+                return new CategoryModel(record);
             }
         }
 
-        public async Task<Article> GetFeaturedArticleAsync(int categoryId)
+        public async Task<ArticleModel> GetFeaturedArticleAsync(int categoryId)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IArticleRepository>();
                 var record = await repository.GetFeaturedAsync(categoryId, true);
-                return record;
+                if (record != null)
+                {
+                    return new ArticleModel(record);
+                }
+                return null;
             }
         }
 
@@ -106,51 +121,65 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public async Task<List<Category>> GetCategoriesAsync(int sectionId)
+        public async Task<List<CategoryModel>> GetCategoriesAsync(int sectionId)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICategoryRepository>();
                 var records = await repository.GetBySectionIdAsync(sectionId);
-
-                return records;
+                if (records != null)
+                {
+                    return records.Select(c => new CategoryModel(c)).OrderBy(r => r.OrderId).ToList();
+                }
+                return new List<CategoryModel>();
             }
         }
 
-        public async Task<Section> GetSectionAsync(string sectionUrl)
+        public async Task<SectionModel> GetSectionAsync(string sectionUrl)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ISectionRepository>();
                 var record = await repository.GetAsync(sectionUrl);
-
-                return record;
+                if (record != null)
+                {
+                    return new SectionModel(record);
+                }
+                return null;
             }
         }
 
-        public async Task<List<Section>> GetSectionsAsync()
+        public async Task<List<SectionModel>> GetSectionsAsync()
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ISectionRepository>();
-                var record = await repository.GetAsync(false);
+                var records = await repository.GetAsync(false);
 
-                return record;
+                if (records != null)
+                {
+                    return records.Select(c => new SectionModel(c)).OrderBy(r => r.OrderId).ToList();
+                }
+                return new List<SectionModel>();
             }
         }
 
-        public async Task<Category> GetCategoryAsync(string categoryUrl)
+        public async Task<CategoryModel> GetCategoryAsync(string categoryUrl)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICategoryRepository>();
                 var record = await repository.GetAsync(categoryUrl, true);
 
-                return record;
+                if (record != null)
+                {
+                    return new CategoryModel(record);
+                }
+                return null;
             }
         }
 
-        public async Task<List<Article>> GetArticlesAsync(int categoryId)
+        public async Task<List<ArticleHeader>> GetArticlesAsync(int categoryId)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -160,13 +189,17 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public async Task<Article> GetArticleAsync(int categoryId, string articleUrl)
+        public async Task<ArticleModel> GetArticleAsync(int categoryId, string articleUrl)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<IArticleRepository>();
                 var record = await repository.GetByCategoryAsync(categoryId, articleUrl);
-                return record;
+                if (record != null)
+                {
+                    return new ArticleModel(record);
+                }
+                return null;
             }
         }
 

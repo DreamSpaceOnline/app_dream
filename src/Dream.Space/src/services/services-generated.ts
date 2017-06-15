@@ -13,16 +13,16 @@ export interface IArticlesApiClient {
     deleteArticle(id: number): Promise<Blob | null>;
     updateArticleOrder(model: UpdateArticleOrderModel): Promise<Blob | null>;
     deleteCategory(id: number): Promise<Blob | null>;
-    getSection(sectionUrl: string): Promise<Section | null>;
-    getSections(): Promise<Section[] | null>;
+    getSection(sectionUrl: string): Promise<SectionModel | null>;
+    getSections(): Promise<SectionModel[] | null>;
     getFeaturedArticle(categoryId: number): Promise<ArticleModel | null>;
     getArticleByUrl(categoryId: number, articleUrl: string): Promise<ArticleModel | null>;
-    getArticles(categoryId: number): Promise<ArticleModel[] | null>;
+    getArticles(categoryId: number): Promise<ArticleHeader[] | null>;
     setFeaturedArticle(id: number): Promise<Blob | null>;
-    getCategories(sectionId: number): Promise<Category[] | null>;
-    getCategory(categoryUrl: string): Promise<Category | null>;
+    getCategories(sectionId: number): Promise<CategoryModel[] | null>;
+    getCategory(categoryUrl: string): Promise<CategoryModel | null>;
     saveArticle(model: ArticleModel): Promise<ArticleModel | null>;
-    saveCategory(model: Category): Promise<Category | null>;
+    saveCategory(model: CategoryModel): Promise<CategoryModel | null>;
 }
 
 @inject(String, HttpClient)
@@ -172,7 +172,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
         return Promise.resolve<Blob | null>(<any>null);
     }
 
-    getSection(sectionUrl: string): Promise<Section | null> {
+    getSection(sectionUrl: string): Promise<SectionModel | null> {
         let url_ = this.baseUrl + "/api/article/section/{sectionUrl}";
         if (sectionUrl === undefined || sectionUrl === null)
             throw new Error("The parameter 'sectionUrl' must be defined.");
@@ -192,13 +192,13 @@ export class ArticlesApiClient implements IArticlesApiClient {
         });
     }
 
-    protected processGetSection(response: Response): Promise<Section | null> {
+    protected processGetSection(response: Response): Promise<SectionModel | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: Section | null = null;
+            let result200: SectionModel | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Section.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? SectionModel.fromJS(resultData200) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -206,10 +206,10 @@ export class ArticlesApiClient implements IArticlesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<Section | null>(<any>null);
+        return Promise.resolve<SectionModel | null>(<any>null);
     }
 
-    getSections(): Promise<Section[] | null> {
+    getSections(): Promise<SectionModel[] | null> {
         let url_ = this.baseUrl + "/api/article/sections";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -226,16 +226,16 @@ export class ArticlesApiClient implements IArticlesApiClient {
         });
     }
 
-    protected processGetSections(response: Response): Promise<Section[] | null> {
+    protected processGetSections(response: Response): Promise<SectionModel[] | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: Section[] | null = null;
+            let result200: SectionModel[] | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(Section.fromJS(item));
+                    result200.push(SectionModel.fromJS(item));
             }
             return result200;
             });
@@ -244,7 +244,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<Section[] | null>(<any>null);
+        return Promise.resolve<SectionModel[] | null>(<any>null);
     }
 
     getFeaturedArticle(categoryId: number): Promise<ArticleModel | null> {
@@ -324,7 +324,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
         return Promise.resolve<ArticleModel | null>(<any>null);
     }
 
-    getArticles(categoryId: number): Promise<ArticleModel[] | null> {
+    getArticles(categoryId: number): Promise<ArticleHeader[] | null> {
         let url_ = this.baseUrl + "/api/article/{categoryId}/all";
         if (categoryId === undefined || categoryId === null)
             throw new Error("The parameter 'categoryId' must be defined.");
@@ -344,16 +344,16 @@ export class ArticlesApiClient implements IArticlesApiClient {
         });
     }
 
-    protected processGetArticles(response: Response): Promise<ArticleModel[] | null> {
+    protected processGetArticles(response: Response): Promise<ArticleHeader[] | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: ArticleModel[] | null = null;
+            let result200: ArticleHeader[] | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(ArticleModel.fromJS(item));
+                    result200.push(ArticleHeader.fromJS(item));
             }
             return result200;
             });
@@ -362,7 +362,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<ArticleModel[] | null>(<any>null);
+        return Promise.resolve<ArticleHeader[] | null>(<any>null);
     }
 
     setFeaturedArticle(id: number): Promise<Blob | null> {
@@ -399,7 +399,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
         return Promise.resolve<Blob | null>(<any>null);
     }
 
-    getCategories(sectionId: number): Promise<Category[] | null> {
+    getCategories(sectionId: number): Promise<CategoryModel[] | null> {
         let url_ = this.baseUrl + "/api/article/categories/{sectionId}";
         if (sectionId === undefined || sectionId === null)
             throw new Error("The parameter 'sectionId' must be defined.");
@@ -419,16 +419,16 @@ export class ArticlesApiClient implements IArticlesApiClient {
         });
     }
 
-    protected processGetCategories(response: Response): Promise<Category[] | null> {
+    protected processGetCategories(response: Response): Promise<CategoryModel[] | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: Category[] | null = null;
+            let result200: CategoryModel[] | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(Category.fromJS(item));
+                    result200.push(CategoryModel.fromJS(item));
             }
             return result200;
             });
@@ -437,10 +437,10 @@ export class ArticlesApiClient implements IArticlesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<Category[] | null>(<any>null);
+        return Promise.resolve<CategoryModel[] | null>(<any>null);
     }
 
-    getCategory(categoryUrl: string): Promise<Category | null> {
+    getCategory(categoryUrl: string): Promise<CategoryModel | null> {
         let url_ = this.baseUrl + "/api/article/category/{categoryUrl}";
         if (categoryUrl === undefined || categoryUrl === null)
             throw new Error("The parameter 'categoryUrl' must be defined.");
@@ -460,13 +460,13 @@ export class ArticlesApiClient implements IArticlesApiClient {
         });
     }
 
-    protected processGetCategory(response: Response): Promise<Category | null> {
+    protected processGetCategory(response: Response): Promise<CategoryModel | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: Category | null = null;
+            let result200: CategoryModel | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Category.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? CategoryModel.fromJS(resultData200) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -474,7 +474,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<Category | null>(<any>null);
+        return Promise.resolve<CategoryModel | null>(<any>null);
     }
 
     saveArticle(model: ArticleModel): Promise<ArticleModel | null> {
@@ -514,7 +514,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
         return Promise.resolve<ArticleModel | null>(<any>null);
     }
 
-    saveCategory(model: Category): Promise<Category | null> {
+    saveCategory(model: CategoryModel): Promise<CategoryModel | null> {
         let url_ = this.baseUrl + "/api/article/category";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -534,13 +534,13 @@ export class ArticlesApiClient implements IArticlesApiClient {
         });
     }
 
-    protected processSaveCategory(response: Response): Promise<Category | null> {
+    protected processSaveCategory(response: Response): Promise<CategoryModel | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: Category | null = null;
+            let result200: CategoryModel | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Category.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? CategoryModel.fromJS(resultData200) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -548,7 +548,7 @@ export class ArticlesApiClient implements IArticlesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<Category | null>(<any>null);
+        return Promise.resolve<CategoryModel | null>(<any>null);
     }
 }
 
@@ -2442,18 +2442,17 @@ export class StrategiesApiClient implements IStrategiesApiClient {
     }
 }
 
-export class ArticleModel implements IArticleModel {
+export class ArticleHeader implements IArticleHeader {
     articleId: number;
     title?: string | null;
-    summary?: string | null;
     url?: string | null;
+    summary?: string | null;
     categoryId: number;
     orderId: number;
-    blocks?: ArticleBlock[] | null;
     isFeatured: boolean;
     deleted: boolean;
 
-    constructor(data?: IArticleModel) {
+    constructor(data?: IArticleHeader) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2466,17 +2465,61 @@ export class ArticleModel implements IArticleModel {
         if (data) {
             this.articleId = data["articleId"] !== undefined ? data["articleId"] : <any>null;
             this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.summary = data["summary"] !== undefined ? data["summary"] : <any>null;
             this.url = data["url"] !== undefined ? data["url"] : <any>null;
+            this.summary = data["summary"] !== undefined ? data["summary"] : <any>null;
             this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : <any>null;
             this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            if (data["blocks"] && data["blocks"].constructor === Array) {
-                this.blocks = [];
-                for (let item of data["blocks"])
-                    this.blocks.push(ArticleBlock.fromJS(item));
-            }
             this.isFeatured = data["isFeatured"] !== undefined ? data["isFeatured"] : <any>null;
             this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ArticleHeader {
+        let result = new ArticleHeader();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["articleId"] = this.articleId !== undefined ? this.articleId : <any>null;
+        data["title"] = this.title !== undefined ? this.title : <any>null;
+        data["url"] = this.url !== undefined ? this.url : <any>null;
+        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
+        data["categoryId"] = this.categoryId !== undefined ? this.categoryId : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : <any>null;
+        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
+        return data; 
+    }
+}
+
+export interface IArticleHeader {
+    articleId: number;
+    title?: string | null;
+    url?: string | null;
+    summary?: string | null;
+    categoryId: number;
+    orderId: number;
+    isFeatured: boolean;
+    deleted: boolean;
+}
+
+export class ArticleModel extends ArticleHeader implements IArticleModel {
+    articleBlocks?: ArticleBlock[] | null;
+
+    constructor(data?: IArticleModel) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
+            if (data["articleBlocks"] && data["articleBlocks"].constructor === Array) {
+                this.articleBlocks = [];
+                for (let item of data["articleBlocks"])
+                    this.articleBlocks.push(ArticleBlock.fromJS(item));
+            }
         }
     }
 
@@ -2488,33 +2531,18 @@ export class ArticleModel implements IArticleModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["articleId"] = this.articleId !== undefined ? this.articleId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["categoryId"] = this.categoryId !== undefined ? this.categoryId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        if (this.blocks && this.blocks.constructor === Array) {
-            data["blocks"] = [];
-            for (let item of this.blocks)
-                data["blocks"].push(item.toJSON());
+        if (this.articleBlocks && this.articleBlocks.constructor === Array) {
+            data["articleBlocks"] = [];
+            for (let item of this.articleBlocks)
+                data["articleBlocks"].push(item.toJSON());
         }
-        data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
+        super.toJSON(data);
         return data; 
     }
 }
 
-export interface IArticleModel {
-    articleId: number;
-    title?: string | null;
-    summary?: string | null;
-    url?: string | null;
-    categoryId: number;
-    orderId: number;
-    blocks?: ArticleBlock[] | null;
-    isFeatured: boolean;
-    deleted: boolean;
+export interface IArticleModel extends IArticleHeader {
+    articleBlocks?: ArticleBlock[] | null;
 }
 
 export class ArticleBlock implements IArticleBlock {
@@ -2674,15 +2702,14 @@ export interface IUpdateArticleOrderModel {
     orderId: number;
 }
 
-export class Section implements ISection {
+export class SectionModel implements ISectionModel {
     sectionId: number;
     title?: string | null;
     url?: string | null;
     orderId: number;
-    categories?: Category[] | null;
     isDeleted: boolean;
 
-    constructor(data?: ISection) {
+    constructor(data?: ISectionModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2697,17 +2724,12 @@ export class Section implements ISection {
             this.title = data["title"] !== undefined ? data["title"] : <any>null;
             this.url = data["url"] !== undefined ? data["url"] : <any>null;
             this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            if (data["categories"] && data["categories"].constructor === Array) {
-                this.categories = [];
-                for (let item of data["categories"])
-                    this.categories.push(Category.fromJS(item));
-            }
             this.isDeleted = data["isDeleted"] !== undefined ? data["isDeleted"] : <any>null;
         }
     }
 
-    static fromJS(data: any): Section {
-        let result = new Section();
+    static fromJS(data: any): SectionModel {
+        let result = new SectionModel();
         result.init(data);
         return result;
     }
@@ -2718,36 +2740,28 @@ export class Section implements ISection {
         data["title"] = this.title !== undefined ? this.title : <any>null;
         data["url"] = this.url !== undefined ? this.url : <any>null;
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        if (this.categories && this.categories.constructor === Array) {
-            data["categories"] = [];
-            for (let item of this.categories)
-                data["categories"].push(item.toJSON());
-        }
         data["isDeleted"] = this.isDeleted !== undefined ? this.isDeleted : <any>null;
         return data; 
     }
 }
 
-export interface ISection {
+export interface ISectionModel {
     sectionId: number;
     title?: string | null;
     url?: string | null;
     orderId: number;
-    categories?: Category[] | null;
     isDeleted: boolean;
 }
 
-export class Category implements ICategory {
+export class CategoryModel implements ICategoryModel {
     categoryId: number;
     title?: string | null;
     orderId: number;
     url?: string | null;
     sectionId: number;
-    articles?: Article[] | null;
-    section?: Section | null;
     deleted: boolean;
 
-    constructor(data?: ICategory) {
+    constructor(data?: ICategoryModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2763,18 +2777,12 @@ export class Category implements ICategory {
             this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
             this.url = data["url"] !== undefined ? data["url"] : <any>null;
             this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : <any>null;
-            if (data["articles"] && data["articles"].constructor === Array) {
-                this.articles = [];
-                for (let item of data["articles"])
-                    this.articles.push(Article.fromJS(item));
-            }
-            this.section = data["section"] ? Section.fromJS(data["section"]) : <any>null;
             this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
         }
     }
 
-    static fromJS(data: any): Category {
-        let result = new Category();
+    static fromJS(data: any): CategoryModel {
+        let result = new CategoryModel();
         result.init(data);
         return result;
     }
@@ -2786,92 +2794,17 @@ export class Category implements ICategory {
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
         data["url"] = this.url !== undefined ? this.url : <any>null;
         data["sectionId"] = this.sectionId !== undefined ? this.sectionId : <any>null;
-        if (this.articles && this.articles.constructor === Array) {
-            data["articles"] = [];
-            for (let item of this.articles)
-                data["articles"].push(item.toJSON());
-        }
-        data["section"] = this.section ? this.section.toJSON() : <any>null;
         data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
         return data; 
     }
 }
 
-export interface ICategory {
+export interface ICategoryModel {
     categoryId: number;
     title?: string | null;
     orderId: number;
     url?: string | null;
     sectionId: number;
-    articles?: Article[] | null;
-    section?: Section | null;
-    deleted: boolean;
-}
-
-export class Article implements IArticle {
-    articleId: number;
-    title?: string | null;
-    url?: string | null;
-    categoryId: number;
-    orderId: number;
-    jsonArticleBlocks?: string | null;
-    category?: Category | null;
-    isFeatured: boolean;
-    deleted: boolean;
-
-    constructor(data?: IArticle) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.articleId = data["articleId"] !== undefined ? data["articleId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
-            this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.jsonArticleBlocks = data["jsonArticleBlocks"] !== undefined ? data["jsonArticleBlocks"] : <any>null;
-            this.category = data["category"] ? Category.fromJS(data["category"]) : <any>null;
-            this.isFeatured = data["isFeatured"] !== undefined ? data["isFeatured"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): Article {
-        let result = new Article();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["articleId"] = this.articleId !== undefined ? this.articleId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["categoryId"] = this.categoryId !== undefined ? this.categoryId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["jsonArticleBlocks"] = this.jsonArticleBlocks !== undefined ? this.jsonArticleBlocks : <any>null;
-        data["category"] = this.category ? this.category.toJSON() : <any>null;
-        data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        return data; 
-    }
-}
-
-export interface IArticle {
-    articleId: number;
-    title?: string | null;
-    url?: string | null;
-    categoryId: number;
-    orderId: number;
-    jsonArticleBlocks?: string | null;
-    category?: Category | null;
-    isFeatured: boolean;
     deleted: boolean;
 }
 

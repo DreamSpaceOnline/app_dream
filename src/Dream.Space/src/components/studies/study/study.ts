@@ -6,7 +6,7 @@ import { Navigation } from "../navigation"
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import {BootstrapFormRenderer} from "../../../form-validation/bootstrap-form-renderer";
 import {AccountService} from "../../../services/account-service";
-import {ArticlesApiClient, ArticleModel, Category } from "../../../services/services-generated";
+import {ArticlesApiClient, ArticleModel, CategoryModel } from "../../../services/services-generated";
 
 @autoinject
 export class Study {
@@ -17,7 +17,7 @@ export class Study {
     subscriptions: {}[];
     editMode: boolean;
     article: ArticleModel;
-    category: Category;
+    category: CategoryModel;
     articles: ArticleModel[];
     originalArticle: ArticleModel;
 
@@ -117,7 +117,7 @@ export class Study {
         this.article.deleted = false;
         this.article.title = "New Article";
         this.article.url = "new-article";
-        this.article.blocks = [];
+        this.article.articleBlocks = [];
         this.article.summary = "";
     
 
@@ -172,8 +172,8 @@ export class Study {
     }
 
     articlePartsValidate() {
-        if (this.article.blocks.length > 0) {
-            const index = this.article.blocks.findIndex(b => !b.valid);
+        if (this.article.articleBlocks.length > 0) {
+            const index = this.article.articleBlocks.findIndex(b => !b.valid);
             return index === -1;
         } else {
             toastr.warning("Article is empty", "Validation Errors");

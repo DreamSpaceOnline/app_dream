@@ -243,6 +243,10 @@
     <Compile Include="Migrations\201705241434064_AlterLayout1.Designer.cs">
       <DependentUpon>201705241434064_AlterLayout1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706151629163_AlterArticles.cs" />
+    <Compile Include="Migrations\201706151629163_AlterArticles.Designer.cs">
+      <DependentUpon>201706151629163_AlterArticles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -422,6 +426,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705241434064_AlterLayout1.resx">
       <DependentUpon>201705241434064_AlterLayout1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706151629163_AlterArticles.resx">
+      <DependentUpon>201706151629163_AlterArticles.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

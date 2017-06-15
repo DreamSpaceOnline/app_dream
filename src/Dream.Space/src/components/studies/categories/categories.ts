@@ -3,17 +3,17 @@ import { ValidationController, validateTrigger } from "aurelia-validation"
 import * as Bootstrapformrenderer from "../../../form-validation/bootstrap-form-renderer";
 import {SettingsService} from "../../../services/settings-service";
 import {AccountService} from "../../../services/account-service";
-import {Section, Category, ArticlesApiClient } from "../../../services/services-generated";
+import {SectionModel, CategoryModel, ArticlesApiClient } from "../../../services/services-generated";
 
 @autoinject
 export class Categories {
 
     powerUser: boolean;
     editMode: boolean;
-    section: Section;
+    section: SectionModel;
     sectionId: number;
-    categories:Category[];
-    sections: Section[];
+    categories: CategoryModel[];
+    sections: SectionModel[];
 
     constructor(
         private readonly articleService: ArticlesApiClient,

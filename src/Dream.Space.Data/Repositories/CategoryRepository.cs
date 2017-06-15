@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Articles;
+using Dream.Space.Models.Articles;
 
 namespace Dream.Space.Data.Repositories
 {
@@ -31,7 +32,8 @@ namespace Dream.Space.Data.Repositories
 
         public async Task<List<Category>> GetBySectionIdAsync(int sectionId)
         {
-            var records = await Dbset.Where(r => r.SectionId == sectionId && !r.Deleted).ToListAsync();
+            var records = await Dbset.Where(r => r.SectionId == sectionId && !r.Deleted)
+                .OrderBy(h => h.Title).ToListAsync();
             return records;
         }
 

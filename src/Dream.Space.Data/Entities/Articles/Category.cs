@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Dream.Space.Models.Articles;
 
 namespace Dream.Space.Data.Entities.Articles
 {
-    public class Category
+    public class Category: ICategoryEntity
     {
         public int CategoryId { get; set; }
         public string Title { get; set; }

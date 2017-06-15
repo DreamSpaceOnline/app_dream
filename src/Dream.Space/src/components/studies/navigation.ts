@@ -1,13 +1,13 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router } from "aurelia-router";
 import {SettingsService} from "../../services/settings-service";
-import {ArticlesApiClient, Category, Section } from "../../services/services-generated";
+import {ArticlesApiClient, CategoryModel, SectionModel } from "../../services/services-generated";
 
 @autoinject
 export class Navigation {
 
     router: Router;
-    section: Section;
+    section: SectionModel;
     menu: IMenuNavigationItem;
     
     constructor(private readonly articleService: ArticlesApiClient, private readonly settings: SettingsService) {
@@ -54,7 +54,7 @@ export class Navigation {
 
 export interface IMenuNavigationItem {
     editMode: boolean;
-    section: Section;
+    section: SectionModel;
     editModeUrl: string;
-    items:Category[];
+    items:CategoryModel[];
 }
