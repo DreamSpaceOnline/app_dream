@@ -356,7 +356,6 @@
     <Content Include="src\components\user\navigation.html" />
     <Content Include="src\components\user\profile.html" />
     <Content Include="src\dialogs\login\user-login.html" />
-    <Content Include="src\resources\elements\chart\stock-chart.html" />
     <Content Include="src\resources\elements\company\company-details.html" />
     <Content Include="src\resources\elements\indicator\indicator.html" />
     <Content Include="src\resources\elements\progress\s-progress.html" />

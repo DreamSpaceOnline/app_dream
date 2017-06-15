@@ -58,11 +58,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetArticle(response: Response): Promise<ArticleModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ArticleModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ArticleModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -194,11 +195,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetSection(response: Response): Promise<SectionModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: SectionModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? SectionModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? SectionModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -228,14 +230,15 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetSections(response: Response): Promise<SectionModel[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: SectionModel[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(SectionModel.fromJS(item));
+                    result200.push(SectionModel.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -269,11 +272,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetFeaturedArticle(response: Response): Promise<ArticleModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ArticleModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ArticleModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -309,11 +313,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetArticleByUrl(response: Response): Promise<ArticleModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ArticleModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ArticleModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -346,14 +351,15 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetArticles(response: Response): Promise<ArticleHeader[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ArticleHeader[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(ArticleHeader.fromJS(item));
+                    result200.push(ArticleHeader.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -421,14 +427,15 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetCategories(response: Response): Promise<CategoryModel[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CategoryModel[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(CategoryModel.fromJS(item));
+                    result200.push(CategoryModel.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -462,11 +469,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processGetCategory(response: Response): Promise<CategoryModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CategoryModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CategoryModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CategoryModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -499,11 +507,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processSaveArticle(response: Response): Promise<ArticleModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ArticleModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ArticleModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -536,11 +545,12 @@ export class ArticlesApiClient implements IArticlesApiClient {
 
     protected processSaveCategory(response: Response): Promise<CategoryModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CategoryModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CategoryModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CategoryModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -590,7 +600,7 @@ export class BlobApiClient implements IBlobApiClient {
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: string | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             result200 = resultData200 !== undefined ? resultData200 : <any>null;
             return result200;
             });
@@ -627,7 +637,7 @@ export class BlobApiClient implements IBlobApiClient {
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: string | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             result200 = resultData200 !== undefined ? resultData200 : <any>null;
             return result200;
             });
@@ -678,11 +688,12 @@ export class CompaniesApiClient implements ICompaniesApiClient {
 
     protected processGetCompany(response: Response): Promise<Company | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Company | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Company.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Company.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -715,14 +726,15 @@ export class CompaniesApiClient implements ICompaniesApiClient {
 
     protected processSearch(response: Response): Promise<CompanyDetails[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CompanyDetails[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(CompanyDetails.fromJS(item));
+                    result200.push(CompanyDetails.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -776,11 +788,12 @@ export class IndicatorsApiClient implements IIndicatorsApiClient {
 
     protected processGetIndicator(response: Response): Promise<Indicator | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Indicator | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Indicator.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Indicator.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -847,14 +860,15 @@ export class IndicatorsApiClient implements IIndicatorsApiClient {
 
     protected processGetIndicatorsAll(response: Response): Promise<Indicator[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Indicator[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(Indicator.fromJS(item));
+                    result200.push(Indicator.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -885,14 +899,15 @@ export class IndicatorsApiClient implements IIndicatorsApiClient {
 
     protected processGetIndicators(response: Response): Promise<IndicatorCore[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: IndicatorCore[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(IndicatorCore.fromJS(item));
+                    result200.push(IndicatorCore.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -926,11 +941,12 @@ export class IndicatorsApiClient implements IIndicatorsApiClient {
 
     protected processSaveIndicator(response: Response): Promise<Indicator | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Indicator | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Indicator.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Indicator.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1160,11 +1176,12 @@ export class JobsApiClient implements IJobsApiClient {
 
     protected processStartScheduledJobs(response: Response): Promise<ScheduledJob | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ScheduledJob | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ScheduledJob.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1197,14 +1214,15 @@ export class JobsApiClient implements IJobsApiClient {
 
     protected processGetSheduledJobHistory(response: Response): Promise<ScheduledJob[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ScheduledJob[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(ScheduledJob.fromJS(item));
+                    result200.push(ScheduledJob.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -1238,11 +1256,12 @@ export class JobsApiClient implements IJobsApiClient {
 
     protected processGetCurrentJob(response: Response): Promise<ScheduledJob | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ScheduledJob | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ScheduledJob.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1275,11 +1294,12 @@ export class JobsApiClient implements IJobsApiClient {
 
     protected processGetJob(response: Response): Promise<ScheduledJob | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ScheduledJob | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ScheduledJob.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1331,14 +1351,15 @@ export class LayoutApiClient implements ILayoutApiClient {
 
     protected processGetLayoutsForPeriod(response: Response): Promise<ChartLayoutModel[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ChartLayoutModel[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(ChartLayoutModel.fromJS(item));
+                    result200.push(ChartLayoutModel.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -1372,11 +1393,12 @@ export class LayoutApiClient implements ILayoutApiClient {
 
     protected processGetLayout(response: Response): Promise<ChartLayoutModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ChartLayoutModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1409,11 +1431,12 @@ export class LayoutApiClient implements ILayoutApiClient {
 
     protected processGetDefaultLayout(response: Response): Promise<ChartLayoutModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ChartLayoutModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1446,11 +1469,12 @@ export class LayoutApiClient implements ILayoutApiClient {
 
     protected processSaveLayout(response: Response): Promise<ChartLayoutModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ChartLayoutModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1501,14 +1525,15 @@ export class LogsApiClient implements ILogsApiClient {
 
     protected processGetJobLogs(response: Response): Promise<ProcessorLog[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: ProcessorLog[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(ProcessorLog.fromJS(item));
+                    result200.push(ProcessorLog.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -1629,11 +1654,12 @@ export class RulesApiClient implements IRulesApiClient {
 
     protected processGetRule(response: Response): Promise<Rule | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Rule | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Rule.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Rule.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1700,14 +1726,15 @@ export class RulesApiClient implements IRulesApiClient {
 
     protected processGetRules(response: Response): Promise<Rule[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Rule[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(Rule.fromJS(item));
+                    result200.push(Rule.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -1741,11 +1768,12 @@ export class RulesApiClient implements IRulesApiClient {
 
     protected processSaveRule(response: Response): Promise<Rule | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Rule | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Rule.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Rule.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1799,11 +1827,12 @@ export class RuleSetsApiClient implements IRuleSetsApiClient {
 
     protected processGetRuleSet(response: Response): Promise<RuleSetModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: RuleSetModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? RuleSetModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? RuleSetModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1870,14 +1899,15 @@ export class RuleSetsApiClient implements IRuleSetsApiClient {
 
     protected processGetRuleSets(response: Response): Promise<RuleSetModel[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: RuleSetModel[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(RuleSetModel.fromJS(item));
+                    result200.push(RuleSetModel.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -1911,11 +1941,12 @@ export class RuleSetsApiClient implements IRuleSetsApiClient {
 
     protected processSaveRuleSet(response: Response): Promise<RuleSetModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: RuleSetModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? RuleSetModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? RuleSetModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1948,14 +1979,15 @@ export class RuleSetsApiClient implements IRuleSetsApiClient {
 
     protected processGetStrategyRuleSets(response: Response): Promise<VStrategyRuleSet[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: VStrategyRuleSet[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(VStrategyRuleSet.fromJS(item));
+                    result200.push(VStrategyRuleSet.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -2105,11 +2137,12 @@ export class PlaygroundApiClient implements IPlaygroundApiClient {
 
     protected processLoadPlayground(response: Response): Promise<CompanyChartData | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CompanyChartData | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CompanyChartData.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2145,11 +2178,12 @@ export class PlaygroundApiClient implements IPlaygroundApiClient {
 
     protected processNext(response: Response): Promise<CompanyChartData | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CompanyChartData | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CompanyChartData.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2185,11 +2219,12 @@ export class PlaygroundApiClient implements IPlaygroundApiClient {
 
     protected processPrev(response: Response): Promise<CompanyChartData | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: CompanyChartData | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CompanyChartData.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2240,14 +2275,15 @@ export class StrategiesApiClient implements IStrategiesApiClient {
 
     protected processGeStrategySummaries(response: Response): Promise<StrategySummary[] | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: StrategySummary[] | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(StrategySummary.fromJS(item));
+                    result200.push(StrategySummary.fromJS(item, _mappings));
             }
             return result200;
             });
@@ -2281,11 +2317,12 @@ export class StrategiesApiClient implements IStrategiesApiClient {
 
     protected processGetStrategyByUrl(response: Response): Promise<StrategyModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: StrategyModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StrategyModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StrategyModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2318,11 +2355,12 @@ export class StrategiesApiClient implements IStrategiesApiClient {
 
     protected processGetStrategySummaryByUrl(response: Response): Promise<StrategySummary | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: StrategySummary | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StrategySummary.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StrategySummary.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2355,11 +2393,12 @@ export class StrategiesApiClient implements IStrategiesApiClient {
 
     protected processGetStrategyById(response: Response): Promise<Strategy | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: Strategy | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Strategy.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? Strategy.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2392,11 +2431,12 @@ export class StrategiesApiClient implements IStrategiesApiClient {
 
     protected processSaveStrategy(response: Response): Promise<StrategyModel | null> {
         const status = response.status;
+        let _mappings: { source: any, target: any }[] = [];
         if (status === 200) {
             return response.text().then((responseText) => {
             let result200: StrategyModel | null = null;
-            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StrategyModel.fromJS(resultData200) : <any>null;
+            let resultData200 = responseText === "" ? null : jsonParse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StrategyModel.fromJS(resultData200, _mappings) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2444,9 +2484,9 @@ export class StrategiesApiClient implements IStrategiesApiClient {
 
 export class ArticleHeader implements IArticleHeader {
     articleId: number;
-    title?: string | null;
-    url?: string | null;
-    summary?: string | null;
+    title?: string | undefined;
+    url?: string | undefined;
+    summary?: string | undefined;
     categoryId: number;
     orderId: number;
     isFeatured: boolean;
@@ -2461,44 +2501,42 @@ export class ArticleHeader implements IArticleHeader {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.articleId = data["articleId"] !== undefined ? data["articleId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
-            this.summary = data["summary"] !== undefined ? data["summary"] : <any>null;
-            this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.isFeatured = data["isFeatured"] !== undefined ? data["isFeatured"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
+            this.articleId = data["articleId"];
+            this.title = data["title"];
+            this.url = data["url"];
+            this.summary = data["summary"];
+            this.categoryId = data["categoryId"];
+            this.orderId = data["orderId"];
+            this.isFeatured = data["isFeatured"];
+            this.deleted = data["deleted"];
         }
     }
 
-    static fromJS(data: any): ArticleHeader {
-        let result = new ArticleHeader();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ArticleHeader {
+        return createInstance<ArticleHeader>(data, _mappings, ArticleHeader);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["articleId"] = this.articleId !== undefined ? this.articleId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
-        data["categoryId"] = this.categoryId !== undefined ? this.categoryId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
+        data["articleId"] = this.articleId;
+        data["title"] = this.title;
+        data["url"] = this.url;
+        data["summary"] = this.summary;
+        data["categoryId"] = this.categoryId;
+        data["orderId"] = this.orderId;
+        data["isFeatured"] = this.isFeatured;
+        data["deleted"] = this.deleted;
         return data; 
     }
 }
 
 export interface IArticleHeader {
     articleId: number;
-    title?: string | null;
-    url?: string | null;
-    summary?: string | null;
+    title?: string | undefined;
+    url?: string | undefined;
+    summary?: string | undefined;
     categoryId: number;
     orderId: number;
     isFeatured: boolean;
@@ -2506,27 +2544,25 @@ export interface IArticleHeader {
 }
 
 export class ArticleModel extends ArticleHeader implements IArticleModel {
-    articleBlocks?: ArticleBlock[] | null;
+    articleBlocks?: ArticleBlock[] | undefined;
 
     constructor(data?: IArticleModel) {
         super(data);
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         super.init(data);
         if (data) {
             if (data["articleBlocks"] && data["articleBlocks"].constructor === Array) {
                 this.articleBlocks = [];
                 for (let item of data["articleBlocks"])
-                    this.articleBlocks.push(ArticleBlock.fromJS(item));
+                    this.articleBlocks.push(ArticleBlock.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): ArticleModel {
-        let result = new ArticleModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ArticleModel {
+        return createInstance<ArticleModel>(data, _mappings, ArticleModel);
     }
 
     toJSON(data?: any) {
@@ -2542,16 +2578,16 @@ export class ArticleModel extends ArticleHeader implements IArticleModel {
 }
 
 export interface IArticleModel extends IArticleHeader {
-    articleBlocks?: ArticleBlock[] | null;
+    articleBlocks?: ArticleBlock[] | undefined;
 }
 
 export class ArticleBlock implements IArticleBlock {
     valid: boolean;
     blockType: ArticleBlockType;
-    text?: string | null;
-    headingType?: HeadingType | null;
-    imageUrl?: string | null;
-    items?: ArticleBlockItem[] | null;
+    text?: string | undefined;
+    headingType?: HeadingType | undefined;
+    imageUrl?: string | undefined;
+    items?: ArticleBlockItem[] | undefined;
 
     constructor(data?: IArticleBlock) {
         if (data) {
@@ -2562,34 +2598,32 @@ export class ArticleBlock implements IArticleBlock {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.valid = data["valid"] !== undefined ? data["valid"] : <any>null;
-            this.blockType = data["blockType"] !== undefined ? data["blockType"] : <any>null;
-            this.text = data["text"] !== undefined ? data["text"] : <any>null;
-            this.headingType = data["headingType"] !== undefined ? data["headingType"] : <any>null;
-            this.imageUrl = data["imageUrl"] !== undefined ? data["imageUrl"] : <any>null;
+            this.valid = data["valid"];
+            this.blockType = data["blockType"];
+            this.text = data["text"];
+            this.headingType = data["headingType"];
+            this.imageUrl = data["imageUrl"];
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [];
                 for (let item of data["items"])
-                    this.items.push(ArticleBlockItem.fromJS(item));
+                    this.items.push(ArticleBlockItem.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): ArticleBlock {
-        let result = new ArticleBlock();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ArticleBlock {
+        return createInstance<ArticleBlock>(data, _mappings, ArticleBlock);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["valid"] = this.valid !== undefined ? this.valid : <any>null;
-        data["blockType"] = this.blockType !== undefined ? this.blockType : <any>null;
-        data["text"] = this.text !== undefined ? this.text : <any>null;
-        data["headingType"] = this.headingType !== undefined ? this.headingType : <any>null;
-        data["imageUrl"] = this.imageUrl !== undefined ? this.imageUrl : <any>null;
+        data["valid"] = this.valid;
+        data["blockType"] = this.blockType;
+        data["text"] = this.text;
+        data["headingType"] = this.headingType;
+        data["imageUrl"] = this.imageUrl;
         if (this.items && this.items.constructor === Array) {
             data["items"] = [];
             for (let item of this.items)
@@ -2602,10 +2636,10 @@ export class ArticleBlock implements IArticleBlock {
 export interface IArticleBlock {
     valid: boolean;
     blockType: ArticleBlockType;
-    text?: string | null;
-    headingType?: HeadingType | null;
-    imageUrl?: string | null;
-    items?: ArticleBlockItem[] | null;
+    text?: string | undefined;
+    headingType?: HeadingType | undefined;
+    imageUrl?: string | undefined;
+    items?: ArticleBlockItem[] | undefined;
 }
 
 export enum ArticleBlockType {
@@ -2625,7 +2659,7 @@ export enum HeadingType {
 }
 
 export class ArticleBlockItem implements IArticleBlockItem {
-    text?: string | null;
+    text?: string | undefined;
     valid: boolean;
 
     constructor(data?: IArticleBlockItem) {
@@ -2637,29 +2671,27 @@ export class ArticleBlockItem implements IArticleBlockItem {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.text = data["text"] !== undefined ? data["text"] : <any>null;
-            this.valid = data["valid"] !== undefined ? data["valid"] : <any>null;
+            this.text = data["text"];
+            this.valid = data["valid"];
         }
     }
 
-    static fromJS(data: any): ArticleBlockItem {
-        let result = new ArticleBlockItem();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ArticleBlockItem {
+        return createInstance<ArticleBlockItem>(data, _mappings, ArticleBlockItem);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["text"] = this.text !== undefined ? this.text : <any>null;
-        data["valid"] = this.valid !== undefined ? this.valid : <any>null;
+        data["text"] = this.text;
+        data["valid"] = this.valid;
         return data; 
     }
 }
 
 export interface IArticleBlockItem {
-    text?: string | null;
+    text?: string | undefined;
     valid: boolean;
 }
 
@@ -2676,23 +2708,21 @@ export class UpdateArticleOrderModel implements IUpdateArticleOrderModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.articleId = data["articleId"] !== undefined ? data["articleId"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
+            this.articleId = data["articleId"];
+            this.orderId = data["orderId"];
         }
     }
 
-    static fromJS(data: any): UpdateArticleOrderModel {
-        let result = new UpdateArticleOrderModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): UpdateArticleOrderModel {
+        return createInstance<UpdateArticleOrderModel>(data, _mappings, UpdateArticleOrderModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["articleId"] = this.articleId !== undefined ? this.articleId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["articleId"] = this.articleId;
+        data["orderId"] = this.orderId;
         return data; 
     }
 }
@@ -2704,8 +2734,8 @@ export interface IUpdateArticleOrderModel {
 
 export class SectionModel implements ISectionModel {
     sectionId: number;
-    title?: string | null;
-    url?: string | null;
+    title?: string | undefined;
+    url?: string | undefined;
     orderId: number;
     isDeleted: boolean;
 
@@ -2718,46 +2748,44 @@ export class SectionModel implements ISectionModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.isDeleted = data["isDeleted"] !== undefined ? data["isDeleted"] : <any>null;
+            this.sectionId = data["sectionId"];
+            this.title = data["title"];
+            this.url = data["url"];
+            this.orderId = data["orderId"];
+            this.isDeleted = data["isDeleted"];
         }
     }
 
-    static fromJS(data: any): SectionModel {
-        let result = new SectionModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): SectionModel {
+        return createInstance<SectionModel>(data, _mappings, SectionModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["sectionId"] = this.sectionId !== undefined ? this.sectionId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["isDeleted"] = this.isDeleted !== undefined ? this.isDeleted : <any>null;
+        data["sectionId"] = this.sectionId;
+        data["title"] = this.title;
+        data["url"] = this.url;
+        data["orderId"] = this.orderId;
+        data["isDeleted"] = this.isDeleted;
         return data; 
     }
 }
 
 export interface ISectionModel {
     sectionId: number;
-    title?: string | null;
-    url?: string | null;
+    title?: string | undefined;
+    url?: string | undefined;
     orderId: number;
     isDeleted: boolean;
 }
 
 export class CategoryModel implements ICategoryModel {
     categoryId: number;
-    title?: string | null;
+    title?: string | undefined;
     orderId: number;
-    url?: string | null;
+    url?: string | undefined;
     sectionId: number;
     deleted: boolean;
 
@@ -2770,47 +2798,45 @@ export class CategoryModel implements ICategoryModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
-            this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
+            this.categoryId = data["categoryId"];
+            this.title = data["title"];
+            this.orderId = data["orderId"];
+            this.url = data["url"];
+            this.sectionId = data["sectionId"];
+            this.deleted = data["deleted"];
         }
     }
 
-    static fromJS(data: any): CategoryModel {
-        let result = new CategoryModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): CategoryModel {
+        return createInstance<CategoryModel>(data, _mappings, CategoryModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["categoryId"] = this.categoryId !== undefined ? this.categoryId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["sectionId"] = this.sectionId !== undefined ? this.sectionId : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
+        data["categoryId"] = this.categoryId;
+        data["title"] = this.title;
+        data["orderId"] = this.orderId;
+        data["url"] = this.url;
+        data["sectionId"] = this.sectionId;
+        data["deleted"] = this.deleted;
         return data; 
     }
 }
 
 export interface ICategoryModel {
     categoryId: number;
-    title?: string | null;
+    title?: string | undefined;
     orderId: number;
-    url?: string | null;
+    url?: string | undefined;
     sectionId: number;
     deleted: boolean;
 }
 
 export class FileDetails implements IFileDetails {
-    fileName?: string | null;
-    fileBody?: string | null;
+    fileName?: string | undefined;
+    fileBody?: string | undefined;
     category: FileCategory;
 
     constructor(data?: IFileDetails) {
@@ -2822,32 +2848,30 @@ export class FileDetails implements IFileDetails {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.fileName = data["fileName"] !== undefined ? data["fileName"] : <any>null;
-            this.fileBody = data["fileBody"] !== undefined ? data["fileBody"] : <any>null;
-            this.category = data["category"] !== undefined ? data["category"] : <any>null;
+            this.fileName = data["fileName"];
+            this.fileBody = data["fileBody"];
+            this.category = data["category"];
         }
     }
 
-    static fromJS(data: any): FileDetails {
-        let result = new FileDetails();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): FileDetails {
+        return createInstance<FileDetails>(data, _mappings, FileDetails);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["fileName"] = this.fileName !== undefined ? this.fileName : <any>null;
-        data["fileBody"] = this.fileBody !== undefined ? this.fileBody : <any>null;
-        data["category"] = this.category !== undefined ? this.category : <any>null;
+        data["fileName"] = this.fileName;
+        data["fileBody"] = this.fileBody;
+        data["category"] = this.category;
         return data; 
     }
 }
 
 export interface IFileDetails {
-    fileName?: string | null;
-    fileBody?: string | null;
+    fileName?: string | undefined;
+    fileBody?: string | undefined;
     category: FileCategory;
 }
 
@@ -2857,12 +2881,12 @@ export enum FileCategory {
 }
 
 export class Company implements ICompany {
-    ticker?: string | null;
-    name?: string | null;
+    ticker?: string | undefined;
+    name?: string | undefined;
     marketCap: number;
-    sector?: string | null;
-    industry?: string | null;
-    summaryUrl?: string | null;
+    sector?: string | undefined;
+    industry?: string | undefined;
+    summaryUrl?: string | undefined;
     lastUpdated: Date;
     lastCalculated: Date;
     volume: number;
@@ -2870,14 +2894,14 @@ export class Company implements ICompany {
     highestPrice52: number;
     lowestPrice52: number;
     chaosPercentage: number;
-    liveQuoteJson?: string | null;
-    historyQuotesJson?: string | null;
+    liveQuoteJson?: string | undefined;
+    historyQuotesJson?: string | undefined;
     nextReportDate: Date;
-    historyQuotes?: QuotesModel[] | null;
+    historyQuotes?: QuotesModel[] | undefined;
     updateSuccessful: boolean;
-    updateError?: string | null;
+    updateError?: string | undefined;
     calculatedSuccessful: boolean;
-    calculatedError?: string | null;
+    calculatedError?: string | undefined;
     filtered: boolean;
     startDate: Date;
     endDate: Date;
@@ -2895,94 +2919,92 @@ export class Company implements ICompany {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.marketCap = data["marketCap"] !== undefined ? data["marketCap"] : <any>null;
-            this.sector = data["sector"] !== undefined ? data["sector"] : <any>null;
-            this.industry = data["industry"] !== undefined ? data["industry"] : <any>null;
-            this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : <any>null;
-            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>null;
-            this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : <any>null;
-            this.volume = data["volume"] !== undefined ? data["volume"] : <any>null;
-            this.price = data["price"] !== undefined ? data["price"] : <any>null;
-            this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : <any>null;
-            this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : <any>null;
-            this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : <any>null;
-            this.liveQuoteJson = data["liveQuoteJson"] !== undefined ? data["liveQuoteJson"] : <any>null;
-            this.historyQuotesJson = data["historyQuotesJson"] !== undefined ? data["historyQuotesJson"] : <any>null;
-            this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : <any>null;
+            this.ticker = data["ticker"];
+            this.name = data["name"];
+            this.marketCap = data["marketCap"];
+            this.sector = data["sector"];
+            this.industry = data["industry"];
+            this.summaryUrl = data["summaryUrl"];
+            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>undefined;
+            this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : <any>undefined;
+            this.volume = data["volume"];
+            this.price = data["price"];
+            this.highestPrice52 = data["highestPrice52"];
+            this.lowestPrice52 = data["lowestPrice52"];
+            this.chaosPercentage = data["chaosPercentage"];
+            this.liveQuoteJson = data["liveQuoteJson"];
+            this.historyQuotesJson = data["historyQuotesJson"];
+            this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : <any>undefined;
             if (data["historyQuotes"] && data["historyQuotes"].constructor === Array) {
                 this.historyQuotes = [];
                 for (let item of data["historyQuotes"])
-                    this.historyQuotes.push(QuotesModel.fromJS(item));
+                    this.historyQuotes.push(QuotesModel.fromJS(item, _mappings));
             }
-            this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : <any>null;
-            this.updateError = data["updateError"] !== undefined ? data["updateError"] : <any>null;
-            this.calculatedSuccessful = data["calculatedSuccessful"] !== undefined ? data["calculatedSuccessful"] : <any>null;
-            this.calculatedError = data["calculatedError"] !== undefined ? data["calculatedError"] : <any>null;
-            this.filtered = data["filtered"] !== undefined ? data["filtered"] : <any>null;
-            this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : <any>null;
-            this.endDate = data["endDate"] ? new Date(data["endDate"].toString()) : <any>null;
-            this.sectorId = data["sectorId"] !== undefined ? data["sectorId"] : <any>null;
-            this.industryId = data["industryId"] !== undefined ? data["industryId"] : <any>null;
-            this.sP500 = data["sP500"] !== undefined ? data["sP500"] : <any>null;
-            this.isIndex = data["isIndex"] !== undefined ? data["isIndex"] : <any>null;
+            this.updateSuccessful = data["updateSuccessful"];
+            this.updateError = data["updateError"];
+            this.calculatedSuccessful = data["calculatedSuccessful"];
+            this.calculatedError = data["calculatedError"];
+            this.filtered = data["filtered"];
+            this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : <any>undefined;
+            this.endDate = data["endDate"] ? new Date(data["endDate"].toString()) : <any>undefined;
+            this.sectorId = data["sectorId"];
+            this.industryId = data["industryId"];
+            this.sP500 = data["sP500"];
+            this.isIndex = data["isIndex"];
         }
     }
 
-    static fromJS(data: any): Company {
-        let result = new Company();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): Company {
+        return createInstance<Company>(data, _mappings, Company);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["marketCap"] = this.marketCap !== undefined ? this.marketCap : <any>null;
-        data["sector"] = this.sector !== undefined ? this.sector : <any>null;
-        data["industry"] = this.industry !== undefined ? this.industry : <any>null;
-        data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : <any>null;
-        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>null;
-        data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : <any>null;
-        data["volume"] = this.volume !== undefined ? this.volume : <any>null;
-        data["price"] = this.price !== undefined ? this.price : <any>null;
-        data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : <any>null;
-        data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : <any>null;
-        data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : <any>null;
-        data["liveQuoteJson"] = this.liveQuoteJson !== undefined ? this.liveQuoteJson : <any>null;
-        data["historyQuotesJson"] = this.historyQuotesJson !== undefined ? this.historyQuotesJson : <any>null;
-        data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : <any>null;
+        data["ticker"] = this.ticker;
+        data["name"] = this.name;
+        data["marketCap"] = this.marketCap;
+        data["sector"] = this.sector;
+        data["industry"] = this.industry;
+        data["summaryUrl"] = this.summaryUrl;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : <any>undefined;
+        data["volume"] = this.volume;
+        data["price"] = this.price;
+        data["highestPrice52"] = this.highestPrice52;
+        data["lowestPrice52"] = this.lowestPrice52;
+        data["chaosPercentage"] = this.chaosPercentage;
+        data["liveQuoteJson"] = this.liveQuoteJson;
+        data["historyQuotesJson"] = this.historyQuotesJson;
+        data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : <any>undefined;
         if (this.historyQuotes && this.historyQuotes.constructor === Array) {
             data["historyQuotes"] = [];
             for (let item of this.historyQuotes)
                 data["historyQuotes"].push(item.toJSON());
         }
-        data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : <any>null;
-        data["updateError"] = this.updateError !== undefined ? this.updateError : <any>null;
-        data["calculatedSuccessful"] = this.calculatedSuccessful !== undefined ? this.calculatedSuccessful : <any>null;
-        data["calculatedError"] = this.calculatedError !== undefined ? this.calculatedError : <any>null;
-        data["filtered"] = this.filtered !== undefined ? this.filtered : <any>null;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>null;
-        data["sectorId"] = this.sectorId !== undefined ? this.sectorId : <any>null;
-        data["industryId"] = this.industryId !== undefined ? this.industryId : <any>null;
-        data["sP500"] = this.sP500 !== undefined ? this.sP500 : <any>null;
-        data["isIndex"] = this.isIndex !== undefined ? this.isIndex : <any>null;
+        data["updateSuccessful"] = this.updateSuccessful;
+        data["updateError"] = this.updateError;
+        data["calculatedSuccessful"] = this.calculatedSuccessful;
+        data["calculatedError"] = this.calculatedError;
+        data["filtered"] = this.filtered;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+        data["sectorId"] = this.sectorId;
+        data["industryId"] = this.industryId;
+        data["sP500"] = this.sP500;
+        data["isIndex"] = this.isIndex;
         return data; 
     }
 }
 
 export interface ICompany {
-    ticker?: string | null;
-    name?: string | null;
+    ticker?: string | undefined;
+    name?: string | undefined;
     marketCap: number;
-    sector?: string | null;
-    industry?: string | null;
-    summaryUrl?: string | null;
+    sector?: string | undefined;
+    industry?: string | undefined;
+    summaryUrl?: string | undefined;
     lastUpdated: Date;
     lastCalculated: Date;
     volume: number;
@@ -2990,14 +3012,14 @@ export interface ICompany {
     highestPrice52: number;
     lowestPrice52: number;
     chaosPercentage: number;
-    liveQuoteJson?: string | null;
-    historyQuotesJson?: string | null;
+    liveQuoteJson?: string | undefined;
+    historyQuotesJson?: string | undefined;
     nextReportDate: Date;
-    historyQuotes?: QuotesModel[] | null;
+    historyQuotes?: QuotesModel[] | undefined;
     updateSuccessful: boolean;
-    updateError?: string | null;
+    updateError?: string | undefined;
     calculatedSuccessful: boolean;
-    calculatedError?: string | null;
+    calculatedError?: string | undefined;
     filtered: boolean;
     startDate: Date;
     endDate: Date;
@@ -3014,7 +3036,7 @@ export class QuotesModel implements IQuotesModel {
     open: number;
     high: number;
     low: number;
-    volumeAsText?: string | null;
+    volumeAsText?: string | undefined;
     impulse: number;
 
     constructor(data?: IQuotesModel) {
@@ -3026,35 +3048,33 @@ export class QuotesModel implements IQuotesModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.date = data["date"] ? new Date(data["date"].toString()) : <any>null;
-            this.close = data["close"] !== undefined ? data["close"] : <any>null;
-            this.volume = data["volume"] !== undefined ? data["volume"] : <any>null;
-            this.open = data["open"] !== undefined ? data["open"] : <any>null;
-            this.high = data["high"] !== undefined ? data["high"] : <any>null;
-            this.low = data["low"] !== undefined ? data["low"] : <any>null;
-            this.volumeAsText = data["volumeAsText"] !== undefined ? data["volumeAsText"] : <any>null;
-            this.impulse = data["impulse"] !== undefined ? data["impulse"] : <any>null;
+            this.date = data["date"] ? new Date(data["date"].toString()) : <any>undefined;
+            this.close = data["close"];
+            this.volume = data["volume"];
+            this.open = data["open"];
+            this.high = data["high"];
+            this.low = data["low"];
+            this.volumeAsText = data["volumeAsText"];
+            this.impulse = data["impulse"];
         }
     }
 
-    static fromJS(data: any): QuotesModel {
-        let result = new QuotesModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): QuotesModel {
+        return createInstance<QuotesModel>(data, _mappings, QuotesModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>null;
-        data["close"] = this.close !== undefined ? this.close : <any>null;
-        data["volume"] = this.volume !== undefined ? this.volume : <any>null;
-        data["open"] = this.open !== undefined ? this.open : <any>null;
-        data["high"] = this.high !== undefined ? this.high : <any>null;
-        data["low"] = this.low !== undefined ? this.low : <any>null;
-        data["volumeAsText"] = this.volumeAsText !== undefined ? this.volumeAsText : <any>null;
-        data["impulse"] = this.impulse !== undefined ? this.impulse : <any>null;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["close"] = this.close;
+        data["volume"] = this.volume;
+        data["open"] = this.open;
+        data["high"] = this.high;
+        data["low"] = this.low;
+        data["volumeAsText"] = this.volumeAsText;
+        data["impulse"] = this.impulse;
         return data; 
     }
 }
@@ -3066,12 +3086,12 @@ export interface IQuotesModel {
     open: number;
     high: number;
     low: number;
-    volumeAsText?: string | null;
+    volumeAsText?: string | undefined;
     impulse: number;
 }
 
 export class CompanySearchRequest implements ICompanySearchRequest {
-    ticker?: string | null;
+    ticker?: string | undefined;
     maxCount: number;
 
     constructor(data?: ICompanySearchRequest) {
@@ -3083,38 +3103,36 @@ export class CompanySearchRequest implements ICompanySearchRequest {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
-            this.maxCount = data["maxCount"] !== undefined ? data["maxCount"] : <any>null;
+            this.ticker = data["ticker"];
+            this.maxCount = data["maxCount"];
         }
     }
 
-    static fromJS(data: any): CompanySearchRequest {
-        let result = new CompanySearchRequest();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): CompanySearchRequest {
+        return createInstance<CompanySearchRequest>(data, _mappings, CompanySearchRequest);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
-        data["maxCount"] = this.maxCount !== undefined ? this.maxCount : <any>null;
+        data["ticker"] = this.ticker;
+        data["maxCount"] = this.maxCount;
         return data; 
     }
 }
 
 export interface ICompanySearchRequest {
-    ticker?: string | null;
+    ticker?: string | undefined;
     maxCount: number;
 }
 
 export class CompanyDetails implements ICompanyDetails {
-    ticker?: string | null;
-    name?: string | null;
-    sector?: string | null;
-    industry?: string | null;
-    summaryUrl?: string | null;
+    ticker?: string | undefined;
+    name?: string | undefined;
+    sector?: string | undefined;
+    industry?: string | undefined;
+    summaryUrl?: string | undefined;
     lastUpdated: Date;
     volume: number;
     price: number;
@@ -3133,55 +3151,53 @@ export class CompanyDetails implements ICompanyDetails {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.sector = data["sector"] !== undefined ? data["sector"] : <any>null;
-            this.industry = data["industry"] !== undefined ? data["industry"] : <any>null;
-            this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : <any>null;
-            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>null;
-            this.volume = data["volume"] !== undefined ? data["volume"] : <any>null;
-            this.price = data["price"] !== undefined ? data["price"] : <any>null;
-            this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : <any>null;
-            this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : <any>null;
-            this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : <any>null;
-            this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : <any>null;
-            this.filtered = data["filtered"] !== undefined ? data["filtered"] : <any>null;
+            this.ticker = data["ticker"];
+            this.name = data["name"];
+            this.sector = data["sector"];
+            this.industry = data["industry"];
+            this.summaryUrl = data["summaryUrl"];
+            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>undefined;
+            this.volume = data["volume"];
+            this.price = data["price"];
+            this.highestPrice52 = data["highestPrice52"];
+            this.lowestPrice52 = data["lowestPrice52"];
+            this.chaosPercentage = data["chaosPercentage"];
+            this.updateSuccessful = data["updateSuccessful"];
+            this.filtered = data["filtered"];
         }
     }
 
-    static fromJS(data: any): CompanyDetails {
-        let result = new CompanyDetails();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): CompanyDetails {
+        return createInstance<CompanyDetails>(data, _mappings, CompanyDetails);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["sector"] = this.sector !== undefined ? this.sector : <any>null;
-        data["industry"] = this.industry !== undefined ? this.industry : <any>null;
-        data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : <any>null;
-        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>null;
-        data["volume"] = this.volume !== undefined ? this.volume : <any>null;
-        data["price"] = this.price !== undefined ? this.price : <any>null;
-        data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : <any>null;
-        data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : <any>null;
-        data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : <any>null;
-        data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : <any>null;
-        data["filtered"] = this.filtered !== undefined ? this.filtered : <any>null;
+        data["ticker"] = this.ticker;
+        data["name"] = this.name;
+        data["sector"] = this.sector;
+        data["industry"] = this.industry;
+        data["summaryUrl"] = this.summaryUrl;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["volume"] = this.volume;
+        data["price"] = this.price;
+        data["highestPrice52"] = this.highestPrice52;
+        data["lowestPrice52"] = this.lowestPrice52;
+        data["chaosPercentage"] = this.chaosPercentage;
+        data["updateSuccessful"] = this.updateSuccessful;
+        data["filtered"] = this.filtered;
         return data; 
     }
 }
 
 export interface ICompanyDetails {
-    ticker?: string | null;
-    name?: string | null;
-    sector?: string | null;
-    industry?: string | null;
-    summaryUrl?: string | null;
+    ticker?: string | undefined;
+    name?: string | undefined;
+    sector?: string | undefined;
+    industry?: string | undefined;
+    summaryUrl?: string | undefined;
     lastUpdated: Date;
     volume: number;
     price: number;
@@ -3194,16 +3210,16 @@ export interface ICompanyDetails {
 
 export class Indicator implements IIndicator {
     indicatorId: number;
-    name?: string | null;
-    description?: string | null;
+    name?: string | undefined;
+    description?: string | undefined;
     period: QuotePeriod;
-    jsonParams?: string | null;
+    jsonParams?: string | undefined;
     lastUpdated: Date;
     deleted: boolean;
     global: boolean;
     chartPlotNumber: number;
-    chartColor?: string | null;
-    params?: IndicatorParam[] | null;
+    chartColor?: string | undefined;
+    params?: IndicatorParam[] | undefined;
     chartType: ChartType;
 
     constructor(data?: IIndicator) {
@@ -3215,67 +3231,65 @@ export class Indicator implements IIndicator {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
-            this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : <any>null;
-            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-            this.global = data["global"] !== undefined ? data["global"] : <any>null;
-            this.chartPlotNumber = data["chartPlotNumber"] !== undefined ? data["chartPlotNumber"] : <any>null;
-            this.chartColor = data["chartColor"] !== undefined ? data["chartColor"] : <any>null;
+            this.indicatorId = data["indicatorId"];
+            this.name = data["name"];
+            this.description = data["description"];
+            this.period = data["period"];
+            this.jsonParams = data["jsonParams"];
+            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>undefined;
+            this.deleted = data["deleted"];
+            this.global = data["global"];
+            this.chartPlotNumber = data["chartPlotNumber"];
+            this.chartColor = data["chartColor"];
             if (data["params"] && data["params"].constructor === Array) {
                 this.params = [];
                 for (let item of data["params"])
-                    this.params.push(IndicatorParam.fromJS(item));
+                    this.params.push(IndicatorParam.fromJS(item, _mappings));
             }
-            this.chartType = data["chartType"] !== undefined ? data["chartType"] : <any>null;
+            this.chartType = data["chartType"];
         }
     }
 
-    static fromJS(data: any): Indicator {
-        let result = new Indicator();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): Indicator {
+        return createInstance<Indicator>(data, _mappings, Indicator);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
-        data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : <any>null;
-        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        data["global"] = this.global !== undefined ? this.global : <any>null;
-        data["chartPlotNumber"] = this.chartPlotNumber !== undefined ? this.chartPlotNumber : <any>null;
-        data["chartColor"] = this.chartColor !== undefined ? this.chartColor : <any>null;
+        data["indicatorId"] = this.indicatorId;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["period"] = this.period;
+        data["jsonParams"] = this.jsonParams;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["deleted"] = this.deleted;
+        data["global"] = this.global;
+        data["chartPlotNumber"] = this.chartPlotNumber;
+        data["chartColor"] = this.chartColor;
         if (this.params && this.params.constructor === Array) {
             data["params"] = [];
             for (let item of this.params)
                 data["params"].push(item.toJSON());
         }
-        data["chartType"] = this.chartType !== undefined ? this.chartType : <any>null;
+        data["chartType"] = this.chartType;
         return data; 
     }
 }
 
 export interface IIndicator {
     indicatorId: number;
-    name?: string | null;
-    description?: string | null;
+    name?: string | undefined;
+    description?: string | undefined;
     period: QuotePeriod;
-    jsonParams?: string | null;
+    jsonParams?: string | undefined;
     lastUpdated: Date;
     deleted: boolean;
     global: boolean;
     chartPlotNumber: number;
-    chartColor?: string | null;
-    params?: IndicatorParam[] | null;
+    chartColor?: string | undefined;
+    params?: IndicatorParam[] | undefined;
     chartType: ChartType;
 }
 
@@ -3285,7 +3299,7 @@ export enum QuotePeriod {
 }
 
 export class IndicatorParam implements IIndicatorParam {
-    paramName?: string | null;
+    paramName?: string | undefined;
     value: number;
 
     constructor(data?: IIndicatorParam) {
@@ -3297,29 +3311,27 @@ export class IndicatorParam implements IIndicatorParam {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.paramName = data["paramName"] !== undefined ? data["paramName"] : <any>null;
-            this.value = data["value"] !== undefined ? data["value"] : <any>null;
+            this.paramName = data["paramName"];
+            this.value = data["value"];
         }
     }
 
-    static fromJS(data: any): IndicatorParam {
-        let result = new IndicatorParam();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IndicatorParam {
+        return createInstance<IndicatorParam>(data, _mappings, IndicatorParam);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["paramName"] = this.paramName !== undefined ? this.paramName : <any>null;
-        data["value"] = this.value !== undefined ? this.value : <any>null;
+        data["paramName"] = this.paramName;
+        data["value"] = this.value;
         return data; 
     }
 }
 
 export interface IIndicatorParam {
-    paramName?: string | null;
+    paramName?: string | undefined;
     value: number;
 }
 
@@ -3330,7 +3342,7 @@ export enum ChartType {
 }
 
 export class IndicatorCore implements IIndicatorCore {
-    name?: string | null;
+    name?: string | undefined;
     id: number;
     period: QuotePeriod;
 
@@ -3343,31 +3355,29 @@ export class IndicatorCore implements IIndicatorCore {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.id = data["id"] !== undefined ? data["id"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
+            this.name = data["name"];
+            this.id = data["id"];
+            this.period = data["period"];
         }
     }
 
-    static fromJS(data: any): IndicatorCore {
-        let result = new IndicatorCore();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IndicatorCore {
+        return createInstance<IndicatorCore>(data, _mappings, IndicatorCore);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
+        data["name"] = this.name;
+        data["id"] = this.id;
+        data["period"] = this.period;
         return data; 
     }
 }
 
 export interface IIndicatorCore {
-    name?: string | null;
+    name?: string | undefined;
     id: number;
     period: QuotePeriod;
 }
@@ -3376,8 +3386,8 @@ export class ScheduledJob implements IScheduledJob {
     jobId: number;
     jobType: ScheduledJobType;
     startDate: Date;
-    completedDate?: Date | null;
-    jobName?: string | null;
+    completedDate?: Date | undefined;
+    jobName?: string | undefined;
     status: JobStatus;
     progress: number;
 
@@ -3390,33 +3400,31 @@ export class ScheduledJob implements IScheduledJob {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.jobId = data["jobId"] !== undefined ? data["jobId"] : <any>null;
-            this.jobType = data["jobType"] !== undefined ? data["jobType"] : <any>null;
-            this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : <any>null;
-            this.completedDate = data["completedDate"] ? new Date(data["completedDate"].toString()) : <any>null;
-            this.jobName = data["jobName"] !== undefined ? data["jobName"] : <any>null;
-            this.status = data["status"] !== undefined ? data["status"] : <any>null;
-            this.progress = data["progress"] !== undefined ? data["progress"] : <any>null;
+            this.jobId = data["jobId"];
+            this.jobType = data["jobType"];
+            this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : <any>undefined;
+            this.completedDate = data["completedDate"] ? new Date(data["completedDate"].toString()) : <any>undefined;
+            this.jobName = data["jobName"];
+            this.status = data["status"];
+            this.progress = data["progress"];
         }
     }
 
-    static fromJS(data: any): ScheduledJob {
-        let result = new ScheduledJob();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ScheduledJob {
+        return createInstance<ScheduledJob>(data, _mappings, ScheduledJob);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["jobId"] = this.jobId !== undefined ? this.jobId : <any>null;
-        data["jobType"] = this.jobType !== undefined ? this.jobType : <any>null;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
-        data["completedDate"] = this.completedDate ? this.completedDate.toISOString() : <any>null;
-        data["jobName"] = this.jobName !== undefined ? this.jobName : <any>null;
-        data["status"] = this.status !== undefined ? this.status : <any>null;
-        data["progress"] = this.progress !== undefined ? this.progress : <any>null;
+        data["jobId"] = this.jobId;
+        data["jobType"] = this.jobType;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["completedDate"] = this.completedDate ? this.completedDate.toISOString() : <any>undefined;
+        data["jobName"] = this.jobName;
+        data["status"] = this.status;
+        data["progress"] = this.progress;
         return data; 
     }
 }
@@ -3425,8 +3433,8 @@ export interface IScheduledJob {
     jobId: number;
     jobType: ScheduledJobType;
     startDate: Date;
-    completedDate?: Date | null;
-    jobName?: string | null;
+    completedDate?: Date | undefined;
+    jobName?: string | undefined;
     status: JobStatus;
     progress: number;
 }
@@ -3449,10 +3457,10 @@ export enum JobStatus {
 }
 
 export class ChartLayoutModel implements IChartLayoutModel {
-    plots?: ChartPlotModel[] | null;
+    plots?: ChartPlotModel[] | undefined;
     layoutId: number;
-    title?: string | null;
-    description?: string | null;
+    title?: string | undefined;
+    description?: string | undefined;
     deleted: boolean;
     period: QuotePeriod;
     default: boolean;
@@ -3466,26 +3474,24 @@ export class ChartLayoutModel implements IChartLayoutModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
             if (data["plots"] && data["plots"].constructor === Array) {
                 this.plots = [];
                 for (let item of data["plots"])
-                    this.plots.push(ChartPlotModel.fromJS(item));
+                    this.plots.push(ChartPlotModel.fromJS(item, _mappings));
             }
-            this.layoutId = data["layoutId"] !== undefined ? data["layoutId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
-            this.default = data["default"] !== undefined ? data["default"] : <any>null;
+            this.layoutId = data["layoutId"];
+            this.title = data["title"];
+            this.description = data["description"];
+            this.deleted = data["deleted"];
+            this.period = data["period"];
+            this.default = data["default"];
         }
     }
 
-    static fromJS(data: any): ChartLayoutModel {
-        let result = new ChartLayoutModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ChartLayoutModel {
+        return createInstance<ChartLayoutModel>(data, _mappings, ChartLayoutModel);
     }
 
     toJSON(data?: any) {
@@ -3495,21 +3501,21 @@ export class ChartLayoutModel implements IChartLayoutModel {
             for (let item of this.plots)
                 data["plots"].push(item.toJSON());
         }
-        data["layoutId"] = this.layoutId !== undefined ? this.layoutId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
-        data["default"] = this.default !== undefined ? this.default : <any>null;
+        data["layoutId"] = this.layoutId;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["deleted"] = this.deleted;
+        data["period"] = this.period;
+        data["default"] = this.default;
         return data; 
     }
 }
 
 export interface IChartLayoutModel {
-    plots?: ChartPlotModel[] | null;
+    plots?: ChartPlotModel[] | undefined;
     layoutId: number;
-    title?: string | null;
-    description?: string | null;
+    title?: string | undefined;
+    description?: string | undefined;
     deleted: boolean;
     period: QuotePeriod;
     default: boolean;
@@ -3520,7 +3526,7 @@ export class ChartPlotModel implements IChartPlotModel {
     plotId: number;
     orderId: number;
     height: number;
-    indicators?: LayoutIndicatorModel[] | null;
+    indicators?: LayoutIndicatorModel[] | undefined;
 
     constructor(data?: IChartPlotModel) {
         if (data) {
@@ -3531,32 +3537,30 @@ export class ChartPlotModel implements IChartPlotModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.layoutId = data["layoutId"] !== undefined ? data["layoutId"] : <any>null;
-            this.plotId = data["plotId"] !== undefined ? data["plotId"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.height = data["height"] !== undefined ? data["height"] : <any>null;
+            this.layoutId = data["layoutId"];
+            this.plotId = data["plotId"];
+            this.orderId = data["orderId"];
+            this.height = data["height"];
             if (data["indicators"] && data["indicators"].constructor === Array) {
                 this.indicators = [];
                 for (let item of data["indicators"])
-                    this.indicators.push(LayoutIndicatorModel.fromJS(item));
+                    this.indicators.push(LayoutIndicatorModel.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): ChartPlotModel {
-        let result = new ChartPlotModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ChartPlotModel {
+        return createInstance<ChartPlotModel>(data, _mappings, ChartPlotModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["layoutId"] = this.layoutId !== undefined ? this.layoutId : <any>null;
-        data["plotId"] = this.plotId !== undefined ? this.plotId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["height"] = this.height !== undefined ? this.height : <any>null;
+        data["layoutId"] = this.layoutId;
+        data["plotId"] = this.plotId;
+        data["orderId"] = this.orderId;
+        data["height"] = this.height;
         if (this.indicators && this.indicators.constructor === Array) {
             data["indicators"] = [];
             for (let item of this.indicators)
@@ -3571,7 +3575,7 @@ export interface IChartPlotModel {
     plotId: number;
     orderId: number;
     height: number;
-    indicators?: LayoutIndicatorModel[] | null;
+    indicators?: LayoutIndicatorModel[] | undefined;
 }
 
 export class LayoutIndicatorModel implements ILayoutIndicatorModel {
@@ -3579,9 +3583,9 @@ export class LayoutIndicatorModel implements ILayoutIndicatorModel {
     plotId: number;
     indicatorId: number;
     orderId: number;
-    indicator?: IndicatorModel | null;
-    name?: string | null;
-    lineColor?: string | null;
+    indicator?: IndicatorModel | undefined;
+    name?: string | undefined;
+    lineColor?: string | undefined;
 
     constructor(data?: ILayoutIndicatorModel) {
         if (data) {
@@ -3592,33 +3596,31 @@ export class LayoutIndicatorModel implements ILayoutIndicatorModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.id = data["id"] !== undefined ? data["id"] : <any>null;
-            this.plotId = data["plotId"] !== undefined ? data["plotId"] : <any>null;
-            this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.indicator = data["indicator"] ? IndicatorModel.fromJS(data["indicator"]) : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.lineColor = data["lineColor"] !== undefined ? data["lineColor"] : <any>null;
+            this.id = data["id"];
+            this.plotId = data["plotId"];
+            this.indicatorId = data["indicatorId"];
+            this.orderId = data["orderId"];
+            this.indicator = data["indicator"] ? IndicatorModel.fromJS(data["indicator"], _mappings) : <any>undefined;
+            this.name = data["name"];
+            this.lineColor = data["lineColor"];
         }
     }
 
-    static fromJS(data: any): LayoutIndicatorModel {
-        let result = new LayoutIndicatorModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): LayoutIndicatorModel {
+        return createInstance<LayoutIndicatorModel>(data, _mappings, LayoutIndicatorModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["plotId"] = this.plotId !== undefined ? this.plotId : <any>null;
-        data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["indicator"] = this.indicator ? this.indicator.toJSON() : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["lineColor"] = this.lineColor !== undefined ? this.lineColor : <any>null;
+        data["id"] = this.id;
+        data["plotId"] = this.plotId;
+        data["indicatorId"] = this.indicatorId;
+        data["orderId"] = this.orderId;
+        data["indicator"] = this.indicator ? this.indicator.toJSON() : <any>undefined;
+        data["name"] = this.name;
+        data["lineColor"] = this.lineColor;
         return data; 
     }
 }
@@ -3628,18 +3630,18 @@ export interface ILayoutIndicatorModel {
     plotId: number;
     indicatorId: number;
     orderId: number;
-    indicator?: IndicatorModel | null;
-    name?: string | null;
-    lineColor?: string | null;
+    indicator?: IndicatorModel | undefined;
+    name?: string | undefined;
+    lineColor?: string | undefined;
 }
 
 export class IndicatorModel implements IIndicatorModel {
     indicatorId: number;
     period: QuotePeriod;
-    params?: IndicatorParam[] | null;
-    name?: string | null;
-    jsonParams?: string | null;
-    description?: string | null;
+    params?: IndicatorParam[] | undefined;
+    name?: string | undefined;
+    jsonParams?: string | undefined;
+    description?: string | undefined;
 
     constructor(data?: IIndicatorModel) {
         if (data) {
@@ -3650,39 +3652,37 @@ export class IndicatorModel implements IIndicatorModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
+            this.indicatorId = data["indicatorId"];
+            this.period = data["period"];
             if (data["params"] && data["params"].constructor === Array) {
                 this.params = [];
                 for (let item of data["params"])
-                    this.params.push(IndicatorParam.fromJS(item));
+                    this.params.push(IndicatorParam.fromJS(item, _mappings));
             }
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
+            this.name = data["name"];
+            this.jsonParams = data["jsonParams"];
+            this.description = data["description"];
         }
     }
 
-    static fromJS(data: any): IndicatorModel {
-        let result = new IndicatorModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IndicatorModel {
+        return createInstance<IndicatorModel>(data, _mappings, IndicatorModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
+        data["indicatorId"] = this.indicatorId;
+        data["period"] = this.period;
         if (this.params && this.params.constructor === Array) {
             data["params"] = [];
             for (let item of this.params)
                 data["params"].push(item.toJSON());
         }
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["name"] = this.name;
+        data["jsonParams"] = this.jsonParams;
+        data["description"] = this.description;
         return data; 
     }
 }
@@ -3690,21 +3690,21 @@ export class IndicatorModel implements IIndicatorModel {
 export interface IIndicatorModel {
     indicatorId: number;
     period: QuotePeriod;
-    params?: IndicatorParam[] | null;
-    name?: string | null;
-    jsonParams?: string | null;
-    description?: string | null;
+    params?: IndicatorParam[] | undefined;
+    name?: string | undefined;
+    jsonParams?: string | undefined;
+    description?: string | undefined;
 }
 
 export class ProcessorLog implements IProcessorLog {
     id: number;
     logged: Date;
-    level?: string | null;
-    message?: string | null;
-    processor?: string | null;
-    jobType?: string | null;
-    jobState?: string | null;
-    exception?: string | null;
+    level?: string | undefined;
+    message?: string | undefined;
+    processor?: string | undefined;
+    jobType?: string | undefined;
+    jobState?: string | undefined;
+    exception?: string | undefined;
     jobId: number;
 
     constructor(data?: IProcessorLog) {
@@ -3716,37 +3716,35 @@ export class ProcessorLog implements IProcessorLog {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.id = data["id"] !== undefined ? data["id"] : <any>null;
-            this.logged = data["logged"] ? new Date(data["logged"].toString()) : <any>null;
-            this.level = data["level"] !== undefined ? data["level"] : <any>null;
-            this.message = data["message"] !== undefined ? data["message"] : <any>null;
-            this.processor = data["processor"] !== undefined ? data["processor"] : <any>null;
-            this.jobType = data["jobType"] !== undefined ? data["jobType"] : <any>null;
-            this.jobState = data["jobState"] !== undefined ? data["jobState"] : <any>null;
-            this.exception = data["exception"] !== undefined ? data["exception"] : <any>null;
-            this.jobId = data["jobId"] !== undefined ? data["jobId"] : <any>null;
+            this.id = data["id"];
+            this.logged = data["logged"] ? new Date(data["logged"].toString()) : <any>undefined;
+            this.level = data["level"];
+            this.message = data["message"];
+            this.processor = data["processor"];
+            this.jobType = data["jobType"];
+            this.jobState = data["jobState"];
+            this.exception = data["exception"];
+            this.jobId = data["jobId"];
         }
     }
 
-    static fromJS(data: any): ProcessorLog {
-        let result = new ProcessorLog();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ProcessorLog {
+        return createInstance<ProcessorLog>(data, _mappings, ProcessorLog);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["logged"] = this.logged ? this.logged.toISOString() : <any>null;
-        data["level"] = this.level !== undefined ? this.level : <any>null;
-        data["message"] = this.message !== undefined ? this.message : <any>null;
-        data["processor"] = this.processor !== undefined ? this.processor : <any>null;
-        data["jobType"] = this.jobType !== undefined ? this.jobType : <any>null;
-        data["jobState"] = this.jobState !== undefined ? this.jobState : <any>null;
-        data["exception"] = this.exception !== undefined ? this.exception : <any>null;
-        data["jobId"] = this.jobId !== undefined ? this.jobId : <any>null;
+        data["id"] = this.id;
+        data["logged"] = this.logged ? this.logged.toISOString() : <any>undefined;
+        data["level"] = this.level;
+        data["message"] = this.message;
+        data["processor"] = this.processor;
+        data["jobType"] = this.jobType;
+        data["jobState"] = this.jobState;
+        data["exception"] = this.exception;
+        data["jobId"] = this.jobId;
         return data; 
     }
 }
@@ -3754,27 +3752,27 @@ export class ProcessorLog implements IProcessorLog {
 export interface IProcessorLog {
     id: number;
     logged: Date;
-    level?: string | null;
-    message?: string | null;
-    processor?: string | null;
-    jobType?: string | null;
-    jobState?: string | null;
-    exception?: string | null;
+    level?: string | undefined;
+    message?: string | undefined;
+    processor?: string | undefined;
+    jobType?: string | undefined;
+    jobState?: string | undefined;
+    exception?: string | undefined;
     jobId: number;
 }
 
 export class Rule implements IRule {
     ruleId: number;
-    name?: string | null;
-    description?: string | null;
+    name?: string | undefined;
+    description?: string | undefined;
     deleted: boolean;
     period: QuotePeriod;
     dataSourceV1: DataSourceType;
     dataSourceV2: DataSourceType;
     dataSeriesV1: number;
     dataSeriesV2: number;
-    constV1?: string | null;
-    constV2?: string | null;
+    constV1?: string | undefined;
+    constV2?: string | undefined;
     skipItemsV1: number;
     skipItemsV2: number;
     takeItemsV1: number;
@@ -3792,71 +3790,69 @@ export class Rule implements IRule {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
-            this.dataSourceV1 = data["dataSourceV1"] !== undefined ? data["dataSourceV1"] : <any>null;
-            this.dataSourceV2 = data["dataSourceV2"] !== undefined ? data["dataSourceV2"] : <any>null;
-            this.dataSeriesV1 = data["dataSeriesV1"] !== undefined ? data["dataSeriesV1"] : <any>null;
-            this.dataSeriesV2 = data["dataSeriesV2"] !== undefined ? data["dataSeriesV2"] : <any>null;
-            this.constV1 = data["constV1"] !== undefined ? data["constV1"] : <any>null;
-            this.constV2 = data["constV2"] !== undefined ? data["constV2"] : <any>null;
-            this.skipItemsV1 = data["skipItemsV1"] !== undefined ? data["skipItemsV1"] : <any>null;
-            this.skipItemsV2 = data["skipItemsV2"] !== undefined ? data["skipItemsV2"] : <any>null;
-            this.takeItemsV1 = data["takeItemsV1"] !== undefined ? data["takeItemsV1"] : <any>null;
-            this.takeItemsV2 = data["takeItemsV2"] !== undefined ? data["takeItemsV2"] : <any>null;
-            this.transformItemsV1 = data["transformItemsV1"] !== undefined ? data["transformItemsV1"] : <any>null;
-            this.transformItemsV2 = data["transformItemsV2"] !== undefined ? data["transformItemsV2"] : <any>null;
-            this.condition = data["condition"] !== undefined ? data["condition"] : <any>null;
+            this.ruleId = data["ruleId"];
+            this.name = data["name"];
+            this.description = data["description"];
+            this.deleted = data["deleted"];
+            this.period = data["period"];
+            this.dataSourceV1 = data["dataSourceV1"];
+            this.dataSourceV2 = data["dataSourceV2"];
+            this.dataSeriesV1 = data["dataSeriesV1"];
+            this.dataSeriesV2 = data["dataSeriesV2"];
+            this.constV1 = data["constV1"];
+            this.constV2 = data["constV2"];
+            this.skipItemsV1 = data["skipItemsV1"];
+            this.skipItemsV2 = data["skipItemsV2"];
+            this.takeItemsV1 = data["takeItemsV1"];
+            this.takeItemsV2 = data["takeItemsV2"];
+            this.transformItemsV1 = data["transformItemsV1"];
+            this.transformItemsV2 = data["transformItemsV2"];
+            this.condition = data["condition"];
         }
     }
 
-    static fromJS(data: any): Rule {
-        let result = new Rule();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): Rule {
+        return createInstance<Rule>(data, _mappings, Rule);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["ruleId"] = this.ruleId !== undefined ? this.ruleId : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
-        data["dataSourceV1"] = this.dataSourceV1 !== undefined ? this.dataSourceV1 : <any>null;
-        data["dataSourceV2"] = this.dataSourceV2 !== undefined ? this.dataSourceV2 : <any>null;
-        data["dataSeriesV1"] = this.dataSeriesV1 !== undefined ? this.dataSeriesV1 : <any>null;
-        data["dataSeriesV2"] = this.dataSeriesV2 !== undefined ? this.dataSeriesV2 : <any>null;
-        data["constV1"] = this.constV1 !== undefined ? this.constV1 : <any>null;
-        data["constV2"] = this.constV2 !== undefined ? this.constV2 : <any>null;
-        data["skipItemsV1"] = this.skipItemsV1 !== undefined ? this.skipItemsV1 : <any>null;
-        data["skipItemsV2"] = this.skipItemsV2 !== undefined ? this.skipItemsV2 : <any>null;
-        data["takeItemsV1"] = this.takeItemsV1 !== undefined ? this.takeItemsV1 : <any>null;
-        data["takeItemsV2"] = this.takeItemsV2 !== undefined ? this.takeItemsV2 : <any>null;
-        data["transformItemsV1"] = this.transformItemsV1 !== undefined ? this.transformItemsV1 : <any>null;
-        data["transformItemsV2"] = this.transformItemsV2 !== undefined ? this.transformItemsV2 : <any>null;
-        data["condition"] = this.condition !== undefined ? this.condition : <any>null;
+        data["ruleId"] = this.ruleId;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["deleted"] = this.deleted;
+        data["period"] = this.period;
+        data["dataSourceV1"] = this.dataSourceV1;
+        data["dataSourceV2"] = this.dataSourceV2;
+        data["dataSeriesV1"] = this.dataSeriesV1;
+        data["dataSeriesV2"] = this.dataSeriesV2;
+        data["constV1"] = this.constV1;
+        data["constV2"] = this.constV2;
+        data["skipItemsV1"] = this.skipItemsV1;
+        data["skipItemsV2"] = this.skipItemsV2;
+        data["takeItemsV1"] = this.takeItemsV1;
+        data["takeItemsV2"] = this.takeItemsV2;
+        data["transformItemsV1"] = this.transformItemsV1;
+        data["transformItemsV2"] = this.transformItemsV2;
+        data["condition"] = this.condition;
         return data; 
     }
 }
 
 export interface IRule {
     ruleId: number;
-    name?: string | null;
-    description?: string | null;
+    name?: string | undefined;
+    description?: string | undefined;
     deleted: boolean;
     period: QuotePeriod;
     dataSourceV1: DataSourceType;
     dataSourceV2: DataSourceType;
     dataSeriesV1: number;
     dataSeriesV2: number;
-    constV1?: string | null;
-    constV2?: string | null;
+    constV1?: string | undefined;
+    constV2?: string | undefined;
     skipItemsV1: number;
     skipItemsV2: number;
     takeItemsV1: number;
@@ -3890,12 +3886,12 @@ export enum CompareOperator {
 }
 
 export class RuleSetModel implements IRuleSetModel {
-    rules?: RuleModel[] | null;
+    rules?: RuleModel[] | undefined;
     period: QuotePeriod;
     ruleSetId: number;
-    name?: string | null;
+    name?: string | undefined;
     deleted: boolean;
-    description?: string | null;
+    description?: string | undefined;
 
     constructor(data?: IRuleSetModel) {
         if (data) {
@@ -3906,25 +3902,23 @@ export class RuleSetModel implements IRuleSetModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
             if (data["rules"] && data["rules"].constructor === Array) {
                 this.rules = [];
                 for (let item of data["rules"])
-                    this.rules.push(RuleModel.fromJS(item));
+                    this.rules.push(RuleModel.fromJS(item, _mappings));
             }
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
-            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
+            this.period = data["period"];
+            this.ruleSetId = data["ruleSetId"];
+            this.name = data["name"];
+            this.deleted = data["deleted"];
+            this.description = data["description"];
         }
     }
 
-    static fromJS(data: any): RuleSetModel {
-        let result = new RuleSetModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): RuleSetModel {
+        return createInstance<RuleSetModel>(data, _mappings, RuleSetModel);
     }
 
     toJSON(data?: any) {
@@ -3934,30 +3928,30 @@ export class RuleSetModel implements IRuleSetModel {
             for (let item of this.rules)
                 data["rules"].push(item.toJSON());
         }
-        data["period"] = this.period !== undefined ? this.period : <any>null;
-        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["period"] = this.period;
+        data["ruleSetId"] = this.ruleSetId;
+        data["name"] = this.name;
+        data["deleted"] = this.deleted;
+        data["description"] = this.description;
         return data; 
     }
 }
 
 export interface IRuleSetModel {
-    rules?: RuleModel[] | null;
+    rules?: RuleModel[] | undefined;
     period: QuotePeriod;
     ruleSetId: number;
-    name?: string | null;
+    name?: string | undefined;
     deleted: boolean;
-    description?: string | null;
+    description?: string | undefined;
 }
 
 export class RuleModel implements IRuleModel {
-    name?: string | null;
+    name?: string | undefined;
     ruleId: number;
     ruleSetId: number;
     orderId: number;
-    description?: string | null;
+    description?: string | undefined;
     deleted: boolean;
 
     constructor(data?: IRuleModel) {
@@ -3969,41 +3963,39 @@ export class RuleModel implements IRuleModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : <any>null;
-            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
+            this.name = data["name"];
+            this.ruleId = data["ruleId"];
+            this.ruleSetId = data["ruleSetId"];
+            this.orderId = data["orderId"];
+            this.description = data["description"];
+            this.deleted = data["deleted"];
         }
     }
 
-    static fromJS(data: any): RuleModel {
-        let result = new RuleModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): RuleModel {
+        return createInstance<RuleModel>(data, _mappings, RuleModel);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["ruleId"] = this.ruleId !== undefined ? this.ruleId : <any>null;
-        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
+        data["name"] = this.name;
+        data["ruleId"] = this.ruleId;
+        data["ruleSetId"] = this.ruleSetId;
+        data["orderId"] = this.orderId;
+        data["description"] = this.description;
+        data["deleted"] = this.deleted;
         return data; 
     }
 }
 
 export interface IRuleModel {
-    name?: string | null;
+    name?: string | undefined;
     ruleId: number;
     ruleSetId: number;
     orderId: number;
-    description?: string | null;
+    description?: string | undefined;
     deleted: boolean;
 }
 
@@ -4011,8 +4003,8 @@ export class VStrategyRuleSet implements IVStrategyRuleSet {
     strategyId: number;
     strategyActive: boolean;
     ruleSetId: number;
-    ruleSetName?: string | null;
-    ruleSetDescription?: string | null;
+    ruleSetName?: string | undefined;
+    ruleSetDescription?: string | undefined;
     ruleSetPeriod: number;
     ruleSetOrderId: number;
     ruleSetOptional: boolean;
@@ -4026,35 +4018,33 @@ export class VStrategyRuleSet implements IVStrategyRuleSet {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
-            this.strategyActive = data["strategyActive"] !== undefined ? data["strategyActive"] : <any>null;
-            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
-            this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : <any>null;
-            this.ruleSetDescription = data["ruleSetDescription"] !== undefined ? data["ruleSetDescription"] : <any>null;
-            this.ruleSetPeriod = data["ruleSetPeriod"] !== undefined ? data["ruleSetPeriod"] : <any>null;
-            this.ruleSetOrderId = data["ruleSetOrderId"] !== undefined ? data["ruleSetOrderId"] : <any>null;
-            this.ruleSetOptional = data["ruleSetOptional"] !== undefined ? data["ruleSetOptional"] : <any>null;
+            this.strategyId = data["strategyId"];
+            this.strategyActive = data["strategyActive"];
+            this.ruleSetId = data["ruleSetId"];
+            this.ruleSetName = data["ruleSetName"];
+            this.ruleSetDescription = data["ruleSetDescription"];
+            this.ruleSetPeriod = data["ruleSetPeriod"];
+            this.ruleSetOrderId = data["ruleSetOrderId"];
+            this.ruleSetOptional = data["ruleSetOptional"];
         }
     }
 
-    static fromJS(data: any): VStrategyRuleSet {
-        let result = new VStrategyRuleSet();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): VStrategyRuleSet {
+        return createInstance<VStrategyRuleSet>(data, _mappings, VStrategyRuleSet);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
-        data["strategyActive"] = this.strategyActive !== undefined ? this.strategyActive : <any>null;
-        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
-        data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : <any>null;
-        data["ruleSetDescription"] = this.ruleSetDescription !== undefined ? this.ruleSetDescription : <any>null;
-        data["ruleSetPeriod"] = this.ruleSetPeriod !== undefined ? this.ruleSetPeriod : <any>null;
-        data["ruleSetOrderId"] = this.ruleSetOrderId !== undefined ? this.ruleSetOrderId : <any>null;
-        data["ruleSetOptional"] = this.ruleSetOptional !== undefined ? this.ruleSetOptional : <any>null;
+        data["strategyId"] = this.strategyId;
+        data["strategyActive"] = this.strategyActive;
+        data["ruleSetId"] = this.ruleSetId;
+        data["ruleSetName"] = this.ruleSetName;
+        data["ruleSetDescription"] = this.ruleSetDescription;
+        data["ruleSetPeriod"] = this.ruleSetPeriod;
+        data["ruleSetOrderId"] = this.ruleSetOrderId;
+        data["ruleSetOptional"] = this.ruleSetOptional;
         return data; 
     }
 }
@@ -4063,16 +4053,16 @@ export interface IVStrategyRuleSet {
     strategyId: number;
     strategyActive: boolean;
     ruleSetId: number;
-    ruleSetName?: string | null;
-    ruleSetDescription?: string | null;
+    ruleSetName?: string | undefined;
+    ruleSetDescription?: string | undefined;
     ruleSetPeriod: number;
     ruleSetOrderId: number;
     ruleSetOptional: boolean;
 }
 
 export class GlobalIndexChartData implements IGlobalIndexChartData {
-    periods?: ChartData[] | null;
-    company?: CompanyInfo | null;
+    periods?: ChartData[] | undefined;
+    company?: CompanyInfo | undefined;
 
     constructor(data?: IGlobalIndexChartData) {
         if (data) {
@@ -4083,21 +4073,19 @@ export class GlobalIndexChartData implements IGlobalIndexChartData {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
             if (data["periods"] && data["periods"].constructor === Array) {
                 this.periods = [];
                 for (let item of data["periods"])
-                    this.periods.push(ChartData.fromJS(item));
+                    this.periods.push(ChartData.fromJS(item, _mappings));
             }
-            this.company = data["company"] ? CompanyInfo.fromJS(data["company"]) : <any>null;
+            this.company = data["company"] ? CompanyInfo.fromJS(data["company"], _mappings) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): GlobalIndexChartData {
-        let result = new GlobalIndexChartData();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): GlobalIndexChartData {
+        return createInstance<GlobalIndexChartData>(data, _mappings, GlobalIndexChartData);
     }
 
     toJSON(data?: any) {
@@ -4107,38 +4095,36 @@ export class GlobalIndexChartData implements IGlobalIndexChartData {
             for (let item of this.periods)
                 data["periods"].push(item.toJSON());
         }
-        data["company"] = this.company ? this.company.toJSON() : <any>null;
+        data["company"] = this.company ? this.company.toJSON() : <any>undefined;
         return data; 
     }
 }
 
 export interface IGlobalIndexChartData {
-    periods?: ChartData[] | null;
-    company?: CompanyInfo | null;
+    periods?: ChartData[] | undefined;
+    company?: CompanyInfo | undefined;
 }
 
 export class CompanyChartData extends GlobalIndexChartData implements ICompanyChartData {
-    ruleSets?: StrategyRuleSetResult[] | null;
+    ruleSets?: StrategyRuleSetResult[] | undefined;
 
     constructor(data?: ICompanyChartData) {
         super(data);
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         super.init(data);
         if (data) {
             if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
                 this.ruleSets = [];
                 for (let item of data["ruleSets"])
-                    this.ruleSets.push(StrategyRuleSetResult.fromJS(item));
+                    this.ruleSets.push(StrategyRuleSetResult.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): CompanyChartData {
-        let result = new CompanyChartData();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): CompanyChartData {
+        return createInstance<CompanyChartData>(data, _mappings, CompanyChartData);
     }
 
     toJSON(data?: any) {
@@ -4154,14 +4140,14 @@ export class CompanyChartData extends GlobalIndexChartData implements ICompanyCh
 }
 
 export interface ICompanyChartData extends IGlobalIndexChartData {
-    ruleSets?: StrategyRuleSetResult[] | null;
+    ruleSets?: StrategyRuleSetResult[] | undefined;
 }
 
 export class StrategyRuleSetResult implements IStrategyRuleSetResult {
     ruleSetId: number;
-    name?: string | null;
+    name?: string | undefined;
     progress: number;
-    rules?: StrategyRuleResult[] | null;
+    rules?: StrategyRuleResult[] | undefined;
 
     constructor(data?: IStrategyRuleSetResult) {
         if (data) {
@@ -4172,30 +4158,28 @@ export class StrategyRuleSetResult implements IStrategyRuleSetResult {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.progress = data["progress"] !== undefined ? data["progress"] : <any>null;
+            this.ruleSetId = data["ruleSetId"];
+            this.name = data["name"];
+            this.progress = data["progress"];
             if (data["rules"] && data["rules"].constructor === Array) {
                 this.rules = [];
                 for (let item of data["rules"])
-                    this.rules.push(StrategyRuleResult.fromJS(item));
+                    this.rules.push(StrategyRuleResult.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): StrategyRuleSetResult {
-        let result = new StrategyRuleSetResult();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): StrategyRuleSetResult {
+        return createInstance<StrategyRuleSetResult>(data, _mappings, StrategyRuleSetResult);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["progress"] = this.progress !== undefined ? this.progress : <any>null;
+        data["ruleSetId"] = this.ruleSetId;
+        data["name"] = this.name;
+        data["progress"] = this.progress;
         if (this.rules && this.rules.constructor === Array) {
             data["rules"] = [];
             for (let item of this.rules)
@@ -4207,17 +4191,17 @@ export class StrategyRuleSetResult implements IStrategyRuleSetResult {
 
 export interface IStrategyRuleSetResult {
     ruleSetId: number;
-    name?: string | null;
+    name?: string | undefined;
     progress: number;
-    rules?: StrategyRuleResult[] | null;
+    rules?: StrategyRuleResult[] | undefined;
 }
 
 export class StrategyRuleResult implements IStrategyRuleResult {
     condition: CompareOperator;
     ruleSetId: number;
     ruleId: number;
-    ruleName?: string | null;
-    ruleSetName?: string | null;
+    ruleName?: string | undefined;
+    ruleSetName?: string | undefined;
     firstValue: number;
     secondValue: number;
     valid: boolean;
@@ -4231,35 +4215,33 @@ export class StrategyRuleResult implements IStrategyRuleResult {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.condition = data["condition"] !== undefined ? data["condition"] : <any>null;
-            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
-            this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : <any>null;
-            this.ruleName = data["ruleName"] !== undefined ? data["ruleName"] : <any>null;
-            this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : <any>null;
-            this.firstValue = data["firstValue"] !== undefined ? data["firstValue"] : <any>null;
-            this.secondValue = data["secondValue"] !== undefined ? data["secondValue"] : <any>null;
-            this.valid = data["valid"] !== undefined ? data["valid"] : <any>null;
+            this.condition = data["condition"];
+            this.ruleSetId = data["ruleSetId"];
+            this.ruleId = data["ruleId"];
+            this.ruleName = data["ruleName"];
+            this.ruleSetName = data["ruleSetName"];
+            this.firstValue = data["firstValue"];
+            this.secondValue = data["secondValue"];
+            this.valid = data["valid"];
         }
     }
 
-    static fromJS(data: any): StrategyRuleResult {
-        let result = new StrategyRuleResult();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): StrategyRuleResult {
+        return createInstance<StrategyRuleResult>(data, _mappings, StrategyRuleResult);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["condition"] = this.condition !== undefined ? this.condition : <any>null;
-        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
-        data["ruleId"] = this.ruleId !== undefined ? this.ruleId : <any>null;
-        data["ruleName"] = this.ruleName !== undefined ? this.ruleName : <any>null;
-        data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : <any>null;
-        data["firstValue"] = this.firstValue !== undefined ? this.firstValue : <any>null;
-        data["secondValue"] = this.secondValue !== undefined ? this.secondValue : <any>null;
-        data["valid"] = this.valid !== undefined ? this.valid : <any>null;
+        data["condition"] = this.condition;
+        data["ruleSetId"] = this.ruleSetId;
+        data["ruleId"] = this.ruleId;
+        data["ruleName"] = this.ruleName;
+        data["ruleSetName"] = this.ruleSetName;
+        data["firstValue"] = this.firstValue;
+        data["secondValue"] = this.secondValue;
+        data["valid"] = this.valid;
         return data; 
     }
 }
@@ -4268,18 +4250,18 @@ export interface IStrategyRuleResult {
     condition: CompareOperator;
     ruleSetId: number;
     ruleId: number;
-    ruleName?: string | null;
-    ruleSetName?: string | null;
+    ruleName?: string | undefined;
+    ruleSetName?: string | undefined;
     firstValue: number;
     secondValue: number;
     valid: boolean;
 }
 
 export class ChartData implements IChartData {
-    quotes?: QuotesModel[] | null;
-    indicators?: IndicatorChartData[] | null;
+    quotes?: QuotesModel[] | undefined;
+    indicators?: IndicatorChartData[] | undefined;
     period: QuotePeriod;
-    name?: string | null;
+    name?: string | undefined;
 
     constructor(data?: IChartData) {
         if (data) {
@@ -4290,27 +4272,25 @@ export class ChartData implements IChartData {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
             if (data["quotes"] && data["quotes"].constructor === Array) {
                 this.quotes = [];
                 for (let item of data["quotes"])
-                    this.quotes.push(QuotesModel.fromJS(item));
+                    this.quotes.push(QuotesModel.fromJS(item, _mappings));
             }
             if (data["indicators"] && data["indicators"].constructor === Array) {
                 this.indicators = [];
                 for (let item of data["indicators"])
-                    this.indicators.push(IndicatorChartData.fromJS(item));
+                    this.indicators.push(IndicatorChartData.fromJS(item, _mappings));
             }
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.period = data["period"];
+            this.name = data["name"];
         }
     }
 
-    static fromJS(data: any): ChartData {
-        let result = new ChartData();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): ChartData {
+        return createInstance<ChartData>(data, _mappings, ChartData);
     }
 
     toJSON(data?: any) {
@@ -4325,22 +4305,22 @@ export class ChartData implements IChartData {
             for (let item of this.indicators)
                 data["indicators"].push(item.toJSON());
         }
-        data["period"] = this.period !== undefined ? this.period : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["period"] = this.period;
+        data["name"] = this.name;
         return data; 
     }
 }
 
 export interface IChartData {
-    quotes?: QuotesModel[] | null;
-    indicators?: IndicatorChartData[] | null;
+    quotes?: QuotesModel[] | undefined;
+    indicators?: IndicatorChartData[] | undefined;
     period: QuotePeriod;
-    name?: string | null;
+    name?: string | undefined;
 }
 
 export class IndicatorChartData implements IIndicatorChartData {
-    indicator?: IIndicatorEntity | null;
-    indicatorValues?: IndicatorResult[] | null;
+    indicator?: IIndicatorEntity | undefined;
+    indicatorValues?: IndicatorResult[] | undefined;
 
     constructor(data?: IIndicatorChartData) {
         if (data) {
@@ -4351,26 +4331,24 @@ export class IndicatorChartData implements IIndicatorChartData {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.indicator = data["indicator"] ? IIndicatorEntity.fromJS(data["indicator"]) : <any>null;
+            this.indicator = data["indicator"] ? IIndicatorEntity.fromJS(data["indicator"], _mappings) : <any>undefined;
             if (data["indicatorValues"] && data["indicatorValues"].constructor === Array) {
                 this.indicatorValues = [];
                 for (let item of data["indicatorValues"])
-                    this.indicatorValues.push(IndicatorResult.fromJS(item));
+                    this.indicatorValues.push(IndicatorResult.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): IndicatorChartData {
-        let result = new IndicatorChartData();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IndicatorChartData {
+        return createInstance<IndicatorChartData>(data, _mappings, IndicatorChartData);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["indicator"] = this.indicator ? this.indicator.toJSON() : <any>null;
+        data["indicator"] = this.indicator ? this.indicator.toJSON() : <any>undefined;
         if (this.indicatorValues && this.indicatorValues.constructor === Array) {
             data["indicatorValues"] = [];
             for (let item of this.indicatorValues)
@@ -4381,17 +4359,17 @@ export class IndicatorChartData implements IIndicatorChartData {
 }
 
 export interface IIndicatorChartData {
-    indicator?: IIndicatorEntity | null;
-    indicatorValues?: IndicatorResult[] | null;
+    indicator?: IIndicatorEntity | undefined;
+    indicatorValues?: IndicatorResult[] | undefined;
 }
 
 export class IIndicatorEntity implements IIIndicatorEntity {
     indicatorId: number;
     period: QuotePeriod;
-    params?: IndicatorParam[] | null;
-    name?: string | null;
-    jsonParams?: string | null;
-    description?: string | null;
+    params?: IndicatorParam[] | undefined;
+    name?: string | undefined;
+    jsonParams?: string | undefined;
+    description?: string | undefined;
 
     constructor(data?: IIIndicatorEntity) {
         if (data) {
@@ -4402,39 +4380,37 @@ export class IIndicatorEntity implements IIIndicatorEntity {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
+            this.indicatorId = data["indicatorId"];
+            this.period = data["period"];
             if (data["params"] && data["params"].constructor === Array) {
                 this.params = [];
                 for (let item of data["params"])
-                    this.params.push(IndicatorParam.fromJS(item));
+                    this.params.push(IndicatorParam.fromJS(item, _mappings));
             }
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
+            this.name = data["name"];
+            this.jsonParams = data["jsonParams"];
+            this.description = data["description"];
         }
     }
 
-    static fromJS(data: any): IIndicatorEntity {
-        let result = new IIndicatorEntity();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IIndicatorEntity {
+        return createInstance<IIndicatorEntity>(data, _mappings, IIndicatorEntity);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
+        data["indicatorId"] = this.indicatorId;
+        data["period"] = this.period;
         if (this.params && this.params.constructor === Array) {
             data["params"] = [];
             for (let item of this.params)
                 data["params"].push(item.toJSON());
         }
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["name"] = this.name;
+        data["jsonParams"] = this.jsonParams;
+        data["description"] = this.description;
         return data; 
     }
 }
@@ -4442,15 +4418,15 @@ export class IIndicatorEntity implements IIIndicatorEntity {
 export interface IIIndicatorEntity {
     indicatorId: number;
     period: QuotePeriod;
-    params?: IndicatorParam[] | null;
-    name?: string | null;
-    jsonParams?: string | null;
-    description?: string | null;
+    params?: IndicatorParam[] | undefined;
+    name?: string | undefined;
+    jsonParams?: string | undefined;
+    description?: string | undefined;
 }
 
 export class IndicatorResult implements IIndicatorResult {
     date: Date;
-    values?: IndicatorValueItem[] | null;
+    values?: IndicatorValueItem[] | undefined;
 
     constructor(data?: IIndicatorResult) {
         if (data) {
@@ -4461,26 +4437,24 @@ export class IndicatorResult implements IIndicatorResult {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.date = data["date"] ? new Date(data["date"].toString()) : <any>null;
+            this.date = data["date"] ? new Date(data["date"].toString()) : <any>undefined;
             if (data["values"] && data["values"].constructor === Array) {
                 this.values = [];
                 for (let item of data["values"])
-                    this.values.push(IndicatorValueItem.fromJS(item));
+                    this.values.push(IndicatorValueItem.fromJS(item, _mappings));
             }
         }
     }
 
-    static fromJS(data: any): IndicatorResult {
-        let result = new IndicatorResult();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IndicatorResult {
+        return createInstance<IndicatorResult>(data, _mappings, IndicatorResult);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>null;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
         if (this.values && this.values.constructor === Array) {
             data["values"] = [];
             for (let item of this.values)
@@ -4492,14 +4466,14 @@ export class IndicatorResult implements IIndicatorResult {
 
 export interface IIndicatorResult {
     date: Date;
-    values?: IndicatorValueItem[] | null;
+    values?: IndicatorValueItem[] | undefined;
 }
 
 export class IndicatorValueItem implements IIndicatorValueItem {
     kind: ValueKind;
-    name?: string | null;
+    name?: string | undefined;
     value: number;
-    lineColor?: string | null;
+    lineColor?: string | undefined;
     chartType: ChartType;
 
     constructor(data?: IIndicatorValueItem) {
@@ -4511,38 +4485,36 @@ export class IndicatorValueItem implements IIndicatorValueItem {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.kind = data["kind"] !== undefined ? data["kind"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.value = data["value"] !== undefined ? data["value"] : <any>null;
-            this.lineColor = data["lineColor"] !== undefined ? data["lineColor"] : <any>null;
-            this.chartType = data["chartType"] !== undefined ? data["chartType"] : <any>null;
+            this.kind = data["kind"];
+            this.name = data["name"];
+            this.value = data["value"];
+            this.lineColor = data["lineColor"];
+            this.chartType = data["chartType"];
         }
     }
 
-    static fromJS(data: any): IndicatorValueItem {
-        let result = new IndicatorValueItem();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): IndicatorValueItem {
+        return createInstance<IndicatorValueItem>(data, _mappings, IndicatorValueItem);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["kind"] = this.kind !== undefined ? this.kind : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["value"] = this.value !== undefined ? this.value : <any>null;
-        data["lineColor"] = this.lineColor !== undefined ? this.lineColor : <any>null;
-        data["chartType"] = this.chartType !== undefined ? this.chartType : <any>null;
+        data["kind"] = this.kind;
+        data["name"] = this.name;
+        data["value"] = this.value;
+        data["lineColor"] = this.lineColor;
+        data["chartType"] = this.chartType;
         return data; 
     }
 }
 
 export interface IIndicatorValueItem {
     kind: ValueKind;
-    name?: string | null;
+    name?: string | undefined;
     value: number;
-    lineColor?: string | null;
+    lineColor?: string | undefined;
     chartType: ChartType;
 }
 
@@ -4555,8 +4527,8 @@ export enum ValueKind {
 }
 
 export class CompanyInfo implements ICompanyInfo {
-    ticker?: string | null;
-    name?: string | null;
+    ticker?: string | undefined;
+    name?: string | undefined;
 
     constructor(data?: ICompanyInfo) {
         if (data) {
@@ -4567,38 +4539,36 @@ export class CompanyInfo implements ICompanyInfo {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.ticker = data["ticker"];
+            this.name = data["name"];
         }
     }
 
-    static fromJS(data: any): CompanyInfo {
-        let result = new CompanyInfo();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): CompanyInfo {
+        return createInstance<CompanyInfo>(data, _mappings, CompanyInfo);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["ticker"] = this.ticker;
+        data["name"] = this.name;
         return data; 
     }
 }
 
 export interface ICompanyInfo {
-    ticker?: string | null;
-    name?: string | null;
+    ticker?: string | undefined;
+    name?: string | undefined;
 }
 
 export class StrategySummary implements IStrategySummary {
     active: boolean;
-    url?: string | null;
-    summary?: string | null;
+    url?: string | undefined;
+    summary?: string | undefined;
     strategyId: number;
-    title?: string | null;
+    title?: string | undefined;
 
     constructor(data?: IStrategySummary) {
         if (data) {
@@ -4609,50 +4579,48 @@ export class StrategySummary implements IStrategySummary {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.active = data["active"] !== undefined ? data["active"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
-            this.summary = data["summary"] !== undefined ? data["summary"] : <any>null;
-            this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
+            this.active = data["active"];
+            this.url = data["url"];
+            this.summary = data["summary"];
+            this.strategyId = data["strategyId"];
+            this.title = data["title"];
         }
     }
 
-    static fromJS(data: any): StrategySummary {
-        let result = new StrategySummary();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): StrategySummary {
+        return createInstance<StrategySummary>(data, _mappings, StrategySummary);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["active"] = this.active !== undefined ? this.active : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
-        data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
+        data["active"] = this.active;
+        data["url"] = this.url;
+        data["summary"] = this.summary;
+        data["strategyId"] = this.strategyId;
+        data["title"] = this.title;
         return data; 
     }
 }
 
 export interface IStrategySummary {
     active: boolean;
-    url?: string | null;
-    summary?: string | null;
+    url?: string | undefined;
+    summary?: string | undefined;
     strategyId: number;
-    title?: string | null;
+    title?: string | undefined;
 }
 
 export class StrategyModel implements IStrategyModel {
-    ruleSets?: StrategyRuleSetModel[] | null;
-    blocks?: any[] | null;
+    ruleSets?: StrategyRuleSetModel[] | undefined;
+    blocks?: any[] | undefined;
     strategyId: number;
-    title?: string | null;
+    title?: string | undefined;
     deleted: boolean;
-    summary?: string | null;
+    summary?: string | undefined;
     active: boolean;
-    url?: string | null;
+    url?: string | undefined;
 
     constructor(data?: IStrategyModel) {
         if (data) {
@@ -4663,31 +4631,29 @@ export class StrategyModel implements IStrategyModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
             if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
                 this.ruleSets = [];
                 for (let item of data["ruleSets"])
-                    this.ruleSets.push(StrategyRuleSetModel.fromJS(item));
+                    this.ruleSets.push(StrategyRuleSetModel.fromJS(item, _mappings));
             }
             if (data["blocks"] && data["blocks"].constructor === Array) {
                 this.blocks = [];
                 for (let item of data["blocks"])
                     this.blocks.push(item);
             }
-            this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
-            this.title = data["title"] !== undefined ? data["title"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-            this.summary = data["summary"] !== undefined ? data["summary"] : <any>null;
-            this.active = data["active"] !== undefined ? data["active"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
+            this.strategyId = data["strategyId"];
+            this.title = data["title"];
+            this.deleted = data["deleted"];
+            this.summary = data["summary"];
+            this.active = data["active"];
+            this.url = data["url"];
         }
     }
 
-    static fromJS(data: any): StrategyModel {
-        let result = new StrategyModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): StrategyModel {
+        return createInstance<StrategyModel>(data, _mappings, StrategyModel);
     }
 
     toJSON(data?: any) {
@@ -4702,31 +4668,31 @@ export class StrategyModel implements IStrategyModel {
             for (let item of this.blocks)
                 data["blocks"].push(item);
         }
-        data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
-        data["title"] = this.title !== undefined ? this.title : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
-        data["active"] = this.active !== undefined ? this.active : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
+        data["strategyId"] = this.strategyId;
+        data["title"] = this.title;
+        data["deleted"] = this.deleted;
+        data["summary"] = this.summary;
+        data["active"] = this.active;
+        data["url"] = this.url;
         return data; 
     }
 }
 
 export interface IStrategyModel {
-    ruleSets?: StrategyRuleSetModel[] | null;
-    blocks?: any[] | null;
+    ruleSets?: StrategyRuleSetModel[] | undefined;
+    blocks?: any[] | undefined;
     strategyId: number;
-    title?: string | null;
+    title?: string | undefined;
     deleted: boolean;
-    summary?: string | null;
+    summary?: string | undefined;
     active: boolean;
-    url?: string | null;
+    url?: string | undefined;
 }
 
 export class StrategyRuleSetModel implements IStrategyRuleSetModel {
-    rules?: StrategyRuleModel[] | null;
-    description?: string | null;
-    name?: string | null;
+    rules?: StrategyRuleModel[] | undefined;
+    description?: string | undefined;
+    name?: string | undefined;
     optional: boolean;
     orderId: number;
     period: number;
@@ -4741,26 +4707,24 @@ export class StrategyRuleSetModel implements IStrategyRuleSetModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
             if (data["rules"] && data["rules"].constructor === Array) {
                 this.rules = [];
                 for (let item of data["rules"])
-                    this.rules.push(StrategyRuleModel.fromJS(item));
+                    this.rules.push(StrategyRuleModel.fromJS(item, _mappings));
             }
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.optional = data["optional"] !== undefined ? data["optional"] : <any>null;
-            this.orderId = data["orderId"] !== undefined ? data["orderId"] : <any>null;
-            this.period = data["period"] !== undefined ? data["period"] : <any>null;
-            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
+            this.description = data["description"];
+            this.name = data["name"];
+            this.optional = data["optional"];
+            this.orderId = data["orderId"];
+            this.period = data["period"];
+            this.ruleSetId = data["ruleSetId"];
         }
     }
 
-    static fromJS(data: any): StrategyRuleSetModel {
-        let result = new StrategyRuleSetModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): StrategyRuleSetModel {
+        return createInstance<StrategyRuleSetModel>(data, _mappings, StrategyRuleSetModel);
     }
 
     toJSON(data?: any) {
@@ -4770,20 +4734,20 @@ export class StrategyRuleSetModel implements IStrategyRuleSetModel {
             for (let item of this.rules)
                 data["rules"].push(item.toJSON());
         }
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["optional"] = this.optional !== undefined ? this.optional : <any>null;
-        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
-        data["period"] = this.period !== undefined ? this.period : <any>null;
-        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
+        data["description"] = this.description;
+        data["name"] = this.name;
+        data["optional"] = this.optional;
+        data["orderId"] = this.orderId;
+        data["period"] = this.period;
+        data["ruleSetId"] = this.ruleSetId;
         return data; 
     }
 }
 
 export interface IStrategyRuleSetModel {
-    rules?: StrategyRuleModel[] | null;
-    description?: string | null;
-    name?: string | null;
+    rules?: StrategyRuleModel[] | undefined;
+    description?: string | undefined;
+    name?: string | undefined;
     optional: boolean;
     orderId: number;
     period: number;
@@ -4801,15 +4765,13 @@ export class StrategyRuleModel implements IStrategyRuleModel {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
         }
     }
 
-    static fromJS(data: any): StrategyRuleModel {
-        let result = new StrategyRuleModel();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): StrategyRuleModel {
+        return createInstance<StrategyRuleModel>(data, _mappings, StrategyRuleModel);
     }
 
     toJSON(data?: any) {
@@ -4823,10 +4785,10 @@ export interface IStrategyRuleModel {
 
 export class Strategy implements IStrategy {
     strategyId: number;
-    name?: string | null;
-    url?: string | null;
-    jsonArticleBlocks?: string | null;
-    description?: string | null;
+    name?: string | undefined;
+    url?: string | undefined;
+    jsonArticleBlocks?: string | undefined;
+    description?: string | undefined;
     deleted: boolean;
     active: boolean;
 
@@ -4839,43 +4801,41 @@ export class Strategy implements IStrategy {
         }
     }
 
-    init(data?: any) {
+    init(data?: any, _mappings?: any) {
         if (data) {
-            this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.url = data["url"] !== undefined ? data["url"] : <any>null;
-            this.jsonArticleBlocks = data["jsonArticleBlocks"] !== undefined ? data["jsonArticleBlocks"] : <any>null;
-            this.description = data["description"] !== undefined ? data["description"] : <any>null;
-            this.deleted = data["deleted"] !== undefined ? data["deleted"] : <any>null;
-            this.active = data["active"] !== undefined ? data["active"] : <any>null;
+            this.strategyId = data["strategyId"];
+            this.name = data["name"];
+            this.url = data["url"];
+            this.jsonArticleBlocks = data["jsonArticleBlocks"];
+            this.description = data["description"];
+            this.deleted = data["deleted"];
+            this.active = data["active"];
         }
     }
 
-    static fromJS(data: any): Strategy {
-        let result = new Strategy();
-        result.init(data);
-        return result;
+    static fromJS(data: any, _mappings?: any): Strategy {
+        return createInstance<Strategy>(data, _mappings, Strategy);
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["url"] = this.url !== undefined ? this.url : <any>null;
-        data["jsonArticleBlocks"] = this.jsonArticleBlocks !== undefined ? this.jsonArticleBlocks : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["deleted"] = this.deleted !== undefined ? this.deleted : <any>null;
-        data["active"] = this.active !== undefined ? this.active : <any>null;
+        data["strategyId"] = this.strategyId;
+        data["name"] = this.name;
+        data["url"] = this.url;
+        data["jsonArticleBlocks"] = this.jsonArticleBlocks;
+        data["description"] = this.description;
+        data["deleted"] = this.deleted;
+        data["active"] = this.active;
         return data; 
     }
 }
 
 export interface IStrategy {
     strategyId: number;
-    name?: string | null;
-    url?: string | null;
-    jsonArticleBlocks?: string | null;
-    description?: string | null;
+    name?: string | undefined;
+    url?: string | undefined;
+    jsonArticleBlocks?: string | undefined;
+    description?: string | undefined;
     deleted: boolean;
     active: boolean;
 }
@@ -4901,4 +4861,62 @@ function throwException(message: string, status: number, response: string, resul
         throw result;
     else
         throw new SwaggerException(message, status, response, null);
+}
+
+function jsonParse(json: any, reviver?: any) {
+    json = JSON.parse(json, reviver);
+
+    var byid: any = {};
+    var refs: any = [];
+    json = (function recurse(obj: any, prop?: any, parent?: any) {
+        if (typeof obj !== 'object' || !obj)
+            return obj;
+        
+        if ("$ref" in obj) {
+            let ref = obj.$ref;
+            if (ref in byid)
+                return byid[ref];
+            refs.push([parent, prop, ref]);
+            return undefined;
+        } else if ("$id" in obj) {
+            let id = obj.$id;
+            delete obj.$id;
+            if ("$values" in obj)
+                obj = obj.$values;
+            byid[id] = obj;
+        }
+        
+        if (Array.isArray(obj)) {
+            obj = obj.map((v, i) => recurse(v, i, obj));
+        } else {
+            for (var p in obj) {
+                if (obj.hasOwnProperty(p) && obj[p] && typeof obj[p] === 'object')
+                    obj[p] = recurse(obj[p], p, obj);
+            }
+        }
+
+        return obj;
+    })(json);
+
+    for (let i = 0; i < refs.length; i++) {
+        const ref = refs[i];
+        ref[0][ref[1]] = byid[ref[2]];
+    }
+
+    return json;
+}
+
+function createInstance<T>(data: any, mappings: any, type: any): T {
+    if (!mappings)
+        mappings = [];
+    else {
+        let mapping = mappings.filter((m: any) => m.source === data);
+        if (mapping.length === 1)
+            return <T>mapping[0].target;
+    }
+
+    let result: any = new type();
+    mappings.push({ source: data, target: result });
+    result.init(data, mappings);
+    return result;
 }

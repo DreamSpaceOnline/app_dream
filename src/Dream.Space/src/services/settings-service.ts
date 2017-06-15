@@ -22,6 +22,8 @@ export class SettingsService {
 
         this.periods = EnumValues.getQuotePeriods();
         this.defaultPeriod = this.periods[0];
+
+        if (this.indicatorService && this.articleService ){}
     }
 
     getStudiesSection() {
@@ -39,8 +41,16 @@ export class SettingsService {
     }
 
     async initialize() {
-        this.sections = await this.articleService.getSections();
-        this.indicators = await this.indicatorService.getIndicators();
+        //this.sections = await this.articleService.getSections();
+        //this.indicators = await this.indicatorService.getIndicators();
+        const section = new SectionModel();
+        section.url = "studies";
+        section.title = "Studies";
+        section.sectionId = 1;
+
+        this.sections.push(section);
+
+
         this.initialized = true;
     }
 
