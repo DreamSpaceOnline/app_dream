@@ -1,5 +1,5 @@
 ﻿import { bindable } from "aurelia-framework";
-import { QuotePeriod, IndicatorValueItem, ChartType, QuotesModel } from "../../../services/services-generated";
+import { QuotePeriod, ChartType, QuotesModel, IndicatorValueItem } from "../../../services/services-generated";
 
 export class ChartLayout {
     @bindable data: any = null;

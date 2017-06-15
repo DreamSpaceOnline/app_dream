@@ -4517,7 +4517,7 @@ export interface IIIndicatorEntity {
 
 export class IndicatorResult implements IIndicatorResult {
     date: Date;
-    values?: IndicatorValues | null;
+    values?: IndicatorValueItem[] | null;
 
     constructor(data?: IIndicatorResult) {
         if (data) {
@@ -4531,7 +4531,11 @@ export class IndicatorResult implements IIndicatorResult {
     init(data?: any) {
         if (data) {
             this.date = data["date"] ? new Date(data["date"].toString()) : <any>null;
-            this.values = data["values"] ? IndicatorValues.fromJS(data["values"]) : <any>null;
+            if (data["values"] && data["values"].constructor === Array) {
+                this.values = [];
+                for (let item of data["values"])
+                    this.values.push(IndicatorValueItem.fromJS(item));
+            }
         }
     }
 
@@ -4544,42 +4548,18 @@ export class IndicatorResult implements IIndicatorResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>null;
-        data["values"] = this.values ? this.values.toJSON() : <any>null;
+        if (this.values && this.values.constructor === Array) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item.toJSON());
+        }
         return data; 
     }
 }
 
 export interface IIndicatorResult {
     date: Date;
-    values?: IndicatorValues | null;
-}
-
-export class IndicatorValues extends IndicatorValueItem[] implements IIndicatorValues {
-
-    constructor(data?: IIndicatorValues) {
-        super(data);
-    }
-
-    init(data?: any) {
-        super.init(data);
-        if (data) {
-        }
-    }
-
-    static fromJS(data: any): IndicatorValues {
-        let result = new IndicatorValues();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IIndicatorValues extends IIndicatorValueItem[] {
+    values?: IndicatorValueItem[] | null;
 }
 
 export class IndicatorValueItem implements IIndicatorValueItem {

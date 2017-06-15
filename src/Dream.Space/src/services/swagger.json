@@ -2999,21 +2999,12 @@
           "format": "date-time"
         },
         "values": {
-          "$ref": "#/definitions/IndicatorValues"
-        }
-      }
-    },
-    "IndicatorValues": {
-      "type": "object",
-      "additionalProperties": false,
-      "allOf": [
-        {
           "type": "array",
           "items": {
             "$ref": "#/definitions/IndicatorValueItem"
           }
         }
-      ]
+      }
     },
     "IndicatorValueItem": {
       "type": "object",

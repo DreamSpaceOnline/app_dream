@@ -78,7 +78,7 @@ namespace Dream.Space.Models.Layouts
     {
 
         public DateTime Date { get; set; }
-        public IndicatorValues Values { get; set; }
+        public List<IndicatorValueItem> Values { get; set; }
     }
 
 }

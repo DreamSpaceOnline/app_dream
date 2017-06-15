@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dream.Space.Models.Enums;
 using Newtonsoft.Json;
 
@@ -8,7 +9,7 @@ namespace Dream.Space.Models.Indicators
     {
         public IndicatorResult(DateTime date)
         {
-            Values = new IndicatorValues();
+            Values = new List<IndicatorValueItem>();
             Date = date;
         }
 
@@ -27,7 +28,7 @@ namespace Dream.Space.Models.Indicators
 
 
         public DateTime Date { get; set; }
-        public IndicatorValues Values { get; set; }
+        public List<IndicatorValueItem> Values { get; set; }
 
 
         public NHNLIndicatorResultDecorator AsNHNLIndicatorResult()

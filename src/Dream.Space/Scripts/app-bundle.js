@@ -1,15 +1,16 @@
 define('common/types/enums',["require", "exports"], function (require, exports) {
     "use strict";
+    var ChartType;
+    (function (ChartType) {
+        ChartType[ChartType["OHLC"] = 0] = "OHLC";
+        ChartType[ChartType["Line"] = 1] = "Line";
+        ChartType[ChartType["Column"] = 2] = "Column";
+    })(ChartType = exports.ChartType || (exports.ChartType = {}));
     var Direction;
     (function (Direction) {
         Direction[Direction["Up"] = 0] = "Up";
         Direction[Direction["Down"] = 1] = "Down";
     })(Direction = exports.Direction || (exports.Direction = {}));
-    var QuotePeriod;
-    (function (QuotePeriod) {
-        QuotePeriod[QuotePeriod["Daily"] = 0] = "Daily";
-        QuotePeriod[QuotePeriod["Weekly"] = 1] = "Weekly";
-    })(QuotePeriod = exports.QuotePeriod || (exports.QuotePeriod = {}));
     var ChartUpdateMode;
     (function (ChartUpdateMode) {
         ChartUpdateMode[ChartUpdateMode["Reset"] = 0] = "Reset";
@@ -47,23 +48,6 @@ define('common/types/enums',["require", "exports"], function (require, exports) 
         RuleDataSource[RuleDataSource["HistoricalData"] = 1] = "HistoricalData";
         RuleDataSource[RuleDataSource["Constant"] = 2] = "Constant";
     })(RuleDataSource = exports.RuleDataSource || (exports.RuleDataSource = {}));
-    var JobType;
-    (function (JobType) {
-        JobType[JobType["All"] = 0] = "All";
-        JobType[JobType["RefreshAllStocks"] = 1] = "RefreshAllStocks";
-        JobType[JobType["RefreshSP500Stocks"] = 2] = "RefreshSP500Stocks";
-        JobType[JobType["CalculateGlobalIndicators"] = 3] = "CalculateGlobalIndicators";
-        JobType[JobType["RefreshIndices"] = 4] = "RefreshIndices";
-    })(JobType = exports.JobType || (exports.JobType = {}));
-    var JobStatus;
-    (function (JobStatus) {
-        JobStatus[JobStatus["Pending"] = 0] = "Pending";
-        JobStatus[JobStatus["InProgress"] = 1] = "InProgress";
-        JobStatus[JobStatus["Completed"] = 2] = "Completed";
-        JobStatus[JobStatus["Cancelled"] = 3] = "Cancelled";
-        JobStatus[JobStatus["Paused"] = 4] = "Paused";
-        JobStatus[JobStatus["Error"] = 99] = "Error";
-    })(JobStatus = exports.JobStatus || (exports.JobStatus = {}));
 });
 
 define('common/types/account-models',["require", "exports"], function (require, exports) {
@@ -180,128 +164,4146 @@ define('services/account-service',["require", "exports", "tslib", "aurelia-frame
     exports.AccountService = AccountService;
 });
 
-define('common/types/article-models',["require", "exports"], function (require, exports) {
+define('services/services-generated',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
     "use strict";
-});
-
-define('common/types/indicator-models',["require", "exports", "tslib"], function (require, exports, tslib_1) {
-    "use strict";
-    var IndicatorCore = (function () {
-        function IndicatorCore() {
+    var ArticlesApiClient = (function () {
+        function ArticlesApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
         }
+        ArticlesApiClient.prototype.getArticle = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetArticle(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetArticle = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.deleteArticle = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteArticle(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processDeleteArticle = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.updateArticleOrder = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article//order";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processUpdateArticleOrder(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processUpdateArticleOrder = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.deleteCategory = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/category/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteCategory(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processDeleteCategory = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getSection = function (sectionUrl) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/section/{sectionUrl}";
+            if (sectionUrl === undefined || sectionUrl === null)
+                throw new Error("The parameter 'sectionUrl' must be defined.");
+            url_ = url_.replace("{sectionUrl}", encodeURIComponent("" + sectionUrl));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetSection(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetSection = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Section.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getSections = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/sections";
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetSections(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetSections = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_1 = resultData200; _i < resultData200_1.length; _i++) {
+                            var item = resultData200_1[_i];
+                            result200.push(Section.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getFeaturedArticle = function (categoryId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/{categoryId}/featured";
+            if (categoryId === undefined || categoryId === null)
+                throw new Error("The parameter 'categoryId' must be defined.");
+            url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetFeaturedArticle(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetFeaturedArticle = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getArticleByUrl = function (categoryId, articleUrl) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/url/{categoryId}/{articleUrl}";
+            if (categoryId === undefined || categoryId === null)
+                throw new Error("The parameter 'categoryId' must be defined.");
+            url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
+            if (articleUrl === undefined || articleUrl === null)
+                throw new Error("The parameter 'articleUrl' must be defined.");
+            url_ = url_.replace("{articleUrl}", encodeURIComponent("" + articleUrl));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetArticleByUrl(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetArticleByUrl = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getArticles = function (categoryId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/{categoryId}/all";
+            if (categoryId === undefined || categoryId === null)
+                throw new Error("The parameter 'categoryId' must be defined.");
+            url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetArticles(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetArticles = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_2 = resultData200; _i < resultData200_2.length; _i++) {
+                            var item = resultData200_2[_i];
+                            result200.push(ArticleModel.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.setFeaturedArticle = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/{id}/featured";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSetFeaturedArticle(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processSetFeaturedArticle = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getCategories = function (sectionId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/categories/{sectionId}";
+            if (sectionId === undefined || sectionId === null)
+                throw new Error("The parameter 'sectionId' must be defined.");
+            url_ = url_.replace("{sectionId}", encodeURIComponent("" + sectionId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetCategories(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetCategories = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_3 = resultData200; _i < resultData200_3.length; _i++) {
+                            var item = resultData200_3[_i];
+                            result200.push(Category.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.getCategory = function (categoryUrl) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/category/{categoryUrl}";
+            if (categoryUrl === undefined || categoryUrl === null)
+                throw new Error("The parameter 'categoryUrl' must be defined.");
+            url_ = url_.replace("{categoryUrl}", encodeURIComponent("" + categoryUrl));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetCategory(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processGetCategory = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Category.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.saveArticle = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveArticle(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processSaveArticle = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        ArticlesApiClient.prototype.saveCategory = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/article/category";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveCategory(_response);
+            });
+        };
+        ArticlesApiClient.prototype.processSaveCategory = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Category.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return ArticlesApiClient;
+    }());
+    ArticlesApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], ArticlesApiClient);
+    exports.ArticlesApiClient = ArticlesApiClient;
+    var BlobApiClient = (function () {
+        function BlobApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        BlobApiClient.prototype.test = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/blob/monitor";
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processTest(_response);
+            });
+        };
+        BlobApiClient.prototype.processTest = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 !== undefined ? resultData200 : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        BlobApiClient.prototype.uploadSingle = function (file) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/blob/upload";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(file ? file.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processUploadSingle(_response);
+            });
+        };
+        BlobApiClient.prototype.processUploadSingle = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 !== undefined ? resultData200 : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return BlobApiClient;
+    }());
+    BlobApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], BlobApiClient);
+    exports.BlobApiClient = BlobApiClient;
+    var CompaniesApiClient = (function () {
+        function CompaniesApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        CompaniesApiClient.prototype.getCompany = function (ticker) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/company/{ticker}";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetCompany(_response);
+            });
+        };
+        CompaniesApiClient.prototype.processGetCompany = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Company.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        CompaniesApiClient.prototype.search = function (request) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/company/search";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(request ? request.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSearch(_response);
+            });
+        };
+        CompaniesApiClient.prototype.processSearch = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_4 = resultData200; _i < resultData200_4.length; _i++) {
+                            var item = resultData200_4[_i];
+                            result200.push(CompanyDetails.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return CompaniesApiClient;
+    }());
+    CompaniesApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], CompaniesApiClient);
+    exports.CompaniesApiClient = CompaniesApiClient;
+    var IndicatorsApiClient = (function () {
+        function IndicatorsApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        IndicatorsApiClient.prototype.getIndicator = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/indicator/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetIndicator(_response);
+            });
+        };
+        IndicatorsApiClient.prototype.processGetIndicator = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Indicator.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        IndicatorsApiClient.prototype.deleteIndicator = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/indicator/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteIndicator(_response);
+            });
+        };
+        IndicatorsApiClient.prototype.processDeleteIndicator = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        IndicatorsApiClient.prototype.getIndicatorsAll = function (period) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/indicator/{period}/all";
+            if (period === undefined || period === null)
+                throw new Error("The parameter 'period' must be defined.");
+            url_ = url_.replace("{period}", encodeURIComponent("" + period));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetIndicatorsAll(_response);
+            });
+        };
+        IndicatorsApiClient.prototype.processGetIndicatorsAll = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_5 = resultData200; _i < resultData200_5.length; _i++) {
+                            var item = resultData200_5[_i];
+                            result200.push(Indicator.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        IndicatorsApiClient.prototype.getIndicators = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/indicator/all";
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetIndicators(_response);
+            });
+        };
+        IndicatorsApiClient.prototype.processGetIndicators = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_6 = resultData200; _i < resultData200_6.length; _i++) {
+                            var item = resultData200_6[_i];
+                            result200.push(IndicatorCore.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        IndicatorsApiClient.prototype.saveIndicator = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/indicator";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveIndicator(_response);
+            });
+        };
+        IndicatorsApiClient.prototype.processSaveIndicator = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Indicator.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return IndicatorsApiClient;
+    }());
+    IndicatorsApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], IndicatorsApiClient);
+    exports.IndicatorsApiClient = IndicatorsApiClient;
+    var JobsApiClient = (function () {
+        function JobsApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        JobsApiClient.prototype.cancelScheduledJob = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/cancel/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processCancelScheduledJob(_response);
+            });
+        };
+        JobsApiClient.prototype.processCancelScheduledJob = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.pauseScheduledJob = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/pause/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processPauseScheduledJob(_response);
+            });
+        };
+        JobsApiClient.prototype.processPauseScheduledJob = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.resumeScheduledJob = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/resume/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processResumeScheduledJob(_response);
+            });
+        };
+        JobsApiClient.prototype.processResumeScheduledJob = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.clearJobsHistory = function (jobType) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/history/clear/{jobType}";
+            if (jobType === undefined || jobType === null)
+                throw new Error("The parameter 'jobType' must be defined.");
+            url_ = url_.replace("{jobType}", encodeURIComponent("" + jobType));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processClearJobsHistory(_response);
+            });
+        };
+        JobsApiClient.prototype.processClearJobsHistory = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.deleteScheduledJob = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/delete/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteScheduledJob(_response);
+            });
+        };
+        JobsApiClient.prototype.processDeleteScheduledJob = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.startScheduledJobs = function (jobType) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/start/{jobType}";
+            if (jobType === undefined || jobType === null)
+                throw new Error("The parameter 'jobType' must be defined.");
+            url_ = url_.replace("{jobType}", encodeURIComponent("" + jobType));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processStartScheduledJobs(_response);
+            });
+        };
+        JobsApiClient.prototype.processStartScheduledJobs = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.getSheduledJobHistory = function (jobType) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/history/{jobType}";
+            if (jobType === undefined || jobType === null)
+                throw new Error("The parameter 'jobType' must be defined.");
+            url_ = url_.replace("{jobType}", encodeURIComponent("" + jobType));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetSheduledJobHistory(_response);
+            });
+        };
+        JobsApiClient.prototype.processGetSheduledJobHistory = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_7 = resultData200; _i < resultData200_7.length; _i++) {
+                            var item = resultData200_7[_i];
+                            result200.push(ScheduledJob.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.getCurrentJob = function (jobType) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/current/{jobType}";
+            if (jobType === undefined || jobType === null)
+                throw new Error("The parameter 'jobType' must be defined.");
+            url_ = url_.replace("{jobType}", encodeURIComponent("" + jobType));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetCurrentJob(_response);
+            });
+        };
+        JobsApiClient.prototype.processGetCurrentJob = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JobsApiClient.prototype.getJob = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/job/info/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetJob(_response);
+            });
+        };
+        JobsApiClient.prototype.processGetJob = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return JobsApiClient;
+    }());
+    JobsApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], JobsApiClient);
+    exports.JobsApiClient = JobsApiClient;
+    var LayoutApiClient = (function () {
+        function LayoutApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        LayoutApiClient.prototype.getLayoutsForPeriod = function (period) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/layout/period/{period}";
+            if (period === undefined || period === null)
+                throw new Error("The parameter 'period' must be defined.");
+            url_ = url_.replace("{period}", encodeURIComponent("" + period));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetLayoutsForPeriod(_response);
+            });
+        };
+        LayoutApiClient.prototype.processGetLayoutsForPeriod = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_8 = resultData200; _i < resultData200_8.length; _i++) {
+                            var item = resultData200_8[_i];
+                            result200.push(ChartLayoutModel.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        LayoutApiClient.prototype.getLayout = function (layoutId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/layout/{layoutId}";
+            if (layoutId === undefined || layoutId === null)
+                throw new Error("The parameter 'layoutId' must be defined.");
+            url_ = url_.replace("{layoutId}", encodeURIComponent("" + layoutId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetLayout(_response);
+            });
+        };
+        LayoutApiClient.prototype.processGetLayout = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        LayoutApiClient.prototype.getDefaultLayout = function (period) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/layout/period/{period}/default";
+            if (period === undefined || period === null)
+                throw new Error("The parameter 'period' must be defined.");
+            url_ = url_.replace("{period}", encodeURIComponent("" + period));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetDefaultLayout(_response);
+            });
+        };
+        LayoutApiClient.prototype.processGetDefaultLayout = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        LayoutApiClient.prototype.saveLayout = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/layout";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveLayout(_response);
+            });
+        };
+        LayoutApiClient.prototype.processSaveLayout = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return LayoutApiClient;
+    }());
+    LayoutApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], LayoutApiClient);
+    exports.LayoutApiClient = LayoutApiClient;
+    var LogsApiClient = (function () {
+        function LogsApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        LogsApiClient.prototype.getJobLogs = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/logs/job/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetJobLogs(_response);
+            });
+        };
+        LogsApiClient.prototype.processGetJobLogs = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_9 = resultData200; _i < resultData200_9.length; _i++) {
+                            var item = resultData200_9[_i];
+                            result200.push(ProcessorLog.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        LogsApiClient.prototype.deleteJobLogs = function (jobId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/logs/job/delete/{jobId}";
+            if (jobId === undefined || jobId === null)
+                throw new Error("The parameter 'jobId' must be defined.");
+            url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteJobLogs(_response);
+            });
+        };
+        LogsApiClient.prototype.processDeleteJobLogs = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        LogsApiClient.prototype.deleteAllLogs = function (jobType) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/logs/job-type/delete/{jobType}";
+            if (jobType === undefined || jobType === null)
+                throw new Error("The parameter 'jobType' must be defined.");
+            url_ = url_.replace("{jobType}", encodeURIComponent("" + jobType));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteAllLogs(_response);
+            });
+        };
+        LogsApiClient.prototype.processDeleteAllLogs = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return LogsApiClient;
+    }());
+    LogsApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], LogsApiClient);
+    exports.LogsApiClient = LogsApiClient;
+    var RulesApiClient = (function () {
+        function RulesApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        RulesApiClient.prototype.getRule = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/rule/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetRule(_response);
+            });
+        };
+        RulesApiClient.prototype.processGetRule = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Rule.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RulesApiClient.prototype.deleteRule = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/rule/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteRule(_response);
+            });
+        };
+        RulesApiClient.prototype.processDeleteRule = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RulesApiClient.prototype.getRules = function (period) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/rule/{period}/all";
+            if (period === undefined || period === null)
+                throw new Error("The parameter 'period' must be defined.");
+            url_ = url_.replace("{period}", encodeURIComponent("" + period));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetRules(_response);
+            });
+        };
+        RulesApiClient.prototype.processGetRules = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_10 = resultData200; _i < resultData200_10.length; _i++) {
+                            var item = resultData200_10[_i];
+                            result200.push(Rule.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RulesApiClient.prototype.saveRule = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/rule";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveRule(_response);
+            });
+        };
+        RulesApiClient.prototype.processSaveRule = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Rule.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return RulesApiClient;
+    }());
+    RulesApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], RulesApiClient);
+    exports.RulesApiClient = RulesApiClient;
+    var RuleSetsApiClient = (function () {
+        function RuleSetsApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        RuleSetsApiClient.prototype.getRuleSet = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/ruleset/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetRuleSet(_response);
+            });
+        };
+        RuleSetsApiClient.prototype.processGetRuleSet = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? RuleSetModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RuleSetsApiClient.prototype.deleteRuleSet = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/ruleset/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteRuleSet(_response);
+            });
+        };
+        RuleSetsApiClient.prototype.processDeleteRuleSet = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RuleSetsApiClient.prototype.getRuleSets = function (period) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/ruleset/{period}/all";
+            if (period === undefined || period === null)
+                throw new Error("The parameter 'period' must be defined.");
+            url_ = url_.replace("{period}", encodeURIComponent("" + period));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetRuleSets(_response);
+            });
+        };
+        RuleSetsApiClient.prototype.processGetRuleSets = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_11 = resultData200; _i < resultData200_11.length; _i++) {
+                            var item = resultData200_11[_i];
+                            result200.push(RuleSetModel.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RuleSetsApiClient.prototype.saveRuleSet = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/ruleset";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveRuleSet(_response);
+            });
+        };
+        RuleSetsApiClient.prototype.processSaveRuleSet = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? RuleSetModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RuleSetsApiClient.prototype.getStrategyRuleSets = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/ruleset/strategy/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetStrategyRuleSets(_response);
+            });
+        };
+        RuleSetsApiClient.prototype.processGetStrategyRuleSets = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_12 = resultData200; _i < resultData200_12.length; _i++) {
+                            var item = resultData200_12[_i];
+                            result200.push(VStrategyRuleSet.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        RuleSetsApiClient.prototype.saveStrategyRuleSets = function (id, ruleSets) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/ruleset/strategy/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var contentData_ = [];
+            if (ruleSets) {
+                for (var _i = 0, ruleSets_1 = ruleSets; _i < ruleSets_1.length; _i++) {
+                    var item = ruleSets_1[_i];
+                    contentData_.push(item.toJSON());
+                }
+            }
+            var content_ = JSON.stringify(ruleSets ? contentData_ : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveStrategyRuleSets(_response);
+            });
+        };
+        RuleSetsApiClient.prototype.processSaveStrategyRuleSets = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return RuleSetsApiClient;
+    }());
+    RuleSetsApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], RuleSetsApiClient);
+    exports.RuleSetsApiClient = RuleSetsApiClient;
+    var StockApiClient = (function () {
+        function StockApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        StockApiClient.prototype.updateQuotes = function (ticker) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/stock/{ticker}/update-quotes";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processUpdateQuotes(_response);
+            });
+        };
+        StockApiClient.prototype.processUpdateQuotes = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return StockApiClient;
+    }());
+    StockApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], StockApiClient);
+    exports.StockApiClient = StockApiClient;
+    var PlaygroundApiClient = (function () {
+        function PlaygroundApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        PlaygroundApiClient.prototype.loadPlayground = function (ticker, strategyId, bars, date) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/{bars}/{date}";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            if (strategyId === undefined || strategyId === null)
+                throw new Error("The parameter 'strategyId' must be defined.");
+            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
+            if (bars === undefined || bars === null)
+                throw new Error("The parameter 'bars' must be defined.");
+            url_ = url_.replace("{bars}", encodeURIComponent("" + bars));
+            if (date === undefined || date === null)
+                throw new Error("The parameter 'date' must be defined.");
+            url_ = url_.replace("{date}", encodeURIComponent("" + date));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processLoadPlayground(_response);
+            });
+        };
+        PlaygroundApiClient.prototype.processLoadPlayground = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        PlaygroundApiClient.prototype.next = function (ticker, strategyId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/next";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            if (strategyId === undefined || strategyId === null)
+                throw new Error("The parameter 'strategyId' must be defined.");
+            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processNext(_response);
+            });
+        };
+        PlaygroundApiClient.prototype.processNext = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        PlaygroundApiClient.prototype.prev = function (ticker, strategyId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/prev";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            if (strategyId === undefined || strategyId === null)
+                throw new Error("The parameter 'strategyId' must be defined.");
+            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processPrev(_response);
+            });
+        };
+        PlaygroundApiClient.prototype.processPrev = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return PlaygroundApiClient;
+    }());
+    PlaygroundApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], PlaygroundApiClient);
+    exports.PlaygroundApiClient = PlaygroundApiClient;
+    var StrategiesApiClient = (function () {
+        function StrategiesApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        StrategiesApiClient.prototype.geStrategySummaries = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/strategy/getSummaries";
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGeStrategySummaries(_response);
+            });
+        };
+        StrategiesApiClient.prototype.processGeStrategySummaries = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    if (resultData200 && resultData200.constructor === Array) {
+                        result200 = [];
+                        for (var _i = 0, resultData200_13 = resultData200; _i < resultData200_13.length; _i++) {
+                            var item = resultData200_13[_i];
+                            result200.push(StrategySummary.fromJS(item));
+                        }
+                    }
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        StrategiesApiClient.prototype.getStrategyByUrl = function (url) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/strategy/getByUrl/{url}";
+            if (url === undefined || url === null)
+                throw new Error("The parameter 'url' must be defined.");
+            url_ = url_.replace("{url}", encodeURIComponent("" + url));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetStrategyByUrl(_response);
+            });
+        };
+        StrategiesApiClient.prototype.processGetStrategyByUrl = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? StrategyModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        StrategiesApiClient.prototype.getStrategySummaryByUrl = function (url) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/strategy/getSummaryByUrl/{url}";
+            if (url === undefined || url === null)
+                throw new Error("The parameter 'url' must be defined.");
+            url_ = url_.replace("{url}", encodeURIComponent("" + url));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetStrategySummaryByUrl(_response);
+            });
+        };
+        StrategiesApiClient.prototype.processGetStrategySummaryByUrl = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? StrategySummary.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        StrategiesApiClient.prototype.getStrategyById = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/strategy/get/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetStrategyById(_response);
+            });
+        };
+        StrategiesApiClient.prototype.processGetStrategyById = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Strategy.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        StrategiesApiClient.prototype.saveStrategy = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/strategy";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processSaveStrategy(_response);
+            });
+        };
+        StrategiesApiClient.prototype.processSaveStrategy = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? StrategyModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        StrategiesApiClient.prototype.deleteStrategy = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/strategy/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processDeleteStrategy(_response);
+            });
+        };
+        StrategiesApiClient.prototype.processDeleteStrategy = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return StrategiesApiClient;
+    }());
+    StrategiesApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], StrategiesApiClient);
+    exports.StrategiesApiClient = StrategiesApiClient;
+    var ArticleModel = (function () {
+        function ArticleModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ArticleModel.prototype.init = function (data) {
+            if (data) {
+                this.articleId = data["articleId"] !== undefined ? data["articleId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                if (data["blocks"] && data["blocks"].constructor === Array) {
+                    this.blocks = [];
+                    for (var _i = 0, _a = data["blocks"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.blocks.push(ArticleBlock.fromJS(item));
+                    }
+                }
+                this.isFeatured = data["isFeatured"] !== undefined ? data["isFeatured"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+            }
+        };
+        ArticleModel.fromJS = function (data) {
+            var result = new ArticleModel();
+            result.init(data);
+            return result;
+        };
+        ArticleModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["articleId"] = this.articleId !== undefined ? this.articleId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["categoryId"] = this.categoryId !== undefined ? this.categoryId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            if (this.blocks && this.blocks.constructor === Array) {
+                data["blocks"] = [];
+                for (var _i = 0, _a = this.blocks; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["blocks"].push(item.toJSON());
+                }
+            }
+            data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            return data;
+        };
+        return ArticleModel;
+    }());
+    exports.ArticleModel = ArticleModel;
+    var ArticleBlock = (function () {
+        function ArticleBlock(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ArticleBlock.prototype.init = function (data) {
+            if (data) {
+                this.valid = data["valid"] !== undefined ? data["valid"] : null;
+                this.blockType = data["blockType"] !== undefined ? data["blockType"] : null;
+                this.text = data["text"] !== undefined ? data["text"] : null;
+                this.headingType = data["headingType"] !== undefined ? data["headingType"] : null;
+                this.imageUrl = data["imageUrl"] !== undefined ? data["imageUrl"] : null;
+                if (data["items"] && data["items"].constructor === Array) {
+                    this.items = [];
+                    for (var _i = 0, _a = data["items"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.items.push(ArticleBlockItem.fromJS(item));
+                    }
+                }
+            }
+        };
+        ArticleBlock.fromJS = function (data) {
+            var result = new ArticleBlock();
+            result.init(data);
+            return result;
+        };
+        ArticleBlock.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["valid"] = this.valid !== undefined ? this.valid : null;
+            data["blockType"] = this.blockType !== undefined ? this.blockType : null;
+            data["text"] = this.text !== undefined ? this.text : null;
+            data["headingType"] = this.headingType !== undefined ? this.headingType : null;
+            data["imageUrl"] = this.imageUrl !== undefined ? this.imageUrl : null;
+            if (this.items && this.items.constructor === Array) {
+                data["items"] = [];
+                for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["items"].push(item.toJSON());
+                }
+            }
+            return data;
+        };
+        return ArticleBlock;
+    }());
+    exports.ArticleBlock = ArticleBlock;
+    var ArticleBlockType;
+    (function (ArticleBlockType) {
+        ArticleBlockType[ArticleBlockType["Paragraph"] = "Paragraph"] = "Paragraph";
+        ArticleBlockType[ArticleBlockType["Heading"] = "Heading"] = "Heading";
+        ArticleBlockType[ArticleBlockType["Image"] = "Image"] = "Image";
+        ArticleBlockType[ArticleBlockType["List"] = "List"] = "List";
+        ArticleBlockType[ArticleBlockType["Unset"] = "Unset"] = "Unset";
+    })(ArticleBlockType = exports.ArticleBlockType || (exports.ArticleBlockType = {}));
+    var HeadingType;
+    (function (HeadingType) {
+        HeadingType[HeadingType["H1"] = "H1"] = "H1";
+        HeadingType[HeadingType["H2"] = "H2"] = "H2";
+        HeadingType[HeadingType["H3"] = "H3"] = "H3";
+        HeadingType[HeadingType["H4"] = "H4"] = "H4";
+        HeadingType[HeadingType["H5"] = "H5"] = "H5";
+    })(HeadingType = exports.HeadingType || (exports.HeadingType = {}));
+    var ArticleBlockItem = (function () {
+        function ArticleBlockItem(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ArticleBlockItem.prototype.init = function (data) {
+            if (data) {
+                this.text = data["text"] !== undefined ? data["text"] : null;
+                this.valid = data["valid"] !== undefined ? data["valid"] : null;
+            }
+        };
+        ArticleBlockItem.fromJS = function (data) {
+            var result = new ArticleBlockItem();
+            result.init(data);
+            return result;
+        };
+        ArticleBlockItem.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["text"] = this.text !== undefined ? this.text : null;
+            data["valid"] = this.valid !== undefined ? this.valid : null;
+            return data;
+        };
+        return ArticleBlockItem;
+    }());
+    exports.ArticleBlockItem = ArticleBlockItem;
+    var UpdateArticleOrderModel = (function () {
+        function UpdateArticleOrderModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        UpdateArticleOrderModel.prototype.init = function (data) {
+            if (data) {
+                this.articleId = data["articleId"] !== undefined ? data["articleId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+            }
+        };
+        UpdateArticleOrderModel.fromJS = function (data) {
+            var result = new UpdateArticleOrderModel();
+            result.init(data);
+            return result;
+        };
+        UpdateArticleOrderModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["articleId"] = this.articleId !== undefined ? this.articleId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            return data;
+        };
+        return UpdateArticleOrderModel;
+    }());
+    exports.UpdateArticleOrderModel = UpdateArticleOrderModel;
+    var Section = (function () {
+        function Section(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Section.prototype.init = function (data) {
+            if (data) {
+                this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                if (data["categories"] && data["categories"].constructor === Array) {
+                    this.categories = [];
+                    for (var _i = 0, _a = data["categories"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.categories.push(Category.fromJS(item));
+                    }
+                }
+                this.isDeleted = data["isDeleted"] !== undefined ? data["isDeleted"] : null;
+            }
+        };
+        Section.fromJS = function (data) {
+            var result = new Section();
+            result.init(data);
+            return result;
+        };
+        Section.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["sectionId"] = this.sectionId !== undefined ? this.sectionId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            if (this.categories && this.categories.constructor === Array) {
+                data["categories"] = [];
+                for (var _i = 0, _a = this.categories; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["categories"].push(item.toJSON());
+                }
+            }
+            data["isDeleted"] = this.isDeleted !== undefined ? this.isDeleted : null;
+            return data;
+        };
+        return Section;
+    }());
+    exports.Section = Section;
+    var Category = (function () {
+        function Category(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Category.prototype.init = function (data) {
+            if (data) {
+                this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : null;
+                if (data["articles"] && data["articles"].constructor === Array) {
+                    this.articles = [];
+                    for (var _i = 0, _a = data["articles"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.articles.push(Article.fromJS(item));
+                    }
+                }
+                this.section = data["section"] ? Section.fromJS(data["section"]) : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+            }
+        };
+        Category.fromJS = function (data) {
+            var result = new Category();
+            result.init(data);
+            return result;
+        };
+        Category.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["categoryId"] = this.categoryId !== undefined ? this.categoryId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["sectionId"] = this.sectionId !== undefined ? this.sectionId : null;
+            if (this.articles && this.articles.constructor === Array) {
+                data["articles"] = [];
+                for (var _i = 0, _a = this.articles; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["articles"].push(item.toJSON());
+                }
+            }
+            data["section"] = this.section ? this.section.toJSON() : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            return data;
+        };
+        return Category;
+    }());
+    exports.Category = Category;
+    var Article = (function () {
+        function Article(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Article.prototype.init = function (data) {
+            if (data) {
+                this.articleId = data["articleId"] !== undefined ? data["articleId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.jsonArticleBlocks = data["jsonArticleBlocks"] !== undefined ? data["jsonArticleBlocks"] : null;
+                this.category = data["category"] ? Category.fromJS(data["category"]) : null;
+                this.isFeatured = data["isFeatured"] !== undefined ? data["isFeatured"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+            }
+        };
+        Article.fromJS = function (data) {
+            var result = new Article();
+            result.init(data);
+            return result;
+        };
+        Article.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["articleId"] = this.articleId !== undefined ? this.articleId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["categoryId"] = this.categoryId !== undefined ? this.categoryId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["jsonArticleBlocks"] = this.jsonArticleBlocks !== undefined ? this.jsonArticleBlocks : null;
+            data["category"] = this.category ? this.category.toJSON() : null;
+            data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            return data;
+        };
+        return Article;
+    }());
+    exports.Article = Article;
+    var FileDetails = (function () {
+        function FileDetails(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        FileDetails.prototype.init = function (data) {
+            if (data) {
+                this.fileName = data["fileName"] !== undefined ? data["fileName"] : null;
+                this.fileBody = data["fileBody"] !== undefined ? data["fileBody"] : null;
+                this.category = data["category"] !== undefined ? data["category"] : null;
+            }
+        };
+        FileDetails.fromJS = function (data) {
+            var result = new FileDetails();
+            result.init(data);
+            return result;
+        };
+        FileDetails.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["fileName"] = this.fileName !== undefined ? this.fileName : null;
+            data["fileBody"] = this.fileBody !== undefined ? this.fileBody : null;
+            data["category"] = this.category !== undefined ? this.category : null;
+            return data;
+        };
+        return FileDetails;
+    }());
+    exports.FileDetails = FileDetails;
+    var FileCategory;
+    (function (FileCategory) {
+        FileCategory[FileCategory["Articles"] = "Articles"] = "Articles";
+        FileCategory[FileCategory["Journal"] = "Journal"] = "Journal";
+    })(FileCategory = exports.FileCategory || (exports.FileCategory = {}));
+    var Company = (function () {
+        function Company(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Company.prototype.init = function (data) {
+            if (data) {
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.marketCap = data["marketCap"] !== undefined ? data["marketCap"] : null;
+                this.sector = data["sector"] !== undefined ? data["sector"] : null;
+                this.industry = data["industry"] !== undefined ? data["industry"] : null;
+                this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : null;
+                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : null;
+                this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : null;
+                this.volume = data["volume"] !== undefined ? data["volume"] : null;
+                this.price = data["price"] !== undefined ? data["price"] : null;
+                this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : null;
+                this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : null;
+                this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : null;
+                this.liveQuoteJson = data["liveQuoteJson"] !== undefined ? data["liveQuoteJson"] : null;
+                this.historyQuotesJson = data["historyQuotesJson"] !== undefined ? data["historyQuotesJson"] : null;
+                this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : null;
+                if (data["historyQuotes"] && data["historyQuotes"].constructor === Array) {
+                    this.historyQuotes = [];
+                    for (var _i = 0, _a = data["historyQuotes"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.historyQuotes.push(QuotesModel.fromJS(item));
+                    }
+                }
+                this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : null;
+                this.updateError = data["updateError"] !== undefined ? data["updateError"] : null;
+                this.calculatedSuccessful = data["calculatedSuccessful"] !== undefined ? data["calculatedSuccessful"] : null;
+                this.calculatedError = data["calculatedError"] !== undefined ? data["calculatedError"] : null;
+                this.filtered = data["filtered"] !== undefined ? data["filtered"] : null;
+                this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : null;
+                this.endDate = data["endDate"] ? new Date(data["endDate"].toString()) : null;
+                this.sectorId = data["sectorId"] !== undefined ? data["sectorId"] : null;
+                this.industryId = data["industryId"] !== undefined ? data["industryId"] : null;
+                this.sP500 = data["sP500"] !== undefined ? data["sP500"] : null;
+                this.isIndex = data["isIndex"] !== undefined ? data["isIndex"] : null;
+            }
+        };
+        Company.fromJS = function (data) {
+            var result = new Company();
+            result.init(data);
+            return result;
+        };
+        Company.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["marketCap"] = this.marketCap !== undefined ? this.marketCap : null;
+            data["sector"] = this.sector !== undefined ? this.sector : null;
+            data["industry"] = this.industry !== undefined ? this.industry : null;
+            data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : null;
+            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : null;
+            data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : null;
+            data["volume"] = this.volume !== undefined ? this.volume : null;
+            data["price"] = this.price !== undefined ? this.price : null;
+            data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : null;
+            data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : null;
+            data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : null;
+            data["liveQuoteJson"] = this.liveQuoteJson !== undefined ? this.liveQuoteJson : null;
+            data["historyQuotesJson"] = this.historyQuotesJson !== undefined ? this.historyQuotesJson : null;
+            data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : null;
+            if (this.historyQuotes && this.historyQuotes.constructor === Array) {
+                data["historyQuotes"] = [];
+                for (var _i = 0, _a = this.historyQuotes; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["historyQuotes"].push(item.toJSON());
+                }
+            }
+            data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : null;
+            data["updateError"] = this.updateError !== undefined ? this.updateError : null;
+            data["calculatedSuccessful"] = this.calculatedSuccessful !== undefined ? this.calculatedSuccessful : null;
+            data["calculatedError"] = this.calculatedError !== undefined ? this.calculatedError : null;
+            data["filtered"] = this.filtered !== undefined ? this.filtered : null;
+            data["startDate"] = this.startDate ? this.startDate.toISOString() : null;
+            data["endDate"] = this.endDate ? this.endDate.toISOString() : null;
+            data["sectorId"] = this.sectorId !== undefined ? this.sectorId : null;
+            data["industryId"] = this.industryId !== undefined ? this.industryId : null;
+            data["sP500"] = this.sP500 !== undefined ? this.sP500 : null;
+            data["isIndex"] = this.isIndex !== undefined ? this.isIndex : null;
+            return data;
+        };
+        return Company;
+    }());
+    exports.Company = Company;
+    var QuotesModel = (function () {
+        function QuotesModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        QuotesModel.prototype.init = function (data) {
+            if (data) {
+                this.date = data["date"] ? new Date(data["date"].toString()) : null;
+                this.close = data["close"] !== undefined ? data["close"] : null;
+                this.volume = data["volume"] !== undefined ? data["volume"] : null;
+                this.open = data["open"] !== undefined ? data["open"] : null;
+                this.high = data["high"] !== undefined ? data["high"] : null;
+                this.low = data["low"] !== undefined ? data["low"] : null;
+                this.volumeAsText = data["volumeAsText"] !== undefined ? data["volumeAsText"] : null;
+                this.impulse = data["impulse"] !== undefined ? data["impulse"] : null;
+            }
+        };
+        QuotesModel.fromJS = function (data) {
+            var result = new QuotesModel();
+            result.init(data);
+            return result;
+        };
+        QuotesModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["date"] = this.date ? this.date.toISOString() : null;
+            data["close"] = this.close !== undefined ? this.close : null;
+            data["volume"] = this.volume !== undefined ? this.volume : null;
+            data["open"] = this.open !== undefined ? this.open : null;
+            data["high"] = this.high !== undefined ? this.high : null;
+            data["low"] = this.low !== undefined ? this.low : null;
+            data["volumeAsText"] = this.volumeAsText !== undefined ? this.volumeAsText : null;
+            data["impulse"] = this.impulse !== undefined ? this.impulse : null;
+            return data;
+        };
+        return QuotesModel;
+    }());
+    exports.QuotesModel = QuotesModel;
+    var CompanySearchRequest = (function () {
+        function CompanySearchRequest(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        CompanySearchRequest.prototype.init = function (data) {
+            if (data) {
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.maxCount = data["maxCount"] !== undefined ? data["maxCount"] : null;
+            }
+        };
+        CompanySearchRequest.fromJS = function (data) {
+            var result = new CompanySearchRequest();
+            result.init(data);
+            return result;
+        };
+        CompanySearchRequest.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["maxCount"] = this.maxCount !== undefined ? this.maxCount : null;
+            return data;
+        };
+        return CompanySearchRequest;
+    }());
+    exports.CompanySearchRequest = CompanySearchRequest;
+    var CompanyDetails = (function () {
+        function CompanyDetails(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        CompanyDetails.prototype.init = function (data) {
+            if (data) {
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.sector = data["sector"] !== undefined ? data["sector"] : null;
+                this.industry = data["industry"] !== undefined ? data["industry"] : null;
+                this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : null;
+                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : null;
+                this.volume = data["volume"] !== undefined ? data["volume"] : null;
+                this.price = data["price"] !== undefined ? data["price"] : null;
+                this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : null;
+                this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : null;
+                this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : null;
+                this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : null;
+                this.filtered = data["filtered"] !== undefined ? data["filtered"] : null;
+            }
+        };
+        CompanyDetails.fromJS = function (data) {
+            var result = new CompanyDetails();
+            result.init(data);
+            return result;
+        };
+        CompanyDetails.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["sector"] = this.sector !== undefined ? this.sector : null;
+            data["industry"] = this.industry !== undefined ? this.industry : null;
+            data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : null;
+            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : null;
+            data["volume"] = this.volume !== undefined ? this.volume : null;
+            data["price"] = this.price !== undefined ? this.price : null;
+            data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : null;
+            data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : null;
+            data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : null;
+            data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : null;
+            data["filtered"] = this.filtered !== undefined ? this.filtered : null;
+            return data;
+        };
+        return CompanyDetails;
+    }());
+    exports.CompanyDetails = CompanyDetails;
+    var Indicator = (function () {
+        function Indicator(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Indicator.prototype.init = function (data) {
+            if (data) {
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : null;
+                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.global = data["global"] !== undefined ? data["global"] : null;
+                this.chartPlotNumber = data["chartPlotNumber"] !== undefined ? data["chartPlotNumber"] : null;
+                this.chartColor = data["chartColor"] !== undefined ? data["chartColor"] : null;
+                if (data["params"] && data["params"].constructor === Array) {
+                    this.params = [];
+                    for (var _i = 0, _a = data["params"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.params.push(IndicatorParam.fromJS(item));
+                    }
+                }
+                this.chartType = data["chartType"] !== undefined ? data["chartType"] : null;
+            }
+        };
+        Indicator.fromJS = function (data) {
+            var result = new Indicator();
+            result.init(data);
+            return result;
+        };
+        Indicator.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : null;
+            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["global"] = this.global !== undefined ? this.global : null;
+            data["chartPlotNumber"] = this.chartPlotNumber !== undefined ? this.chartPlotNumber : null;
+            data["chartColor"] = this.chartColor !== undefined ? this.chartColor : null;
+            if (this.params && this.params.constructor === Array) {
+                data["params"] = [];
+                for (var _i = 0, _a = this.params; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["params"].push(item.toJSON());
+                }
+            }
+            data["chartType"] = this.chartType !== undefined ? this.chartType : null;
+            return data;
+        };
+        return Indicator;
+    }());
+    exports.Indicator = Indicator;
+    var QuotePeriod;
+    (function (QuotePeriod) {
+        QuotePeriod[QuotePeriod["Daily"] = "Daily"] = "Daily";
+        QuotePeriod[QuotePeriod["Weekly"] = "Weekly"] = "Weekly";
+    })(QuotePeriod = exports.QuotePeriod || (exports.QuotePeriod = {}));
+    var IndicatorParam = (function () {
+        function IndicatorParam(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IndicatorParam.prototype.init = function (data) {
+            if (data) {
+                this.paramName = data["paramName"] !== undefined ? data["paramName"] : null;
+                this.value = data["value"] !== undefined ? data["value"] : null;
+            }
+        };
+        IndicatorParam.fromJS = function (data) {
+            var result = new IndicatorParam();
+            result.init(data);
+            return result;
+        };
+        IndicatorParam.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["paramName"] = this.paramName !== undefined ? this.paramName : null;
+            data["value"] = this.value !== undefined ? this.value : null;
+            return data;
+        };
+        return IndicatorParam;
+    }());
+    exports.IndicatorParam = IndicatorParam;
+    var ChartType;
+    (function (ChartType) {
+        ChartType[ChartType["OHLC"] = "OHLC"] = "OHLC";
+        ChartType[ChartType["Line"] = "Line"] = "Line";
+        ChartType[ChartType["Column"] = "Column"] = "Column";
+    })(ChartType = exports.ChartType || (exports.ChartType = {}));
+    var IndicatorCore = (function () {
+        function IndicatorCore(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IndicatorCore.prototype.init = function (data) {
+            if (data) {
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.id = data["id"] !== undefined ? data["id"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+            }
+        };
+        IndicatorCore.fromJS = function (data) {
+            var result = new IndicatorCore();
+            result.init(data);
+            return result;
+        };
+        IndicatorCore.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["id"] = this.id !== undefined ? this.id : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            return data;
+        };
         return IndicatorCore;
     }());
     exports.IndicatorCore = IndicatorCore;
-    var IndicatorInfo = (function () {
-        function IndicatorInfo() {
+    var ScheduledJob = (function () {
+        function ScheduledJob(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
         }
-        return IndicatorInfo;
+        ScheduledJob.prototype.init = function (data) {
+            if (data) {
+                this.jobId = data["jobId"] !== undefined ? data["jobId"] : null;
+                this.jobType = data["jobType"] !== undefined ? data["jobType"] : null;
+                this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : null;
+                this.completedDate = data["completedDate"] ? new Date(data["completedDate"].toString()) : null;
+                this.jobName = data["jobName"] !== undefined ? data["jobName"] : null;
+                this.status = data["status"] !== undefined ? data["status"] : null;
+                this.progress = data["progress"] !== undefined ? data["progress"] : null;
+            }
+        };
+        ScheduledJob.fromJS = function (data) {
+            var result = new ScheduledJob();
+            result.init(data);
+            return result;
+        };
+        ScheduledJob.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["jobId"] = this.jobId !== undefined ? this.jobId : null;
+            data["jobType"] = this.jobType !== undefined ? this.jobType : null;
+            data["startDate"] = this.startDate ? this.startDate.toISOString() : null;
+            data["completedDate"] = this.completedDate ? this.completedDate.toISOString() : null;
+            data["jobName"] = this.jobName !== undefined ? this.jobName : null;
+            data["status"] = this.status !== undefined ? this.status : null;
+            data["progress"] = this.progress !== undefined ? this.progress : null;
+            return data;
+        };
+        return ScheduledJob;
     }());
-    exports.IndicatorInfo = IndicatorInfo;
-    var IndicatorModel = (function (_super) {
-        tslib_1.__extends(IndicatorModel, _super);
-        function IndicatorModel() {
+    exports.ScheduledJob = ScheduledJob;
+    var ScheduledJobType;
+    (function (ScheduledJobType) {
+        ScheduledJobType[ScheduledJobType["All"] = "All"] = "All";
+        ScheduledJobType[ScheduledJobType["RefreshAllStocks"] = "RefreshAllStocks"] = "RefreshAllStocks";
+        ScheduledJobType[ScheduledJobType["RefreshSP500Stocks"] = "RefreshSP500Stocks"] = "RefreshSP500Stocks";
+        ScheduledJobType[ScheduledJobType["CalculateGlobalIndicators"] = "CalculateGlobalIndicators"] = "CalculateGlobalIndicators";
+        ScheduledJobType[ScheduledJobType["RefreshIndices"] = "RefreshIndices"] = "RefreshIndices";
+    })(ScheduledJobType = exports.ScheduledJobType || (exports.ScheduledJobType = {}));
+    var JobStatus;
+    (function (JobStatus) {
+        JobStatus[JobStatus["Pending"] = "Pending"] = "Pending";
+        JobStatus[JobStatus["InProgress"] = "InProgress"] = "InProgress";
+        JobStatus[JobStatus["Completed"] = "Completed"] = "Completed";
+        JobStatus[JobStatus["Cancelled"] = "Cancelled"] = "Cancelled";
+        JobStatus[JobStatus["Paused"] = "Paused"] = "Paused";
+        JobStatus[JobStatus["Error"] = "Error"] = "Error";
+    })(JobStatus = exports.JobStatus || (exports.JobStatus = {}));
+    var ChartLayoutModel = (function () {
+        function ChartLayoutModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ChartLayoutModel.prototype.init = function (data) {
+            if (data) {
+                if (data["plots"] && data["plots"].constructor === Array) {
+                    this.plots = [];
+                    for (var _i = 0, _a = data["plots"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.plots.push(ChartPlotModel.fromJS(item));
+                    }
+                }
+                this.layoutId = data["layoutId"] !== undefined ? data["layoutId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.default = data["default"] !== undefined ? data["default"] : null;
+            }
+        };
+        ChartLayoutModel.fromJS = function (data) {
+            var result = new ChartLayoutModel();
+            result.init(data);
+            return result;
+        };
+        ChartLayoutModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.plots && this.plots.constructor === Array) {
+                data["plots"] = [];
+                for (var _i = 0, _a = this.plots; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["plots"].push(item.toJSON());
+                }
+            }
+            data["layoutId"] = this.layoutId !== undefined ? this.layoutId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["default"] = this.default !== undefined ? this.default : null;
+            return data;
+        };
+        return ChartLayoutModel;
+    }());
+    exports.ChartLayoutModel = ChartLayoutModel;
+    var ChartPlotModel = (function () {
+        function ChartPlotModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ChartPlotModel.prototype.init = function (data) {
+            if (data) {
+                this.layoutId = data["layoutId"] !== undefined ? data["layoutId"] : null;
+                this.plotId = data["plotId"] !== undefined ? data["plotId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.height = data["height"] !== undefined ? data["height"] : null;
+                if (data["indicators"] && data["indicators"].constructor === Array) {
+                    this.indicators = [];
+                    for (var _i = 0, _a = data["indicators"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.indicators.push(LayoutIndicatorModel.fromJS(item));
+                    }
+                }
+            }
+        };
+        ChartPlotModel.fromJS = function (data) {
+            var result = new ChartPlotModel();
+            result.init(data);
+            return result;
+        };
+        ChartPlotModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["layoutId"] = this.layoutId !== undefined ? this.layoutId : null;
+            data["plotId"] = this.plotId !== undefined ? this.plotId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["height"] = this.height !== undefined ? this.height : null;
+            if (this.indicators && this.indicators.constructor === Array) {
+                data["indicators"] = [];
+                for (var _i = 0, _a = this.indicators; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["indicators"].push(item.toJSON());
+                }
+            }
+            return data;
+        };
+        return ChartPlotModel;
+    }());
+    exports.ChartPlotModel = ChartPlotModel;
+    var LayoutIndicatorModel = (function () {
+        function LayoutIndicatorModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        LayoutIndicatorModel.prototype.init = function (data) {
+            if (data) {
+                this.id = data["id"] !== undefined ? data["id"] : null;
+                this.plotId = data["plotId"] !== undefined ? data["plotId"] : null;
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.indicator = data["indicator"] ? IndicatorModel.fromJS(data["indicator"]) : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.lineColor = data["lineColor"] !== undefined ? data["lineColor"] : null;
+            }
+        };
+        LayoutIndicatorModel.fromJS = function (data) {
+            var result = new LayoutIndicatorModel();
+            result.init(data);
+            return result;
+        };
+        LayoutIndicatorModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["id"] = this.id !== undefined ? this.id : null;
+            data["plotId"] = this.plotId !== undefined ? this.plotId : null;
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["indicator"] = this.indicator ? this.indicator.toJSON() : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["lineColor"] = this.lineColor !== undefined ? this.lineColor : null;
+            return data;
+        };
+        return LayoutIndicatorModel;
+    }());
+    exports.LayoutIndicatorModel = LayoutIndicatorModel;
+    var IndicatorModel = (function () {
+        function IndicatorModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IndicatorModel.prototype.init = function (data) {
+            if (data) {
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                if (data["params"] && data["params"].constructor === Array) {
+                    this.params = [];
+                    for (var _i = 0, _a = data["params"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.params.push(IndicatorParam.fromJS(item));
+                    }
+                }
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+            }
+        };
+        IndicatorModel.fromJS = function (data) {
+            var result = new IndicatorModel();
+            result.init(data);
+            return result;
+        };
+        IndicatorModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            if (this.params && this.params.constructor === Array) {
+                data["params"] = [];
+                for (var _i = 0, _a = this.params; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["params"].push(item.toJSON());
+                }
+            }
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            return data;
+        };
+        return IndicatorModel;
+    }());
+    exports.IndicatorModel = IndicatorModel;
+    var ProcessorLog = (function () {
+        function ProcessorLog(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ProcessorLog.prototype.init = function (data) {
+            if (data) {
+                this.id = data["id"] !== undefined ? data["id"] : null;
+                this.logged = data["logged"] ? new Date(data["logged"].toString()) : null;
+                this.level = data["level"] !== undefined ? data["level"] : null;
+                this.message = data["message"] !== undefined ? data["message"] : null;
+                this.processor = data["processor"] !== undefined ? data["processor"] : null;
+                this.jobType = data["jobType"] !== undefined ? data["jobType"] : null;
+                this.jobState = data["jobState"] !== undefined ? data["jobState"] : null;
+                this.exception = data["exception"] !== undefined ? data["exception"] : null;
+                this.jobId = data["jobId"] !== undefined ? data["jobId"] : null;
+            }
+        };
+        ProcessorLog.fromJS = function (data) {
+            var result = new ProcessorLog();
+            result.init(data);
+            return result;
+        };
+        ProcessorLog.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["id"] = this.id !== undefined ? this.id : null;
+            data["logged"] = this.logged ? this.logged.toISOString() : null;
+            data["level"] = this.level !== undefined ? this.level : null;
+            data["message"] = this.message !== undefined ? this.message : null;
+            data["processor"] = this.processor !== undefined ? this.processor : null;
+            data["jobType"] = this.jobType !== undefined ? this.jobType : null;
+            data["jobState"] = this.jobState !== undefined ? this.jobState : null;
+            data["exception"] = this.exception !== undefined ? this.exception : null;
+            data["jobId"] = this.jobId !== undefined ? this.jobId : null;
+            return data;
+        };
+        return ProcessorLog;
+    }());
+    exports.ProcessorLog = ProcessorLog;
+    var Rule = (function () {
+        function Rule(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Rule.prototype.init = function (data) {
+            if (data) {
+                this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.dataSourceV1 = data["dataSourceV1"] !== undefined ? data["dataSourceV1"] : null;
+                this.dataSourceV2 = data["dataSourceV2"] !== undefined ? data["dataSourceV2"] : null;
+                this.dataSeriesV1 = data["dataSeriesV1"] !== undefined ? data["dataSeriesV1"] : null;
+                this.dataSeriesV2 = data["dataSeriesV2"] !== undefined ? data["dataSeriesV2"] : null;
+                this.constV1 = data["constV1"] !== undefined ? data["constV1"] : null;
+                this.constV2 = data["constV2"] !== undefined ? data["constV2"] : null;
+                this.skipItemsV1 = data["skipItemsV1"] !== undefined ? data["skipItemsV1"] : null;
+                this.skipItemsV2 = data["skipItemsV2"] !== undefined ? data["skipItemsV2"] : null;
+                this.takeItemsV1 = data["takeItemsV1"] !== undefined ? data["takeItemsV1"] : null;
+                this.takeItemsV2 = data["takeItemsV2"] !== undefined ? data["takeItemsV2"] : null;
+                this.transformItemsV1 = data["transformItemsV1"] !== undefined ? data["transformItemsV1"] : null;
+                this.transformItemsV2 = data["transformItemsV2"] !== undefined ? data["transformItemsV2"] : null;
+                this.condition = data["condition"] !== undefined ? data["condition"] : null;
+            }
+        };
+        Rule.fromJS = function (data) {
+            var result = new Rule();
+            result.init(data);
+            return result;
+        };
+        Rule.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ruleId"] = this.ruleId !== undefined ? this.ruleId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["dataSourceV1"] = this.dataSourceV1 !== undefined ? this.dataSourceV1 : null;
+            data["dataSourceV2"] = this.dataSourceV2 !== undefined ? this.dataSourceV2 : null;
+            data["dataSeriesV1"] = this.dataSeriesV1 !== undefined ? this.dataSeriesV1 : null;
+            data["dataSeriesV2"] = this.dataSeriesV2 !== undefined ? this.dataSeriesV2 : null;
+            data["constV1"] = this.constV1 !== undefined ? this.constV1 : null;
+            data["constV2"] = this.constV2 !== undefined ? this.constV2 : null;
+            data["skipItemsV1"] = this.skipItemsV1 !== undefined ? this.skipItemsV1 : null;
+            data["skipItemsV2"] = this.skipItemsV2 !== undefined ? this.skipItemsV2 : null;
+            data["takeItemsV1"] = this.takeItemsV1 !== undefined ? this.takeItemsV1 : null;
+            data["takeItemsV2"] = this.takeItemsV2 !== undefined ? this.takeItemsV2 : null;
+            data["transformItemsV1"] = this.transformItemsV1 !== undefined ? this.transformItemsV1 : null;
+            data["transformItemsV2"] = this.transformItemsV2 !== undefined ? this.transformItemsV2 : null;
+            data["condition"] = this.condition !== undefined ? this.condition : null;
+            return data;
+        };
+        return Rule;
+    }());
+    exports.Rule = Rule;
+    var DataSourceType;
+    (function (DataSourceType) {
+        DataSourceType[DataSourceType["Indicator"] = "Indicator"] = "Indicator";
+        DataSourceType[DataSourceType["HistoricalData"] = "HistoricalData"] = "HistoricalData";
+        DataSourceType[DataSourceType["Constant"] = "Constant"] = "Constant";
+    })(DataSourceType = exports.DataSourceType || (exports.DataSourceType = {}));
+    var TransformFunction;
+    (function (TransformFunction) {
+        TransformFunction[TransformFunction["First"] = "First"] = "First";
+        TransformFunction[TransformFunction["Max"] = "Max"] = "Max";
+        TransformFunction[TransformFunction["Sum"] = "Sum"] = "Sum";
+        TransformFunction[TransformFunction["Avg"] = "Avg"] = "Avg";
+        TransformFunction[TransformFunction["Min"] = "Min"] = "Min";
+    })(TransformFunction = exports.TransformFunction || (exports.TransformFunction = {}));
+    var CompareOperator;
+    (function (CompareOperator) {
+        CompareOperator[CompareOperator["Greater"] = "Greater"] = "Greater";
+        CompareOperator[CompareOperator["GreaterOrEqual"] = "GreaterOrEqual"] = "GreaterOrEqual";
+        CompareOperator[CompareOperator["Equal"] = "Equal"] = "Equal";
+        CompareOperator[CompareOperator["Less"] = "Less"] = "Less";
+        CompareOperator[CompareOperator["LessOrEqual"] = "LessOrEqual"] = "LessOrEqual";
+        CompareOperator[CompareOperator["NotEqual"] = "NotEqual"] = "NotEqual";
+    })(CompareOperator = exports.CompareOperator || (exports.CompareOperator = {}));
+    var RuleSetModel = (function () {
+        function RuleSetModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        RuleSetModel.prototype.init = function (data) {
+            if (data) {
+                if (data["rules"] && data["rules"].constructor === Array) {
+                    this.rules = [];
+                    for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.rules.push(RuleModel.fromJS(item));
+                    }
+                }
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+            }
+        };
+        RuleSetModel.fromJS = function (data) {
+            var result = new RuleSetModel();
+            result.init(data);
+            return result;
+        };
+        RuleSetModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.rules && this.rules.constructor === Array) {
+                data["rules"] = [];
+                for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["rules"].push(item.toJSON());
+                }
+            }
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            return data;
+        };
+        return RuleSetModel;
+    }());
+    exports.RuleSetModel = RuleSetModel;
+    var RuleModel = (function () {
+        function RuleModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        RuleModel.prototype.init = function (data) {
+            if (data) {
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+            }
+        };
+        RuleModel.fromJS = function (data) {
+            var result = new RuleModel();
+            result.init(data);
+            return result;
+        };
+        RuleModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["ruleId"] = this.ruleId !== undefined ? this.ruleId : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            return data;
+        };
+        return RuleModel;
+    }());
+    exports.RuleModel = RuleModel;
+    var VStrategyRuleSet = (function () {
+        function VStrategyRuleSet(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        VStrategyRuleSet.prototype.init = function (data) {
+            if (data) {
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.strategyActive = data["strategyActive"] !== undefined ? data["strategyActive"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : null;
+                this.ruleSetDescription = data["ruleSetDescription"] !== undefined ? data["ruleSetDescription"] : null;
+                this.ruleSetPeriod = data["ruleSetPeriod"] !== undefined ? data["ruleSetPeriod"] : null;
+                this.ruleSetOrderId = data["ruleSetOrderId"] !== undefined ? data["ruleSetOrderId"] : null;
+                this.ruleSetOptional = data["ruleSetOptional"] !== undefined ? data["ruleSetOptional"] : null;
+            }
+        };
+        VStrategyRuleSet.fromJS = function (data) {
+            var result = new VStrategyRuleSet();
+            result.init(data);
+            return result;
+        };
+        VStrategyRuleSet.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["strategyActive"] = this.strategyActive !== undefined ? this.strategyActive : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : null;
+            data["ruleSetDescription"] = this.ruleSetDescription !== undefined ? this.ruleSetDescription : null;
+            data["ruleSetPeriod"] = this.ruleSetPeriod !== undefined ? this.ruleSetPeriod : null;
+            data["ruleSetOrderId"] = this.ruleSetOrderId !== undefined ? this.ruleSetOrderId : null;
+            data["ruleSetOptional"] = this.ruleSetOptional !== undefined ? this.ruleSetOptional : null;
+            return data;
+        };
+        return VStrategyRuleSet;
+    }());
+    exports.VStrategyRuleSet = VStrategyRuleSet;
+    var GlobalIndexChartData = (function () {
+        function GlobalIndexChartData(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        GlobalIndexChartData.prototype.init = function (data) {
+            if (data) {
+                if (data["periods"] && data["periods"].constructor === Array) {
+                    this.periods = [];
+                    for (var _i = 0, _a = data["periods"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.periods.push(ChartData.fromJS(item));
+                    }
+                }
+                this.company = data["company"] ? CompanyInfo.fromJS(data["company"]) : null;
+            }
+        };
+        GlobalIndexChartData.fromJS = function (data) {
+            var result = new GlobalIndexChartData();
+            result.init(data);
+            return result;
+        };
+        GlobalIndexChartData.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.periods && this.periods.constructor === Array) {
+                data["periods"] = [];
+                for (var _i = 0, _a = this.periods; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["periods"].push(item.toJSON());
+                }
+            }
+            data["company"] = this.company ? this.company.toJSON() : null;
+            return data;
+        };
+        return GlobalIndexChartData;
+    }());
+    exports.GlobalIndexChartData = GlobalIndexChartData;
+    var CompanyChartData = (function (_super) {
+        tslib_1.__extends(CompanyChartData, _super);
+        function CompanyChartData(data) {
+            return _super.call(this, data) || this;
+        }
+        CompanyChartData.prototype.init = function (data) {
+            _super.prototype.init.call(this, data);
+            if (data) {
+                if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
+                    this.ruleSets = [];
+                    for (var _i = 0, _a = data["ruleSets"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.ruleSets.push(StrategyRuleSetResult.fromJS(item));
+                    }
+                }
+            }
+        };
+        CompanyChartData.fromJS = function (data) {
+            var result = new CompanyChartData();
+            result.init(data);
+            return result;
+        };
+        CompanyChartData.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.ruleSets && this.ruleSets.constructor === Array) {
+                data["ruleSets"] = [];
+                for (var _i = 0, _a = this.ruleSets; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["ruleSets"].push(item.toJSON());
+                }
+            }
+            _super.prototype.toJSON.call(this, data);
+            return data;
+        };
+        return CompanyChartData;
+    }(GlobalIndexChartData));
+    exports.CompanyChartData = CompanyChartData;
+    var StrategyRuleSetResult = (function () {
+        function StrategyRuleSetResult(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        StrategyRuleSetResult.prototype.init = function (data) {
+            if (data) {
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.progress = data["progress"] !== undefined ? data["progress"] : null;
+                if (data["rules"] && data["rules"].constructor === Array) {
+                    this.rules = [];
+                    for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.rules.push(StrategyRuleResult.fromJS(item));
+                    }
+                }
+            }
+        };
+        StrategyRuleSetResult.fromJS = function (data) {
+            var result = new StrategyRuleSetResult();
+            result.init(data);
+            return result;
+        };
+        StrategyRuleSetResult.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["progress"] = this.progress !== undefined ? this.progress : null;
+            if (this.rules && this.rules.constructor === Array) {
+                data["rules"] = [];
+                for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["rules"].push(item.toJSON());
+                }
+            }
+            return data;
+        };
+        return StrategyRuleSetResult;
+    }());
+    exports.StrategyRuleSetResult = StrategyRuleSetResult;
+    var StrategyRuleResult = (function () {
+        function StrategyRuleResult(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        StrategyRuleResult.prototype.init = function (data) {
+            if (data) {
+                this.condition = data["condition"] !== undefined ? data["condition"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : null;
+                this.ruleName = data["ruleName"] !== undefined ? data["ruleName"] : null;
+                this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : null;
+                this.firstValue = data["firstValue"] !== undefined ? data["firstValue"] : null;
+                this.secondValue = data["secondValue"] !== undefined ? data["secondValue"] : null;
+                this.valid = data["valid"] !== undefined ? data["valid"] : null;
+            }
+        };
+        StrategyRuleResult.fromJS = function (data) {
+            var result = new StrategyRuleResult();
+            result.init(data);
+            return result;
+        };
+        StrategyRuleResult.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["condition"] = this.condition !== undefined ? this.condition : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["ruleId"] = this.ruleId !== undefined ? this.ruleId : null;
+            data["ruleName"] = this.ruleName !== undefined ? this.ruleName : null;
+            data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : null;
+            data["firstValue"] = this.firstValue !== undefined ? this.firstValue : null;
+            data["secondValue"] = this.secondValue !== undefined ? this.secondValue : null;
+            data["valid"] = this.valid !== undefined ? this.valid : null;
+            return data;
+        };
+        return StrategyRuleResult;
+    }());
+    exports.StrategyRuleResult = StrategyRuleResult;
+    var ChartData = (function () {
+        function ChartData(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        ChartData.prototype.init = function (data) {
+            if (data) {
+                if (data["quotes"] && data["quotes"].constructor === Array) {
+                    this.quotes = [];
+                    for (var _i = 0, _a = data["quotes"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.quotes.push(QuotesModel.fromJS(item));
+                    }
+                }
+                if (data["indicators"] && data["indicators"].constructor === Array) {
+                    this.indicators = [];
+                    for (var _b = 0, _c = data["indicators"]; _b < _c.length; _b++) {
+                        var item = _c[_b];
+                        this.indicators.push(IndicatorChartData.fromJS(item));
+                    }
+                }
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+            }
+        };
+        ChartData.fromJS = function (data) {
+            var result = new ChartData();
+            result.init(data);
+            return result;
+        };
+        ChartData.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.quotes && this.quotes.constructor === Array) {
+                data["quotes"] = [];
+                for (var _i = 0, _a = this.quotes; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["quotes"].push(item.toJSON());
+                }
+            }
+            if (this.indicators && this.indicators.constructor === Array) {
+                data["indicators"] = [];
+                for (var _b = 0, _c = this.indicators; _b < _c.length; _b++) {
+                    var item = _c[_b];
+                    data["indicators"].push(item.toJSON());
+                }
+            }
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            return data;
+        };
+        return ChartData;
+    }());
+    exports.ChartData = ChartData;
+    var IndicatorChartData = (function () {
+        function IndicatorChartData(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IndicatorChartData.prototype.init = function (data) {
+            if (data) {
+                this.indicator = data["indicator"] ? IIndicatorEntity.fromJS(data["indicator"]) : null;
+                if (data["indicatorValues"] && data["indicatorValues"].constructor === Array) {
+                    this.indicatorValues = [];
+                    for (var _i = 0, _a = data["indicatorValues"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.indicatorValues.push(IndicatorResult.fromJS(item));
+                    }
+                }
+            }
+        };
+        IndicatorChartData.fromJS = function (data) {
+            var result = new IndicatorChartData();
+            result.init(data);
+            return result;
+        };
+        IndicatorChartData.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["indicator"] = this.indicator ? this.indicator.toJSON() : null;
+            if (this.indicatorValues && this.indicatorValues.constructor === Array) {
+                data["indicatorValues"] = [];
+                for (var _i = 0, _a = this.indicatorValues; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["indicatorValues"].push(item.toJSON());
+                }
+            }
+            return data;
+        };
+        return IndicatorChartData;
+    }());
+    exports.IndicatorChartData = IndicatorChartData;
+    var IIndicatorEntity = (function () {
+        function IIndicatorEntity(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IIndicatorEntity.prototype.init = function (data) {
+            if (data) {
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                if (data["params"] && data["params"].constructor === Array) {
+                    this.params = [];
+                    for (var _i = 0, _a = data["params"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.params.push(IndicatorParam.fromJS(item));
+                    }
+                }
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+            }
+        };
+        IIndicatorEntity.fromJS = function (data) {
+            var result = new IIndicatorEntity();
+            result.init(data);
+            return result;
+        };
+        IIndicatorEntity.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            if (this.params && this.params.constructor === Array) {
+                data["params"] = [];
+                for (var _i = 0, _a = this.params; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["params"].push(item.toJSON());
+                }
+            }
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            return data;
+        };
+        return IIndicatorEntity;
+    }());
+    exports.IIndicatorEntity = IIndicatorEntity;
+    var IndicatorResult = (function () {
+        function IndicatorResult(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IndicatorResult.prototype.init = function (data) {
+            if (data) {
+                this.date = data["date"] ? new Date(data["date"].toString()) : null;
+                if (data["values"] && data["values"].constructor === Array) {
+                    this.values = [];
+                    for (var _i = 0, _a = data["values"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.values.push(IndicatorValueItem.fromJS(item));
+                    }
+                }
+            }
+        };
+        IndicatorResult.fromJS = function (data) {
+            var result = new IndicatorResult();
+            result.init(data);
+            return result;
+        };
+        IndicatorResult.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["date"] = this.date ? this.date.toISOString() : null;
+            if (this.values && this.values.constructor === Array) {
+                data["values"] = [];
+                for (var _i = 0, _a = this.values; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["values"].push(item.toJSON());
+                }
+            }
+            return data;
+        };
+        return IndicatorResult;
+    }());
+    exports.IndicatorResult = IndicatorResult;
+    var IndicatorValueItem = (function () {
+        function IndicatorValueItem(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        IndicatorValueItem.prototype.init = function (data) {
+            if (data) {
+                this.kind = data["kind"] !== undefined ? data["kind"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.value = data["value"] !== undefined ? data["value"] : null;
+                this.lineColor = data["lineColor"] !== undefined ? data["lineColor"] : null;
+                this.chartType = data["chartType"] !== undefined ? data["chartType"] : null;
+            }
+        };
+        IndicatorValueItem.fromJS = function (data) {
+            var result = new IndicatorValueItem();
+            result.init(data);
+            return result;
+        };
+        IndicatorValueItem.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["kind"] = this.kind !== undefined ? this.kind : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["value"] = this.value !== undefined ? this.value : null;
+            data["lineColor"] = this.lineColor !== undefined ? this.lineColor : null;
+            data["chartType"] = this.chartType !== undefined ? this.chartType : null;
+            return data;
+        };
+        return IndicatorValueItem;
+    }());
+    exports.IndicatorValueItem = IndicatorValueItem;
+    var ValueKind;
+    (function (ValueKind) {
+        ValueKind[ValueKind["Value"] = "Value"] = "Value";
+        ValueKind[ValueKind["NewNigh"] = "NewNigh"] = "NewNigh";
+        ValueKind[ValueKind["NewLow"] = "NewLow"] = "NewLow";
+        ValueKind[ValueKind["UpperBand"] = "UpperBand"] = "UpperBand";
+        ValueKind[ValueKind["LowerBand"] = "LowerBand"] = "LowerBand";
+    })(ValueKind = exports.ValueKind || (exports.ValueKind = {}));
+    var CompanyInfo = (function () {
+        function CompanyInfo(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        CompanyInfo.prototype.init = function (data) {
+            if (data) {
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+            }
+        };
+        CompanyInfo.fromJS = function (data) {
+            var result = new CompanyInfo();
+            result.init(data);
+            return result;
+        };
+        CompanyInfo.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            return data;
+        };
+        return CompanyInfo;
+    }());
+    exports.CompanyInfo = CompanyInfo;
+    var StrategySummary = (function () {
+        function StrategySummary(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        StrategySummary.prototype.init = function (data) {
+            if (data) {
+                this.active = data["active"] !== undefined ? data["active"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+            }
+        };
+        StrategySummary.fromJS = function (data) {
+            var result = new StrategySummary();
+            result.init(data);
+            return result;
+        };
+        StrategySummary.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["active"] = this.active !== undefined ? this.active : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            return data;
+        };
+        return StrategySummary;
+    }());
+    exports.StrategySummary = StrategySummary;
+    var StrategyModel = (function () {
+        function StrategyModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        StrategyModel.prototype.init = function (data) {
+            if (data) {
+                if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
+                    this.ruleSets = [];
+                    for (var _i = 0, _a = data["ruleSets"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.ruleSets.push(StrategyRuleSetModel.fromJS(item));
+                    }
+                }
+                if (data["blocks"] && data["blocks"].constructor === Array) {
+                    this.blocks = [];
+                    for (var _b = 0, _c = data["blocks"]; _b < _c.length; _b++) {
+                        var item = _c[_b];
+                        this.blocks.push(item);
+                    }
+                }
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.active = data["active"] !== undefined ? data["active"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+            }
+        };
+        StrategyModel.fromJS = function (data) {
+            var result = new StrategyModel();
+            result.init(data);
+            return result;
+        };
+        StrategyModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.ruleSets && this.ruleSets.constructor === Array) {
+                data["ruleSets"] = [];
+                for (var _i = 0, _a = this.ruleSets; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["ruleSets"].push(item.toJSON());
+                }
+            }
+            if (this.blocks && this.blocks.constructor === Array) {
+                data["blocks"] = [];
+                for (var _b = 0, _c = this.blocks; _b < _c.length; _b++) {
+                    var item = _c[_b];
+                    data["blocks"].push(item);
+                }
+            }
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["active"] = this.active !== undefined ? this.active : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            return data;
+        };
+        return StrategyModel;
+    }());
+    exports.StrategyModel = StrategyModel;
+    var StrategyRuleSetModel = (function () {
+        function StrategyRuleSetModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        StrategyRuleSetModel.prototype.init = function (data) {
+            if (data) {
+                if (data["rules"] && data["rules"].constructor === Array) {
+                    this.rules = [];
+                    for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.rules.push(StrategyRuleModel.fromJS(item));
+                    }
+                }
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.optional = data["optional"] !== undefined ? data["optional"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+            }
+        };
+        StrategyRuleSetModel.fromJS = function (data) {
+            var result = new StrategyRuleSetModel();
+            result.init(data);
+            return result;
+        };
+        StrategyRuleSetModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.rules && this.rules.constructor === Array) {
+                data["rules"] = [];
+                for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["rules"].push(item.toJSON());
+                }
+            }
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["optional"] = this.optional !== undefined ? this.optional : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            return data;
+        };
+        return StrategyRuleSetModel;
+    }());
+    exports.StrategyRuleSetModel = StrategyRuleSetModel;
+    var StrategyRuleModel = (function () {
+        function StrategyRuleModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        StrategyRuleModel.prototype.init = function (data) {
+            if (data) {
+            }
+        };
+        StrategyRuleModel.fromJS = function (data) {
+            var result = new StrategyRuleModel();
+            result.init(data);
+            return result;
+        };
+        StrategyRuleModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            return data;
+        };
+        return StrategyRuleModel;
+    }());
+    exports.StrategyRuleModel = StrategyRuleModel;
+    var Strategy = (function () {
+        function Strategy(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Strategy.prototype.init = function (data) {
+            if (data) {
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.jsonArticleBlocks = data["jsonArticleBlocks"] !== undefined ? data["jsonArticleBlocks"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.active = data["active"] !== undefined ? data["active"] : null;
+            }
+        };
+        Strategy.fromJS = function (data) {
+            var result = new Strategy();
+            result.init(data);
+            return result;
+        };
+        Strategy.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["jsonArticleBlocks"] = this.jsonArticleBlocks !== undefined ? this.jsonArticleBlocks : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["active"] = this.active !== undefined ? this.active : null;
+            return data;
+        };
+        return Strategy;
+    }());
+    exports.Strategy = Strategy;
+    var SwaggerException = (function (_super) {
+        tslib_1.__extends(SwaggerException, _super);
+        function SwaggerException(message, status, response, result) {
             var _this = _super.call(this) || this;
-            _this.isNew = false;
-            _this.editMode = false;
-            _this.expanded = false;
-            _this.deleteMode = false;
+            _this.message = message;
+            _this.status = status;
+            _this.response = response;
+            _this.result = result;
             return _this;
         }
-        return IndicatorModel;
-    }(IndicatorInfo));
-    exports.IndicatorModel = IndicatorModel;
+        return SwaggerException;
+    }(Error));
+    exports.SwaggerException = SwaggerException;
+    function throwException(message, status, response, result) {
+        if (result !== null && result !== undefined)
+            throw result;
+        else
+            throw new SwaggerException(message, status, response, null);
+    }
 });
 
-define('services/indicator-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var IndicatorService = (function () {
-        function IndicatorService(http) {
-            this.http = http;
-        }
-        IndicatorService.prototype.getNames = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('indicator/all', {
-                                method: 'get'
-                            })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        IndicatorService.prototype.getIndicator = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('indicator/' + id, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        IndicatorService.prototype.getIndicatorsForPeriod = function (period) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('indicator/' + period + '/all', { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        IndicatorService.prototype.deleteIndicator = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("indicator/" + id, { method: 'delete' })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        IndicatorService.prototype.saveIndicator = function (indicator) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("indicator", {
-                                method: 'post',
-                                body: aurelia_fetch_client_1.json(indicator)
-                            })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return IndicatorService;
-    }());
-    IndicatorService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], IndicatorService);
-    exports.IndicatorService = IndicatorService;
-});
-
-define('common/helpers/enum-helper',["require", "exports", "../types/enums"], function (require, exports, enums_1) {
+define('common/helpers/enum-helper',["require", "exports", "../types/enums", "../../services/services-generated"], function (require, exports, enums_1, services_generated_1) {
     "use strict";
     var EnumHelper = (function () {
         function EnumHelper() {
@@ -378,7 +4380,7 @@ define('common/helpers/enum-helper',["require", "exports", "../types/enums"], fu
             return result;
         };
         EnumValues.getQuotePeriods = function () {
-            var values = EnumHelper.getNamesAndValues(enums_1.QuotePeriod);
+            var values = EnumHelper.getNamesAndValues(services_generated_1.QuotePeriod);
             var result = [];
             values.forEach(function (item) {
                 result.push({ id: item.value, name: item.name });
@@ -386,7 +4388,7 @@ define('common/helpers/enum-helper',["require", "exports", "../types/enums"], fu
             return result;
         };
         EnumValues.getQuotePeriod = function (period) {
-            var values = EnumHelper.getNamesAndValues(enums_1.QuotePeriod);
+            var values = EnumHelper.getNamesAndValues(services_generated_1.QuotePeriod);
             var result = { id: values[0].value, name: values[0].name };
             values.forEach(function (item) {
                 if (item.name.toLowerCase() === period.toLowerCase()) {
@@ -423,15 +4425,15 @@ define('common/helpers/enum-helper',["require", "exports", "../types/enums"], fu
     exports.IdName = IdName;
 });
 
-define('services/settings-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client", "./indicator-service", "../common/helpers/enum-helper"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1, indicator_service_1, enum_helper_1) {
+define('services/settings-service',["require", "exports", "tslib", "aurelia-framework", "../common/helpers/enum-helper", "./services-generated"], function (require, exports, tslib_1, aurelia_framework_1, enum_helper_1, services_generated_1) {
     "use strict";
     var SettingsService = (function () {
-        function SettingsService(http, indicatorService) {
-            this.http = http;
+        function SettingsService(indicatorService, articleService) {
             this.indicatorService = indicatorService;
+            this.articleService = articleService;
             this.sections = [];
             this.initialized = false;
-            this.homePage = 'studies';
+            this.homePage = "studies";
             this.indicators = [];
             this.periods = enum_helper_1.EnumValues.getQuotePeriods();
             this.defaultPeriod = this.periods[0];
@@ -450,19 +4452,17 @@ define('services/settings-service',["require", "exports", "tslib", "aurelia-fram
         };
         SettingsService.prototype.initialize = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var sectionsResponse, _a, _b;
+                var _a, _b;
                 return tslib_1.__generator(this, function (_c) {
                     switch (_c.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/sections")];
-                        case 1:
-                            sectionsResponse = _c.sent();
+                        case 0:
                             _a = this;
-                            return [4 /*yield*/, sectionsResponse.json()];
-                        case 2:
-                            _a.sections = (_c.sent());
+                            return [4 /*yield*/, this.articleService.getSections()];
+                        case 1:
+                            _a.sections = _c.sent();
                             _b = this;
-                            return [4 /*yield*/, this.indicatorService.getNames()];
-                        case 3:
+                            return [4 /*yield*/, this.indicatorService.getIndicators()];
+                        case 2:
                             _b.indicators = _c.sent();
                             this.initialized = true;
                             return [2 /*return*/];
@@ -477,7 +4477,7 @@ define('services/settings-service',["require", "exports", "tslib", "aurelia-fram
     }());
     SettingsService = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient, indicator_service_1.IndicatorService])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient, services_generated_1.ArticlesApiClient])
     ], SettingsService);
     exports.SettingsService = SettingsService;
 });
@@ -549,75 +4549,6 @@ define('environment',["require", "exports"], function (require, exports) {
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = settings;
-});
-
-define('common/types/company-models',["require", "exports", "tslib"], function (require, exports, tslib_1) {
-    "use strict";
-    var CompanyHeader = (function () {
-        function CompanyHeader() {
-        }
-        return CompanyHeader;
-    }());
-    exports.CompanyHeader = CompanyHeader;
-    var QuoteInfo = (function () {
-        function QuoteInfo() {
-        }
-        return QuoteInfo;
-    }());
-    exports.QuoteInfo = QuoteInfo;
-    var CompanyInfo = (function (_super) {
-        tslib_1.__extends(CompanyInfo, _super);
-        function CompanyInfo() {
-            var _this = _super.call(this) || this;
-            _this.historyQuotes = [];
-            return _this;
-        }
-        return CompanyInfo;
-    }(CompanyHeader));
-    exports.CompanyInfo = CompanyInfo;
-    var CompanyViewModel = (function (_super) {
-        tslib_1.__extends(CompanyViewModel, _super);
-        function CompanyViewModel() {
-            var _this = _super.call(this) || this;
-            _this.show = false;
-            return _this;
-        }
-        return CompanyViewModel;
-    }(CompanyInfo));
-    exports.CompanyViewModel = CompanyViewModel;
-});
-
-define('common/types/playground-models',["require", "exports", "tslib"], function (require, exports, tslib_1) {
-    "use strict";
-    var PlaygroundRuleInfo = (function () {
-        function PlaygroundRuleInfo() {
-        }
-        return PlaygroundRuleInfo;
-    }());
-    exports.PlaygroundRuleInfo = PlaygroundRuleInfo;
-    var PlaygroundRuleSetInfo = (function () {
-        function PlaygroundRuleSetInfo() {
-            this.rules = [];
-        }
-        return PlaygroundRuleSetInfo;
-    }());
-    exports.PlaygroundRuleSetInfo = PlaygroundRuleSetInfo;
-    var PlaygroundInfo = (function () {
-        function PlaygroundInfo() {
-            this.periods = [];
-            this.ruleSets = [];
-        }
-        return PlaygroundInfo;
-    }());
-    exports.PlaygroundInfo = PlaygroundInfo;
-    var PlaygroundViewModel = (function (_super) {
-        tslib_1.__extends(PlaygroundViewModel, _super);
-        function PlaygroundViewModel() {
-            return _super.call(this) || this;
-        }
-        return PlaygroundViewModel;
-    }(PlaygroundInfo));
-    exports.PlaygroundViewModel = PlaygroundViewModel;
 });
 
 define('infrastructure/event-emitter',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
@@ -877,1031 +4808,6 @@ define('resources/index',["require", "exports"], function (require, exports) {
     exports.configure = configure;
 });
 
-define('services/article-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var ArticleService = (function () {
-        function ArticleService(http) {
-            this.http = http;
-        }
-        ArticleService.prototype.getArticle = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/" + id)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.deleteArticle = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/" + id, { method: 'delete' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.getArticleByUrl = function (categotyId, articleUrl) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/url/" + categotyId + "/" + articleUrl)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.getSection = function (url) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/section/" + url)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.getCategories = function (sectionId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/categories/" + sectionId)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.getCategory = function (categoryUrl) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/category/" + categoryUrl)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.getFeatured = function (categoryId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/" + categoryId + "/featured")];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.getArticles = function (categoryId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("article/" + categoryId + "/all")];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        ArticleService.prototype.saveArticle = function (article) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('article', {
-                                method: 'post',
-                                body: aurelia_fetch_client_1.json(article)
-                            })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return ArticleService;
-    }());
-    ArticleService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], ArticleService);
-    exports.ArticleService = ArticleService;
-});
-
-define('services/company-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var CompanyService = (function () {
-        function CompanyService(http) {
-            this.http = http;
-        }
-        CompanyService.prototype.getCompany = function (ticker) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("company/" + ticker, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        CompanyService.prototype.searchCompanies = function (ticker, maxCount) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var model, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            model = {
-                                ticker: ticker,
-                                maxCount: maxCount
-                            };
-                            return [4 /*yield*/, this.http.fetch('company/search', { method: 'post', body: aurelia_fetch_client_1.json(model) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return CompanyService;
-    }());
-    CompanyService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], CompanyService);
-    exports.CompanyService = CompanyService;
-});
-
-define('common/types/job-models',["require", "exports", "./enums"], function (require, exports, enums_1) {
-    "use strict";
-    var JobInfoExtentions = (function () {
-        function JobInfoExtentions() {
-        }
-        JobInfoExtentions.getJobStatusName = function (status) {
-            switch (status) {
-                case enums_1.JobStatus.Cancelled: return "Cancelled";
-                case enums_1.JobStatus.Completed: return "Completed";
-                case enums_1.JobStatus.Error: return "Error";
-                case enums_1.JobStatus.InProgress: return "In Progress";
-                case enums_1.JobStatus.Paused: return "Paused";
-                case enums_1.JobStatus.Pending: return "In Progress";
-                default: return status + "";
-            }
-        };
-        JobInfoExtentions.getJobTypeName = function (jobType) {
-            switch (jobType) {
-                case enums_1.JobType.All: return "All";
-                case enums_1.JobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
-                case enums_1.JobType.RefreshAllStocks: return "Refresh All Stocks";
-                case enums_1.JobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
-                case enums_1.JobType.RefreshIndices: return "Refresh Indices";
-                default: return jobType + "";
-            }
-        };
-        JobInfoExtentions.isJobInProgress = function (job) {
-            if (job && job.jobId > 0) {
-                return job.status === enums_1.JobStatus.InProgress
-                    || job.status === enums_1.JobStatus.Pending;
-            }
-            return false;
-        };
-        JobInfoExtentions.isJobPaused = function (job) {
-            if (job && job.jobId > 0) {
-                return job.status === enums_1.JobStatus.Paused;
-            }
-            return false;
-        };
-        JobInfoExtentions.getJobType = function (jobUrl) {
-            switch (jobUrl) {
-                case "recalculate-global-indicators":
-                    return enums_1.JobType.CalculateGlobalIndicators;
-                case "refresh-sp500-stocks":
-                    return enums_1.JobType.RefreshSP500Stocks;
-                case "refresh-all-stocks":
-                    return enums_1.JobType.RefreshAllStocks;
-                case "refresh-indices":
-                    return enums_1.JobType.RefreshIndices;
-                default:
-                    return 0;
-            }
-        };
-        return JobInfoExtentions;
-    }());
-    exports.JobInfoExtentions = JobInfoExtentions;
-});
-
-define('services/job-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client", "../common/types/job-models"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1, job_models_1) {
-    "use strict";
-    var JobService = (function () {
-        function JobService(http) {
-            this.http = http;
-        }
-        JobService.prototype.loadHistory = function (jobUrl) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var jobType, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            jobType = job_models_1.JobInfoExtentions.getJobType(jobUrl);
-                            return [4 /*yield*/, this.http.fetch("job/history/" + jobType, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        JobService.prototype.startJob = function (jobUrl) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var jobType, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            jobType = job_models_1.JobInfoExtentions.getJobType(jobUrl);
-                            return [4 /*yield*/, this.http.fetch("job/start/" + jobType, { method: "post" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        JobService.prototype.currentJob = function (jobUrl) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var jobType, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            jobType = job_models_1.JobInfoExtentions.getJobType(jobUrl);
-                            return [4 /*yield*/, this.http.fetch("job/current/" + jobType, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        JobService.prototype.deleteJob = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("job/delete/" + jobId, { method: "delete" })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        JobService.prototype.pauseJob = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("job/pause/" + jobId, { method: "put" })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        JobService.prototype.resumeJob = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("job/resume/" + jobId, { method: "put" })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        JobService.prototype.cancelJob = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("job/cancel/" + jobId, { method: "put" })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        JobService.prototype.getJob = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("job/info/" + jobId, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return JobService;
-    }());
-    JobService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], JobService);
-    exports.JobService = JobService;
-});
-
-define('common/types/layout-models',["require", "exports", "./enums"], function (require, exports, Enums) {
-    "use strict";
-    var LayoutInfo = (function () {
-        function LayoutInfo() {
-            this.layoutId = 0;
-            this.title = "";
-            this.description = "";
-            this.deleted = false;
-            this.default = false;
-            this.period = Enums.QuotePeriod.Daily;
-            this.indicators = [];
-        }
-        return LayoutInfo;
-    }());
-    exports.LayoutInfo = LayoutInfo;
-    var LayoutIndicatorInfo = (function () {
-        function LayoutIndicatorInfo() {
-            this.id = 0;
-            this.layoutId = 0;
-            this.orderId = 0;
-            this.indicator = null;
-            this.name = "";
-            this.lineColor = "";
-        }
-        return LayoutIndicatorInfo;
-    }());
-    exports.LayoutIndicatorInfo = LayoutIndicatorInfo;
-});
-
-define('services/layout-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var LayoutService = (function () {
-        function LayoutService(http) {
-            this.http = http;
-            if (this.http != null) {
-            }
-        }
-        LayoutService.prototype.getLayouts = function (period) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("layout/period/" + period, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        LayoutService.prototype.getDefaultLayout = function (period) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("layout/period/" + period + "/default", { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        LayoutService.prototype.getLayout = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("layout/" + id, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        LayoutService.prototype.saveLayout = function (layout) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("layout", { method: 'post', body: aurelia_fetch_client_1.json(layout) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return LayoutService;
-    }());
-    LayoutService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], LayoutService);
-    exports.LayoutService = LayoutService;
-});
-
-define('common/types/log-models',["require", "exports"], function (require, exports) {
-    "use strict";
-});
-
-define('services/log-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var LogService = (function () {
-        function LogService(http) {
-            this.http = http;
-        }
-        LogService.prototype.getJobLogs = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("logs/job/" + jobId, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        LogService.prototype.deleteJobLogs = function (jobId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("logs/job/delete/" + jobId, { method: "delete" })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        LogService.prototype.deleteJobTypeLogs = function (jobType) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("logs/job-type/delete/" + jobType, { method: "delete" })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        return LogService;
-    }());
-    LogService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], LogService);
-    exports.LogService = LogService;
-});
-
-define('services/playground-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var PlaygroundService = (function () {
-        function PlaygroundService(http) {
-            this.http = http;
-        }
-        PlaygroundService.prototype.loadPlayground = function (ticker, strategyId, bars, date) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("playground/" + ticker + "/" + strategyId + "/" + bars + "/" + date, { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        PlaygroundService.prototype.loadNext = function (ticker, strategyId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("playground/" + ticker + "/" + strategyId + "/next", { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        PlaygroundService.prototype.loadPrev = function (ticker, strategyId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("playground/" + ticker + "/" + strategyId + "/prev", { method: "get" })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return PlaygroundService;
-    }());
-    PlaygroundService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], PlaygroundService);
-    exports.PlaygroundService = PlaygroundService;
-});
-
-define('common/types/rule-models',["require", "exports", "tslib"], function (require, exports, tslib_1) {
-    "use strict";
-    var RuleInfo = (function () {
-        function RuleInfo() {
-            this.ruleId = 0;
-        }
-        return RuleInfo;
-    }());
-    exports.RuleInfo = RuleInfo;
-    var RuleSetInfo = (function () {
-        function RuleSetInfo() {
-            this.description = "";
-            this.ruleSetId = 0;
-            this.rules = [];
-        }
-        return RuleSetInfo;
-    }());
-    exports.RuleSetInfo = RuleSetInfo;
-    var RuleModel = (function () {
-        function RuleModel() {
-            this.deleted = false;
-            this.expanded = false;
-            this.deleteMode = false;
-            this.orderId = 0;
-        }
-        return RuleModel;
-    }());
-    exports.RuleModel = RuleModel;
-    var StrategyRuleSetInfo = (function () {
-        function StrategyRuleSetInfo() {
-            this.expanded = false;
-            this.deleteMode = false;
-        }
-        return StrategyRuleSetInfo;
-    }());
-    exports.StrategyRuleSetInfo = StrategyRuleSetInfo;
-    var StrategyRuleSetViewModel = (function (_super) {
-        tslib_1.__extends(StrategyRuleSetViewModel, _super);
-        function StrategyRuleSetViewModel() {
-            var _this = _super.call(this) || this;
-            _this.editMode = false;
-            return _this;
-        }
-        return StrategyRuleSetViewModel;
-    }(StrategyRuleSetInfo));
-    exports.StrategyRuleSetViewModel = StrategyRuleSetViewModel;
-    var RuleViewModel = (function (_super) {
-        tslib_1.__extends(RuleViewModel, _super);
-        function RuleViewModel() {
-            var _this = _super.call(this) || this;
-            _this.editMode = false;
-            _this.expanded = false;
-            _this.deleteMode = false;
-            _this.dataSeriesOptionsV1 = [];
-            _this.dataSeriesOptionsV2 = [];
-            return _this;
-        }
-        return RuleViewModel;
-    }(RuleInfo));
-    exports.RuleViewModel = RuleViewModel;
-    var RuleSetViewModel = (function (_super) {
-        tslib_1.__extends(RuleSetViewModel, _super);
-        function RuleSetViewModel() {
-            var _this = _super.call(this) || this;
-            _this.expanded = false;
-            _this.deleteMode = false;
-            _this.editMode = false;
-            _this.isAdding = false;
-            return _this;
-        }
-        return RuleSetViewModel;
-    }(RuleSetInfo));
-    exports.RuleSetViewModel = RuleSetViewModel;
-});
-
-define('services/rule-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var RuleService = (function () {
-        function RuleService(http) {
-            this.http = http;
-        }
-        RuleService.prototype.getRule = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('rule/' + id, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        RuleService.prototype.getRulesForPeriod = function (period) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('rule/' + period + '/all', { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        RuleService.prototype.deleteRule = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("rule/" + id, { method: 'delete' })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        RuleService.prototype.saveRule = function (rule) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("rule", { method: 'post', body: aurelia_fetch_client_1.json(rule) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return RuleService;
-    }());
-    RuleService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], RuleService);
-    exports.RuleService = RuleService;
-});
-
-define('services/rule-set-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var RuleSetService = (function () {
-        function RuleSetService(http) {
-            this.http = http;
-        }
-        RuleSetService.prototype.getRuleSet = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('ruleset/' + id, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        RuleSetService.prototype.getRuleSetsForPeriod = function (period) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('ruleset/' + period + '/all', { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        RuleSetService.prototype.getRuleSetsForStrategy = function (strategyId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('ruleset/strategy/' + strategyId, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        RuleSetService.prototype.saveRuleSetsForStrategy = function (strategyId, rulesets) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('ruleset/strategy/' + strategyId, { method: 'post', body: aurelia_fetch_client_1.json(rulesets) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        RuleSetService.prototype.deleteRuleSet = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("ruleset/" + id, { method: 'delete' })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        RuleSetService.prototype.saveRuleSet = function (ruleSet) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("ruleset", { method: 'post', body: aurelia_fetch_client_1.json(ruleSet) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return RuleSetService;
-    }());
-    RuleSetService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], RuleSetService);
-    exports.RuleSetService = RuleSetService;
-});
-
-define('services/stock-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var StockService = (function () {
-        function StockService(http) {
-            this.http = http;
-        }
-        StockService.prototype.updateQuotes = function (ticker) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('stock/' + ticker + '/update-quotes', { method: 'put' })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        return StockService;
-    }());
-    StockService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], StockService);
-    exports.StockService = StockService;
-});
-
-define('services/storage-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var StorageService = (function () {
-        function StorageService(http) {
-            this.http = http;
-        }
-        StorageService.prototype.uploadFile = function (fileName, fileBody) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var payload, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            payload = {
-                                fileName: fileName,
-                                fileBody: fileBody
-                            };
-                            return [4 /*yield*/, this.http.fetch("blob/upload", {
-                                    method: 'post',
-                                    body: aurelia_fetch_client_1.json(payload)
-                                })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        return StorageService;
-    }());
-    StorageService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], StorageService);
-    exports.StorageService = StorageService;
-});
-
-define('common/types/strategy-models',["require", "exports", "tslib"], function (require, exports, tslib_1) {
-    "use strict";
-    var StrategySummary = (function () {
-        function StrategySummary() {
-            this.selected = false;
-        }
-        return StrategySummary;
-    }());
-    exports.StrategySummary = StrategySummary;
-    var StrategyInfo = (function () {
-        function StrategyInfo() {
-            this.strategyId = 0;
-            this.title = "";
-            this.url = "";
-            this.summary = "";
-            this.blocks = [];
-        }
-        return StrategyInfo;
-    }());
-    exports.StrategyInfo = StrategyInfo;
-    var StrategyViewModel = (function (_super) {
-        tslib_1.__extends(StrategyViewModel, _super);
-        function StrategyViewModel() {
-            var _this = _super.call(this) || this;
-            _this.editMode = false;
-            return _this;
-        }
-        return StrategyViewModel;
-    }(StrategyInfo));
-    exports.StrategyViewModel = StrategyViewModel;
-});
-
-define('services/strategy-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var StrategyService = (function () {
-        function StrategyService(http) {
-            this.http = http;
-        }
-        StrategyService.prototype.getSummaries = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('strategy/getSummaries', { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        StrategyService.prototype.getByUrl = function (url) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('strategy/getByUrl/' + url, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        StrategyService.prototype.getSummaryByUrl = function (url) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('strategy/getSummaryByUrl/' + url, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        StrategyService.prototype.getById = function (id) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('strategy/get/' + id, { method: 'get' })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        StrategyService.prototype.update = function (strategy) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('strategy', { method: 'post', body: aurelia_fetch_client_1.json(strategy) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                    }
-                });
-            });
-        };
-        StrategyService.prototype.deleteStrategy = function (strategyId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch('strategy/' + strategyId, { method: 'delete' })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        return StrategyService;
-    }());
-    StrategyService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], StrategyService);
-    exports.StrategyService = StrategyService;
-});
-
 define('common/helpers/date-helper',["require", "exports", "moment"], function (require, exports, moment) {
     "use strict";
     var DateHelper = (function () {
@@ -1940,76 +4846,72 @@ define('common/helpers/date-helper',["require", "exports", "moment"], function (
     exports.DateHelper = DateHelper;
 });
 
-define('components/categories/categories',["require", "exports", "tslib", "aurelia-framework", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "../../services/article-service", "../../services/settings-service", "../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_validation_1, Bootstrapformrenderer, article_service_1, settings_service_1, account_service_1) {
+define('common/types/job-models',["require", "exports", "../../services/services-generated"], function (require, exports, services_generated_1) {
     "use strict";
-    var Categories = (function () {
-        function Categories(articleService, settings, account, validation) {
-            this.articleService = articleService;
-            this.settings = settings;
-            this.account = account;
-            this.validation = validation;
-            this.powerUser = this.account.currentUser.isAuthenticated;
-            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
-            this.validation.addRenderer(new Bootstrapformrenderer.BootstrapFormRenderer());
-            this.editMode = false;
-            this.categories = [];
-            this.sections = this.settings.sections;
-            this.sectionId = 0;
+    var JobInfoExtentions = (function () {
+        function JobInfoExtentions() {
         }
-        Categories.prototype.activate = function (params) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            if (!params.section) {
-                                if (this.sections && this.sections.length > 0) {
-                                    this.sectionId = this.sections[0].sectionId;
-                                }
-                            }
-                            if (!(this.sectionId > 0)) return [3 /*break*/, 2];
-                            this.section = this.settings.getSection(this.sectionId);
-                            _a = this;
-                            return [4 /*yield*/, this.articleService.getCategories(this.sectionId)];
-                        case 1:
-                            _a.categories = _b.sent();
-                            _b.label = 2;
-                        case 2: return [2 /*return*/];
-                    }
-                });
-            });
+        JobInfoExtentions.getJobStatusName = function (status) {
+            switch (status) {
+                case services_generated_1.JobStatus.Cancelled: return "Cancelled";
+                case services_generated_1.JobStatus.Completed: return "Completed";
+                case services_generated_1.JobStatus.Error: return "Error";
+                case services_generated_1.JobStatus.InProgress: return "In Progress";
+                case services_generated_1.JobStatus.Paused: return "Paused";
+                case services_generated_1.JobStatus.Pending: return "In Progress";
+                default: return status + "";
+            }
         };
-        Categories.prototype.getSectionUrl = function (section) {
-            return '/categories/' + section.SectionId;
+        JobInfoExtentions.getJobTypeName = function (jobType) {
+            switch (jobType) {
+                case services_generated_1.ScheduledJobType.All: return "All";
+                case services_generated_1.ScheduledJobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
+                case services_generated_1.ScheduledJobType.RefreshAllStocks: return "Refresh All Stocks";
+                case services_generated_1.ScheduledJobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
+                case services_generated_1.ScheduledJobType.RefreshIndices: return "Refresh Indices";
+                default: return jobType + "";
+            }
         };
-        return Categories;
+        JobInfoExtentions.isJobInProgress = function (job) {
+            if (job && job.jobId > 0) {
+                return job.status === services_generated_1.JobStatus.InProgress
+                    || job.status === services_generated_1.JobStatus.Pending;
+            }
+            return false;
+        };
+        JobInfoExtentions.isJobPaused = function (job) {
+            if (job && job.jobId > 0) {
+                return job.status === services_generated_1.JobStatus.Paused;
+            }
+            return false;
+        };
+        JobInfoExtentions.getJobType = function (jobUrl) {
+            switch (jobUrl) {
+                case "recalculate-global-indicators":
+                    return services_generated_1.ScheduledJobType.CalculateGlobalIndicators;
+                case "refresh-sp500-stocks":
+                    return services_generated_1.ScheduledJobType.RefreshSP500Stocks;
+                case "refresh-all-stocks":
+                    return services_generated_1.ScheduledJobType.RefreshAllStocks;
+                case "refresh-indices":
+                    return services_generated_1.ScheduledJobType.RefreshIndices;
+                default:
+                    return 0;
+            }
+        };
+        return JobInfoExtentions;
     }());
-    Categories = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [article_service_1.ArticleService,
-            settings_service_1.SettingsService,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController])
-    ], Categories);
-    exports.Categories = Categories;
+    exports.JobInfoExtentions = JobInfoExtentions;
 });
 
-define('components/categories/navigation',["require", "exports"], function (require, exports) {
+define('components/footer/dream-footer',["require", "exports"], function (require, exports) {
     "use strict";
-    var Navigation = (function () {
-        function Navigation() {
+    var DreamFooter = (function () {
+        function DreamFooter() {
         }
-        Navigation.prototype.configureRouter = function (config, router) {
-            config.title = 'Categories';
-            config.map([
-                { route: ['', ':section'], moduleId: "./categories", name: "categories-list", title: "Manage Categories", nav: true }
-            ]);
-            this.router = router;
-            this.section = config.title;
-        };
-        return Navigation;
+        return DreamFooter;
     }());
-    exports.Navigation = Navigation;
+    exports.DreamFooter = DreamFooter;
 });
 
 define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-framework", "aurelia-dialog", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "../../services/account-service", "aurelia-binding"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_dialog_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, aurelia_binding_1) {
@@ -2094,7 +4996,7 @@ define('components/header/dream-header',["require", "exports", "tslib", "aurelia
         }
         DreamHeader.prototype.attached = function () {
             this.isAuthenticated = this.user.isAuthenticated;
-            this.loginUrl = this.router.generate("user") + '/profile';
+            this.loginUrl = this.router.generate("user") + "/profile";
         };
         DreamHeader.prototype.logout = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -2138,16 +5040,6 @@ define('components/header/dream-header',["require", "exports", "tslib", "aurelia
         tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_dialog_1.DialogService])
     ], DreamHeader);
     exports.DreamHeader = DreamHeader;
-});
-
-define('components/footer/dream-footer',["require", "exports"], function (require, exports) {
-    "use strict";
-    var DreamFooter = (function () {
-        function DreamFooter() {
-        }
-        return DreamFooter;
-    }());
-    exports.DreamFooter = DreamFooter;
 });
 
 define('components/market/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
@@ -2212,7 +5104,7 @@ define('components/strategies/navigation',["require", "exports", "tslib", "aurel
     exports.Navigation = Navigation;
 });
 
-define('components/strategies/strategy-playground',["require", "exports", "tslib", "toastr", "aurelia-framework", "../../services/strategy-service", "../../services/company-service", "../../services/stock-service", "../../services/playground-service", "../../services/settings-service"], function (require, exports, tslib_1, toastr, aurelia_framework_1, strategy_service_1, company_service_1, stock_service_1, playground_service_1, settings_service_1) {
+define('components/strategies/strategy-playground',["require", "exports", "tslib", "toastr", "aurelia-framework", "../../services/settings-service", "../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
     var StrategyPlayground = (function () {
         function StrategyPlayground(strategyService, companyService, stockService, playgroundService, settings) {
@@ -2242,7 +5134,7 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 8, , 9]);
-                            return [4 /*yield*/, this.strategyService.getSummaryByUrl(params.strategyUrl)];
+                            return [4 /*yield*/, this.strategyService.getStrategySummaryByUrl(params.strategyUrl)];
                         case 2:
                             response = _a.sent();
                             if (!(response && response.strategyId > 0)) return [3 /*break*/, 6];
@@ -2273,12 +5165,15 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
         };
         StrategyPlayground.prototype.searchCompanies = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
+                var request, _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            request = new services_generated_1.CompanySearchRequest();
+                            request.ticker = this.searchCriteria;
+                            request.maxCount = 15;
                             _a = this;
-                            return [4 /*yield*/, this.companyService.searchCompanies(this.searchCriteria, 15)];
+                            return [4 /*yield*/, this.companyService.search(request)];
                         case 1:
                             _a.companies = _b.sent();
                             return [2 /*return*/];
@@ -2306,7 +5201,6 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                             return [4 /*yield*/, this.companyService.getCompany(ticker)];
                         case 2:
                             _a.company = _b.sent();
-                            this.company.show = true;
                             return [3 /*break*/, 4];
                         case 3:
                             e_2 = _b.sent();
@@ -2380,7 +5274,7 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.playgroundService.loadNext(this.company.ticker, this.strategy.strategyId)];
+                            return [4 /*yield*/, this.playgroundService.next(this.company.ticker, this.strategy.strategyId)];
                         case 1:
                             playground = _a.sent();
                             if (playground && playground.company) {
@@ -2403,7 +5297,7 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.playgroundService.loadPrev(this.company.ticker, this.strategy.strategyId)];
+                            return [4 /*yield*/, this.playgroundService.prev(this.company.ticker, this.strategy.strategyId)];
                         case 1:
                             playground = _a.sent();
                             if (playground && playground.company) {
@@ -2423,16 +5317,16 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
     }());
     StrategyPlayground = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [strategy_service_1.StrategyService,
-            company_service_1.CompanyService,
-            stock_service_1.StockService,
-            playground_service_1.PlaygroundService,
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient,
+            services_generated_1.CompaniesApiClient,
+            services_generated_1.StockApiClient,
+            services_generated_1.PlaygroundApiClient,
             settings_service_1.SettingsService])
     ], StrategyPlayground);
     exports.StrategyPlayground = StrategyPlayground;
 });
 
-define('components/strategies/strategy-rule-sets',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "../../services/strategy-service", "../../services/rule-set-service", "../../services/settings-service", "../../common/types/rule-models"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, strategy_service_1, rule_set_service_1, settings_service_1, rule_models_1) {
+define('components/strategies/strategy-rule-sets',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "../../services/settings-service", "../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, settings_service_1, services_generated_1) {
     "use strict";
     var StrategyRuleSets = (function () {
         function StrategyRuleSets(eventAggregator, strategyService, ruleSetService, settings) {
@@ -2490,7 +5384,7 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, this.strategyService.getSummaryByUrl(params.strategyUrl)];
+                            return [4 /*yield*/, this.strategyService.getStrategySummaryByUrl(params.strategyUrl)];
                         case 2:
                             strategy = _a.sent();
                             if (!(strategy && strategy.strategyId)) return [3 /*break*/, 4];
@@ -2519,7 +5413,7 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleSetService.getRuleSetsForStrategy(strategyId)];
+                            return [4 /*yield*/, this.ruleSetService.getStrategyRuleSets(strategyId)];
                         case 1:
                             _a.rulesets = _b.sent();
                             return [2 /*return*/];
@@ -2543,27 +5437,35 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
             this.editMode = mode;
             if (this.rulesets.length > 0) {
                 this.rulesets.forEach(function (item) {
-                    item.editMode = mode;
+                    if (item.ruleSetId) {
+                    }
                 });
             }
         };
         StrategyRuleSets.prototype.addRuleSet = function () {
-            this.attachedRuleSet = {
-                ruleSetId: 0,
-                period: -1,
-                description: "",
-                name: ""
-            };
+            this.attachedRuleSet = new services_generated_1.RuleSetModel();
+            this.attachedRuleSet.ruleSetId = 0;
+            this.attachedRuleSet.period = -1;
+            this.attachedRuleSet.description = "";
+            this.attachedRuleSet.name = "";
             this.addingMode = true;
         };
         StrategyRuleSets.prototype.cancelAddRuleSet = function () {
             this.addingMode = false;
         };
         StrategyRuleSets.prototype.onPeriodSelected = function () {
-            var _this = this;
-            this.ruleSetService.getRuleSetsForPeriod(this.attachedRuleSet.period)
-                .then(function (data) {
-                _this.periodRuleSets = data;
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = this;
+                            return [4 /*yield*/, this.ruleSetService.getRuleSets(this.attachedRuleSet.period)];
+                        case 1:
+                            _a.periodRuleSets = _b.sent();
+                            return [2 /*return*/];
+                    }
+                });
             });
         };
         StrategyRuleSets.prototype.onRuleSetSelected = function () {
@@ -2574,8 +5476,7 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
             }
         };
         StrategyRuleSets.prototype.confirmAddRuleSet = function () {
-            var ruleset = new rule_models_1.StrategyRuleSetViewModel();
-            ruleset.editMode = true;
+            var ruleset = new services_generated_1.VStrategyRuleSet();
             ruleset.ruleSetName = this.attachedRuleSet.name;
             ruleset.ruleSetDescription = this.attachedRuleSet.description;
             ruleset.ruleSetPeriod = this.attachedRuleSet.period;
@@ -2634,7 +5535,7 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.ruleSetService.saveRuleSetsForStrategy(this.strategy.strategyId, this.rulesets)];
+                            return [4 /*yield*/, this.ruleSetService.saveStrategyRuleSets(this.strategy.strategyId, this.rulesets)];
                         case 2:
                             _a.sent();
                             this.setEditMode(false);
@@ -2654,14 +5555,14 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
     StrategyRuleSets = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
         tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            strategy_service_1.StrategyService,
-            rule_set_service_1.RuleSetService,
+            services_generated_1.StrategiesApiClient,
+            services_generated_1.RuleSetsApiClient,
             settings_service_1.SettingsService])
     ], StrategyRuleSets);
     exports.StrategyRuleSets = StrategyRuleSets;
 });
 
-define('components/strategies/strategy',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "aurelia-validation", "../../services/strategy-service", "../../form-validation/bootstrap-form-renderer", "../../services/account-service", "../../common/types/strategy-models"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, aurelia_validation_1, strategy_service_1, bootstrap_form_renderer_1, account_service_1, strategy_models_1) {
+define('components/strategies/strategy',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "../../services/account-service", "../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, services_generated_1) {
     "use strict";
     var Strategy = (function () {
         function Strategy(eventAggregator, strategyService, account, validation) {
@@ -2686,7 +5587,7 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                             this.router = navigationInstruction.router;
                             this.routeName = routeConfig.name;
                             _a = this;
-                            return [4 /*yield*/, this.strategyService.getSummaries()];
+                            return [4 /*yield*/, this.strategyService.geStrategySummaries()];
                         case 1:
                             _a.summaries = _b.sent();
                             return [4 /*yield*/, this.loadStrategy(params.strategyUrl)];
@@ -2698,7 +5599,7 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
             });
         };
         Strategy.prototype.addStrategy = function () {
-            this.strategy = new strategy_models_1.StrategyViewModel();
+            this.strategy = new services_generated_1.StrategyModel();
             this.startEdit();
             this.validation.validate();
         };
@@ -2754,7 +5655,7 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                         case 1:
                             _b.trys.push([1, 3, , 4]);
                             _a = this;
-                            return [4 /*yield*/, this.strategyService.getByUrl(url)];
+                            return [4 /*yield*/, this.strategyService.getStrategyByUrl(url)];
                         case 2:
                             _a.strategy = _b.sent();
                             if (!this.strategy.blocks) {
@@ -2777,7 +5678,8 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
         };
         Strategy.prototype.selectActiveSummary = function (id) {
             this.summaries.forEach(function (item) {
-                item.selected = item.strategyId === id;
+                if (item.strategyId === id) {
+                }
             });
         };
         Strategy.prototype.navigateToDefaultStrategy = function () {
@@ -2803,7 +5705,7 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
             this.setEditMode(false);
             if (this.strategy.strategyId > 0) {
                 this.strategy = this.originalStrategy;
-                this.strategy.editMode = false;
+                this.editMode = false;
             }
             else {
                 this.strategy.deleted = true;
@@ -2858,7 +5760,7 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.strategyService.update(this.strategy)];
+                            return [4 /*yield*/, this.strategyService.saveStrategy(this.strategy)];
                         case 2:
                             response = _a.sent();
                             if (response.url.length > 0) {
@@ -2880,14 +5782,14 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
     Strategy = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
         tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            strategy_service_1.StrategyService,
+            services_generated_1.StrategiesApiClient,
             account_service_1.AccountService,
             aurelia_validation_1.ValidationController])
     ], Strategy);
     exports.Strategy = Strategy;
 });
 
-define('components/studies/navigation',["require", "exports", "tslib", "aurelia-framework", "../../services/article-service", "../../services/settings-service"], function (require, exports, tslib_1, aurelia_framework_1, article_service_1, settings_service_1) {
+define('components/studies/navigation',["require", "exports", "tslib", "aurelia-framework", "../../services/settings-service", "../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
     var Navigation = (function () {
         function Navigation(articleService, settings) {
@@ -2919,14 +5821,16 @@ define('components/studies/navigation',["require", "exports", "tslib", "aurelia-
         Navigation.prototype.configureRouter = function (config, router) {
             config.title = this.section.title;
             config.map([
-                { route: ["", ':category', ':category/:article'], moduleId: "./study", name: "study" }
+                { route: ["", ":category", ":category/:article"], moduleId: "./study/study", name: "study" },
+                { route: ["categories"], moduleId: "./categories/categories", name: "categories", title: "Manage categories", nav: true }
             ]);
             this.router = router;
         };
         Navigation.prototype.selectMenuItem = function (categoryUrl) {
             if (this.menu && this.menu.items) {
                 this.menu.items.forEach(function (item) {
-                    item.isActive = item.url === categoryUrl;
+                    if (item.url === categoryUrl) {
+                    }
                 });
             }
         };
@@ -2934,214 +5838,9 @@ define('components/studies/navigation',["require", "exports", "tslib", "aurelia-
     }());
     Navigation = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [article_service_1.ArticleService, settings_service_1.SettingsService])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient, settings_service_1.SettingsService])
     ], Navigation);
     exports.Navigation = Navigation;
-});
-
-define('components/studies/study',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "./navigation", "aurelia-validation", "../../services/article-service", "../../form-validation/bootstrap-form-renderer", "../../services/account-service"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, navigation_1, aurelia_validation_1, article_service_1, bootstrap_form_renderer_1, account_service_1) {
-    "use strict";
-    var Study = (function () {
-        function Study(eventAggregator, articleService, navigation, account, validation) {
-            this.eventAggregator = eventAggregator;
-            this.articleService = articleService;
-            this.navigation = navigation;
-            this.account = account;
-            this.validation = validation;
-            this.powerUser = this.account.currentUser.isAuthenticated;
-            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
-            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
-            this.subscriptions = [];
-            this.editMode = false;
-        }
-        Study.prototype.activate = function (params, routeconfig, navigationInstruction) {
-            this.router = navigationInstruction.router;
-            this.articleUrl = routeconfig.name;
-            this.articleUrl = "default";
-            if (!params.category) {
-                params.category = "default";
-            }
-            if (params.article) {
-                this.articleUrl = params.article;
-            }
-            this.loadCategory(params.category);
-        };
-        Study.prototype.loadArticles = function (categoryId) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            _a = this;
-                            return [4 /*yield*/, this.articleService.getArticles(categoryId)];
-                        case 1:
-                            _a.articles = _b.sent();
-                            this.selectSideNavigationItem();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        Study.prototype.loadCategory = function (categoryUrl) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a, result;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            this.setEditMode(false);
-                            _a = this;
-                            return [4 /*yield*/, this.articleService.getCategory(categoryUrl)];
-                        case 1:
-                            _a.category = _b.sent();
-                            if (!(this.category && this.category.categoryId > 0)) return [3 /*break*/, 4];
-                            this.navigation.selectMenuItem(this.category.url);
-                            return [4 /*yield*/, this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl)];
-                        case 2:
-                            result = _b.sent();
-                            if (!(result.articleId > 0)) return [3 /*break*/, 4];
-                            this.article = result;
-                            this.setEditMode(false);
-                            return [4 /*yield*/, this.loadArticles(this.category.categoryId)];
-                        case 3:
-                            _b.sent();
-                            _b.label = 4;
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        Study.prototype.setEditMode = function (editMode) {
-            this.editMode = editMode;
-            this.navigation.menu.editMode = editMode;
-            this.eventAggregator.publish("article-edit-mode-changed", editMode);
-        };
-        Study.prototype.startEdit = function () {
-            this.originalArticle = Object.assign({}, this.article);
-            this.setEditMode(true);
-            aurelia_validation_1.ValidationRules
-                .ensure(function (u) { return u.title; }).displayName('Strategy name').required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (u) { return u.summary; }).displayName('Summary').required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (u) { return u.url; }).displayName('Strategy url').required().withMessage("${$displayName} cannot be blank.")
-                .on(this.article);
-        };
-        Study.prototype.cancelEdit = function () {
-            this.setEditMode(false);
-            if (this.article.articleId > 0) {
-                this.article = this.originalArticle;
-                this.article.editMode = false;
-            }
-            else {
-                this.article.deleted = true;
-            }
-            this.validation.reset();
-        };
-        Study.prototype.addArticle = function () {
-            this.article = {
-                articleId: 0,
-                categoryId: this.category.categoryId,
-                isFeatured: false,
-                deleted: false,
-                title: "New Article",
-                url: "new-article",
-                blocks: [],
-                summary: "",
-                editMode: false,
-                selected: false
-            };
-            this.startEdit();
-            this.validation.validate();
-        };
-        Study.prototype.selectSideNavigationItem = function () {
-            var self = this;
-            if (this.articles && this.articles.length > 0) {
-                this.articles.forEach(function (item) {
-                    item.selected = item.articleId === self.article.articleId;
-                });
-            }
-        };
-        Study.prototype.navigateToArticle = function (url) {
-            if (url && url.length > 0) {
-                this.setEditMode(false);
-                var articleUrl = '/' + this.navigation.section.url + '/' + this.category.url + '/' + url;
-                this.router.navigate(articleUrl);
-            }
-        };
-        Study.prototype.deleteArticle = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (!(this.article && this.article.articleId > 0)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, this.articleService.deleteArticle(this.article.articleId)];
-                        case 1:
-                            _a.sent();
-                            return [3 /*break*/, 3];
-                        case 2:
-                            toastr.warning('Article is not selected', 'Delete Failed');
-                            _a.label = 3;
-                        case 3: return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        Study.prototype.trySaveArticle = function () {
-            var _this = this;
-            this.validation.validate()
-                .then(function (response) {
-                var valid = false;
-                if (response.valid === true) {
-                    if (_this.articlePartsValidate()) {
-                        valid = true;
-                    }
-                }
-                if (valid) {
-                    _this.saveArticle();
-                }
-                else {
-                    toastr.warning('Please correct validation errors.', 'Validation Errors');
-                }
-            });
-        };
-        Study.prototype.articlePartsValidate = function () {
-            if (this.article.blocks.length > 0) {
-                var index = this.article.blocks.findIndex(function (b) { return !b.valid; });
-                return index === -1;
-            }
-            else {
-                toastr.warning('Article is empty', 'Validation Errors');
-                return false;
-            }
-        };
-        Study.prototype.saveArticle = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var a;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            this.setEditMode(false);
-                            return [4 /*yield*/, this.articleService.saveArticle(this.article)];
-                        case 1:
-                            a = _a.sent();
-                            if (a.url && a.url.length > 0) {
-                                toastr.success("Article staved successfully!", 'Strategy saved');
-                                this.navigateToArticle(a.url);
-                            }
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        return Study;
-    }());
-    Study = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            article_service_1.ArticleService,
-            navigation_1.Navigation,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController])
-    ], Study);
-    exports.Study = Study;
 });
 
 define('components/user/login',["require", "exports"], function (require, exports) {
@@ -3248,28 +5947,6 @@ define('resources/value-converters/filelist-to-array',["require", "exports"], fu
     exports.FileListToArrayValueConverter = FileListToArrayValueConverter;
 });
 
-define('components/market/chart-layouts/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
-    "use strict";
-    var Navigation = (function () {
-        function Navigation() {
-        }
-        Navigation.prototype.configureRouter = function (config, router) {
-            config.title = "Chart Layouts";
-            config.map([
-                { route: ["weekly"], moduleId: "./layouts/chart-layouts", name: "Weekly", title: "Weekly Chart Layouts", nav: true },
-                { route: ["daily"], moduleId: "./layouts/chart-layouts", name: "Daily", title: "Daily Chart Layouts", nav: true },
-                { route: "", redirect: "weekly" }
-            ]);
-            this.router = router;
-        };
-        return Navigation;
-    }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject
-    ], Navigation);
-    exports.Navigation = Navigation;
-});
-
 define('components/market/jobs-dashboard/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
     var Navigation = (function () {
@@ -3283,6 +5960,28 @@ define('components/market/jobs-dashboard/navigation',["require", "exports", "tsl
                 { route: ["refresh-all-stocks"], moduleId: "./jobs/job", name: "refresh-all-stocks", title: "Refresh All Stocks", nav: true },
                 { route: ["refresh-indices"], moduleId: "./jobs/job", name: "refresh-indices", title: "Refresh Indices", nav: true },
                 { route: "", redirect: "recalculate-global-indicators" }
+            ]);
+            this.router = router;
+        };
+        return Navigation;
+    }());
+    Navigation = tslib_1.__decorate([
+        aurelia_framework_1.autoinject
+    ], Navigation);
+    exports.Navigation = Navigation;
+});
+
+define('components/market/chart-layouts/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
+    "use strict";
+    var Navigation = (function () {
+        function Navigation() {
+        }
+        Navigation.prototype.configureRouter = function (config, router) {
+            config.title = "Chart Layouts";
+            config.map([
+                { route: ["weekly"], moduleId: "./layouts/chart-layouts", name: "Weekly", title: "Weekly Chart Layouts", nav: true },
+                { route: ["daily"], moduleId: "./layouts/chart-layouts", name: "Daily", title: "Daily Chart Layouts", nav: true },
+                { route: "", redirect: "weekly" }
             ]);
             this.router = router;
         };
@@ -3317,27 +6016,6 @@ define('components/market/market-indices/navigation',["require", "exports", "tsl
         aurelia_framework_1.autoinject
     ], Navigation);
     exports.Navigation = Navigation;
-});
-
-define('components/nav-menu/category-nav/category-nav',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
-    "use strict";
-    var CategoryNav = (function () {
-        function CategoryNav() {
-            this.categoriesUrl = "";
-        }
-        CategoryNav.prototype.menuChanged = function () {
-            this.categoriesUrl = this.menu.section.url + "/categories/" + this.menu.section.sectionId;
-        };
-        CategoryNav.prototype.getUrl = function (menuItem) {
-            return "" + this.menu.section.url + "/" + menuItem.url;
-        };
-        return CategoryNav;
-    }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
-    ], CategoryNav.prototype, "menu", void 0);
-    exports.CategoryNav = CategoryNav;
 });
 
 define('components/nav-menu/main-nav/main-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
@@ -3381,7 +6059,7 @@ define('components/nav-menu/sub-nav/sub-nav',["require", "exports", "tslib", "au
     exports.SubNav = SubNav;
 });
 
-define('components/strategies/indicators/indicators',["require", "exports", "tslib", "aurelia-framework", "../../../services/indicator-service", "../../../services/settings-service", "../../../common/types/indicator-models"], function (require, exports, tslib_1, aurelia_framework_1, indicator_service_1, settings_service_1, indicator_models_1) {
+define('components/strategies/indicators/indicators',["require", "exports", "tslib", "aurelia-framework", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
     var Indicators = (function () {
         function Indicators(indicatorService, globalSettings) {
@@ -3419,9 +6097,7 @@ define('components/strategies/indicators/indicators',["require", "exports", "tsl
             return result;
         };
         Indicators.prototype.addIndicator = function () {
-            var indicator = new indicator_models_1.IndicatorModel();
-            indicator.isNew = true;
-            indicator.expanded = true;
+            var indicator = new services_generated_1.Indicator();
             indicator.period = this.activePeriod.id;
             indicator.description = "New Indicator";
             indicator.params = [];
@@ -3441,7 +6117,7 @@ define('components/strategies/indicators/indicators',["require", "exports", "tsl
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.indicatorService.getIndicatorsForPeriod(periodId)];
+                            return [4 /*yield*/, this.indicatorService.getIndicatorsAll(periodId)];
                         case 1:
                             _a.indicators = _b.sent();
                             return [2 /*return*/];
@@ -3453,12 +6129,12 @@ define('components/strategies/indicators/indicators',["require", "exports", "tsl
     }());
     Indicators = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [indicator_service_1.IndicatorService, settings_service_1.SettingsService])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient, settings_service_1.SettingsService])
     ], Indicators);
     exports.Indicators = Indicators;
 });
 
-define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "aurelia-framework", "../../../services/rule-set-service", "../../../services/settings-service", "../../../services/account-service", "../../../common/types/rule-models"], function (require, exports, tslib_1, aurelia_framework_1, rule_set_service_1, settings_service_1, account_service_1, rule_models_1) {
+define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "aurelia-framework", "../../../services/settings-service", "../../../services/account-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, account_service_1, services_generated_1) {
     "use strict";
     var RuleSets = (function () {
         function RuleSets(ruleSetService, globalSettings, account) {
@@ -3479,7 +6155,7 @@ define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "
                 this.loadRuleSets(this.activePeriod.id);
             }
             else {
-                var defaultUrl = '/strategies/rule-sets/' + this.activePeriod.name.toLowerCase();
+                var defaultUrl = "/strategies/rule-sets/" + this.activePeriod.name.toLowerCase();
                 this.router.navigate(defaultUrl);
             }
         };
@@ -3498,11 +6174,9 @@ define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "
             return result;
         };
         RuleSets.prototype.addRuleSet = function () {
-            var ruleset = new rule_models_1.RuleSetViewModel();
+            var ruleset = new services_generated_1.RuleSetModel();
             ruleset.name = "New Rule set";
-            ruleset.expanded = true;
             ruleset.period = this.activePeriod.id;
-            ruleset.editMode = true;
             this.rulesets.push(ruleset);
         };
         RuleSets.prototype.loadRuleSetsForPeriod = function (period) {
@@ -3519,7 +6193,7 @@ define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleSetService.getRuleSetsForPeriod(periodId)];
+                            return [4 /*yield*/, this.ruleSetService.getRuleSets(periodId)];
                         case 1:
                             _a.rulesets = _b.sent();
                             return [2 /*return*/];
@@ -3531,14 +6205,14 @@ define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "
     }());
     RuleSets = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [rule_set_service_1.RuleSetService,
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.RuleSetsApiClient,
             settings_service_1.SettingsService,
             account_service_1.AccountService])
     ], RuleSets);
     exports.RuleSets = RuleSets;
 });
 
-define('components/strategies/rules/rules',["require", "exports", "tslib", "aurelia-framework", "../../../services/rule-service", "../../../services/settings-service", "../../../common/types/rule-models"], function (require, exports, tslib_1, aurelia_framework_1, rule_service_1, settings_service_1, rule_models_1) {
+define('components/strategies/rules/rules',["require", "exports", "tslib", "aurelia-framework", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
     var Rules = (function () {
         function Rules(ruleService, globalSettings) {
@@ -3558,7 +6232,7 @@ define('components/strategies/rules/rules',["require", "exports", "tslib", "aure
                 this.loadRules(this.activePeriod.id);
             }
             else {
-                var defaultUrl = '/strategies/rules/' + this.activePeriod.name.toLowerCase();
+                var defaultUrl = "/strategies/rules/" + this.activePeriod.name.toLowerCase();
                 this.router.navigate(defaultUrl);
             }
         };
@@ -3577,11 +6251,9 @@ define('components/strategies/rules/rules',["require", "exports", "tslib", "aure
             return result;
         };
         Rules.prototype.addRule = function () {
-            var rule = new rule_models_1.RuleViewModel();
+            var rule = new services_generated_1.Rule();
             rule.name = "New Rule";
-            rule.expanded = true;
             rule.period = this.activePeriod.id;
-            rule.editMode = true;
             this.rules.push(rule);
         };
         Rules.prototype.loadRulesForPeriod = function (period) {
@@ -3598,7 +6270,7 @@ define('components/strategies/rules/rules',["require", "exports", "tslib", "aure
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleService.getRulesForPeriod(periodId)];
+                            return [4 /*yield*/, this.ruleService.getRules(periodId)];
                         case 1:
                             _a.rules = _b.sent();
                             return [2 /*return*/];
@@ -3610,46 +6282,321 @@ define('components/strategies/rules/rules',["require", "exports", "tslib", "aure
     }());
     Rules = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [rule_service_1.RuleService, settings_service_1.SettingsService])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.RulesApiClient, settings_service_1.SettingsService])
     ], Rules);
     exports.Rules = Rules;
 });
 
-define('resources/elements/article-parts/article-part-actions',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
+define('components/studies/categories/categories',["require", "exports", "tslib", "aurelia-framework", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/settings-service", "../../../services/account-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_validation_1, Bootstrapformrenderer, settings_service_1, account_service_1, services_generated_1) {
+    "use strict";
+    var Categories = (function () {
+        function Categories(articleService, settings, account, validation) {
+            this.articleService = articleService;
+            this.settings = settings;
+            this.account = account;
+            this.validation = validation;
+            this.powerUser = this.account.currentUser.isAuthenticated;
+            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
+            this.validation.addRenderer(new Bootstrapformrenderer.BootstrapFormRenderer());
+            this.editMode = false;
+            this.categories = [];
+            this.sections = this.settings.sections;
+            this.sectionId = 0;
+        }
+        Categories.prototype.activate = function (params) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            if (!params.section) {
+                                if (this.sections && this.sections.length > 0) {
+                                    this.sectionId = this.sections[0].sectionId;
+                                }
+                            }
+                            if (!(this.sectionId > 0)) return [3 /*break*/, 2];
+                            this.section = this.settings.getSection(this.sectionId);
+                            _a = this;
+                            return [4 /*yield*/, this.articleService.getCategories(this.sectionId)];
+                        case 1:
+                            _a.categories = _b.sent();
+                            _b.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Categories.prototype.getSectionUrl = function (section) {
+            return "/categories/" + section.SectionId;
+        };
+        return Categories;
+    }());
+    Categories = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient,
+            settings_service_1.SettingsService,
+            account_service_1.AccountService,
+            aurelia_validation_1.ValidationController])
+    ], Categories);
+    exports.Categories = Categories;
+});
+
+define('components/studies/category-nav/category-nav',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
+    "use strict";
+    var CategoryNav = (function () {
+        function CategoryNav() {
+            this.categoriesUrl = "";
+        }
+        CategoryNav.prototype.menuChanged = function () {
+            this.categoriesUrl = this.menu.section.url + "/categories/" + this.menu.section.sectionId;
+        };
+        CategoryNav.prototype.getUrl = function (menuItem) {
+            return this.menu.section.url + "/" + menuItem.url;
+        };
+        return CategoryNav;
+    }());
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Object)
+    ], CategoryNav.prototype, "menu", void 0);
+    exports.CategoryNav = CategoryNav;
+});
+
+define('components/studies/study/study',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "../navigation", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, navigation_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, services_generated_1) {
+    "use strict";
+    var Study = (function () {
+        function Study(eventAggregator, articleService, navigation, account, validation) {
+            this.eventAggregator = eventAggregator;
+            this.articleService = articleService;
+            this.navigation = navigation;
+            this.account = account;
+            this.validation = validation;
+            this.powerUser = this.account.currentUser.isAuthenticated;
+            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
+            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
+            this.subscriptions = [];
+            this.editMode = false;
+        }
+        Study.prototype.activate = function (params, routeconfig, navigationInstruction) {
+            this.router = navigationInstruction.router;
+            this.articleUrl = routeconfig.name;
+            this.articleUrl = "default";
+            if (!params.category) {
+                params.category = "default";
+            }
+            if (params.article) {
+                this.articleUrl = params.article;
+            }
+            this.loadCategory(params.category);
+        };
+        Study.prototype.loadArticles = function (categoryId) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = this;
+                            return [4 /*yield*/, this.articleService.getArticles(categoryId)];
+                        case 1:
+                            _a.articles = _b.sent();
+                            this.selectSideNavigationItem();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Study.prototype.loadCategory = function (categoryUrl) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a, result;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            this.setEditMode(false);
+                            _a = this;
+                            return [4 /*yield*/, this.articleService.getCategory(categoryUrl)];
+                        case 1:
+                            _a.category = _b.sent();
+                            if (!(this.category && this.category.categoryId > 0)) return [3 /*break*/, 4];
+                            this.navigation.selectMenuItem(this.category.url);
+                            return [4 /*yield*/, this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl)];
+                        case 2:
+                            result = _b.sent();
+                            if (!(result.articleId > 0)) return [3 /*break*/, 4];
+                            this.article = result;
+                            this.setEditMode(false);
+                            return [4 /*yield*/, this.loadArticles(this.category.categoryId)];
+                        case 3:
+                            _b.sent();
+                            _b.label = 4;
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Study.prototype.setEditMode = function (editMode) {
+            this.editMode = editMode;
+            this.navigation.menu.editMode = editMode;
+            this.eventAggregator.publish("article-edit-mode-changed", editMode);
+        };
+        Study.prototype.startEdit = function () {
+            this.originalArticle = Object.assign({}, this.article);
+            this.setEditMode(true);
+            aurelia_validation_1.ValidationRules
+                .ensure(function (u) { return u.title; }).displayName('Strategy name').required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.summary; }).displayName('Summary').required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.url; }).displayName('Strategy url').required().withMessage("${$displayName} cannot be blank.")
+                .on(this.article);
+        };
+        Study.prototype.cancelEdit = function () {
+            this.setEditMode(false);
+            if (this.article.articleId > 0) {
+                this.article = this.originalArticle;
+                this.editMode = false;
+            }
+            else {
+                this.article.deleted = true;
+            }
+            this.validation.reset();
+        };
+        Study.prototype.addArticle = function () {
+            this.article = new services_generated_1.ArticleModel();
+            this.article.articleId = 0;
+            this.article.categoryId = this.category.categoryId;
+            this.article.isFeatured = false;
+            this.article.deleted = false;
+            this.article.title = "New Article";
+            this.article.url = "new-article";
+            this.article.blocks = [];
+            this.article.summary = "";
+            this.startEdit();
+            this.validation.validate();
+        };
+        Study.prototype.selectSideNavigationItem = function () {
+            var self = this;
+            if (this.articles && this.articles.length > 0) {
+                this.articles.forEach(function (item) {
+                    if (item.articleId === self.article.articleId) {
+                    }
+                });
+            }
+        };
+        Study.prototype.navigateToArticle = function (url) {
+            if (url && url.length > 0) {
+                this.setEditMode(false);
+                var articleUrl = "/" + this.navigation.section.url + "/" + this.category.url + "/" + url;
+                this.router.navigate(articleUrl);
+            }
+        };
+        Study.prototype.deleteArticle = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!(this.article && this.article.articleId > 0)) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.articleService.deleteArticle(this.article.articleId)];
+                        case 1:
+                            _a.sent();
+                            return [3 /*break*/, 3];
+                        case 2:
+                            toastr.warning("Article is not selected", "Delete Failed");
+                            _a.label = 3;
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        Study.prototype.trySaveArticle = function () {
+            var _this = this;
+            this.validation.validate()
+                .then(function (response) {
+                var valid = false;
+                if (response.valid) {
+                    if (_this.articlePartsValidate()) {
+                        valid = true;
+                    }
+                }
+                if (valid) {
+                    _this.saveArticle();
+                }
+                else {
+                    toastr.warning("Please correct validation errors.", "Validation Errors");
+                }
+            });
+        };
+        Study.prototype.articlePartsValidate = function () {
+            if (this.article.blocks.length > 0) {
+                var index = this.article.blocks.findIndex(function (b) { return !b.valid; });
+                return index === -1;
+            }
+            else {
+                toastr.warning("Article is empty", "Validation Errors");
+                return false;
+            }
+        };
+        Study.prototype.saveArticle = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var a;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this.setEditMode(false);
+                            return [4 /*yield*/, this.articleService.saveArticle(this.article)];
+                        case 1:
+                            a = _a.sent();
+                            if (a.url && a.url.length > 0) {
+                                toastr.success("Article staved successfully!", "Strategy saved");
+                                this.navigateToArticle(a.url);
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return Study;
+    }());
+    Study = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
+            services_generated_1.ArticlesApiClient,
+            navigation_1.Navigation,
+            account_service_1.AccountService,
+            aurelia_validation_1.ValidationController])
+    ], Study);
+    exports.Study = Study;
+});
+
+define('resources/elements/article-parts/article-part-actions',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
     var ArticlePartActions = (function () {
         function ArticlePartActions() {
         }
         ArticlePartActions.prototype.remove = function () {
             if (this.part) {
-                this.part.action = "Remove";
             }
         };
         ArticlePartActions.prototype.moveUp = function () {
             if (this.part) {
-                this.part.action = "MoveUp";
             }
         };
         ArticlePartActions.prototype.moveDown = function () {
             if (this.part) {
-                this.part.action = "MoveDown";
             }
         };
         return ArticlePartActions;
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartActions.prototype, "part", void 0);
     exports.ArticlePartActions = ArticlePartActions;
 });
 
-define('resources/elements/article-parts/article-part-heading',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1) {
+define('resources/elements/article-parts/article-part-heading',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
     var ArticlePartHeading = (function () {
         function ArticlePartHeading(bindingEngine) {
             this.bindingEngine = bindingEngine;
-            this.headingTypes = ['H1', 'H2', 'H3', 'H4', 'H5'];
+            this.headingTypes = [services_generated_1.HeadingType.H1, services_generated_1.HeadingType.H2, services_generated_1.HeadingType.H3, services_generated_1.HeadingType.H4, services_generated_1.HeadingType.H5];
             this.textValid = true;
             this.typeValid = true;
             this.subscriptions = [];
@@ -3657,7 +6604,7 @@ define('resources/elements/article-parts/article-part-heading',["require", "expo
         ArticlePartHeading.prototype.attached = function () {
             var _this = this;
             if (!this.part.headingType) {
-                this.part.headingType = 'H3';
+                this.part.headingType = services_generated_1.HeadingType.H3;
             }
             if (!this.part.text) {
                 this.part.text = '';
@@ -3677,7 +6624,7 @@ define('resources/elements/article-parts/article-part-heading',["require", "expo
             this.validate();
         };
         ArticlePartHeading.prototype.validate = function () {
-            this.typeValid = this.part.headingType.length === 2;
+            this.typeValid = (this.part.headingType) ? true : false;
             this.textValid = this.part.text.length > 0;
             this.part.valid = this.typeValid && this.textValid;
         };
@@ -3685,7 +6632,7 @@ define('resources/elements/article-parts/article-part-heading',["require", "expo
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartHeading.prototype, "part", void 0);
     ArticlePartHeading = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
@@ -3694,7 +6641,7 @@ define('resources/elements/article-parts/article-part-heading',["require", "expo
     exports.ArticlePartHeading = ArticlePartHeading;
 });
 
-define('resources/elements/article-parts/article-part-image',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-binding", "../../../services/storage-service"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_binding_1, storage_service_1) {
+define('resources/elements/article-parts/article-part-image',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
     var ArticlePartImage = (function () {
         function ArticlePartImage(blobServices, bindingEngine) {
@@ -3733,27 +6680,37 @@ define('resources/elements/article-parts/article-part-image',["require", "export
         };
         ArticlePartImage.prototype.uploadImage = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var reader_1, file_1, self_1;
+                var _this = this;
+                var reader_1, file_1;
                 return tslib_1.__generator(this, function (_a) {
                     if (this.selectedFiles.length > 0) {
                         toastr.warning("Uploading selected file", "Uploading...");
                         reader_1 = new FileReader();
                         file_1 = this.selectedFiles.item(0);
-                        self_1 = this;
-                        reader_1.addEventListener("loadend", function () {
-                            if (reader_1.readyState === 2) {
-                                self_1.blobServices.uploadFile(file_1.name, reader_1.result)
-                                    .then(function (imageUrl) {
-                                    if (imageUrl) {
-                                        self_1.part.imageUrl = imageUrl;
-                                        toastr.success('Image uploaded successfully', 'Image Uploaded');
-                                    }
-                                    else {
-                                        toastr.error('Sorry, this image is too big. Must be 2MB max.', 'Failed to Uploaded');
-                                    }
-                                });
-                            }
-                        });
+                        reader_1.addEventListener("loadend", function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                            var payload, imageUrl;
+                            return tslib_1.__generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (!(reader_1.readyState === 2)) return [3 /*break*/, 2];
+                                        payload = new services_generated_1.FileDetails();
+                                        payload.fileName = file_1.name;
+                                        payload.fileBody = reader_1.result;
+                                        return [4 /*yield*/, this.blobServices.uploadSingle(payload)];
+                                    case 1:
+                                        imageUrl = _a.sent();
+                                        if (imageUrl) {
+                                            this.part.imageUrl = imageUrl;
+                                            toastr.success('Image uploaded successfully', 'Image Uploaded');
+                                        }
+                                        else {
+                                            toastr.error('Sorry, this image is too big. Must be 2MB max.', 'Failed to Uploaded');
+                                        }
+                                        _a.label = 2;
+                                    case 2: return [2 /*return*/];
+                                }
+                            });
+                        }); });
                         reader_1.readAsDataURL(file_1);
                     }
                     return [2 /*return*/];
@@ -3764,16 +6721,16 @@ define('resources/elements/article-parts/article-part-image',["require", "export
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartImage.prototype, "part", void 0);
     ArticlePartImage = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [storage_service_1.StorageService, aurelia_binding_1.BindingEngine])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.BlobApiClient, aurelia_binding_1.BindingEngine])
     ], ArticlePartImage);
     exports.ArticlePartImage = ArticlePartImage;
 });
 
-define('resources/elements/article-parts/article-part-list',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1) {
+define('resources/elements/article-parts/article-part-list',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
     var ArticlePartList = (function () {
         function ArticlePartList(bindingEngine) {
@@ -3798,7 +6755,10 @@ define('resources/elements/article-parts/article-part-list',["require", "exports
             }
         };
         ArticlePartList.prototype.addItem = function () {
-            this.part.items.push({ text: '', valid: false });
+            var item = new services_generated_1.ArticleBlockItem();
+            item.text = "";
+            item.valid = false;
+            this.part.items.push(item);
         };
         ArticlePartList.prototype.deleteItem = function (index) {
             this.part.items.splice(index, 1);
@@ -3849,7 +6809,7 @@ define('resources/elements/article-parts/article-part-list',["require", "exports
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartList.prototype, "part", void 0);
     ArticlePartList = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
@@ -3858,33 +6818,32 @@ define('resources/elements/article-parts/article-part-list',["require", "exports
     exports.ArticlePartList = ArticlePartList;
 });
 
-define('resources/elements/article-parts/article-part-new',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
+define('resources/elements/article-parts/article-part-new',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
     var ArticlePartNew = (function () {
         function ArticlePartNew() {
-            this.partTypes = ["Paragraph", "Heading", "Image", "List"];
+            this.partTypes = [services_generated_1.ArticleBlockType.Unset, services_generated_1.ArticleBlockType.Heading, services_generated_1.ArticleBlockType.Image, services_generated_1.ArticleBlockType.List];
             this.canAdd = false;
-            this.selectedType = "Unset";
+            this.selectedType = services_generated_1.ArticleBlockType.Unset;
         }
         ArticlePartNew.prototype.onTypeChange = function () {
-            this.canAdd = this.selectedType !== "Unset";
+            this.canAdd = this.selectedType !== services_generated_1.ArticleBlockType.Unset;
         };
         ArticlePartNew.prototype.add = function () {
-            this.part.type = this.selectedType;
+            this.part.blockType = this.selectedType;
         };
         ArticlePartNew.prototype.cancel = function () {
-            this.part.action = "Remove";
         };
         return ArticlePartNew;
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartNew.prototype, "part", void 0);
     exports.ArticlePartNew = ArticlePartNew;
 });
 
-define('resources/elements/article-parts/article-part-paragraph',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1) {
+define('resources/elements/article-parts/article-part-paragraph',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
     var ArticlePartParagraph = (function () {
         function ArticlePartParagraph(bindingEngine) {
@@ -3918,7 +6877,7 @@ define('resources/elements/article-parts/article-part-paragraph',["require", "ex
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartParagraph.prototype, "part", void 0);
     ArticlePartParagraph = tslib_1.__decorate([
         aurelia_framework_1.autoinject(),
@@ -3927,7 +6886,7 @@ define('resources/elements/article-parts/article-part-paragraph',["require", "ex
     exports.ArticlePartParagraph = ArticlePartParagraph;
 });
 
-define('resources/elements/article-parts/article-parts',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, aurelia_event_aggregator_1) {
+define('resources/elements/article-parts/article-parts',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "aurelia-event-aggregator", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, aurelia_event_aggregator_1, services_generated_1) {
     "use strict";
     var ArticleParts = (function () {
         function ArticleParts(bindingEngine, eventAggregator) {
@@ -3947,7 +6906,8 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
             this.editMode = flag;
             if (this.parts) {
                 this.parts.forEach(function (item) {
-                    item.editMode = flag;
+                    if (item) {
+                    }
                 });
             }
         };
@@ -3976,13 +6936,10 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
             }
         };
         ArticleParts.prototype.addPart = function () {
-            var part = {
-                type: "Unset",
-                editMode: true,
-                text: "",
-                action: "Unset"
-            };
-            var index = this.parts.findIndex(function (p) { return p.type === part.type; });
+            var part = new services_generated_1.ArticleBlock();
+            part.blockType = services_generated_1.ArticleBlockType.Unset;
+            part.text = "";
+            var index = this.parts.findIndex(function (p) { return p.blockType === part.blockType; });
             if (index === -1) {
                 this.parts.push(part);
             }
@@ -4020,24 +6977,10 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
             }
         };
         ArticleParts.prototype.removeDeletedPart = function () {
-            var index = this.parts.findIndex(function (p) { return p.action === "Remove"; });
-            if (index !== -1) {
-                this.parts.splice(index, 1);
-            }
         };
         ArticleParts.prototype.movePartUp = function () {
-            var index = this.parts.findIndex(function (p) { return p.action === "MoveUp"; });
-            if (index > 0) {
-                this.parts.splice(index - 1, 0, this.parts.splice(index, 1)[0]);
-                this.parts[index - 1].action = "Unset";
-            }
         };
         ArticleParts.prototype.movePartDown = function () {
-            var index = this.parts.findIndex(function (p) { return p.action === "MoveDown"; });
-            if (index > -1 && index < this.parts.length - 1) {
-                this.parts.splice(index + 1, 0, this.parts.splice(index, 1)[0]);
-                this.parts[index + 1].action = "Unset";
-            }
         };
         return ArticleParts;
     }());
@@ -4052,7 +6995,152 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
     exports.ArticleParts = ArticleParts;
 });
 
-define('resources/elements/company/company-details',["require", "exports", "tslib", "aurelia-framework", "moment"], function (require, exports, tslib_1, aurelia_framework_1, moment) {
+define('resources/elements/chart/chart-layout',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
+    "use strict";
+    var ChartLayout = (function () {
+        function ChartLayout() {
+            this.data = null;
+            this.isAttached = false;
+        }
+        ChartLayout.prototype.attached = function () {
+            this.isAttached = true;
+        };
+        ChartLayout.prototype.dataChanged = function () {
+            if (this.isAttached) {
+                this.renderChart();
+            }
+        };
+        ChartLayout.prototype.renderChart = function () {
+            var _this = this;
+            if (this.data.periods.length === 0)
+                return;
+            this.data.periods.forEach(function (period) {
+                $("#container-" + period.period).empty();
+                var chart = anychart.stock();
+                _this.renderPeriod(chart, period);
+                chart.container("container-" + period.period);
+                chart.draw();
+            });
+        };
+        ChartLayout.prototype.renderPeriod = function (chart, period) {
+            var _this = this;
+            if (period.quotes.length === 0 || period.plots.length === 0)
+                return;
+            var zeroPlot = this.attachQuotes(chart, period.quotes, period.period);
+            var plotNumber = 0;
+            period.plots.forEach(function (p) {
+                var plot;
+                if (plotNumber === 0) {
+                    plot = zeroPlot;
+                }
+                else {
+                    plot = chart.plot(plotNumber);
+                }
+                _this.attachChartPlot(chart, p, plot);
+                if (p.height > 0) {
+                    plot.height(p.height);
+                }
+                plotNumber++;
+            });
+        };
+        ChartLayout.prototype.attachQuotes = function (chart, quotes, period) {
+            if (chart == null || !chart) {
+                return null;
+            }
+            var tableUp = anychart.data.table();
+            var tableDown = anychart.data.table();
+            var tableNeutral = anychart.data.table();
+            quotes.forEach(function (item) {
+                var row = [[item.date, item.open, item.high, item.low, item.close, item.volume]];
+                if (item.impulse === 0) {
+                    tableNeutral.addData(row);
+                }
+                if (item.impulse === 1) {
+                    tableUp.addData(row);
+                }
+                if (item.impulse === -1) {
+                    tableDown.addData(row);
+                }
+            });
+            var mappingUp = this.createQuotesMappings(tableUp);
+            var mappingDown = this.createQuotesMappings(tableDown);
+            var mappingNeutral = this.createQuotesMappings(tableNeutral);
+            var seriesUp = chart.plot(0).ohlc(mappingUp);
+            seriesUp.fallingStroke("green");
+            seriesUp.risingStroke("green");
+            var seriesDown = chart.plot(0).ohlc(mappingDown);
+            seriesDown.fallingStroke("red");
+            seriesDown.risingStroke("red");
+            var serieNeutral = chart.plot(0).ohlc(mappingNeutral);
+            serieNeutral.fallingStroke("teal");
+            serieNeutral.risingStroke("teal");
+            var seriesName = this.data.company.name + " (" + period + ")";
+            serieNeutral.name(seriesName);
+            var legend = serieNeutral.legendItem();
+            legend.text(seriesName);
+            var plot = chart.plot(0);
+            plot.grid(0).enabled(true);
+            plot.grid(0).stroke("#EEE");
+            return plot;
+        };
+        ChartLayout.prototype.createQuotesMappings = function (table) {
+            var mapping = table.mapAs();
+            mapping.addField("open", 1, anychart.enums.AggregationType.FIRST);
+            mapping.addField("high", 2, anychart.enums.AggregationType.MAX);
+            mapping.addField("low", 3, anychart.enums.AggregationType.MIN);
+            mapping.addField("close", 4, anychart.enums.AggregationType.LAST);
+            return mapping;
+        };
+        ChartLayout.prototype.attachChartPlot = function (chart, plotData, plotChart) {
+            var _this = this;
+            if (chart == null || !chart || plotData == null || !plotData || plotChart == null || !plotChart) {
+                return;
+            }
+            plotData.indicators.forEach(function (indicator) {
+                var table = anychart.data.table(0);
+                indicator.data.forEach(function (value) {
+                    var row = [];
+                    row.push(value.date);
+                    value.values.forEach(function (item) {
+                        row.push(item.value);
+                    });
+                    table.addData([row]);
+                });
+                indicator.data[0].values.forEach(function (item) {
+                    var mapping = table.mapAs();
+                    mapping.addField("value", indicator.data[0].values.indexOf(item) + 1);
+                    _this.drawIndicator(plotChart, mapping, item);
+                });
+            });
+        };
+        ChartLayout.prototype.drawIndicator = function (plotChart, mapping, value) {
+            switch (value.chartType) {
+                case services_generated_1.ChartType.Column:
+                    var column = plotChart.column(mapping);
+                    column.name(value.name);
+                    if (value.lineColor !== "") {
+                        column.stroke(value.lineColor);
+                    }
+                    break;
+                default:
+                    var line = plotChart.line(mapping);
+                    line.name(value.name);
+                    if (value.lineColor !== "") {
+                        line.stroke(value.lineColor);
+                    }
+                    break;
+            }
+        };
+        return ChartLayout;
+    }());
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Object)
+    ], ChartLayout.prototype, "data", void 0);
+    exports.ChartLayout = ChartLayout;
+});
+
+define('resources/elements/company/company-details',["require", "exports", "tslib", "aurelia-framework", "moment", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, moment, services_generated_1) {
     "use strict";
     var CompanyDetails = (function () {
         function CompanyDetails() {
@@ -4069,177 +7157,65 @@ define('resources/elements/company/company-details',["require", "exports", "tsli
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.Company)
     ], CompanyDetails.prototype, "company", void 0);
     exports.CompanyDetails = CompanyDetails;
 });
 
-define('resources/elements/chart/stock-chart',["require", "exports", "tslib", "aurelia-framework", "../../../common/types/playground-models", "../../../infrastructure/event-emitter"], function (require, exports, tslib_1, aurelia_framework_1, playground_models_1, event_emitter_1) {
+define('resources/elements/indicator/indicator',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, services_generated_1) {
     "use strict";
-    var StockChart = (function () {
-        function StockChart(eventEmitter) {
-            this.eventEmitter = eventEmitter;
-            this.subscriptions = [];
-            this.isAttached = false;
+    var Formula = (function () {
+        function Formula() {
         }
-        StockChart.prototype.modelChanged = function () {
-            if (this.model && this.model.company && this.isAttached) {
-                $("#container-Weekly").empty();
-                $("#container-Daily").empty();
-                this.drawChart();
-            }
-        };
-        StockChart.prototype.attached = function () {
-            var _this = this;
-            this.isAttached = true;
-            if (this.model && this.model.company) {
-                this.drawChart();
-            }
-            this.subscriptions.push(this.eventEmitter.subscribe("ChartData", function (data) { return _this.loadChartData(data); }));
-        };
-        StockChart.prototype.detached = function () {
-            if (this.subscriptions.length > 0) {
-                this.subscriptions.forEach(function (subscription) {
-                    subscription.dispose();
-                });
-            }
-        };
-        StockChart.prototype.loadChartData = function (data) {
-            console.log(data.company.name);
-        };
-        StockChart.prototype.drawChart = function () {
-            var _this = this;
-            this.model.periods.forEach(function (period) {
-                var plotNumber = 0;
-                _this.chart = anychart.stock();
-                period.table = anychart.data.table();
-                period.quotes.forEach(function (item) {
-                    var row = [[item.date, item.open, item.high, item.low, item.close, item.volume]];
-                    period.table.addData(row);
-                });
-                var mapping = period.table.mapAs();
-                mapping.addField("open", 1, anychart.enums.AggregationType.FIRST);
-                mapping.addField("high", 2, anychart.enums.AggregationType.MAX);
-                mapping.addField("low", 3, anychart.enums.AggregationType.MIN);
-                mapping.addField("close", 4, anychart.enums.AggregationType.LAST);
-                var series = _this.chart.plot(plotNumber).ohlc(mapping);
-                var seriesName = _this.model.company.name + " (" + period.name + ")";
-                series.name(seriesName);
-                var legend = series.legendItem();
-                legend.text(seriesName);
-                _this.chart.plot(plotNumber).grid(0).enabled(true);
-                _this.chart.plot(plotNumber).grid(0).stroke("#EEE");
-                period.indicators.forEach(function (indicator) {
-                    var indicatorPlot = _this.chart.plot(plotNumber);
-                    indicator.table = anychart.data.table(0);
-                    var fieldValues = null;
-                    indicator.indicatorValues.forEach(function (value) {
-                        var row = [];
-                        row.push(value.date);
-                        value.values.forEach(function (item) {
-                            row.push(item.value);
-                        });
-                        if (!fieldValues) {
-                            fieldValues = value.values;
-                        }
-                        indicator.table.addData([row]);
-                    });
-                    var indicatorMapping = indicator.table.mapAs();
-                    var index = 0;
-                    fieldValues.forEach(function (item) {
-                        index++;
-                        indicatorMapping.addField(item.name, index);
-                    });
-                    var indicatorSeries = indicatorPlot.line(indicatorMapping);
-                    indicatorSeries.name(indicator.name);
-                });
-                var volumePlot = _this.chart.plot(1 + plotNumber);
-                var volumeMapping = period.table.mapAs();
-                volumeMapping.addField("value", 5);
-                volumePlot.column(volumeMapping).name("Volume");
-                volumePlot.height("30%");
-                _this.chart.title(seriesName);
-                _this.chart.container("container-" + period.name);
-                _this.chart.draw();
-            });
-        };
-        return StockChart;
+        return Formula;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", playground_models_1.PlaygroundViewModel)
-    ], StockChart.prototype, "model", void 0);
-    StockChart = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
-    ], StockChart);
-    exports.StockChart = StockChart;
-});
-
-define('resources/elements/indicator/indicator',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../services/indicator-service", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../common/types/indicator-models"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, indicator_service_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, indicator_models_1) {
-    "use strict";
+    exports.Formula = Formula;
     var Indicator = (function () {
         function Indicator(indicatorService, account, validation, globalSettings) {
             this.indicatorService = indicatorService;
             this.account = account;
             this.validation = validation;
             this.globalSettings = globalSettings;
+            this.formulas = [];
             this.powerUser = this.account.currentUser.isAuthenticated;
             this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
             this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
             this.errors = [];
             this.indicatorDataSeries = [];
             this.periods = this.globalSettings.periods;
-            this.formulaes = [
-                {
-                    name: "EMA", defaults: [
-                        { paramName: "Period", value: 13 }
-                    ]
-                },
-                {
-                    name: "UpperChannel", defaults: [
-                        { paramName: "Period", value: 26 }
-                    ]
-                },
-                {
-                    name: "LowerChannel", defaults: [
-                        { paramName: "Period", value: 26 }
-                    ]
-                },
-                {
-                    name: "SMA", defaults: [
-                        { paramName: "Period", value: 13 }
-                    ]
-                },
-                {
-                    name: "RSI", defaults: [
-                        { paramName: "Period", value: 14 }
-                    ]
-                },
-                {
-                    name: "NHNL", defaults: [
-                        { paramName: "Period", value: 26 }
-                    ]
-                }, {
-                    name: "MACD", defaults: [
-                        { paramName: "FastEmaPeriod", value: 12 },
-                        { paramName: "SlowEmaPeriod", value: 26 },
-                        { paramName: "SignalEmaPeriod", value: 9 }
-                    ]
-                },
-                {
-                    name: "ImpulseSystem", defaults: [
-                        { paramName: "FastEmaPeriod", value: 12 },
-                        { paramName: "SlowEmaPeriod", value: 26 },
-                        { paramName: "SignalEmaPeriod", value: 9 },
-                        { paramName: "EmaPeriod", value: 13 }
-                    ]
-                },
-                {
-                    name: "ForceIndex", defaults: [
-                        { paramName: "Period", value: 13 }
-                    ]
-                }
+            this.formulas = [
+                this.createFormula("EMA", [
+                    this.createIndicatorParam("Period", 13)
+                ]),
+                this.createFormula("UpperChannel", [
+                    this.createIndicatorParam("Period", 26)
+                ]),
+                this.createFormula("LowerChannel", [
+                    this.createIndicatorParam("Period", 26)
+                ]),
+                this.createFormula("SMA", [
+                    this.createIndicatorParam("Period", 13)
+                ]),
+                this.createFormula("RSI", [
+                    this.createIndicatorParam("Period", 14)
+                ]),
+                this.createFormula("NHNL", [
+                    this.createIndicatorParam("Period", 26)
+                ]),
+                this.createFormula("MACD", [
+                    this.createIndicatorParam("FastEmaPeriod", 12),
+                    this.createIndicatorParam("SlowEmaPeriod", 26),
+                    this.createIndicatorParam("SignalEmaPeriod", 9)
+                ]),
+                this.createFormula("ImpulseSystem", [
+                    this.createIndicatorParam("FastEmaPeriod", 12),
+                    this.createIndicatorParam("SlowEmaPeriod", 26),
+                    this.createIndicatorParam("SignalEmaPeriod", 9),
+                    this.createIndicatorParam("EmaPeriod", 13)
+                ]),
+                this.createFormula("ForceIndex", [
+                    this.createIndicatorParam("Period", 13)
+                ])
             ];
             this.plotNumbers = [0, 1, 2, 3];
             this.chartTypes = [
@@ -4250,25 +7226,37 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                 { name: "Area", id: 4 }
             ];
         }
+        Indicator.prototype.createIndicatorParam = function (paramName, paramValue) {
+            var param = new services_generated_1.IndicatorParam();
+            param.paramName = paramName;
+            param.value = paramValue;
+            return param;
+        };
+        Indicator.prototype.createFormula = function (formulaName, params) {
+            var formula = new Formula();
+            formula.name = formulaName;
+            formula.defaults = params;
+            return formula;
+        };
         Indicator.prototype.indicatorChanged = function (indicatorItem) {
             if (indicatorItem) {
                 var newIndicator = Object.assign({}, indicatorItem);
                 this.indicatorInfo = newIndicator;
-                if (this.indicatorInfo.isNew) {
-                    this.indicatorInfo.name = this.formulaes[0].name;
-                    this.indicatorInfo.params = this.formulaes[0].defaults;
+                if (this.indicatorInfo.indicatorId === 0) {
+                    this.indicatorInfo.name = this.formulas[0].name;
+                    this.indicatorInfo.params = this.formulas[0].defaults;
                 }
             }
         };
         Indicator.prototype.onExpanded = function () {
-            this.indicatorInfo.expanded = !this.indicatorInfo.expanded;
-            if (!this.indicatorInfo.expanded && this.indicatorInfo.indicatorId > 0 && this.indicatorInfo.editMode) {
+            this.expanded = !this.expanded;
+            if (!this.expanded && this.indicatorInfo.indicatorId > 0 && this.editMode) {
                 this.cancelEdit();
             }
         };
         Indicator.prototype.onFormulaChange = function () {
             var _this = this;
-            var defParams = this.formulaes.filter(function (c) { return c.name === _this.indicatorInfo.name; });
+            var defParams = this.formulas.filter(function (c) { return c.name === _this.indicatorInfo.name; });
             if (defParams && defParams.length > 0) {
                 this.indicatorInfo.params = defParams[0].defaults;
             }
@@ -4278,7 +7266,7 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
         };
         Indicator.prototype.startEdit = function () {
             this.originalIndicator = Object.assign({}, this.indicatorInfo);
-            this.indicatorInfo.editMode = true;
+            this.editMode = true;
             aurelia_validation_1.ValidationRules
                 .ensure(function (m) { return m.description; }).displayName("Indicator Name").required().withMessage("${$displayName} cannot be blank.")
                 .ensure(function (m) { return m.chartColor; }).displayName('Line Color').required().withMessage("${$displayName} cannot be blank.")
@@ -4288,7 +7276,7 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
         Indicator.prototype.cancelEdit = function () {
             if (this.indicatorInfo.indicatorId > 0) {
                 this.indicatorInfo = this.originalIndicator;
-                this.indicatorInfo.editMode = false;
+                this.editMode = false;
             }
             else {
                 this.indicatorInfo.deleted = true;
@@ -4296,12 +7284,12 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
             this.validation.reset();
         };
         Indicator.prototype.cancelDelete = function () {
-            this.indicatorInfo.deleteMode = false;
-            this.indicatorInfo.expanded = false;
+            this.deleteMode = false;
+            this.expanded = false;
         };
         Indicator.prototype.startDelete = function () {
-            this.indicatorInfo.deleteMode = true;
-            this.indicatorInfo.expanded = true;
+            this.deleteMode = true;
+            this.expanded = true;
         };
         Indicator.prototype.confirmDelete = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -4359,8 +7347,8 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                         case 1:
                             response = _a.sent();
                             if (response.name) {
-                                this.indicatorInfo.editMode = false;
-                                this.indicatorInfo.expanded = false;
+                                this.editMode = false;
+                                this.expanded = false;
                                 toastr.success("indicator " + response.name + " saved successfully!", "Indicator Saved");
                             }
                             return [2 /*return*/];
@@ -4372,11 +7360,11 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", indicator_models_1.IndicatorInfo)
+        tslib_1.__metadata("design:type", services_generated_1.Indicator)
     ], Indicator.prototype, "indicator", void 0);
     Indicator = tslib_1.__decorate([
         aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [indicator_service_1.IndicatorService,
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient,
             account_service_1.AccountService,
             aurelia_validation_1.ValidationController,
             settings_service_1.SettingsService])
@@ -4442,7 +7430,7 @@ define('resources/elements/progress/s-progress',["require", "exports", "tslib", 
     exports.SProgress = SProgress;
 });
 
-define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../services/rule-service", "../../../services/account-service", "../../../form-validation/bootstrap-form-renderer", "../../../services/settings-service", "../../../common/types/rule-models", "../../../common/helpers/enum-helper", "../../../common/types/enums"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, rule_service_1, account_service_1, bootstrap_form_renderer_1, settings_service_1, rule_models_1, enum_helper_1, enums_1) {
+define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../services/account-service", "../../../form-validation/bootstrap-form-renderer", "../../../services/settings-service", "../../../common/helpers/enum-helper", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, account_service_1, bootstrap_form_renderer_1, settings_service_1, enum_helper_1, services_generated_1) {
     "use strict";
     var Rule = (function () {
         function Rule(ruleService, account, validation, globalSettings) {
@@ -4454,7 +7442,7 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
             this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
             this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
             this.errors = [];
-            this.ruleInfo = new rule_models_1.RuleViewModel();
+            this.ruleInfo = new services_generated_1.Rule();
             this.periods = this.globalSettings.periods;
             this.compareTypes = enum_helper_1.EnumValues.getCompareOperators();
             this.dataSources = enum_helper_1.EnumValues.getRuleDataSources();
@@ -4470,8 +7458,8 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
             }
         };
         Rule.prototype.onExpanded = function () {
-            this.ruleInfo.expanded = !this.ruleInfo.expanded;
-            if (!this.ruleInfo.expanded && this.ruleInfo.ruleId > 0 && this.ruleInfo.editMode) {
+            this.expanded = !this.expanded;
+            if (!this.expanded && this.ruleInfo.ruleId > 0 && this.editMode) {
                 this.cancelEdit();
             }
         };
@@ -4487,29 +7475,29 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
         };
         Rule.prototype.setDataSeries = function (rule) {
             if (rule) {
-                if (rule.dataSourceV1 === enums_1.RuleDataSource.Indicator) {
-                    rule.dataSeriesOptionsV1 = this.indicatorDataSeries;
+                if (rule.dataSourceV1 === services_generated_1.DataSourceType.Indicator) {
+                    this.dataSeriesV1 = this.indicatorDataSeries;
                 }
-                if (rule.dataSourceV1 === enums_1.RuleDataSource.HistoricalData) {
-                    rule.dataSeriesOptionsV1 = this.priceDataSeries;
+                if (rule.dataSourceV1 === services_generated_1.DataSourceType.HistoricalData) {
+                    this.dataSeriesV1 = this.priceDataSeries;
                 }
-                if (rule.dataSourceV1 === enums_1.RuleDataSource.Constant) {
-                    rule.dataSeriesOptionsV1 = [];
+                if (rule.dataSourceV1 === services_generated_1.DataSourceType.Constant) {
+                    this.dataSeriesV1 = [];
                 }
-                if (rule.dataSourceV2 === enums_1.RuleDataSource.Indicator) {
-                    rule.dataSeriesOptionsV2 = this.indicatorDataSeries;
+                if (rule.dataSourceV2 === services_generated_1.DataSourceType.Indicator) {
+                    this.dataSeriesV2 = this.indicatorDataSeries;
                 }
-                if (rule.dataSourceV2 === enums_1.RuleDataSource.HistoricalData) {
-                    rule.dataSeriesOptionsV2 = this.priceDataSeries;
+                if (rule.dataSourceV2 === services_generated_1.DataSourceType.HistoricalData) {
+                    this.dataSeriesV2 = this.priceDataSeries;
                 }
-                if (rule.dataSourceV2 === enums_1.RuleDataSource.Constant) {
-                    rule.dataSeriesOptionsV2 = [];
+                if (rule.dataSourceV2 === services_generated_1.DataSourceType.Constant) {
+                    this.dataSeriesV2 = [];
                 }
             }
         };
         Rule.prototype.startEdit = function () {
             this.originalRule = Object.assign({}, this.ruleInfo);
-            this.ruleInfo.editMode = true;
+            this.editMode = true;
             aurelia_validation_1.ValidationRules
                 .ensure(function (u) { return u.name; }).displayName("Rule name").required().withMessage("${$displayName} cannot be blank.")
                 .ensure(function (u) { return u.description; }).displayName("Rule description").required().withMessage("${$displayName} cannot be blank.")
@@ -4526,7 +7514,7 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
         Rule.prototype.cancelEdit = function () {
             if (this.ruleInfo.ruleId > 0) {
                 this.ruleInfo = this.originalRule;
-                this.ruleInfo.editMode = false;
+                this.editMode = false;
             }
             else {
                 this.ruleInfo.deleted = true;
@@ -4534,12 +7522,12 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
             this.validation.reset();
         };
         Rule.prototype.cancelDelete = function () {
-            this.ruleInfo.deleteMode = false;
-            this.ruleInfo.expanded = false;
+            this.deleteMode = false;
+            this.expanded = false;
         };
         Rule.prototype.startDelete = function () {
-            this.ruleInfo.deleteMode = true;
-            this.ruleInfo.expanded = true;
+            this.deleteMode = true;
+            this.expanded = true;
         };
         Rule.prototype.confirmDelete = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -4591,8 +7579,8 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
                         case 1:
                             response = _a.sent();
                             if (response.ruleId > 0) {
-                                this.ruleInfo.editMode = false;
-                                this.ruleInfo.expanded = false;
+                                this.editMode = false;
+                                this.expanded = false;
                                 toastr.success("Rule " + response.name + " saved successfully!", 'Rule Saved');
                             }
                             else {
@@ -4607,11 +7595,11 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", rule_models_1.RuleInfo)
+        tslib_1.__metadata("design:type", services_generated_1.Rule)
     ], Rule.prototype, "rule", void 0);
     Rule = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [rule_service_1.RuleService,
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.RulesApiClient,
             account_service_1.AccountService,
             aurelia_validation_1.ValidationController,
             settings_service_1.SettingsService])
@@ -4619,7 +7607,7 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
     exports.Rule = Rule;
 });
 
-define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../common/types/rule-models"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, rule_models_1) {
+define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, services_generated_1) {
     "use strict";
     var RuleSetItem = (function () {
         function RuleSetItem(eventAggregator) {
@@ -4628,20 +7616,20 @@ define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib
             this.editMode = false;
         }
         RuleSetItem.prototype.onExpanded = function () {
-            this.rule.expanded = !this.rule.expanded;
+            this.expanded = !this.expanded;
         };
         RuleSetItem.prototype.startDelete = function () {
-            this.rule.deleteMode = true;
-            this.rule.expanded = true;
+            this.deleteMode = true;
+            this.expanded = true;
         };
         RuleSetItem.prototype.confirmDelete = function () {
-            this.rule.deleteMode = false;
-            this.rule.expanded = false;
+            this.deleteMode = false;
+            this.expanded = false;
             this.rule.deleted = true;
         };
         RuleSetItem.prototype.cancelDelete = function () {
-            this.rule.deleteMode = false;
-            this.rule.expanded = false;
+            this.deleteMode = false;
+            this.expanded = false;
         };
         RuleSetItem.prototype.onMoveUp = function () {
             this.eventAggregator.publish('rule-set-item-up-' + this.rule.ruleSetId, this.rule);
@@ -4666,14 +7654,14 @@ define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib
         };
         RuleSetItem.prototype.attached = function () {
             var _this = this;
-            this.subscriptions.push(this.eventAggregator.subscribe('rule-set-edit-mode-' + this.rule.ruleSetId, function (flag) { return _this.setEditMode(flag); }));
-            this.subscriptions.push(this.eventAggregator.subscribe('rule-set-edit-mode-' + this.rule.ruleSetId, function (flag) { return _this.setEditMode(flag); }));
+            this.subscriptions.push(this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, function (flag) { return _this.setEditMode(flag); }));
+            this.subscriptions.push(this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, function (flag) { return _this.setEditMode(flag); }));
         };
         return RuleSetItem;
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", rule_models_1.RuleModel)
+        tslib_1.__metadata("design:type", services_generated_1.RuleModel)
     ], RuleSetItem.prototype, "rule", void 0);
     RuleSetItem = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
@@ -4682,7 +7670,7 @@ define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib
     exports.RuleSetItem = RuleSetItem;
 });
 
-define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "../../../services/rule-set-service", "../../../services/rule-service", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../common/types/rule-models"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, rule_set_service_1, rule_service_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, rule_models_1) {
+define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, services_generated_1) {
     "use strict";
     var RuleSet = (function () {
         function RuleSet(eventAggregator, ruleSetService, ruleService, account, validation, globalSettings) {
@@ -4709,14 +7697,14 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
             }
         };
         RuleSet.prototype.onExpanded = function () {
-            this.ruleSetInfo.expanded = !this.ruleSetInfo.expanded;
-            if (!this.ruleSetInfo.expanded && this.ruleSetInfo.ruleSetId > 0 && this.ruleSetInfo.editMode === true) {
+            this.expanded = !this.expanded;
+            if (!this.expanded && this.ruleSetInfo.ruleSetId > 0 && this.editMode) {
                 this.cancelEdit();
             }
         };
         RuleSet.prototype.startEdit = function () {
             this.originalRuleSet = Object.assign({}, this.ruleSetInfo);
-            this.ruleSetInfo.editMode = true;
+            this.editMode = true;
             this.eventAggregator.publish('rule-set-edit-mode-' + this.ruleSetInfo.ruleSetId, true);
             aurelia_validation_1.ValidationRules
                 .ensure(function (u) { return u.name; }).displayName('Rule Set Name').required().withMessage("${$displayName} cannot be blank.")
@@ -4726,7 +7714,7 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
         RuleSet.prototype.cancelEdit = function () {
             if (this.ruleSetInfo.ruleSetId > 0) {
                 this.ruleSetInfo = this.originalRuleSet;
-                this.ruleSetInfo.editMode = false;
+                this.editMode = false;
                 this.eventAggregator.publish('rule-set-edit-mode-' + this.ruleSetInfo.ruleSetId, false);
             }
             else {
@@ -4735,12 +7723,12 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
             this.validation.reset();
         };
         RuleSet.prototype.cancelDelete = function () {
-            this.ruleSetInfo.deleteMode = false;
-            this.ruleSetInfo.expanded = false;
+            this.deleteMode = false;
+            this.expanded = false;
         };
         RuleSet.prototype.startDelete = function () {
-            this.ruleSetInfo.deleteMode = true;
-            this.ruleSetInfo.expanded = true;
+            this.deleteMode = true;
+            this.expanded = true;
         };
         RuleSet.prototype.confirmDelete = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -4771,12 +7759,12 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            this.ruleSetInfo.isAdding = !this.ruleSetInfo.isAdding;
-                            if (!(this.ruleSetInfo.isAdding && this.rules.length === 0)) return [3 /*break*/, 4];
+                            this.addMode = !this.addMode;
+                            if (!(this.addMode && this.rules.length === 0)) return [3 /*break*/, 4];
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.ruleService.getRulesForPeriod(this.ruleSetInfo.period)];
+                            return [4 /*yield*/, this.ruleService.getRules(this.ruleSetInfo.period)];
                         case 2:
                             response = _a.sent();
                             this.rules = response;
@@ -4799,16 +7787,15 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
             this.attachedRule = this.rules.find(function (item) { return item.ruleId === _this.attachedRuleId; });
         };
         RuleSet.prototype.cancelAddRule = function () {
-            this.ruleSetInfo.isAdding = false;
+            this.addMode = false;
         };
         RuleSet.prototype.confirmAddRule = function () {
-            this.ruleSetInfo.isAdding = false;
-            var rule = {
-                name: this.attachedRule.name,
-                ruleId: this.attachedRule.ruleId,
-                description: this.attachedRule.description,
-                ruleSetId: this.ruleSetInfo.ruleSetId
-            };
+            this.addMode = false;
+            var rule = new services_generated_1.RuleModel();
+            rule.name = this.attachedRule.name;
+            rule.ruleId = this.attachedRule.ruleId;
+            rule.description = this.attachedRule.description;
+            rule.ruleSetId = this.ruleSetInfo.ruleSetId;
             this.ruleSetInfo.rules.push(rule);
         };
         RuleSet.prototype.trySaveRuleSet = function () {
@@ -4846,8 +7833,8 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                         case 2:
                             response = _a.sent();
                             if (response.ruleSetId > 0) {
-                                this.ruleSetInfo.editMode = false;
-                                this.ruleSetInfo.expanded = false;
+                                this.editMode = false;
+                                this.expanded = false;
                                 toastr.success("Rule set " + response.name + " saved successfully!", "Rule set Saved");
                                 this.eventAggregator.publish("rule-set-edit-mode-" + this.ruleSetInfo.ruleSetId, false);
                             }
@@ -4897,13 +7884,13 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", rule_models_1.RuleSetInfo)
+        tslib_1.__metadata("design:type", services_generated_1.RuleSetModel)
     ], RuleSet.prototype, "ruleset", void 0);
     RuleSet = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
         tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            rule_set_service_1.RuleSetService,
-            rule_service_1.RuleService,
+            services_generated_1.RuleSetsApiClient,
+            services_generated_1.RulesApiClient,
             account_service_1.AccountService,
             aurelia_validation_1.ValidationController,
             settings_service_1.SettingsService])
@@ -4911,7 +7898,7 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
     exports.RuleSet = RuleSet;
 });
 
-define('resources/elements/strategy/side-navigation',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-router", "../../../services/strategy-service"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_router_1, strategy_service_1) {
+define('resources/elements/strategy/side-navigation',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-router", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_router_1, services_generated_1) {
     "use strict";
     var SideNavigation = (function () {
         function SideNavigation(strategyService, router) {
@@ -4932,7 +7919,7 @@ define('resources/elements/strategy/side-navigation',["require", "exports", "tsl
                         case 1:
                             _b.trys.push([1, 3, , 4]);
                             _a = this;
-                            return [4 /*yield*/, this.strategyService.getSummaries()];
+                            return [4 /*yield*/, this.strategyService.geStrategySummaries()];
                         case 2:
                             _a.summaries = _b.sent();
                             this.setActiveStrategy(newValue);
@@ -4964,7 +7951,8 @@ define('resources/elements/strategy/side-navigation',["require", "exports", "tsl
             else {
                 if (this.summaries) {
                     this.summaries.forEach(function (item) {
-                        item.selected = item.url.toLowerCase() === url.toLowerCase();
+                        if (item.url.toLowerCase() === url.toLowerCase()) {
+                        }
                     });
                 }
             }
@@ -4989,7 +7977,7 @@ define('resources/elements/strategy/side-navigation',["require", "exports", "tsl
     ], SideNavigation.prototype, "strategyurl", void 0);
     SideNavigation = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [strategy_service_1.StrategyService, aurelia_router_1.Router])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient, aurelia_router_1.Router])
     ], SideNavigation);
     exports.SideNavigation = SideNavigation;
 });
@@ -5074,7 +8062,7 @@ define('resources/elements/strategy/strategy-navigation',["require", "exports", 
     exports.LinkInfo = LinkInfo;
 });
 
-define('resources/elements/strategy/strategy-rule-set',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../common/types/rule-models", "../../../services/settings-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, rule_models_1, settings_service_1) {
+define('resources/elements/strategy/strategy-rule-set',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, settings_service_1, services_generated_1) {
     "use strict";
     var StrategyRuleSet = (function () {
         function StrategyRuleSet(eventAggregator, settings) {
@@ -5086,15 +8074,15 @@ define('resources/elements/strategy/strategy-rule-set',["require", "exports", "t
             }
         };
         StrategyRuleSet.prototype.onExpanded = function () {
-            this.ruleset.expanded = !!!this.ruleset.expanded;
+            this.expanded = !this.expanded;
         };
         StrategyRuleSet.prototype.cancelDelete = function () {
-            this.ruleset.deleteMode = false;
-            this.ruleset.expanded = false;
+            this.deleteMode = false;
+            this.expanded = false;
         };
         StrategyRuleSet.prototype.startDelete = function () {
-            this.ruleset.deleteMode = true;
-            this.ruleset.expanded = true;
+            this.deleteMode = true;
+            this.expanded = true;
         };
         StrategyRuleSet.prototype.setOptionalStatus = function (flag) {
             this.ruleset.ruleSetOptional = flag;
@@ -5112,7 +8100,7 @@ define('resources/elements/strategy/strategy-rule-set',["require", "exports", "t
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", rule_models_1.StrategyRuleSetInfo)
+        tslib_1.__metadata("design:type", services_generated_1.VStrategyRuleSet)
     ], StrategyRuleSet.prototype, "ruleset", void 0);
     StrategyRuleSet = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
@@ -5121,313 +8109,7 @@ define('resources/elements/strategy/strategy-rule-set',["require", "exports", "t
     exports.StrategyRuleSet = StrategyRuleSet;
 });
 
-define('components/market/chart-layouts/layouts/chart-layout-indicator',["require", "exports", "tslib", "aurelia-framework", "../../../../common/types/layout-models", "../../../../infrastructure/event-emitter", "../../../../common/types/enums"], function (require, exports, tslib_1, aurelia_framework_1, layout_models_1, event_emitter_1, Enums) {
-    "use strict";
-    var ChartLayoutIndicator = (function () {
-        function ChartLayoutIndicator(eventEmitter) {
-            this.eventEmitter = eventEmitter;
-            this.expanded = false;
-        }
-        ChartLayoutIndicator.prototype.toggleExpand = function () {
-            this.expanded = !this.expanded;
-        };
-        ChartLayoutIndicator.prototype.onMoveUp = function () {
-            var event = {
-                direction: Enums.Direction.Up,
-                indicatorId: this.indicator.indicatorId,
-                layoutId: this.indicator.layoutId
-            };
-            this.eventEmitter.publish("LayoutIndicatorMoved", event);
-        };
-        ChartLayoutIndicator.prototype.onMoveDown = function () {
-            var event = {
-                direction: Enums.Direction.Down,
-                indicatorId: this.indicator.indicatorId,
-                layoutId: this.indicator.layoutId
-            };
-            this.eventEmitter.publish("LayoutIndicatorMoved", event);
-        };
-        return ChartLayoutIndicator;
-    }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", layout_models_1.LayoutIndicatorInfo)
-    ], ChartLayoutIndicator.prototype, "indicator", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ChartLayoutIndicator.prototype, "editMode", void 0);
-    ChartLayoutIndicator = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
-    ], ChartLayoutIndicator);
-    exports.ChartLayoutIndicator = ChartLayoutIndicator;
-});
-
-define('components/market/chart-layouts/layouts/chart-layout',["require", "exports", "tslib", "aurelia-framework", "../../../../common/types/layout-models", "../../../../common/types/indicator-models", "aurelia-validation", "../../../../form-validation/bootstrap-form-renderer", "../../../../services/layout-service", "../../../../services/settings-service", "../../../../infrastructure/event-emitter", "../../../../common/types/enums"], function (require, exports, tslib_1, aurelia_framework_1, layout_models_1, indicator_models_1, aurelia_validation_1, bootstrap_form_renderer_1, layout_service_1, settings_service_1, event_emitter_1, Enums) {
-    "use strict";
-    var ChartLayout = (function () {
-        function ChartLayout(validation, layoutService, globalSettings, eventEmitter) {
-            this.validation = validation;
-            this.layoutService = layoutService;
-            this.globalSettings = globalSettings;
-            this.eventEmitter = eventEmitter;
-            this.subscriptions = [];
-            this.expanded = false;
-            this.editMode = false;
-            this.addingMode = false;
-            this.newIndicatorId = 0;
-            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
-            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
-            this.subscribe();
-        }
-        ChartLayout.prototype.subscribe = function () {
-            var _this = this;
-            this.subscriptions.push(this.eventEmitter.subscribe("LayoutIndicatorMoved", function (event) {
-                _this.onLayoutIndicatorMoved(event);
-            }));
-        };
-        ChartLayout.prototype.detached = function () {
-            if (this.subscriptions.length > 0) {
-                this.subscriptions.forEach(function (subscription) {
-                    subscription.dispose();
-                });
-            }
-        };
-        ChartLayout.prototype.layoutChanged = function () {
-            if (this.layout != null && this.layout.layoutId > 0) {
-                this.definedIndicators = this.globalSettings.getIndicators(this.layout.period);
-            }
-        };
-        ChartLayout.prototype.toggleExpand = function () {
-            this.expanded = !this.expanded;
-        };
-        ChartLayout.prototype.startEdit = function () {
-            this.editMode = true;
-            this.originalLayout = Object.assign({}, this.layout);
-            aurelia_validation_1.ValidationRules
-                .ensure(function (u) { return u.title; }).displayName("Layout name").required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (u) { return u.description; }).displayName("Description").required().withMessage("${$displayName} cannot be blank.")
-                .on(this.layout);
-        };
-        ChartLayout.prototype.confirmSave = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var valid, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            valid = false;
-                            return [4 /*yield*/, this.validation.validate()];
-                        case 1:
-                            response = _a.sent();
-                            if (response.valid) {
-                                valid = true;
-                            }
-                            if (valid) {
-                                this.saveLayout();
-                            }
-                            else {
-                                toastr.warning("Please correct validation errors.", "Validation Errors");
-                            }
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        ChartLayout.prototype.cancelSave = function () {
-            this.editMode = false;
-            this.layout = this.originalLayout;
-            this.validation.reset();
-        };
-        ChartLayout.prototype.saveLayout = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.layoutService.saveLayout(this.layout)];
-                        case 1:
-                            _a.sent();
-                            this.editMode = false;
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        ChartLayout.prototype.addIndicator = function () {
-            this.addingMode = true;
-        };
-        ChartLayout.prototype.confirmAddIndicator = function () {
-            if (this.newIndicatorId > 0) {
-                if (this.layout.indicators == null) {
-                    this.layout.indicators = [];
-                }
-                var ind = this.getIndicatorCore(this.newIndicatorId);
-                var indicator = new layout_models_1.LayoutIndicatorInfo();
-                indicator.indicatorId = ind.id;
-                indicator.layoutId = this.layout.layoutId;
-                indicator.name = ind.name;
-                indicator.indicator = new indicator_models_1.IndicatorInfo();
-                this.layout.indicators.push(indicator);
-                this.addingMode = false;
-            }
-        };
-        ChartLayout.prototype.getIndicatorCore = function (indicatorId) {
-            return this.definedIndicators.find(function (i) { return i.id === indicatorId; });
-        };
-        ChartLayout.prototype.cancelAddIndicator = function () {
-            this.addingMode = false;
-        };
-        ChartLayout.prototype.onLayoutIndicatorMoved = function (event) {
-            var index = this.layout.indicators.findIndex(function (indicator) { return indicator.indicatorId === event.indicatorId && indicator.layoutId === event.layoutId; });
-            if (event.direction === Enums.Direction.Up) {
-                if (index > 0) {
-                    this.layout.indicators.splice(index - 1, 0, this.layout.indicators.splice(index, 1)[0]);
-                }
-            }
-            else {
-                if (index > -1 && index < this.layout.indicators.length - 1) {
-                    this.layout.indicators.splice(index + 1, 0, this.layout.indicators.splice(index, 1)[0]);
-                }
-            }
-        };
-        return ChartLayout;
-    }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", layout_models_1.LayoutInfo)
-    ], ChartLayout.prototype, "layout", void 0);
-    ChartLayout = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [aurelia_validation_1.ValidationController, layout_service_1.LayoutService,
-            settings_service_1.SettingsService, event_emitter_1.EventEmitter])
-    ], ChartLayout);
-    exports.ChartLayout = ChartLayout;
-});
-
-define('components/market/chart-layouts/layouts/chart-layouts',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "../../../../services/layout-service", "aurelia-event-aggregator", "../../../../common/types/layout-models", "../../../../common/helpers/enum-helper", "aurelia-validation", "../../../../form-validation/bootstrap-form-renderer"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, layout_service_1, aurelia_event_aggregator_1, layout_models_1, enum_helper_1, aurelia_validation_1, bootstrap_form_renderer_1) {
-    "use strict";
-    var ChartLayouts = (function () {
-        function ChartLayouts(account, eventAggregator, layoutService, validation) {
-            this.eventAggregator = eventAggregator;
-            this.layoutService = layoutService;
-            this.validation = validation;
-            this.powerUser = false;
-            this.subscriptions = [];
-            this.router = null;
-            this.layouts = [];
-            this.title = "";
-            this.editMode = false;
-            this.addingMode = false;
-            this.powerUser = account.currentUser.isAuthenticated;
-            this.subscribe();
-            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
-            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
-            if (this.layoutService) {
-            }
-        }
-        ChartLayouts.prototype.onNavigatioComplete = function () {
-            this.title = this.router.currentInstruction.config.title;
-            var periodUrl = this.router.currentInstruction.config.name;
-            this.period = enum_helper_1.EnumValues.getQuotePeriod(periodUrl);
-            this.loadLayouts();
-        };
-        ChartLayouts.prototype.activate = function (params, routeconfig, navigationInstruction) {
-            this.router = navigationInstruction.router;
-            if (params && routeconfig) {
-            }
-        };
-        ChartLayouts.prototype.subscribe = function () {
-            var _this = this;
-            this.subscriptions.push(this.eventAggregator.subscribe("router:navigation:complete", function () {
-                _this.onNavigatioComplete();
-            }));
-        };
-        ChartLayouts.prototype.detached = function () {
-            if (this.subscriptions.length > 0) {
-                this.subscriptions.forEach(function (subscription) {
-                    subscription.dispose();
-                });
-            }
-        };
-        ChartLayouts.prototype.loadLayouts = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            _a = this;
-                            return [4 /*yield*/, this.layoutService.getLayouts(this.period.id)];
-                        case 1:
-                            _a.layouts = _b.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        ChartLayouts.prototype.addLayout = function () {
-            this.addingMode = true;
-            this.newLayout = new layout_models_1.LayoutInfo();
-            this.newLayout.period = this.period.id;
-            this.startEdit(this.newLayout);
-        };
-        ChartLayouts.prototype.confirmAddLayout = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var valid, response;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            valid = false;
-                            return [4 /*yield*/, this.validation.validate()];
-                        case 1:
-                            response = _a.sent();
-                            if (response.valid) {
-                                valid = true;
-                            }
-                            if (valid) {
-                                this.saveLayout();
-                            }
-                            else {
-                                toastr.warning("Please correct validation errors.", "Validation Errors");
-                            }
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        ChartLayouts.prototype.startEdit = function (layout) {
-            this.editMode = true;
-            aurelia_validation_1.ValidationRules
-                .ensure(function (u) { return u.title; }).displayName("Layout name").required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (u) { return u.description; }).displayName("Description").required().withMessage("${$displayName} cannot be blank.")
-                .on(layout);
-            this.validation.reset();
-        };
-        ChartLayouts.prototype.cancelAddLayout = function () {
-            this.addingMode = false;
-        };
-        ChartLayouts.prototype.saveLayout = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.layoutService.saveLayout(this.newLayout)];
-                        case 1:
-                            _a.sent();
-                            this.addingMode = false;
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        return ChartLayouts;
-    }());
-    ChartLayouts = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator,
-            layout_service_1.LayoutService, aurelia_validation_1.ValidationController])
-    ], ChartLayouts);
-    exports.ChartLayouts = ChartLayouts;
-});
-
-define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "../../../../services/job-service", "aurelia-event-aggregator", "../../../../common/types/job-models", "../../../../common/helpers/date-helper"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, job_service_1, aurelia_event_aggregator_1, job_models_1, date_helper_1) {
+define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../common/helpers/date-helper", "../../../../services/services-generated", "../../../../common/types/job-models"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, date_helper_1, services_generated_1, job_models_1) {
     "use strict";
     var Job = (function () {
         function Job(account, jobService, eventAggregator) {
@@ -5473,13 +8155,14 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
         };
         Job.prototype.loadHistory = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
+                var jobType, _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
                             this.jobs = [];
+                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
                             _a = this;
-                            return [4 /*yield*/, this.jobService.loadHistory(this.jobUrl)];
+                            return [4 /*yield*/, this.jobService.getSheduledJobHistory(jobType)];
                         case 1:
                             _a.jobs = _b.sent();
                             return [2 /*return*/];
@@ -5489,12 +8172,13 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
         };
         Job.prototype.loadCurrentJob = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
+                var jobType, _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
                             _a = this;
-                            return [4 /*yield*/, this.jobService.currentJob(this.jobUrl)];
+                            return [4 /*yield*/, this.jobService.getCurrentJob(jobType)];
                         case 1:
                             _a.currentJob = _b.sent();
                             return [2 /*return*/];
@@ -5507,12 +8191,13 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
         };
         Job.prototype.startJob = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
+                var jobType, _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
                             _a = this;
-                            return [4 /*yield*/, this.jobService.startJob(this.jobUrl)];
+                            return [4 /*yield*/, this.jobService.startScheduledJobs(jobType)];
                         case 1:
                             _a.currentJob = _b.sent();
                             this.watchCurrentJob();
@@ -5554,7 +8239,7 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                 var _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0: return [4 /*yield*/, this.jobService.resumeJob(this.currentJob.jobId)];
+                        case 0: return [4 /*yield*/, this.jobService.resumeScheduledJob(this.currentJob.jobId)];
                         case 1:
                             _b.sent();
                             _a = this;
@@ -5571,7 +8256,7 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                 var _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0: return [4 /*yield*/, this.jobService.pauseJob(this.currentJob.jobId)];
+                        case 0: return [4 /*yield*/, this.jobService.pauseScheduledJob(this.currentJob.jobId)];
                         case 1:
                             _b.sent();
                             _a = this;
@@ -5587,7 +8272,7 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.jobService.cancelJob(this.currentJob.jobId)];
+                        case 0: return [4 /*yield*/, this.jobService.cancelScheduledJob(this.currentJob.jobId)];
                         case 1:
                             _a.sent();
                             return [4 /*yield*/, this.loadJobs()];
@@ -5686,12 +8371,304 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
     ], Job.prototype, "startDate", null);
     Job = tslib_1.__decorate([
         aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, job_service_1.JobService, aurelia_event_aggregator_1.EventAggregator])
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, services_generated_1.JobsApiClient, aurelia_event_aggregator_1.EventAggregator])
     ], Job);
     exports.Job = Job;
 });
 
-define('components/market/market-indices/indices/market-index',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "../../../../services/company-service", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, company_service_1, aurelia_event_aggregator_1) {
+define('components/market/chart-layouts/layouts/chart-layout-indicator',["require", "exports", "tslib", "aurelia-framework", "../../../../infrastructure/event-emitter", "../../../../common/types/enums", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, event_emitter_1, Enums, services_generated_1) {
+    "use strict";
+    var ChartLayoutIndicator = (function () {
+        function ChartLayoutIndicator(eventEmitter) {
+            this.eventEmitter = eventEmitter;
+            this.expanded = false;
+        }
+        ChartLayoutIndicator.prototype.toggleExpand = function () {
+            this.expanded = !this.expanded;
+        };
+        ChartLayoutIndicator.prototype.onMoveUp = function () {
+            var event = {
+                direction: Enums.Direction.Up,
+                indicatorId: this.indicator.indicatorId,
+                layoutId: this.indicator.plotId
+            };
+            this.eventEmitter.publish("LayoutIndicatorMoved", event);
+        };
+        ChartLayoutIndicator.prototype.onMoveDown = function () {
+            var event = {
+                direction: Enums.Direction.Down,
+                indicatorId: this.indicator.indicatorId,
+                layoutId: this.indicator.plotId
+            };
+            this.eventEmitter.publish("LayoutIndicatorMoved", event);
+        };
+        return ChartLayoutIndicator;
+    }());
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", services_generated_1.LayoutIndicatorModel)
+    ], ChartLayoutIndicator.prototype, "indicator", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ChartLayoutIndicator.prototype, "editMode", void 0);
+    ChartLayoutIndicator = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
+    ], ChartLayoutIndicator);
+    exports.ChartLayoutIndicator = ChartLayoutIndicator;
+});
+
+define('components/market/chart-layouts/layouts/chart-layout-plot',["require", "exports"], function (require, exports) {
+    "use strict";
+    var ChartLayoutPlot = (function () {
+        function ChartLayoutPlot() {
+        }
+        return ChartLayoutPlot;
+    }());
+    exports.ChartLayoutPlot = ChartLayoutPlot;
+});
+
+define('components/market/chart-layouts/layouts/chart-layout',["require", "exports", "tslib", "aurelia-framework", "aurelia-validation", "../../../../form-validation/bootstrap-form-renderer", "../../../../services/settings-service", "../../../../infrastructure/event-emitter", "../../../../common/types/enums", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_validation_1, bootstrap_form_renderer_1, settings_service_1, event_emitter_1, Enums, services_generated_1) {
+    "use strict";
+    var ChartLayout = (function () {
+        function ChartLayout(validation, layoutService, globalSettings, eventEmitter) {
+            this.validation = validation;
+            this.layoutService = layoutService;
+            this.globalSettings = globalSettings;
+            this.eventEmitter = eventEmitter;
+            this.subscriptions = [];
+            this.expanded = false;
+            this.editMode = false;
+            this.addingMode = false;
+            this.newIndicatorId = 0;
+            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
+            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
+            this.subscribe();
+        }
+        ChartLayout.prototype.subscribe = function () {
+            var _this = this;
+            this.subscriptions.push(this.eventEmitter.subscribe("LayoutIndicatorMoved", function (event) {
+                _this.onLayoutIndicatorMoved(event);
+            }));
+        };
+        ChartLayout.prototype.detached = function () {
+            if (this.subscriptions.length > 0) {
+                this.subscriptions.forEach(function (subscription) {
+                    subscription.dispose();
+                });
+            }
+        };
+        ChartLayout.prototype.layoutChanged = function () {
+            if (this.layout != null && this.layout.layoutId > 0) {
+                this.definedIndicators = this.globalSettings.getIndicators(this.layout.period);
+            }
+        };
+        ChartLayout.prototype.toggleExpand = function () {
+            this.expanded = !this.expanded;
+        };
+        ChartLayout.prototype.startEdit = function () {
+            this.editMode = true;
+            this.originalLayout = Object.assign({}, this.layout);
+            aurelia_validation_1.ValidationRules
+                .ensure(function (u) { return u.title; }).displayName("Layout name").required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.description; }).displayName("Description").required().withMessage("${$displayName} cannot be blank.")
+                .on(this.layout);
+        };
+        ChartLayout.prototype.confirmSave = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var valid, response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            valid = false;
+                            return [4 /*yield*/, this.validation.validate()];
+                        case 1:
+                            response = _a.sent();
+                            if (response.valid) {
+                                valid = true;
+                            }
+                            if (valid) {
+                                this.saveLayout();
+                            }
+                            else {
+                                toastr.warning("Please correct validation errors.", "Validation Errors");
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ChartLayout.prototype.cancelSave = function () {
+            this.editMode = false;
+            this.layout = this.originalLayout;
+            this.validation.reset();
+        };
+        ChartLayout.prototype.saveLayout = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.layoutService.saveLayout(this.layout)];
+                        case 1:
+                            _a.sent();
+                            this.editMode = false;
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ChartLayout.prototype.addIndicator = function () {
+            this.addingMode = true;
+        };
+        ChartLayout.prototype.confirmAddIndicator = function () {
+        };
+        ChartLayout.prototype.getIndicatorCore = function (indicatorId) {
+            return this.definedIndicators.find(function (i) { return i.id === indicatorId; });
+        };
+        ChartLayout.prototype.cancelAddIndicator = function () {
+            this.addingMode = false;
+        };
+        ChartLayout.prototype.onLayoutIndicatorMoved = function (event) {
+            if (event.direction === Enums.Direction.Up) {
+            }
+        };
+        return ChartLayout;
+    }());
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", services_generated_1.ChartLayoutModel)
+    ], ChartLayout.prototype, "layout", void 0);
+    ChartLayout = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [aurelia_validation_1.ValidationController, services_generated_1.LayoutApiClient,
+            settings_service_1.SettingsService, event_emitter_1.EventEmitter])
+    ], ChartLayout);
+    exports.ChartLayout = ChartLayout;
+});
+
+define('components/market/chart-layouts/layouts/chart-layouts',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../common/helpers/enum-helper", "aurelia-validation", "../../../../form-validation/bootstrap-form-renderer", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, enum_helper_1, aurelia_validation_1, bootstrap_form_renderer_1, services_generated_1) {
+    "use strict";
+    var ChartLayouts = (function () {
+        function ChartLayouts(account, eventAggregator, layoutService, validation) {
+            this.eventAggregator = eventAggregator;
+            this.layoutService = layoutService;
+            this.validation = validation;
+            this.powerUser = false;
+            this.subscriptions = [];
+            this.router = null;
+            this.layouts = [];
+            this.title = "";
+            this.editMode = false;
+            this.addingMode = false;
+            this.powerUser = account.currentUser.isAuthenticated;
+            this.subscribe();
+            this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
+            this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
+        }
+        ChartLayouts.prototype.onNavigatioComplete = function () {
+            this.title = this.router.currentInstruction.config.title;
+            var periodUrl = this.router.currentInstruction.config.name;
+            this.period = enum_helper_1.EnumValues.getQuotePeriod(periodUrl);
+            this.loadLayouts();
+        };
+        ChartLayouts.prototype.activate = function (params, routeconfig, navigationInstruction) {
+            this.router = navigationInstruction.router;
+            if (params && routeconfig) {
+            }
+        };
+        ChartLayouts.prototype.subscribe = function () {
+            var _this = this;
+            this.subscriptions.push(this.eventAggregator.subscribe("router:navigation:complete", function () {
+                _this.onNavigatioComplete();
+            }));
+        };
+        ChartLayouts.prototype.detached = function () {
+            if (this.subscriptions.length > 0) {
+                this.subscriptions.forEach(function (subscription) {
+                    subscription.dispose();
+                });
+            }
+        };
+        ChartLayouts.prototype.loadLayouts = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = this;
+                            return [4 /*yield*/, this.layoutService.getLayoutsForPeriod(this.period.id)];
+                        case 1:
+                            _a.layouts = _b.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ChartLayouts.prototype.addLayout = function () {
+            this.addingMode = true;
+            this.newLayout = new services_generated_1.ChartLayoutModel();
+            this.newLayout.period = this.period.id;
+            this.startEdit(this.newLayout);
+        };
+        ChartLayouts.prototype.confirmAddLayout = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var valid, response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            valid = false;
+                            return [4 /*yield*/, this.validation.validate()];
+                        case 1:
+                            response = _a.sent();
+                            if (response.valid) {
+                                valid = true;
+                            }
+                            if (valid) {
+                                this.saveLayout();
+                            }
+                            else {
+                                toastr.warning("Please correct validation errors.", "Validation Errors");
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ChartLayouts.prototype.startEdit = function (layout) {
+            this.editMode = true;
+            aurelia_validation_1.ValidationRules
+                .ensure(function (u) { return u.title; }).displayName("Layout name").required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.description; }).displayName("Description").required().withMessage("${$displayName} cannot be blank.")
+                .on(layout);
+            this.validation.reset();
+        };
+        ChartLayouts.prototype.cancelAddLayout = function () {
+            this.addingMode = false;
+        };
+        ChartLayouts.prototype.saveLayout = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.layoutService.saveLayout(this.newLayout)];
+                        case 1:
+                            _a.sent();
+                            this.addingMode = false;
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return ChartLayouts;
+    }());
+    ChartLayouts = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator,
+            services_generated_1.LayoutApiClient, aurelia_validation_1.ValidationController])
+    ], ChartLayouts);
+    exports.ChartLayouts = ChartLayouts;
+});
+
+define('components/market/market-indices/indices/market-index',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, services_generated_1) {
     "use strict";
     var MarketIndex = (function () {
         function MarketIndex(account, eventAggregator, companyService) {
@@ -5740,12 +8717,44 @@ define('components/market/market-indices/indices/market-index',["require", "expo
     }());
     MarketIndex = tslib_1.__decorate([
         aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator, company_service_1.CompanyService])
+        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator, services_generated_1.CompaniesApiClient])
     ], MarketIndex);
     exports.MarketIndex = MarketIndex;
 });
 
-define('components/market/jobs-dashboard/jobs/job-details/job-details',["require", "exports", "tslib", "aurelia-framework", "../../../../../common/helpers/date-helper", "../../../../../common/types/job-models", "../../../../../services/log-service", "../../../../../services/job-service"], function (require, exports, tslib_1, aurelia_framework_1, date_helper_1, job_models_1, log_service_1, job_service_1) {
+define('components/studies/study/study-actions/study-actions',["require", "exports", "tslib", "aurelia-framework", "aurelia-router", "../../../../infrastructure/event-emitter", "../../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1, event_emitter_1, account_service_1) {
+    "use strict";
+    var StudyActions = (function () {
+        function StudyActions(eventEmitter, router, account) {
+            this.eventEmitter = eventEmitter;
+            this.router = router;
+            this.account = account;
+            this.powerUser = this.account.currentUser.isAuthenticated;
+        }
+        StudyActions.prototype.startEdit = function () {
+            this.eventEmitter.publish("Article-StartEdit");
+        };
+        StudyActions.prototype.cancelEdit = function () {
+            this.eventEmitter.publish("Article-CancelEdit");
+        };
+        StudyActions.prototype.saveArticle = function () {
+            this.eventEmitter.publish("Article-Save");
+        };
+        StudyActions.prototype.manageCategories = function () {
+            this.router.navigateToRoute("categories");
+        };
+        return StudyActions;
+    }());
+    StudyActions = tslib_1.__decorate([
+        aurelia_framework_1.autoinject(),
+        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter,
+            aurelia_router_1.Router,
+            account_service_1.AccountService])
+    ], StudyActions);
+    exports.StudyActions = StudyActions;
+});
+
+define('components/market/jobs-dashboard/jobs/job-details/job-details',["require", "exports", "tslib", "aurelia-framework", "../../../../../common/helpers/date-helper", "../../../../../common/types/job-models", "../../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, date_helper_1, job_models_1, services_generated_1) {
     "use strict";
     var JobDetails = (function () {
         function JobDetails(logService, jobService) {
@@ -5773,7 +8782,7 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
                 });
             });
         };
-        JobDetails.prototype.delete = function () {
+        JobDetails.prototype.deleteJob = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
@@ -5782,7 +8791,7 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
                             return [4 /*yield*/, this.logService.deleteJobLogs(this.job.jobId)];
                         case 1:
                             _a.sent();
-                            return [4 /*yield*/, this.jobService.deleteJob(this.job.jobId)];
+                            return [4 /*yield*/, this.jobService.deleteScheduledJob(this.job.jobId)];
                         case 2:
                             _a.sent();
                             this.deleted = true;
@@ -5822,7 +8831,7 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
     }());
     tslib_1.__decorate([
         aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
+        tslib_1.__metadata("design:type", services_generated_1.ScheduledJob)
     ], JobDetails.prototype, "job", void 0);
     tslib_1.__decorate([
         aurelia_framework_1.computedFrom("job.status"),
@@ -5831,21 +8840,53 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
     ], JobDetails.prototype, "status", null);
     JobDetails = tslib_1.__decorate([
         aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [log_service_1.LogService, job_service_1.JobService])
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.LogsApiClient, services_generated_1.JobsApiClient])
     ], JobDetails);
     exports.JobDetails = JobDetails;
 });
 
+define('aurelia-validation/get-target-dom-element',["require", "exports", "aurelia-pal"], function (require, exports, aurelia_pal_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * Gets the DOM element associated with the data-binding. Most of the time it's
+     * the binding.target but sometimes binding.target is an aurelia custom element,
+     * or custom attribute which is a javascript "class" instance, so we need to use
+     * the controller's container to retrieve the actual DOM element.
+     */
+    function getTargetDOMElement(binding, view) {
+        var target = binding.target;
+        // DOM element
+        if (target instanceof Element) {
+            return target;
+        }
+        // custom element or custom attribute
+        // tslint:disable-next-line:prefer-const
+        for (var i = 0, ii = view.controllers.length; i < ii; i++) {
+            var controller = view.controllers[i];
+            if (controller.viewModel === target) {
+                var element = controller.container.get(aurelia_pal_1.DOM.Element);
+                if (element) {
+                    return element;
+                }
+                throw new Error("Unable to locate target element for \"" + binding.sourceExpression + "\".");
+            }
+        }
+        throw new Error("Unable to locate target element for \"" + binding.sourceExpression + "\".");
+    }
+    exports.getTargetDOMElement = getTargetDOMElement;
+});
+
 define('aurelia-validation/property-info',["require", "exports", "aurelia-binding"], function (require, exports, aurelia_binding_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function getObject(expression, objectExpression, source) {
         var value = objectExpression.evaluate(source, null);
         if (value === null || value === undefined || value instanceof Object) {
             return value;
         }
-        /* tslint:disable */
+        // tslint:disable-next-line:max-line-length
         throw new Error("The '" + objectExpression + "' part of '" + expression + "' evaluates to " + value + " instead of an object, null or undefined.");
-        /* tslint:enable */
     }
     /**
      * Retrieves the object and property name for the specified expression.
@@ -5882,13 +8923,19 @@ define('aurelia-validation/property-info',["require", "exports", "aurelia-bindin
     exports.getPropertyInfo = getPropertyInfo;
 });
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('aurelia-validation/validate-binding-behavior',["require", "exports", "aurelia-task-queue", "./validate-trigger", "./validate-binding-behavior-base"], function (require, exports, aurelia_task_queue_1, validate_trigger_1, validate_binding_behavior_base_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Binding behavior. Indicates the bound property should be validated
      * when the validate trigger specified by the associated controller's
@@ -5897,7 +8944,7 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
     var ValidateBindingBehavior = (function (_super) {
         __extends(ValidateBindingBehavior, _super);
         function ValidateBindingBehavior() {
-            return _super.apply(this, arguments) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ValidateBindingBehavior.prototype.getValidateTrigger = function (controller) {
             return controller.validateTrigger;
@@ -5914,7 +8961,7 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
     var ValidateManuallyBindingBehavior = (function (_super) {
         __extends(ValidateManuallyBindingBehavior, _super);
         function ValidateManuallyBindingBehavior() {
-            return _super.apply(this, arguments) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ValidateManuallyBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.manual;
@@ -5930,7 +8977,7 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
     var ValidateOnBlurBindingBehavior = (function (_super) {
         __extends(ValidateOnBlurBindingBehavior, _super);
         function ValidateOnBlurBindingBehavior() {
-            return _super.apply(this, arguments) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ValidateOnBlurBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.blur;
@@ -5947,7 +8994,7 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
     var ValidateOnChangeBindingBehavior = (function (_super) {
         __extends(ValidateOnChangeBindingBehavior, _super);
         function ValidateOnChangeBindingBehavior() {
-            return _super.apply(this, arguments) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ValidateOnChangeBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.change;
@@ -5964,7 +9011,7 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
     var ValidateOnChangeOrBlurBindingBehavior = (function (_super) {
         __extends(ValidateOnChangeOrBlurBindingBehavior, _super);
         function ValidateOnChangeOrBlurBindingBehavior() {
-            return _super.apply(this, arguments) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ValidateOnChangeOrBlurBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.changeOrBlur;
@@ -5977,33 +9024,37 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
 
 define('aurelia-validation/validate-trigger',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Validation triggers.
      */
-    exports.validateTrigger = {
+    var validateTrigger;
+    (function (validateTrigger) {
         /**
          * Manual validation.  Use the controller's `validate()` and  `reset()` methods
          * to validate all bindings.
          */
-        manual: 0,
+        validateTrigger[validateTrigger["manual"] = 0] = "manual";
         /**
          * Validate the binding when the binding's target element fires a DOM "blur" event.
          */
-        blur: 1,
+        validateTrigger[validateTrigger["blur"] = 1] = "blur";
         /**
          * Validate the binding when it updates the model due to a change in the view.
          */
-        change: 2,
+        validateTrigger[validateTrigger["change"] = 2] = "change";
         /**
          * Validate the binding when the binding's target element fires a DOM "blur" event and
          * when it updates the model due to a change in the view.
          */
-        changeOrBlur: 3
-    };
+        validateTrigger[validateTrigger["changeOrBlur"] = 3] = "changeOrBlur";
+    })(validateTrigger = exports.validateTrigger || (exports.validateTrigger = {}));
+    ;
 });
 
-define('aurelia-validation/validate-binding-behavior-base',["require", "exports", "aurelia-dependency-injection", "aurelia-pal", "./validation-controller", "./validate-trigger"], function (require, exports, aurelia_dependency_injection_1, aurelia_pal_1, validation_controller_1, validate_trigger_1) {
+define('aurelia-validation/validate-binding-behavior-base',["require", "exports", "aurelia-dependency-injection", "./validation-controller", "./validate-trigger", "./get-target-dom-element"], function (require, exports, aurelia_dependency_injection_1, validation_controller_1, validate_trigger_1, get_target_dom_element_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Binding behavior. Indicates the bound property should be validated.
      */
@@ -6011,35 +9062,10 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
         function ValidateBindingBehaviorBase(taskQueue) {
             this.taskQueue = taskQueue;
         }
-        /**
-         * Gets the DOM element associated with the data-binding. Most of the time it's
-         * the binding.target but sometimes binding.target is an aurelia custom element,
-         * or custom attribute which is a javascript "class" instance, so we need to use
-         * the controller's container to retrieve the actual DOM element.
-         */
-        ValidateBindingBehaviorBase.prototype.getTarget = function (binding, view) {
-            var target = binding.target;
-            // DOM element
-            if (target instanceof Element) {
-                return target;
-            }
-            // custom element or custom attribute
-            for (var i = 0, ii = view.controllers.length; i < ii; i++) {
-                var controller = view.controllers[i];
-                if (controller.viewModel === target) {
-                    var element = controller.container.get(aurelia_pal_1.DOM.Element);
-                    if (element) {
-                        return element;
-                    }
-                    throw new Error("Unable to locate target element for \"" + binding.sourceExpression + "\".");
-                }
-            }
-            throw new Error("Unable to locate target element for \"" + binding.sourceExpression + "\".");
-        };
         ValidateBindingBehaviorBase.prototype.bind = function (binding, source, rulesOrController, rules) {
             var _this = this;
             // identify the target element.
-            var target = this.getTarget(binding, source);
+            var target = get_target_dom_element_1.getTargetDOMElement(binding, source);
             // locate the controller.
             var controller;
             if (rulesOrController instanceof validation_controller_1.ValidationController) {
@@ -6055,20 +9081,17 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
             controller.registerBinding(binding, target, rules);
             binding.validationController = controller;
             var trigger = this.getValidateTrigger(controller);
-            /* tslint:disable:no-bitwise */
+            // tslint:disable-next-line:no-bitwise
             if (trigger & validate_trigger_1.validateTrigger.change) {
-                /* tslint:enable:no-bitwise */
                 binding.standardUpdateSource = binding.updateSource;
-                /* tslint:disable:only-arrow-functions */
+                // tslint:disable-next-line:only-arrow-functions
                 binding.updateSource = function (value) {
-                    /* tslint:enable:only-arrow-functions */
                     this.standardUpdateSource(value);
                     this.validationController.validateBinding(this);
                 };
             }
-            /* tslint:disable:no-bitwise */
+            // tslint:disable-next-line:no-bitwise
             if (trigger & validate_trigger_1.validateTrigger.blur) {
-                /* tslint:enable:no-bitwise */
                 binding.validateBlurHandler = function () {
                     _this.taskQueue.queueMicroTask(function () { return controller.validateBinding(binding); });
                 };
@@ -6077,9 +9100,8 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
             }
             if (trigger !== validate_trigger_1.validateTrigger.manual) {
                 binding.standardUpdateTarget = binding.updateTarget;
-                /* tslint:disable:only-arrow-functions */
+                // tslint:disable-next-line:only-arrow-functions
                 binding.updateTarget = function (value) {
-                    /* tslint:enable:only-arrow-functions */
                     this.standardUpdateTarget(value);
                     this.validationController.resetBinding(this);
                 };
@@ -6110,6 +9132,7 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
 
 define('aurelia-validation/validation-controller',["require", "exports", "./validator", "./validate-trigger", "./property-info", "./validate-result"], function (require, exports, validator_1, validate_trigger_1, property_info_1, validate_result_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Orchestrates validation.
      * Manages a set of bindings, renderers and objects.
@@ -6255,6 +9278,7 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
             // Get a function that will process the validation instruction.
             var execute;
             if (instruction) {
+                // tslint:disable-next-line:prefer-const
                 var object_2 = instruction.object, propertyName_2 = instruction.propertyName, rules_2 = instruction.rules;
                 // if rules were not specified, check the object map.
                 rules_2 = rules_2 || this.objects.get(object_2);
@@ -6365,7 +9389,7 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
                     }
                 }
                 else {
-                    // there is a corresponding new result...        
+                    // there is a corresponding new result...
                     var newResult = newResults.splice(newResultIndex, 1)[0];
                     // get the elements that are associated with the new result.
                     var elements_1 = this_1.getAssociatedElements(newResult);
@@ -6417,7 +9441,7 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
                 return;
             }
             var propertyInfo = property_info_1.getPropertyInfo(binding.sourceExpression, binding.source);
-            var rules = undefined;
+            var rules;
             var registeredBinding = this.bindings.get(binding);
             if (registeredBinding) {
                 rules = registeredBinding.rules;
@@ -6455,6 +9479,7 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
 
 define('aurelia-validation/validator',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Validates objects and properties.
      */
@@ -6468,6 +9493,7 @@ define('aurelia-validation/validator',["require", "exports"], function (require,
 
 define('aurelia-validation/validate-result',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * The result of validating an individual validation rule.
      */
@@ -6498,6 +9524,7 @@ define('aurelia-validation/validate-result',["require", "exports"], function (re
 
 define('aurelia-validation/validation-controller-factory',["require", "exports", "./validation-controller", "./validator"], function (require, exports, validation_controller_1, validator_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Creates ValidationController instances.
      */
@@ -6538,22 +9565,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define('aurelia-validation/validation-errors-custom-attribute',["require", "exports", "aurelia-binding", "aurelia-dependency-injection", "aurelia-templating", "./validation-controller"], function (require, exports, aurelia_binding_1, aurelia_dependency_injection_1, aurelia_templating_1, validation_controller_1) {
+define('aurelia-validation/validation-errors-custom-attribute',["require", "exports", "aurelia-binding", "aurelia-dependency-injection", "aurelia-templating", "./validation-controller", "aurelia-pal"], function (require, exports, aurelia_binding_1, aurelia_dependency_injection_1, aurelia_templating_1, validation_controller_1, aurelia_pal_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ValidationErrorsCustomAttribute = (function () {
         function ValidationErrorsCustomAttribute(boundaryElement, controllerAccessor) {
             this.boundaryElement = boundaryElement;
             this.controllerAccessor = controllerAccessor;
+            this.controller = null;
             this.errors = [];
+            this.errorsInternal = [];
         }
         ValidationErrorsCustomAttribute.prototype.sort = function () {
-            this.errors.sort(function (a, b) {
+            this.errorsInternal.sort(function (a, b) {
                 if (a.targets[0] === b.targets[0]) {
                     return 0;
                 }
-                /* tslint:disable:no-bitwise */
+                // tslint:disable-next-line:no-bitwise
                 return a.targets[0].compareDocumentPosition(b.targets[0]) & 2 ? 1 : -1;
-                /* tslint:enable:no-bitwise */
             });
         };
         ValidationErrorsCustomAttribute.prototype.interestingElements = function (elements) {
@@ -6562,9 +9591,9 @@ define('aurelia-validation/validation-errors-custom-attribute',["require", "expo
         };
         ValidationErrorsCustomAttribute.prototype.render = function (instruction) {
             var _loop_1 = function (result) {
-                var index = this_1.errors.findIndex(function (x) { return x.error === result; });
+                var index = this_1.errorsInternal.findIndex(function (x) { return x.error === result; });
                 if (index !== -1) {
-                    this_1.errors.splice(index, 1);
+                    this_1.errorsInternal.splice(index, 1);
                 }
             };
             var this_1 = this;
@@ -6579,30 +9608,42 @@ define('aurelia-validation/validation-errors-custom-attribute',["require", "expo
                 }
                 var targets = this.interestingElements(elements);
                 if (targets.length) {
-                    this.errors.push({ error: result, targets: targets });
+                    this.errorsInternal.push({ error: result, targets: targets });
                 }
             }
             this.sort();
-            this.value = this.errors;
+            this.errors = this.errorsInternal;
         };
         ValidationErrorsCustomAttribute.prototype.bind = function () {
-            this.controllerAccessor().addRenderer(this);
-            this.value = this.errors;
+            if (!this.controller) {
+                this.controller = this.controllerAccessor();
+            }
+            // this will call render() with the side-effect of updating this.errors
+            this.controller.addRenderer(this);
         };
         ValidationErrorsCustomAttribute.prototype.unbind = function () {
-            this.controllerAccessor().removeRenderer(this);
+            if (this.controller) {
+                this.controller.removeRenderer(this);
+            }
         };
         return ValidationErrorsCustomAttribute;
     }());
-    ValidationErrorsCustomAttribute.inject = [Element, aurelia_dependency_injection_1.Lazy.of(validation_controller_1.ValidationController)];
+    ValidationErrorsCustomAttribute.inject = [aurelia_pal_1.DOM.Element, aurelia_dependency_injection_1.Lazy.of(validation_controller_1.ValidationController)];
+    __decorate([
+        aurelia_templating_1.bindable({ defaultBindingMode: aurelia_binding_1.bindingMode.oneWay })
+    ], ValidationErrorsCustomAttribute.prototype, "controller", void 0);
+    __decorate([
+        aurelia_templating_1.bindable({ primaryProperty: true, defaultBindingMode: aurelia_binding_1.bindingMode.twoWay })
+    ], ValidationErrorsCustomAttribute.prototype, "errors", void 0);
     ValidationErrorsCustomAttribute = __decorate([
-        aurelia_templating_1.customAttribute('validation-errors', aurelia_binding_1.bindingMode.twoWay)
+        aurelia_templating_1.customAttribute('validation-errors')
     ], ValidationErrorsCustomAttribute);
     exports.ValidationErrorsCustomAttribute = ValidationErrorsCustomAttribute;
 });
 
 define('aurelia-validation/validation-renderer-custom-attribute',["require", "exports", "./validation-controller"], function (require, exports, validation_controller_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ValidationRendererCustomAttribute = (function () {
         function ValidationRendererCustomAttribute() {
         }
@@ -6626,6 +9667,7 @@ define('aurelia-validation/validation-renderer-custom-attribute',["require", "ex
 
 define('aurelia-validation/implementation/rules',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Sets, unsets and retrieves rules on an object or constructor function.
      */
@@ -6665,13 +9707,19 @@ define('aurelia-validation/implementation/rules',["require", "exports"], functio
     exports.Rules = Rules;
 });
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('aurelia-validation/implementation/standard-validator',["require", "exports", "aurelia-templating", "../validator", "../validate-result", "./rules", "./validation-messages"], function (require, exports, aurelia_templating_1, validator_1, validate_result_1, rules_1, validation_messages_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Validates.
      * Responsible for validating objects and properties.
@@ -6720,6 +9768,7 @@ define('aurelia-validation/implementation/standard-validator',["require", "expor
         };
         StandardValidator.prototype.getMessage = function (rule, object, value) {
             var expression = rule.message || this.messageProvider.getMessage(rule.messageKey);
+            // tslint:disable-next-line:prefer-const
             var _a = rule.property, propertyName = _a.name, displayName = _a.displayName;
             if (propertyName !== null) {
                 displayName = this.messageProvider.getDisplayName(propertyName, displayName);
@@ -6730,6 +9779,8 @@ define('aurelia-validation/implementation/standard-validator',["require", "expor
                 $value: value,
                 $object: object,
                 $config: rule.config,
+                // returns the name of a given property, given just the property name (irrespective of the property's displayName)
+                // split on capital letters, first letter ensured to be capitalized
                 $getDisplayName: this.getDisplayName
             };
             return expression.evaluate({ bindingContext: object, overrideContext: overrideContext }, this.lookupFunctions);
@@ -6797,6 +9848,7 @@ define('aurelia-validation/implementation/standard-validator',["require", "expor
 
 define('aurelia-validation/implementation/validation-messages',["require", "exports", "./validation-parser"], function (require, exports, validation_parser_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Dictionary of validation messages. [messageKey]: messageExpression
      */
@@ -6843,7 +9895,7 @@ define('aurelia-validation/implementation/validation-messages',["require", "expo
          */
         ValidationMessageProvider.prototype.getDisplayName = function (propertyName, displayName) {
             if (displayName !== null && displayName !== undefined) {
-                return displayName;
+                return (displayName instanceof Function) ? displayName() : displayName;
             }
             // split on upper-case letters.
             var words = propertyName.split(/(?=[A-Z])/).join(' ');
@@ -6856,13 +9908,19 @@ define('aurelia-validation/implementation/validation-messages',["require", "expo
     exports.ValidationMessageProvider = ValidationMessageProvider;
 });
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define('aurelia-validation/implementation/validation-parser',["require", "exports", "aurelia-binding", "aurelia-templating", "./util", "aurelia-logging"], function (require, exports, aurelia_binding_1, aurelia_templating_1, util_1, LogManager) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ValidationParser = (function () {
         function ValidationParser(parser, bindinqLanguage) {
             this.parser = parser;
@@ -6907,7 +9965,9 @@ define('aurelia-validation/implementation/validation-parser',["require", "export
             return new aurelia_binding_1.Conditional(new aurelia_binding_1.Binary('||', new aurelia_binding_1.Binary('===', part, this.nullExpression), new aurelia_binding_1.Binary('===', part, this.undefinedExpression)), this.emptyStringExpression, new aurelia_binding_1.CallMember(part, 'toString', []));
         };
         ValidationParser.prototype.getAccessorExpression = function (fn) {
-            var classic = /^function\s*\([$_\w\d]+\)\s*\{\s*(?:"use strict";)?\s*return\s+[$_\w\d]+\.([$_\w\d]+)\s*;?\s*\}$/;
+            /* tslint:disable:max-line-length */
+            var classic = /^function\s*\([$_\w\d]+\)\s*\{(?:\s*"use strict";)?\s*(?:[$_\w\d.['"\]+;]+)?\s*return\s+[$_\w\d]+\.([$_\w\d]+)\s*;?\s*\}$/;
+            /* tslint:enable:max-line-length */
             var arrow = /^\(?[$_\w\d]+\)?\s*=>\s*[$_\w\d]+\.([$_\w\d]+)$/;
             var match = classic.exec(fn) || arrow.exec(fn);
             if (match === null) {
@@ -6946,6 +10006,7 @@ define('aurelia-validation/implementation/validation-parser',["require", "export
 
 define('aurelia-validation/implementation/util',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function isString(value) {
         return Object.prototype.toString.call(value) === '[object String]';
     }
@@ -6954,6 +10015,7 @@ define('aurelia-validation/implementation/util',["require", "exports"], function
 
 define('aurelia-validation/implementation/validation-rules',["require", "exports", "./util", "./rules", "./validation-messages"], function (require, exports, util_1, rules_1, validation_messages_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Part of the fluent rule API. Enables customizing property rules.
      */
@@ -7299,6 +10361,7 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
         };
         /**
          * Adds a rule definition to the sequenced ruleset.
+         * @internal
          */
         FluentEnsure.prototype._addRule = function (rule) {
             while (this.rules.length < rule.sequence + 1) {
@@ -7310,7 +10373,7 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
             if (this.parser) {
                 return;
             }
-            throw new Error("Did you forget to add \".plugin('aurelia-validation)\" to your main.js?");
+            throw new Error("Did you forget to add \".plugin('aurelia-validation')\" to your main.js?");
         };
         return FluentEnsure;
     }());
@@ -8086,82 +11149,83 @@ define('aurelia-dialog/dialog-service',['exports', 'aurelia-metadata', 'aurelia-
   }
 });
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><require from=\"./components/header/dream-header\"></require><require from=\"./components/footer/dream-footer\"></require><require from=\"./components/nav-menu/main-nav/main-nav\"></require><dream-header router.bind=\"router\"></dream-header><main-nav router.bind=\"router\"></main-nav><router-view></router-view><dream-footer></dream-footer></template>"; });
-define('text!components/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
-define('text!components/categories/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/footer/dream-footer.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-footer.css\"></require></template>"; });
 define('text!components/header/dream-header.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-header.css\"></require><div class=\"container\"><div class=\"navbar-brand\"><img class=\"logo\" src=\"/content/images/logo.png\"> <a first-letter-span href=\"/\">Dream Space</a></div><ul class=\"nav navbar-nav navbar-right\"><li role=\"presentation\" class=\"dropdown\" if.bind=\"isAuthenticated === true\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> ${user.firstName} <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href.bind=\"loginUrl\">Account</a></li><li><a click.delegate=\"logout()\">Logout</a></li></ul></li><li if.bind=\"isAuthenticated !== true\"><a click.delegate=\"login()\">Login</a></li></ul></div></template>"; });
-define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/market/navigation.html', ['module'], function(module) { module.exports = "<template><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/strategies/navigation.html', ['module'], function(module) { module.exports = "<template><strategy-navigation></strategy-navigation><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/strategies/strategy-playground.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy-playground.css\"></require><strategy-admin></strategy-admin><div class=\"c_playground-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_playground\"><header><h3 first-letter-span>Strategy Playground</h3></header><form><fieldset><div class=\"form-group\"><label>Selected Strategy</label><p class=\"form-control\" readonly=\"readonly\">${strategy.title}</p></div><div class=\"form-group\"><label>Selected Company</label><div class=\"input-group\"><p class=\"form-control\" readonly=\"readonly\">${company.ticker} - ${company.name}</p><div class=\"input-group-btn\"><button type=\"button\" if.bind=\"!company.show && !searchMode\" click.delegate=\"company.show = true\" class=\"btn btn-default\">Show Details</button> <button type=\"button\" click.delegate=\"searchMode = !!!searchMode\" class=\"btn ${searchMode ? 'btn-default' : 'btn-danger'}\">${searchMode ? 'Cancel' : 'Search'}</button></div></div><div class=\"c_company-details\" if.bind=\"company.show\"><company-details company.bind=\"company\"></company-details><div class=\"c_company-actions\"><button type=\"button\" click.delegate=\"updateCompany(company.ticker)\" class=\"btn btn-danger\">Update</button> <button type=\"button\" click.delegate=\"company.show = false\" class=\"btn btn-default\">Hide</button></div></div></div></fieldset></form><div if.bind=\"searchMode\" class=\"c_companies-content\"><form submit.delegate=\"searchCompanies()\"><fieldset><div class=\"form-inline right\"><label>Company Search:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control uppercase\" value.bind=\"searchCriteria\"><div class=\"input-group-btn\"><button type=\"submit\" disabled.bind=\"searchCriteria.length===0\" class=\"btn btn-danger\">Go</button></div></div></div></fieldset></form><div class=\"c_company_list\" if.bind=\"companies.length > 0\"><div repeat.for=\"company of companies\" class=\"c_company ${$index === $parent.companies.length-1 ? 'no-border': ''}\"><div class=\"c_company-header\"><button type=\"button\" click.trigger=\"selectCompany(company)\" class=\"btn btn-warning btn-xs\">Select</button> <span click.trigger=\"company.expanded = !!!company.expanded\"><span>${company.ticker} - ${company.name}</span> <a class=\"chevron\"><span class=\"glyphicon ${company.expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_company-details\" if.bind=\"company.expanded\"><company-details company.bind=\"company\"></company-details></div></div></div></div><div if.bind=\"strategy.strategyId && company.ticker && !playgroundLoaded\"><div class=\"right\"><button type=\"button\" click.delegate=\"loadPlayground()\" class=\"btn btn-danger\">Load Playground</button></div></div></div><div class=\"col-md-4 col-xs-12\"><side-navigation strategyurl.bind=\"strategy.url\"></side-navigation></div></div><div class=\"row o_chart-content\" if.bind=\"playgroundLoaded\"><div class=\"col-md-8 col-xs-12 c_playground\"><header><h3>Charts</h3></header><div class=\"o_chart\"><stock-chart model.bind=\"playgroundModel\"></stock-chart></div><br></div><div class=\"col-md-4 col-xs-12 c_strategy-runner\"><div class=\"side-navigation\"><h3>Strategy Runner</h3><form><fieldset><div class=\"c_strategy-runner--progress\"><div class=\"form-group\" repeat.for=\"ruleSet of playgroundModel.ruleSets\"><span>${ruleSet.name}</span><s-progress progress.bind=\"ruleSet.progress\"></s-progress><div class=\"col-sm-12\" repeat.for=\"rule of ruleSet.rules\"><span class=\"glyphicon ${rule.valid ? 'glyphicon-ok' : 'glyphicon-time'}\" aria-hidden=\"true\"></span><label>${rule.ruleName}</label></div></div></div><div class=\"c_strategy-runner--options\"><header>Runner</header><div class=\"form-group\"><div class=\"checkbox\"><label><input type=\"checkbox\"> Stop when rules met</label></div></div><div class=\"form-group\"><span class=\"btn-group btn-group-sm\"><button class=\"btn btn-default\" if.bind=\"streaming\" click.delegate=\"stopStreaming()\" type=\"button\"><span class=\"glyphicon glyphicon-pause\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" if.bind=\"!streaming\" click.delegate=\"startStreaming()\" type=\"button\"><span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadPlayground()\" type=\"button\"><span class=\"glyphicon glyphicon-stop\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadPrev()\" type=\"button\"><span class=\"glyphicon glyphicon-backward\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadNext()\" type=\"button\"><span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span></button></span></div></div></fieldset></form></div></div></div></div></template>"; });
 define('text!components/strategies/strategy-rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules/rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Strategy Rule Sets</h3><h5>${strategy.title}</h5><p class=\"summary\">${strategy.summary}</p></header><div class=\"c_rule_set-list\"><strategy-rule-set repeat.for=\"ruleset of rulesets\" class=\"${$index === $parent.rulesets.length-1 && !editMode ? 'no-border': ''}\" ruleset.bind=\"ruleset\"></strategy-rule-set><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRuleSet()\"><a>Attach Rule Set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label>Period</label><select class=\"form-control\" value.bind=\"attachedRuleSet.period\" change.delegate=\"onPeriodSelected()\"><option>- Select Period -</option><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>Rule Set</label><select class=\"form-control\" value.bind=\"attachedRuleSet.ruleSetId\" change.delegate=\"onRuleSetSelected()\"><option>- Select Rule Set -</option><option repeat.for=\"periodRuleSet of periodRuleSets\" model.bind=\"periodRuleSet.ruleSetId\">${periodRuleSet.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRuleSet.ruleSetId > 0\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${attachedRuleSet.description}</p></div></fieldset><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRuleSet()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRuleSet()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div><div class=\"c_rule_set-actions\"><button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" click.delegate=\"trySaveRuleSets()\" if.bind=\"editMode\" class=\"btn btn-danger\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"col-md-4 col-xs-12\"><side-navigation strategyurl.bind=\"strategy.url\"></side-navigation></div></div></div></template>"; });
-define('text!common/styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/strategies/strategy.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Article</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\" if.bind=\"editMode === true\"><button type=\"button\" click.delegate=\"trySaveArticle()\" class=\"btn btn-danger\">Apply Changes</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_strategy\"><header><h3>${strategy.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Strategy Name</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.title & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"strategy.summary & validate\"></textarea></div><div class=\"form-group\"><label>Strategy Url</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.url & validate\"></div><div class=\"form-group\"><label>Strategy Status:</label><div class=\"input-group\" style=\"width:40%\"><input type=\"text\" class=\"form-control\" disabled=\"disabled\" aria-label=\"...\" value=\"${strategy.active ? 'Active' : 'Inactive'}\"><div class=\"input-group-btn\"><button type=\"button\" click.delegate=\"setActiveStatus(true)\" if.bind=\"!strategy.active\" class=\"btn btn-danger\">Activate</button> <button type=\"button\" click.delegate=\"setActiveStatus(false)\" if.bind=\"strategy.active\" class=\"btn btn-danger\">Deactivate</button></div></div></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"strategy.blocks\"></article-parts></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''} ${summary.active ? '' : 'disabled'}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Strategies</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addStrategy()\">Register New Strategy</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Strategy</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteStrategy()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
-define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"../nav-menu/category-nav/category-nav\"></require><category-nav menu.bind=\"menu\"></category-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
-define('text!common/styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
-define('text!components/studies/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/categories\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"article.blocks\"></article-parts></div></div><div class=\"col-md-4\"><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
+define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-nav/category-nav\"></require><category-nav menu.bind=\"menu\"></category-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!common/styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/user/login.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
-define('text!common/styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n"; });
 define('text!components/user/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!common/styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
 define('text!components/user/profile.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
-define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
-define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
-define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!common/styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
 define('text!components/market/jobs-dashboard/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!common/styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
+define('text!common/styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n"; });
 define('text!components/market/market-indices/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_market-indices\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!components/nav-menu/category-nav/category-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of menu.items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"$parent.getUrl(item)\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n"; });
+define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
 define('text!components/nav-menu/main-nav/main-nav.html', ['module'], function(module) { module.exports = "<template><require from=\"./main-nav.css\"></require><div class=\"container\"><div class=\"main-nav-items\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></div></div></template>"; });
-define('text!components/nav-menu/sub-nav/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
+define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
 define('text!components/strategies/indicators/indicators.html', ['module'], function(module) { module.exports = "<template><require from=\"./indicators.css\"></require><strategy-admin></strategy-admin><div class=\"c_indicators-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_indicators\"><header><h3 first-letter-span>Manage Indicators</h3></header><div class=\"c_indicator-list\"><indicator repeat.for=\"indicator of indicators\" indicator.bind=\"indicator\"></indicator><div class=\"c_indicator c_indicator-add\" click.delegate=\"addIndicator()\"><div class=\"c_indicator-header\"><a>Register new indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadIndicatorsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Indicators</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
+define('text!components/nav-menu/sub-nav/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!components/strategies/rules/rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Manage Rule Sets</h3></header><div class=\"c_rule_set-list\"><rule-set repeat.for=\"ruleset of rulesets\" ruleset.bind=\"ruleset\"></rule-set><div class=\"c_rule_set c_rule_set-add\" click.delegate=\"addRuleSet()\"><div class=\"c_rule_set-header\"><a>Register new rule set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRuleSetsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
+define('text!common/styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
+define('text!common/styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
 define('text!components/strategies/rules/rules.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules.css\"></require><strategy-admin></strategy-admin><div class=\"c_rules-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rules\"><header><h3 first-letter-span>Manage Rules</h3></header><div class=\"c_rule-list\"><rule repeat.for=\"rule of rules\" rule.bind=\"rule\"></rule><div class=\"c_rule c_rule-add\" click.delegate=\"addRule()\"><div class=\"c_rule-header\"><a>Register new rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRulesForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
+define('text!components/studies/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
+define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n"; });
+define('text!components/studies/category-nav/category-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of menu.items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"$parent.getUrl(item)\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
+define('text!components/studies/study/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><require from=\"./study-actions/study-actions\"></require><study-actions></study-actions><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"article.blocks\"></article-parts></div></div><div class=\"col-md-4\"><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
+define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
+define('text!resources/elements/chart/chart-layout.html', ['module'], function(module) { module.exports = "<template><div id=\"container-weekly\" class=\"o_chart-container\"></div><div id=\"container-daily\" class=\"o_chart-container\"></div></template>"; });
+define('text!resources/elements/chart/stock-chart.html', ['module'], function(module) { module.exports = "<template><require from=\"./stock-chart.css\"></require><div id=\"container-Weekly\" class=\"o_chart-container\"></div><div id=\"container-Daily\" class=\"o_chart-container\"></div></template>"; });
 define('text!common/styles/_progress.css', ['module'], function(module) { module.exports = ".s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
 define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"part.editMode !== true\" class=\"${part.headingType}\">${part.text}</span></template>"; });
+define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"part.editMode !== true\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
 define('text!common/styles/_sub-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!common/styles/_variables.css', ['module'], function(module) { module.exports = ""; });
-define('text!components/categories/categories.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"part.editMode !== true\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
 define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!part.editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
-define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
+define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
 define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"part.editMode !== true\">${part.text}</p></template>"; });
-define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
+define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
 define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" if.bind=\"part.type === 'Paragraph'\"></article-part-paragraph><article-part-heading part.bind=\"part\" if.bind=\"part.type === 'Heading'\"></article-part-heading><article-part-image part.bind=\"part\" if.bind=\"part.type === 'Image'\"></article-part-image><article-part-list part.bind=\"part\" if.bind=\"part.type === 'List'\"></article-part-list><article-part-new part.bind=\"part\" if.bind=\"part.type === 'Unset'\"></article-part-new><article-part-actions part.bind=\"part\" if.bind=\"part.type !== 'Unset'\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode === true\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
-define('text!resources/elements/chart/stock-chart.html', ['module'], function(module) { module.exports = "<template><require from=\"./stock-chart.css\"></require><div id=\"container-Weekly\" class=\"o_chart-container\"></div><div id=\"container-Daily\" class=\"o_chart-container\"></div></template>"; });
-define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!resources/elements/company/company-details.html', ['module'], function(module) { module.exports = "<template><form><fieldset disabled=\"disabled\"><div class=\"row\"><div class=\"col-md-6\"><div class=\"form-group\"><label>Sector</label><p class=\"form-control\" readonly=\"readonly\">${company.sector}</p></div></div><div class=\"col-md-6\"><div class=\"form-group\"><label>Industry</label><p class=\"form-control\" readonly=\"readonly\">${company.industry}</p></div></div></div><div class=\"row\"><div class=\"col-md-4\"><div class=\"form-group\"><label>Price</label><p class=\"form-control\" readonly=\"readonly\">${company.price}</p></div><div class=\"form-group\"><label>Volume</label><p class=\"form-control\" readonly=\"readonly\">${company.volume}</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Lowest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.lowestPrice52}</p></div><div class=\"form-group\"><label>Chaos</label><p class=\"form-control\" readonly=\"readonly\">${company.chaosPercentage}%</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Highest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.highestPrice52}</p></div><div class=\"form-group\"><label>Last Time Updated</label><p class=\"form-control\" readonly=\"readonly\">${formatDate(company.lastUpdated)}</p></div></div></div></fieldset></form></template>"; });
+define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
 define('text!resources/elements/indicator/indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_indicator\" if.bind=\"indicatorInfo.deleted !== true\"><div class=\"c_indicator-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"indicatorInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${indicatorInfo.description}</span> <a class=\"chevron\"><span if.bind=\"indicatorInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"indicatorInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_indicator-details\" if.bind=\"indicatorInfo.expanded === true\"><form submit.delegate=\"trySaveIndicator()\" if.bind=\"indicatorInfo.deleteMode !== true\"><fieldset disabled.bind=\"indicatorInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${indicatorInfo.indicatorId}\">Indicator Name</label><input type=\"text\" class=\"form-control\" id=\"txtDescription-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.description & validate\"></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${indicatorInfo.indicatorId}\">Period:</label><select id=\"ddlPeriod-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlFormula-${indicatorInfo.indicatorId}\">Formula:</label><select id=\"ddlFormula-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.name\" change.delegate=\"onFormulaChange()\"><option repeat.for=\"formula of formulaes\" value.bind=\"formula.name\">${formula.name}</option></select></div></div><div class=\"col-md-6\"><h4>Chart Properties</h4><div class=\"form-inline-stack\"><div class=\"form-group\"><label for=\"ddlChartType-${indicatorInfo.indicatorId}\">Chart Type:</label><select id=\"ddlChartType-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartType\"><option repeat.for=\"chartType of chartTypes\" model.bind=\"chartType.id\">${chartType.name}</option></select></div><div class=\"form-group\"><label for=\"txtChartPlot-${indicatorInfo.indicatorId}\">Plot Number:</label><select id=\"txtChartPlot-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartPlotNumber\"><option repeat.for=\"plotNumber of plotNumbers\" model.bind=\"plotNumber\">${plotNumber}</option></select></div><div class=\"form-group\"><label for=\"txtChartColor-${indicatorInfo.indicatorId}\">Line Color:</label><input type=\"text\" class=\"form-control\" id=\"txtChartColor-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.chartColor & validate\"></div></div></div><div class=\"col-md-6\"><h4>Formula Parameters</h4><div class=\"form-inline-stack\"><div class=\"form-group\" repeat.for=\"param of indicatorInfo.params\"><label for=\"txtParam-${param.paramName}\">${param.paramName}:</label><input type=\"text\" class=\"form-control\" id=\"txtParam-${param.paramName}\" value.bind=\"param.value\"></div></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_indicator-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"indicatorInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"indicatorInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"indicatorInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_indicator-actions\" if.bind=\"indicatorInfo.deleteMode === true\"><p><br>I'll try to delete the indicator, however, if this indicator is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
 define('text!resources/elements/navigation/side-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></div></template>"; });
+define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!resources/elements/navigation/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
 define('text!resources/elements/progress/s-progress.html', ['module'], function(module) { module.exports = "<template class=\"s-progress\" style=\"width:100%\"><div class=\"s-progress-bar\"></div></template>"; });
-define('text!resources/elements/rule/rule.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule\" if.bind=\"ruleInfo.deleted !== true\"><div class=\"c_rule-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"ruleInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${ruleInfo.name}</span> <a class=\"chevron\"><span if.bind=\"ruleInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"ruleInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_rule-details\" if.bind=\"ruleInfo.expanded === true\"><form submit.delegate=\"trySaveRule()\" if.bind=\"ruleInfo.deleteMode !== true\"><fieldset disabled.bind=\"ruleInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtName-${ruleInfo.ruleId}\">Rule Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleInfo.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleInfo.ruleId}\">Period:</label><select id=\"ddlPeriod-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.period\" change.delegate=\"onPeriodChange()\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlCondition-${ruleInfo.ruleId}\">Compare operator:</label><select id=\"ddlCondition-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.condition\"><option repeat.for=\"compareType of compareTypes\" model.bind=\"compareType.id\">${compareType.name}</option></select></div></div><div class=\"col-md-6\"><h4>Compare What</h4><div class=\"form-group\"><label for=\"ddlDataSourceV1-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV1\" change.delegate=\"onDataSourceV1Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlDataSeriesV1-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV1\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV1\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 === 2\"><label for=\"txtConstV1-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV1\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtSkipItemsV1-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtTakeItemsV1-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlTransformItemsV1-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV1\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></div><div class=\"col-md-6\"><h4>Compare With</h4><div class=\"form-group\"><label for=\"ddlDataSourceV2-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV2\" change.delegate=\"onDataSourceV2Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlDataSeriesV2-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV2\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV2\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 === 2\"><label for=\"txtConstV2-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV2\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtSkipItemsV2-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV2 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtTakeItemsV2-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV2 & validate\"></div></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlTransformItemsV2-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV2\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"ruleInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"ruleInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"ruleInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule-actions\" if.bind=\"ruleInfo.deleteMode === true\"><p><br>I'll try to delete the rule, however, if this rule is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!resources/elements/rule-set/rule-set-item.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"rule.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"rule.expanded !== true && editMode === true\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${rule.name}</span><div class=\"chevron\"><a><span if.bind=\"rule.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"rule.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode === true\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"rule.expanded === true\"><form if.bind=\"rule.deleteMode !== true\"><fieldset disabled.bind=\"rule.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${rule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${rule.ruleId}\" value.bind=\"rule.description\"></textarea></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"rule.deleteMode === true\"><p><br>Rule will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/studies/study.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
-define('text!resources/elements/rule-set/rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleSetInfo.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"ruleSetInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span>${ruleSetInfo.name}</span> <a class=\"chevron\"><span if.bind=\"ruleSetInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"ruleSetInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" if.bind=\"ruleSetInfo.expanded === true\"><form submit.delegate=\"trySaveRuleSet()\" if.bind=\"ruleSetInfo.deleteMode !== true\"><fieldset disabled.bind=\"ruleSetInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtName-${ruleSetInfo.ruleSetId}\">Rule Set Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleSetInfo.ruleSetId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlPeriod-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"ruleSetInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div></div></fieldset><h4>Set of Rules:</h4><div class=\"c_rule_set-list\"><rule-set-item class=\"c_rule_set-item\" repeat.for=\"rule of ruleSetInfo.rules\" rule.bind=\"rule\"></rule-set-item><div class=\"c_rule_set c_rule_set-add\" show.bind=\"ruleSetInfo.editMode === true\"><div class=\"c_rule_set-header\" click.delegate=\"addRule()\"><a>Attach rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div><div class=\"c_rule_set-details\" if.bind=\"ruleSetInfo.isAdding === true && ruleSetInfo.editMode === true\"><div class=\"form-group\"><label for=\"ddlRules-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlRules-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"attachedRuleId\" change.delegate=\"onRuleChange()\"><option repeat.for=\"rule of rules\" model.bind=\"rule.ruleId\">${rule.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRule.ruleId > 0\"><label for=\"txtRuleDescription-${attachedRule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" readonly=\"readonly\" id=\"txtRuleDescription-${attachedRule.ruleId}\" value.bind=\"attachedRule.description\"></textarea></div><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRule()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRule()\" class=\"btn btn-default\">Cancel</button></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule_set-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"ruleSetInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"ruleSetInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"ruleSetInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule_set-actions\" if.bind=\"ruleSetInfo.deleteMode === true\"><p><br>I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
-define('text!resources/elements/strategy/side-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul></div></template>"; });
-define('text!resources/elements/strategy/strategy-admin.html', ['module'], function(module) { module.exports = "<template><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div></div></template>"; });
-define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
+define('text!resources/elements/rule/rule.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule\" if.bind=\"ruleInfo.deleted !== true\"><div class=\"c_rule-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${ruleInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_rule-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRule()\" if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleInfo.ruleId}\">Rule Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleInfo.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleInfo.ruleId}\">Period:</label><select id=\"ddlPeriod-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.period\" change.delegate=\"onPeriodChange()\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlCondition-${ruleInfo.ruleId}\">Compare operator:</label><select id=\"ddlCondition-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.condition\"><option repeat.for=\"compareType of compareTypes\" model.bind=\"compareType.id\">${compareType.name}</option></select></div></div><div class=\"col-md-6\"><h4>Compare What</h4><div class=\"form-group\"><label for=\"ddlDataSourceV1-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV1\" change.delegate=\"onDataSourceV1Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlDataSeriesV1-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV1\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV1\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 === 2\"><label for=\"txtConstV1-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV1\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtSkipItemsV1-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtTakeItemsV1-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlTransformItemsV1-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV1\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></div><div class=\"col-md-6\"><h4>Compare With</h4><div class=\"form-group\"><label for=\"ddlDataSourceV2-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV2\" change.delegate=\"onDataSourceV2Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlDataSeriesV2-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV2\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV2\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 === 2\"><label for=\"txtConstV2-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV2\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtSkipItemsV2-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV2 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtTakeItemsV2-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV2 & validate\"></div></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlTransformItemsV2-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV2\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule, however, if this rule is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!resources/elements/rule-set/rule-set-item.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"rule.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${rule.name}</span><div class=\"chevron\"><a><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtDescription-${rule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${rule.ruleId}\" value.bind=\"rule.description\"></textarea></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
 define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleset.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"ruleset.expanded !== true && ruleset.editMode === true\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span if.bind=\"ruleset.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"ruleset.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"ruleset.editMode === true\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"ruleset.expanded === true\"><form if.bind=\"ruleset.deleteMode !== true\"><fieldset disabled.bind=\"ruleset.editMode !== true\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"ruleset.deleteMode === true\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
-define('text!components/nav-menu/category-nav/category-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
-define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
+define('text!resources/elements/rule-set/rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleSetInfo.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span>${ruleSetInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRuleSet()\" if.bind=\"!ruleSetInfo.deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleSetInfo.ruleSetId}\">Rule Set Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleSetInfo.ruleSetId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlPeriod-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"ruleSetInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div></div></fieldset><h4>Set of Rules:</h4><div class=\"c_rule_set-list\"><rule-set-item class=\"c_rule_set-item\" repeat.for=\"rule of ruleSetInfo.rules\" rule.bind=\"rule\"></rule-set-item><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRule()\"><a>Attach rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div><div class=\"c_rule_set-details\" if.bind=\"addMode && editMode\"><div class=\"form-group\"><label for=\"ddlRules-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlRules-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"attachedRuleId\" change.delegate=\"onRuleChange()\"><option repeat.for=\"rule of rules\" model.bind=\"rule.ruleId\">${rule.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRule.ruleId > 0\"><label for=\"txtRuleDescription-${attachedRule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" readonly=\"readonly\" id=\"txtRuleDescription-${attachedRule.ruleId}\" value.bind=\"attachedRule.description\"></textarea></div><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRule()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRule()\" class=\"btn btn-default\">Cancel</button></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule_set-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!resources/elements/strategy/side-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul></div></template>"; });
+define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator,\nchart-layout-plot {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
+define('text!resources/elements/strategy/strategy-admin.html', ['module'], function(module) { module.exports = "<template><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div></div></template>"; });
 define('text!components/nav-menu/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
+define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
+define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"!ruleset.deleted\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
 define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div class=\"form-horizontal form-current-job\"><fieldset if.bind=\"currentJobStarted\"><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Job Number</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">#000000${currentJob.jobId}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Started Date</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${startDate}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Status</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${jobStatusName}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Progress</label><div class=\"col-sm-8 col-progress\"><span>${currentJob.progress}%</span><s-progress progress.bind=\"currentJob.progress\"></s-progress></div></div><div class=\"c_job-actions\"><button type=\"button\" if.bind=\"currentJobPaused\" click.delegate=\"resumeJob()\" class=\"btn btn-default\">Resume job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"cancelJob()\" class=\"btn btn-danger\">Cancel Job</button> <button type=\"button\" if.bind=\"currentJobInProgress\" click.delegate=\"pauseJob()\" class=\"btn btn-warning\">Pause job</button></div></fieldset></div><div class=\"c_job-actions\" if.bind=\"!currentJobStarted\"><button type=\"button\" click.delegate=\"startJob()\" class=\"btn btn-danger\">Start new job</button></div><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning\">Clear history</button></div></div></div></div></template>"; });
 define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
-define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
-define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"delete()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout-plot.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${plot.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of plot.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></div></template>"; });
 define('text!components/strategies/rules/rule-sets.css', ['module'], function(module) { module.exports = ".c_rule_sets-content {\n  padding-bottom: 30px;\n}\n.c_rule_sets-content .c_rule_sets {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add,\n.c_rule_sets-content .c_rule_set .c_rule_set-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add .glyphicon,\n.c_rule_sets-content .c_rule_set .c_rule_set-add .glyphicon {\n  color: green;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .chevron {\n  float: right;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group .btn,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details {\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule_set-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_rule_sets-content .c_rule_set-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n"; });
+define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-plot\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
 define('text!components/strategies/rules/rules.css', ['module'], function(module) { module.exports = ".c_rules-content .c_rules {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_rules-content .c_rule-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rules-content .c_rule {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add,\n.c_rules-content .c_rule .c_rule-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add .glyphicon,\n.c_rules-content .c_rule .c_rule-add .glyphicon {\n  color: green;\n}\n.c_rules-content .c_rule .c_rule-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rules-content .c_rule .c_rule-header .chevron {\n  float: right;\n}\n.c_rules-content .c_rule .c_rule-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rules-content .c_rule .c_rule-details {\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rules-content .c_rule .c_rule-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
-define('text!resources/elements/chart/stock-chart.css', ['module'], function(module) { module.exports = "stock-chart {\n  display: block;\n}\nstock-chart .o_chart-container {\n  height: 600px;\n  width: 100%;\n  margin-bottom: 20px;\n}\n"; });
+define('text!components/studies/categories/categories.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/studies/study/study-actions/study-actions.html', ['module'], function(module) { module.exports = "<template><div if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a click.delegate=\"manageCategories()\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div></template>"; });
+define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"deleteJob()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
+define('text!components/studies/category-nav/category-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
+define('text!components/studies/study/study.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
 define('text!components/market/jobs-dashboard/jobs/job.css', ['module'], function(module) { module.exports = ".c_dashboard {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_job-details-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_job-details-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n.c_job-details-list .c_jod_details {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_job-details-list .c_jod_details .c_jod_details-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .chevron {\n  float: right;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group .btn,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details {\n  padding-top: 10px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_job-actions {\n  padding-top: 12px;\n  padding-right: 20px;\n  text-align: right;\n  border-top: solid 1px rgba(204, 204, 204, 0.36);\n}\n.job-staus-2 {\n  color: #5cb85c;\n}\n.job-staus-3 {\n  color: #f59f25;\n}\n.job-staus-99,\n.chevron {\n  color: #CA1D04;\n}\n.label {\n  font-weight: 300;\n  font-size: 13px;\n  padding: 4px 8px;\n}\n.form-current-job fieldset {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  padding: 20px 0 12px;\n}\n.monospace {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  margin-top: 2px;\n}\n.form-group.exception .form-control {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  font-style: normal;\n  font-variant: normal;\n  font-weight: 400;\n  line-height: 19px;\n  color: rgba(0, 0, 0, 0.55);\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n}\n.form-group.error .form-control {\n  color: #CA1D04;\n}\n.col-progress {\n  text-align: center;\n}\n.col-progress span {\n  font-size: 13px;\n  position: relative;\n  color: #5cb85c;\n  font-weight: 500;\n}\n.col-progress s-progress {\n  position: relative;\n  top: -8px;\n}\n"; });
 //# sourceMappingURL=app-bundle.js.map
