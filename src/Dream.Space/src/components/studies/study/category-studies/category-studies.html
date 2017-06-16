@@ -6,7 +6,7 @@
         <ul>
             <li repeat.for="summary of articles">
                 <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-                <a click.delegate="$parent.navigateToArticle(summary.url)" title="${summary.summary}"
+                <a click.delegate="navigateToArticle(summary.url)" title="${summary.summary}"
                    class="${summary.selected ? 'active' : ''}">${summary.title} Rules</a>
             </li>
         </ul>

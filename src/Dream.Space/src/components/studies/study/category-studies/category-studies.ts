@@ -21,4 +21,16 @@ export class CategoryStudies {
         this.articles = await this.articleService.getArticles(categoryId);
     }
 
+    navigateToArticle(url: string) {
+        console.log(url);
+    }
+
+    deleteArticle() {
+        
+    }
+
+    addArticle() {
+        
+    }
+
 }
