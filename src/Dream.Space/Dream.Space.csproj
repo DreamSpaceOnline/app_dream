@@ -524,7 +524,6 @@
     <TypeScriptCompile Include="src\resources\elements\strategy\strategy-admin.ts" />
     <TypeScriptCompile Include="src\resources\elements\strategy\strategy-navigation.ts" />
     <TypeScriptCompile Include="src\resources\elements\strategy\strategy-rule-set.ts" />
-    <TypeScriptCompile Include="src\common\types\account-models.ts" />
     <TypeScriptCompile Include="src\services\account-service.ts" />
     <TypeScriptCompile Include="src\services\services-generated.ts" />
     <TypeScriptCompile Include="src\services\settings-service.ts" />
@@ -707,44 +706,6 @@
     <Error Condition="!Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\..\packages\NSwag.MSBuild.10.6.0\build\NSwag.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NSwag.MSBuild.10.6.0\build\NSwag.MSBuild.props'))" />
   </Target>
-  <ItemGroup>
-    <SwaggerControllers Include="Dream.Space.Controllers.ArticlesApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.BlobApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.CompaniesApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.IndicatorsApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.JobsApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.LayoutApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.LogsApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.RulesApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.RuleSetsApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.StockApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.PlaygroundApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-    <SwaggerControllers Include="Dream.Space.Controllers.StrategiesApiController">
-      <InProject>False</InProject>
-    </SwaggerControllers>
-  </ItemGroup>
   <Target Name="AfterBuild">
     <Exec Condition="'$(NCrunch)' != '1'" Command="$(NSwagExe) webapi2swagger /Controllers:@(SwaggerControllers -> '%(Identity)', ',') /DefaultPropertyNameHandling:CamelCase /DefaultEnumHandling:String /assembly:$(OutDir)/Dream.Space.dll /output:src/services/swagger.json" />
     <Exec Condition="'$(NCrunch)' != '1'" Command="$(NSwagExe) run nswag.json" />

@@ -6,7 +6,7 @@ import { Navigation } from "../navigation"
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import {BootstrapFormRenderer} from "../../../form-validation/bootstrap-form-renderer";
 import {AccountService} from "../../../services/account-service";
-import {ArticlesApiClient, ArticleModel, CategoryModel } from "../../../services/services-generated";
+import {ArticlesApiClient, ArticleModel, CategoryModel, ArticleHeader } from "../../../services/services-generated";
 
 @autoinject
 export class Study {
@@ -18,7 +18,7 @@ export class Study {
     editMode: boolean;
     article: ArticleModel;
     category: CategoryModel;
-    articles: ArticleModel[];
+    articles: ArticleHeader[];
     originalArticle: ArticleModel;
 
     constructor(

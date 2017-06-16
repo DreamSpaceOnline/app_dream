@@ -41,14 +41,14 @@ export class SettingsService {
     }
 
     async initialize() {
-        //this.sections = await this.articleService.getSections();
-        //this.indicators = await this.indicatorService.getIndicators();
-        const section = new SectionModel();
-        section.url = "studies";
-        section.title = "Studies";
-        section.sectionId = 1;
+        this.sections = await this.articleService.getSections();
+        this.indicators = await this.indicatorService.getIndicators();
+        //const section = new SectionModel();
+        //section.url = "studies";
+        //section.title = "Studies";
+        //section.sectionId = 1;
 
-        this.sections.push(section);
+        //this.sections.push(section);
 
 
         this.initialized = true;

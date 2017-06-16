@@ -12,6 +12,114 @@
     "application/json"
   ],
   "paths": {
+    "/api/account/update": {
+      "put": {
+        "tags": [
+          "AccountApi"
+        ],
+        "operationId": "AccountApi_UpdateProfile",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileResponse"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/account/login": {
+      "post": {
+        "tags": [
+          "AccountApi"
+        ],
+        "operationId": "AccountApi_Login",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LoginViewModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/account/logout": {
+      "post": {
+        "tags": [
+          "AccountApi"
+        ],
+        "operationId": "AccountApi_Logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/account/isAuthenticated": {
+      "get": {
+        "tags": [
+          "AccountApi"
+        ],
+        "operationId": "AccountApi_IsAuthenticated",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-nullable": false
+          }
+        }
+      }
+    },
+    "/api/account/user": {
+      "get": {
+        "tags": [
+          "AccountApi"
+        ],
+        "operationId": "AccountApi_CurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
     "/api/article/{id}": {
       "get": {
         "tags": [
@@ -1065,6 +1173,124 @@
         }
       }
     },
+    "/api/playground/{ticker}/{strategyId}/{bars}/{date}": {
+      "get": {
+        "tags": [
+          "PlaygroundApi"
+        ],
+        "operationId": "PlaygroundApi_LoadPlayground",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "x-nullable": false
+          },
+          {
+            "type": "integer",
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          },
+          {
+            "type": "integer",
+            "name": "bars",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          },
+          {
+            "type": "integer",
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CompanyChartData"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/playground/{ticker}/{strategyId}/next": {
+      "get": {
+        "tags": [
+          "PlaygroundApi"
+        ],
+        "operationId": "PlaygroundApi_Next",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "x-nullable": false
+          },
+          {
+            "type": "integer",
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CompanyChartData"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/playground/{ticker}/{strategyId}/prev": {
+      "get": {
+        "tags": [
+          "PlaygroundApi"
+        ],
+        "operationId": "PlaygroundApi_Prev",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "x-nullable": false
+          },
+          {
+            "type": "integer",
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CompanyChartData"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
     "/api/rule/{id}": {
       "get": {
         "tags": [
@@ -1375,124 +1601,6 @@
         }
       }
     },
-    "/api/playground/{ticker}/{strategyId}/{bars}/{date}": {
-      "get": {
-        "tags": [
-          "PlaygroundApi"
-        ],
-        "operationId": "PlaygroundApi_LoadPlayground",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "ticker",
-            "in": "path",
-            "required": true,
-            "x-nullable": false
-          },
-          {
-            "type": "integer",
-            "name": "strategyId",
-            "in": "path",
-            "required": true,
-            "x-nullable": false,
-            "format": "int32"
-          },
-          {
-            "type": "integer",
-            "name": "bars",
-            "in": "path",
-            "required": true,
-            "x-nullable": false,
-            "format": "int32"
-          },
-          {
-            "type": "integer",
-            "name": "date",
-            "in": "path",
-            "required": true,
-            "x-nullable": false,
-            "format": "int32"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/CompanyChartData"
-            },
-            "x-nullable": true
-          }
-        }
-      }
-    },
-    "/api/playground/{ticker}/{strategyId}/next": {
-      "get": {
-        "tags": [
-          "PlaygroundApi"
-        ],
-        "operationId": "PlaygroundApi_Next",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "ticker",
-            "in": "path",
-            "required": true,
-            "x-nullable": false
-          },
-          {
-            "type": "integer",
-            "name": "strategyId",
-            "in": "path",
-            "required": true,
-            "x-nullable": false,
-            "format": "int32"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/CompanyChartData"
-            },
-            "x-nullable": true
-          }
-        }
-      }
-    },
-    "/api/playground/{ticker}/{strategyId}/prev": {
-      "get": {
-        "tags": [
-          "PlaygroundApi"
-        ],
-        "operationId": "PlaygroundApi_Prev",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "ticker",
-            "in": "path",
-            "required": true,
-            "x-nullable": false
-          },
-          {
-            "type": "integer",
-            "name": "strategyId",
-            "in": "path",
-            "required": true,
-            "x-nullable": false,
-            "format": "int32"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/CompanyChartData"
-            },
-            "x-nullable": true
-          }
-        }
-      }
-    },
     "/api/strategy/getSummaries": {
       "get": {
         "tags": [
@@ -1649,6 +1757,119 @@
     }
   },
   "definitions": {
+    "UserInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "isAuthenticated"
+      ],
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "isAuthenticated": {
+          "type": "boolean"
+        },
+        "firstName": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateProfileResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/UpdateProfileStatus"
+        },
+        "user": {
+          "$ref": "#/definitions/UserInfo"
+        },
+        "modelState": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "UpdateProfileStatus": {
+      "type": "string",
+      "x-enumNames": [
+        "Success",
+        "Failure",
+        "ValidationError"
+      ],
+      "enum": [
+        "Success",
+        "Failure",
+        "ValidationError"
+      ],
+      "description": ""
+    },
+    "LoginViewModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "email",
+        "password",
+        "rememberMe"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string"
+        },
+        "rememberMe": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/LoginStatus"
+        },
+        "user": {
+          "$ref": "#/definitions/UserInfo"
+        },
+        "modelState": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LoginStatus": {
+      "type": "string",
+      "x-enumNames": [
+        "Success",
+        "LockedOut",
+        "RequiresVerification",
+        "Failure",
+        "ValidationError"
+      ],
+      "enum": [
+        "Success",
+        "LockedOut",
+        "RequiresVerification",
+        "Failure",
+        "ValidationError"
+      ],
+      "description": ""
+    },
     "ArticleModel": {
       "type": "object",
       "additionalProperties": false,
@@ -2522,249 +2743,6 @@
         }
       }
     },
-    "Rule": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "ruleId",
-        "deleted",
-        "period",
-        "dataSourceV1",
-        "dataSourceV2",
-        "dataSeriesV1",
-        "dataSeriesV2",
-        "skipItemsV1",
-        "skipItemsV2",
-        "takeItemsV1",
-        "takeItemsV2",
-        "transformItemsV1",
-        "transformItemsV2",
-        "condition"
-      ],
-      "properties": {
-        "ruleId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "deleted": {
-          "type": "boolean"
-        },
-        "period": {
-          "$ref": "#/definitions/QuotePeriod"
-        },
-        "dataSourceV1": {
-          "$ref": "#/definitions/DataSourceType"
-        },
-        "dataSourceV2": {
-          "$ref": "#/definitions/DataSourceType"
-        },
-        "dataSeriesV1": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "dataSeriesV2": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "constV1": {
-          "type": "string"
-        },
-        "constV2": {
-          "type": "string"
-        },
-        "skipItemsV1": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "skipItemsV2": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "takeItemsV1": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "takeItemsV2": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "transformItemsV1": {
-          "$ref": "#/definitions/TransformFunction"
-        },
-        "transformItemsV2": {
-          "$ref": "#/definitions/TransformFunction"
-        },
-        "condition": {
-          "$ref": "#/definitions/CompareOperator"
-        }
-      }
-    },
-    "DataSourceType": {
-      "type": "string",
-      "x-enumNames": [
-        "Indicator",
-        "HistoricalData",
-        "Constant"
-      ],
-      "enum": [
-        "Indicator",
-        "HistoricalData",
-        "Constant"
-      ],
-      "description": ""
-    },
-    "TransformFunction": {
-      "type": "string",
-      "x-enumNames": [
-        "First",
-        "Max",
-        "Sum",
-        "Avg",
-        "Min"
-      ],
-      "enum": [
-        "First",
-        "Max",
-        "Sum",
-        "Avg",
-        "Min"
-      ],
-      "description": ""
-    },
-    "CompareOperator": {
-      "type": "string",
-      "x-enumNames": [
-        "Greater",
-        "GreaterOrEqual",
-        "Equal",
-        "Less",
-        "LessOrEqual",
-        "NotEqual"
-      ],
-      "enum": [
-        "Greater",
-        "GreaterOrEqual",
-        "Equal",
-        "Less",
-        "LessOrEqual",
-        "NotEqual"
-      ],
-      "description": ""
-    },
-    "RuleSetModel": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "period",
-        "ruleSetId",
-        "deleted"
-      ],
-      "properties": {
-        "rules": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RuleModel"
-          }
-        },
-        "period": {
-          "$ref": "#/definitions/QuotePeriod"
-        },
-        "ruleSetId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "name": {
-          "type": "string"
-        },
-        "deleted": {
-          "type": "boolean"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
-    "RuleModel": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "ruleId",
-        "ruleSetId",
-        "orderId",
-        "deleted"
-      ],
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "ruleId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "ruleSetId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "orderId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "description": {
-          "type": "string"
-        },
-        "deleted": {
-          "type": "boolean"
-        }
-      }
-    },
-    "VStrategyRuleSet": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "strategyId",
-        "strategyActive",
-        "ruleSetId",
-        "ruleSetPeriod",
-        "ruleSetOrderId",
-        "ruleSetOptional"
-      ],
-      "properties": {
-        "strategyId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "strategyActive": {
-          "type": "boolean"
-        },
-        "ruleSetId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "ruleSetName": {
-          "type": "string"
-        },
-        "ruleSetDescription": {
-          "type": "string"
-        },
-        "ruleSetPeriod": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "ruleSetOrderId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "ruleSetOptional": {
-          "type": "boolean"
-        }
-      }
-    },
     "CompanyChartData": {
       "type": "object",
       "additionalProperties": false,
@@ -2850,6 +2828,26 @@
           "type": "boolean"
         }
       }
+    },
+    "CompareOperator": {
+      "type": "string",
+      "x-enumNames": [
+        "Greater",
+        "GreaterOrEqual",
+        "Equal",
+        "Less",
+        "LessOrEqual",
+        "NotEqual"
+      ],
+      "enum": [
+        "Greater",
+        "GreaterOrEqual",
+        "Equal",
+        "Less",
+        "LessOrEqual",
+        "NotEqual"
+      ],
+      "description": ""
     },
     "GlobalIndexChartData": {
       "type": "object",
@@ -3013,6 +3011,229 @@
         },
         "name": {
           "type": "string"
+        }
+      }
+    },
+    "Rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "deleted",
+        "period",
+        "dataSourceV1",
+        "dataSourceV2",
+        "dataSeriesV1",
+        "dataSeriesV2",
+        "skipItemsV1",
+        "skipItemsV2",
+        "takeItemsV1",
+        "takeItemsV2",
+        "transformItemsV1",
+        "transformItemsV2",
+        "condition"
+      ],
+      "properties": {
+        "ruleId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "period": {
+          "$ref": "#/definitions/QuotePeriod"
+        },
+        "dataSourceV1": {
+          "$ref": "#/definitions/DataSourceType"
+        },
+        "dataSourceV2": {
+          "$ref": "#/definitions/DataSourceType"
+        },
+        "dataSeriesV1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dataSeriesV2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "constV1": {
+          "type": "string"
+        },
+        "constV2": {
+          "type": "string"
+        },
+        "skipItemsV1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "skipItemsV2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "takeItemsV1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "takeItemsV2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "transformItemsV1": {
+          "$ref": "#/definitions/TransformFunction"
+        },
+        "transformItemsV2": {
+          "$ref": "#/definitions/TransformFunction"
+        },
+        "condition": {
+          "$ref": "#/definitions/CompareOperator"
+        }
+      }
+    },
+    "DataSourceType": {
+      "type": "string",
+      "x-enumNames": [
+        "Indicator",
+        "HistoricalData",
+        "Constant"
+      ],
+      "enum": [
+        "Indicator",
+        "HistoricalData",
+        "Constant"
+      ],
+      "description": ""
+    },
+    "TransformFunction": {
+      "type": "string",
+      "x-enumNames": [
+        "First",
+        "Max",
+        "Sum",
+        "Avg",
+        "Min"
+      ],
+      "enum": [
+        "First",
+        "Max",
+        "Sum",
+        "Avg",
+        "Min"
+      ],
+      "description": ""
+    },
+    "RuleSetModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period",
+        "ruleSetId",
+        "deleted"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleModel"
+          }
+        },
+        "period": {
+          "$ref": "#/definitions/QuotePeriod"
+        },
+        "ruleSetId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "ruleSetId",
+        "orderId",
+        "deleted"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "ruleId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ruleSetId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "orderId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "description": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "VStrategyRuleSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategyId",
+        "strategyActive",
+        "ruleSetId",
+        "ruleSetPeriod",
+        "ruleSetOrderId",
+        "ruleSetOptional"
+      ],
+      "properties": {
+        "strategyId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "strategyActive": {
+          "type": "boolean"
+        },
+        "ruleSetId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ruleSetName": {
+          "type": "string"
+        },
+        "ruleSetDescription": {
+          "type": "string"
+        },
+        "ruleSetPeriod": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ruleSetOrderId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ruleSetOptional": {
+          "type": "boolean"
         }
       }
     },

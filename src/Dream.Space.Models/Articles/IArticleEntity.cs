@@ -12,4 +12,6 @@
         bool IsFeatured { get; set; }
         bool Deleted { get; set; }
     }
+
+
 }

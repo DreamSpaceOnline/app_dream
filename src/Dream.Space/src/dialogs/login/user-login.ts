@@ -2,8 +2,9 @@
 import { DialogController } from 'aurelia-dialog';
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { BootstrapFormRenderer } from "../../form-validation/bootstrap-form-renderer";
-import {AccountService} from "../../services/account-service";
 import { BindingEngine, Disposable } from 'aurelia-binding';
+import { AccountService } from "../../services/account-service";
+import { LoginStatus } from "../../services/services-generated";
 
 @autoinject
 export class UserLogin {
@@ -39,16 +40,16 @@ export class UserLogin {
         this.model = model;
 
         ValidationRules
-            .ensure((m: UserLoginModel) => m.email).displayName('Email').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((m: UserLoginModel) => m.password).displayName('Password').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((m: UserLoginModel) => m.email).displayName("Email").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((m: UserLoginModel) => m.password).displayName("Password").required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.model);
     }
 
     async tryLogin() {
         if ((await this.validation.validate()).valid) {
 
-            let response = await this.account.login(this.model.email, this.model.password);
-            if (response.status === "success") {
+            const response = await this.account.login(this.model.email, this.model.password);
+            if (response.status === LoginStatus.Success) {
                 this.controller.ok(this.model);
             } else {
                 this.loginFailed = true;

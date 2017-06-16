@@ -22,7 +22,6 @@ export async function configure(aurelia: Aurelia) {
     httpClient.configure(config => {
         config
             .useStandardConfiguration()
-            .withBaseUrl("api/")
             .withInterceptor(errorInterceptor);
     });
 

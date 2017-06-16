@@ -3,7 +3,7 @@ import { Router } from "aurelia-router";
 import { DialogService } from "aurelia-dialog";
 import {AccountService} from "../../services/account-service";
 import {UserLogin, UserLoginModel } from "../../dialogs/login/user-login";
-import {UserInfo} from "../../common/types/account-models";
+import {UserInfo} from "../../services/services-generated";
 
 @autoinject
 export class DreamHeader {

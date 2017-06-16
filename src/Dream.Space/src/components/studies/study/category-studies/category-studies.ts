@@ -1,11 +1,11 @@
 ﻿import { bindable, autoinject } from "aurelia-framework";
-import { CategoryModel, ArticlesApiClient, ArticleModel } from "../../../../services/services-generated";
+import { CategoryModel, ArticlesApiClient, ArticleHeader } from "../../../../services/services-generated";
 
 @autoinject()
 export class CategoryStudies {
 
     @bindable category: CategoryModel;
-    articles: ArticleModel[];
+    articles: ArticleHeader[];
 
     constructor(private readonly articleService: ArticlesApiClient) {
         

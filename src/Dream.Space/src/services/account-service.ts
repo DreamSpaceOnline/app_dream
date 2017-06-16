@@ -1,60 +1,42 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { HttpClient, json } from "aurelia-fetch-client";
-import {UserInfo, LoginResponse, UserUpdateResponse } from "../common/types/account-models";
+import { AccountApiClient, LoginResponse, UserInfo, LoginViewModel, UpdateProfileResponse } from "./services-generated";
 
 @autoinject
 export class AccountService {
 
     currentUser: UserInfo;
 
-    constructor(private http: HttpClient) {
+    constructor(private account: AccountApiClient) {
     }
 
     async initialize() : Promise<UserInfo> {
-        let response = await this.http.fetch("account/user");
-        this.currentUser = await response.json();
-
+        this.currentUser = await this.account.currentUser();
         return this.currentUser;
     }
 
 
     async login(username, password): Promise<LoginResponse> {
-        const loginRequest = {
-            Email: username,
-            Password: password,
-            RememberMe: true
-        };
 
-        const response = await this.http.fetch("account/login",
-            { method: 'post', body: json(loginRequest) }
-        );
+        const loginRequest = new LoginViewModel();
+        loginRequest.email = username;
+        loginRequest.password = password;
+        loginRequest.rememberMe = true;
 
-        const result = await response.json() as LoginResponse;
-        this.currentUser = result.user;
-
-        return result;
+        const response = await this.account.login(loginRequest);
+        this.currentUser = response.user;
+        return response;
     }
 
     async logout() {
-        await this.http.fetch("account/logout", { method: 'post' });
+        await this.account.logout();
     }
 
-    async update(user: UserInfo): Promise<UserUpdateResponse> {
-        let updateRequest = {
-            Username: user.username,
-            FirstName: user.firstName
-        };
+    async update(user: UserInfo): Promise<UpdateProfileResponse> {
 
-        let response = await this.http.fetch("account/update",
-        {
-            method: "put",
-            body: json(updateRequest)
-            });
+        const response = await this.account.updateProfile(user);
+        this.currentUser = response.user;
 
-        let result = await response.json() as UserUpdateResponse;
-        this.currentUser = result.user;
-
-        return result;
+        return response;
     }
 
 }

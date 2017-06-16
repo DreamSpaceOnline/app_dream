@@ -57,8 +57,8 @@ namespace Dream.Space.Data.Repositories
 
         public async Task<List<ArticleHeader>> GetByCategoryAsync(int categoryId)
         {
-            var record = await Dbset.Where(r => r.CategoryId == categoryId).Select(a => new ArticleHeader(a)).OrderBy(r => r.OrderId).ToListAsync();
-            return record;
+            var records = await Dbset.Where(r => r.CategoryId == categoryId).OrderBy(r => r.OrderId).ToListAsync();
+            return records.Select(a => new ArticleHeader(a)).ToList();
         }
 
         public async Task<Article> GetByCategoryAsync(int categoryId, string articleUrl)

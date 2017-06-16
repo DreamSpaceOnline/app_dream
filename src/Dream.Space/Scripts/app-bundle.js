@@ -1,171 +1,182 @@
-define('common/types/enums',["require", "exports"], function (require, exports) {
-    "use strict";
-    var ChartType;
-    (function (ChartType) {
-        ChartType[ChartType["OHLC"] = 0] = "OHLC";
-        ChartType[ChartType["Line"] = 1] = "Line";
-        ChartType[ChartType["Column"] = 2] = "Column";
-    })(ChartType = exports.ChartType || (exports.ChartType = {}));
-    var Direction;
-    (function (Direction) {
-        Direction[Direction["Up"] = 0] = "Up";
-        Direction[Direction["Down"] = 1] = "Down";
-    })(Direction = exports.Direction || (exports.Direction = {}));
-    var ChartUpdateMode;
-    (function (ChartUpdateMode) {
-        ChartUpdateMode[ChartUpdateMode["Reset"] = 0] = "Reset";
-        ChartUpdateMode[ChartUpdateMode["Insert"] = 1] = "Insert";
-        ChartUpdateMode[ChartUpdateMode["Append"] = 2] = "Append";
-    })(ChartUpdateMode = exports.ChartUpdateMode || (exports.ChartUpdateMode = {}));
-    var TransformFunction;
-    (function (TransformFunction) {
-        TransformFunction[TransformFunction["First"] = 0] = "First";
-        TransformFunction[TransformFunction["Max"] = 1] = "Max";
-        TransformFunction[TransformFunction["Sum"] = 2] = "Sum";
-        TransformFunction[TransformFunction["Avg"] = 3] = "Avg";
-        TransformFunction[TransformFunction["Min"] = 4] = "Min";
-    })(TransformFunction = exports.TransformFunction || (exports.TransformFunction = {}));
-    var CompareOperator;
-    (function (CompareOperator) {
-        CompareOperator[CompareOperator["Greater"] = 0] = "Greater";
-        CompareOperator[CompareOperator["GreaterOrEqual"] = 1] = "GreaterOrEqual";
-        CompareOperator[CompareOperator["Equal"] = 2] = "Equal";
-        CompareOperator[CompareOperator["Less"] = 3] = "Less";
-        CompareOperator[CompareOperator["LessOrEqual"] = 4] = "LessOrEqual";
-        CompareOperator[CompareOperator["NotEqual"] = 5] = "NotEqual";
-    })(CompareOperator = exports.CompareOperator || (exports.CompareOperator = {}));
-    var QuoteType;
-    (function (QuoteType) {
-        QuoteType[QuoteType["Close"] = 0] = "Close";
-        QuoteType[QuoteType["Open"] = 1] = "Open";
-        QuoteType[QuoteType["High"] = 2] = "High";
-        QuoteType[QuoteType["Low"] = 3] = "Low";
-        QuoteType[QuoteType["Volume"] = 4] = "Volume";
-    })(QuoteType = exports.QuoteType || (exports.QuoteType = {}));
-    var RuleDataSource;
-    (function (RuleDataSource) {
-        RuleDataSource[RuleDataSource["Indicator"] = 0] = "Indicator";
-        RuleDataSource[RuleDataSource["HistoricalData"] = 1] = "HistoricalData";
-        RuleDataSource[RuleDataSource["Constant"] = 2] = "Constant";
-    })(RuleDataSource = exports.RuleDataSource || (exports.RuleDataSource = {}));
-});
-
-define('common/types/account-models',["require", "exports"], function (require, exports) {
-    "use strict";
-    var UserInfo = (function () {
-        function UserInfo() {
-        }
-        return UserInfo;
-    }());
-    exports.UserInfo = UserInfo;
-    var LoginResponse = (function () {
-        function LoginResponse() {
-        }
-        return LoginResponse;
-    }());
-    exports.LoginResponse = LoginResponse;
-    var UserUpdateResponse = (function () {
-        function UserUpdateResponse() {
-        }
-        return UserUpdateResponse;
-    }());
-    exports.UserUpdateResponse = UserUpdateResponse;
-});
-
-define('services/account-service',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
-    "use strict";
-    var AccountService = (function () {
-        function AccountService(http) {
-            this.http = http;
-        }
-        AccountService.prototype.initialize = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var response, _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("account/user")];
-                        case 1:
-                            response = _b.sent();
-                            _a = this;
-                            return [4 /*yield*/, response.json()];
-                        case 2:
-                            _a.currentUser = _b.sent();
-                            return [2 /*return*/, this.currentUser];
-                    }
-                });
-            });
-        };
-        AccountService.prototype.login = function (username, password) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var loginRequest, response, result;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            loginRequest = {
-                                Email: username,
-                                Password: password,
-                                RememberMe: true
-                            };
-                            return [4 /*yield*/, this.http.fetch("account/login", { method: 'post', body: aurelia_fetch_client_1.json(loginRequest) })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2:
-                            result = _a.sent();
-                            this.currentUser = result.user;
-                            return [2 /*return*/, result];
-                    }
-                });
-            });
-        };
-        AccountService.prototype.logout = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.http.fetch("account/logout", { method: 'post' })];
-                        case 1:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        AccountService.prototype.update = function (user) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var updateRequest, response, result;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            updateRequest = {
-                                Username: user.username,
-                                FirstName: user.firstName
-                            };
-                            return [4 /*yield*/, this.http.fetch("account/update", {
-                                    method: "put",
-                                    body: aurelia_fetch_client_1.json(updateRequest)
-                                })];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2:
-                            result = _a.sent();
-                            this.currentUser = result.user;
-                            return [2 /*return*/, result];
-                    }
-                });
-            });
-        };
-        return AccountService;
-    }());
-    AccountService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
-    ], AccountService);
-    exports.AccountService = AccountService;
-});
-
 define('services/services-generated',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
     "use strict";
+    var AccountApiClient = (function () {
+        function AccountApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        AccountApiClient.prototype.updateProfile = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/account/update";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processUpdateProfile(_response);
+            });
+        };
+        AccountApiClient.prototype.processUpdateProfile = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? UpdateProfileResponse.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        AccountApiClient.prototype.login = function (model) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/account/login";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = JSON.stringify(model ? model.toJSON() : null);
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processLogin(_response);
+            });
+        };
+        AccountApiClient.prototype.processLogin = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? LoginResponse.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        AccountApiClient.prototype.logout = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/account/logout";
+            url_ = url_.replace(/[?&]$/, "");
+            var content_ = "";
+            var options_ = {
+                body: content_,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processLogout(_response);
+            });
+        };
+        AccountApiClient.prototype.processLogout = function (response) {
+            var status = response.status;
+            if (status === 200) {
+                return response.blob();
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        AccountApiClient.prototype.isAuthenticated = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/account/isAuthenticated";
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processIsAuthenticated(_response);
+            });
+        };
+        AccountApiClient.prototype.processIsAuthenticated = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 !== undefined ? resultData200 : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        AccountApiClient.prototype.currentUser = function () {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/account/user";
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processCurrentUser(_response);
+            });
+        };
+        AccountApiClient.prototype.processCurrentUser = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? UserInfo.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return AccountApiClient;
+    }());
+    AccountApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], AccountApiClient);
+    exports.AccountApiClient = AccountApiClient;
     var ArticlesApiClient = (function () {
         function ArticlesApiClient(baseUrl, http) {
             this.jsonParseReviver = undefined;
@@ -193,12 +204,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetArticle = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -320,12 +330,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetSection = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? SectionModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? SectionModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -354,16 +363,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetSections = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_1 = resultData200; _i < resultData200_1.length; _i++) {
                             var item = resultData200_1[_i];
-                            result200.push(SectionModel.fromJS(item, _mappings));
+                            result200.push(SectionModel.fromJS(item));
                         }
                     }
                     return result200;
@@ -397,12 +405,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetFeaturedArticle = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -437,12 +444,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetArticleByUrl = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -474,16 +480,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetArticles = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_2 = resultData200; _i < resultData200_2.length; _i++) {
                             var item = resultData200_2[_i];
-                            result200.push(ArticleHeader.fromJS(item, _mappings));
+                            result200.push(ArticleHeader.fromJS(item));
                         }
                     }
                     return result200;
@@ -548,16 +553,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetCategories = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_3 = resultData200; _i < resultData200_3.length; _i++) {
                             var item = resultData200_3[_i];
-                            result200.push(CategoryModel.fromJS(item, _mappings));
+                            result200.push(CategoryModel.fromJS(item));
                         }
                     }
                     return result200;
@@ -591,12 +595,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processGetCategory = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? CategoryModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CategoryModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -627,12 +630,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processSaveArticle = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ArticleModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ArticleModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -663,12 +665,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticlesApiClient.prototype.processSaveCategory = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? CategoryModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CategoryModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -713,7 +714,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     result200 = resultData200 !== undefined ? resultData200 : null;
                     return result200;
                 });
@@ -748,7 +749,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     result200 = resultData200 !== undefined ? resultData200 : null;
                     return result200;
                 });
@@ -794,12 +795,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         CompaniesApiClient.prototype.processGetCompany = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? Company.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Company.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -830,16 +830,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         CompaniesApiClient.prototype.processSearch = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_4 = resultData200; _i < resultData200_4.length; _i++) {
                             var item = resultData200_4[_i];
-                            result200.push(CompanyDetails.fromJS(item, _mappings));
+                            result200.push(CompanyDetails.fromJS(item));
                         }
                     }
                     return result200;
@@ -886,12 +885,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         IndicatorsApiClient.prototype.processGetIndicator = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? Indicator.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Indicator.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -954,16 +952,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         IndicatorsApiClient.prototype.processGetIndicatorsAll = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_5 = resultData200; _i < resultData200_5.length; _i++) {
                             var item = resultData200_5[_i];
-                            result200.push(Indicator.fromJS(item, _mappings));
+                            result200.push(Indicator.fromJS(item));
                         }
                     }
                     return result200;
@@ -994,16 +991,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         IndicatorsApiClient.prototype.processGetIndicators = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_6 = resultData200; _i < resultData200_6.length; _i++) {
                             var item = resultData200_6[_i];
-                            result200.push(IndicatorCore.fromJS(item, _mappings));
+                            result200.push(IndicatorCore.fromJS(item));
                         }
                     }
                     return result200;
@@ -1036,12 +1032,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         IndicatorsApiClient.prototype.processSaveIndicator = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? Indicator.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Indicator.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1243,12 +1238,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         JobsApiClient.prototype.processStartScheduledJobs = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1280,16 +1274,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         JobsApiClient.prototype.processGetSheduledJobHistory = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_7 = resultData200; _i < resultData200_7.length; _i++) {
                             var item = resultData200_7[_i];
-                            result200.push(ScheduledJob.fromJS(item, _mappings));
+                            result200.push(ScheduledJob.fromJS(item));
                         }
                     }
                     return result200;
@@ -1323,12 +1316,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         JobsApiClient.prototype.processGetCurrentJob = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1360,12 +1352,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         JobsApiClient.prototype.processGetJob = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ScheduledJob.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1410,16 +1401,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         LayoutApiClient.prototype.processGetLayoutsForPeriod = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_8 = resultData200; _i < resultData200_8.length; _i++) {
                             var item = resultData200_8[_i];
-                            result200.push(ChartLayoutModel.fromJS(item, _mappings));
+                            result200.push(ChartLayoutModel.fromJS(item));
                         }
                     }
                     return result200;
@@ -1453,12 +1443,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         LayoutApiClient.prototype.processGetLayout = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1490,12 +1479,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         LayoutApiClient.prototype.processGetDefaultLayout = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1526,12 +1514,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         LayoutApiClient.prototype.processSaveLayout = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? ChartLayoutModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1576,16 +1563,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         LogsApiClient.prototype.processGetJobLogs = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_9 = resultData200; _i < resultData200_9.length; _i++) {
                             var item = resultData200_9[_i];
-                            result200.push(ProcessorLog.fromJS(item, _mappings));
+                            result200.push(ProcessorLog.fromJS(item));
                         }
                     }
                     return result200;
@@ -1667,6 +1653,142 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         tslib_1.__metadata("design:paramtypes", [String, Object])
     ], LogsApiClient);
     exports.LogsApiClient = LogsApiClient;
+    var PlaygroundApiClient = (function () {
+        function PlaygroundApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        PlaygroundApiClient.prototype.loadPlayground = function (ticker, strategyId, bars, date) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/{bars}/{date}";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            if (strategyId === undefined || strategyId === null)
+                throw new Error("The parameter 'strategyId' must be defined.");
+            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
+            if (bars === undefined || bars === null)
+                throw new Error("The parameter 'bars' must be defined.");
+            url_ = url_.replace("{bars}", encodeURIComponent("" + bars));
+            if (date === undefined || date === null)
+                throw new Error("The parameter 'date' must be defined.");
+            url_ = url_.replace("{date}", encodeURIComponent("" + date));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processLoadPlayground(_response);
+            });
+        };
+        PlaygroundApiClient.prototype.processLoadPlayground = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        PlaygroundApiClient.prototype.next = function (ticker, strategyId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/next";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            if (strategyId === undefined || strategyId === null)
+                throw new Error("The parameter 'strategyId' must be defined.");
+            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processNext(_response);
+            });
+        };
+        PlaygroundApiClient.prototype.processNext = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        PlaygroundApiClient.prototype.prev = function (ticker, strategyId) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/prev";
+            if (ticker === undefined || ticker === null)
+                throw new Error("The parameter 'ticker' must be defined.");
+            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
+            if (strategyId === undefined || strategyId === null)
+                throw new Error("The parameter 'strategyId' must be defined.");
+            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processPrev(_response);
+            });
+        };
+        PlaygroundApiClient.prototype.processPrev = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        return PlaygroundApiClient;
+    }());
+    PlaygroundApiClient = tslib_1.__decorate([
+        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+        tslib_1.__metadata("design:paramtypes", [String, Object])
+    ], PlaygroundApiClient);
+    exports.PlaygroundApiClient = PlaygroundApiClient;
     var RulesApiClient = (function () {
         function RulesApiClient(baseUrl, http) {
             this.jsonParseReviver = undefined;
@@ -1694,12 +1816,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RulesApiClient.prototype.processGetRule = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? Rule.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Rule.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1762,16 +1883,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RulesApiClient.prototype.processGetRules = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_10 = resultData200; _i < resultData200_10.length; _i++) {
                             var item = resultData200_10[_i];
-                            result200.push(Rule.fromJS(item, _mappings));
+                            result200.push(Rule.fromJS(item));
                         }
                     }
                     return result200;
@@ -1804,12 +1924,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RulesApiClient.prototype.processSaveRule = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? Rule.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Rule.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1854,12 +1973,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RuleSetsApiClient.prototype.processGetRuleSet = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? RuleSetModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? RuleSetModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -1922,16 +2040,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RuleSetsApiClient.prototype.processGetRuleSets = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_11 = resultData200; _i < resultData200_11.length; _i++) {
                             var item = resultData200_11[_i];
-                            result200.push(RuleSetModel.fromJS(item, _mappings));
+                            result200.push(RuleSetModel.fromJS(item));
                         }
                     }
                     return result200;
@@ -1964,12 +2081,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RuleSetsApiClient.prototype.processSaveRuleSet = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? RuleSetModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? RuleSetModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -2001,16 +2117,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         RuleSetsApiClient.prototype.processGetStrategyRuleSets = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_12 = resultData200; _i < resultData200_12.length; _i++) {
                             var item = resultData200_12[_i];
-                            result200.push(VStrategyRuleSet.fromJS(item, _mappings));
+                            result200.push(VStrategyRuleSet.fromJS(item));
                         }
                     }
                     return result200;
@@ -2112,145 +2227,6 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         tslib_1.__metadata("design:paramtypes", [String, Object])
     ], StockApiClient);
     exports.StockApiClient = StockApiClient;
-    var PlaygroundApiClient = (function () {
-        function PlaygroundApiClient(baseUrl, http) {
-            this.jsonParseReviver = undefined;
-            this.baseUrl = baseUrl ? baseUrl : "";
-            this.http = http ? http : window;
-        }
-        PlaygroundApiClient.prototype.loadPlayground = function (ticker, strategyId, bars, date) {
-            var _this = this;
-            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/{bars}/{date}";
-            if (ticker === undefined || ticker === null)
-                throw new Error("The parameter 'ticker' must be defined.");
-            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
-            if (strategyId === undefined || strategyId === null)
-                throw new Error("The parameter 'strategyId' must be defined.");
-            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
-            if (bars === undefined || bars === null)
-                throw new Error("The parameter 'bars' must be defined.");
-            url_ = url_.replace("{bars}", encodeURIComponent("" + bars));
-            if (date === undefined || date === null)
-                throw new Error("The parameter 'date' must be defined.");
-            url_ = url_.replace("{date}", encodeURIComponent("" + date));
-            url_ = url_.replace(/[?&]$/, "");
-            var options_ = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json; charset=UTF-8",
-                    "Accept": "application/json; charset=UTF-8"
-                }
-            };
-            return this.http.fetch(url_, options_).then(function (_response) {
-                return _this.processLoadPlayground(_response);
-            });
-        };
-        PlaygroundApiClient.prototype.processLoadPlayground = function (response) {
-            var _this = this;
-            var status = response.status;
-            var _mappings = [];
-            if (status === 200) {
-                return response.text().then(function (responseText) {
-                    var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200, _mappings) : null;
-                    return result200;
-                });
-            }
-            else if (status !== 200 && status !== 204) {
-                return response.text().then(function (responseText) {
-                    return throwException("An unexpected server error occurred.", status, responseText);
-                });
-            }
-            return Promise.resolve(null);
-        };
-        PlaygroundApiClient.prototype.next = function (ticker, strategyId) {
-            var _this = this;
-            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/next";
-            if (ticker === undefined || ticker === null)
-                throw new Error("The parameter 'ticker' must be defined.");
-            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
-            if (strategyId === undefined || strategyId === null)
-                throw new Error("The parameter 'strategyId' must be defined.");
-            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
-            url_ = url_.replace(/[?&]$/, "");
-            var options_ = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json; charset=UTF-8",
-                    "Accept": "application/json; charset=UTF-8"
-                }
-            };
-            return this.http.fetch(url_, options_).then(function (_response) {
-                return _this.processNext(_response);
-            });
-        };
-        PlaygroundApiClient.prototype.processNext = function (response) {
-            var _this = this;
-            var status = response.status;
-            var _mappings = [];
-            if (status === 200) {
-                return response.text().then(function (responseText) {
-                    var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200, _mappings) : null;
-                    return result200;
-                });
-            }
-            else if (status !== 200 && status !== 204) {
-                return response.text().then(function (responseText) {
-                    return throwException("An unexpected server error occurred.", status, responseText);
-                });
-            }
-            return Promise.resolve(null);
-        };
-        PlaygroundApiClient.prototype.prev = function (ticker, strategyId) {
-            var _this = this;
-            var url_ = this.baseUrl + "/api/playground/{ticker}/{strategyId}/prev";
-            if (ticker === undefined || ticker === null)
-                throw new Error("The parameter 'ticker' must be defined.");
-            url_ = url_.replace("{ticker}", encodeURIComponent("" + ticker));
-            if (strategyId === undefined || strategyId === null)
-                throw new Error("The parameter 'strategyId' must be defined.");
-            url_ = url_.replace("{strategyId}", encodeURIComponent("" + strategyId));
-            url_ = url_.replace(/[?&]$/, "");
-            var options_ = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json; charset=UTF-8",
-                    "Accept": "application/json; charset=UTF-8"
-                }
-            };
-            return this.http.fetch(url_, options_).then(function (_response) {
-                return _this.processPrev(_response);
-            });
-        };
-        PlaygroundApiClient.prototype.processPrev = function (response) {
-            var _this = this;
-            var status = response.status;
-            var _mappings = [];
-            if (status === 200) {
-                return response.text().then(function (responseText) {
-                    var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? CompanyChartData.fromJS(resultData200, _mappings) : null;
-                    return result200;
-                });
-            }
-            else if (status !== 200 && status !== 204) {
-                return response.text().then(function (responseText) {
-                    return throwException("An unexpected server error occurred.", status, responseText);
-                });
-            }
-            return Promise.resolve(null);
-        };
-        return PlaygroundApiClient;
-    }());
-    PlaygroundApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], PlaygroundApiClient);
-    exports.PlaygroundApiClient = PlaygroundApiClient;
     var StrategiesApiClient = (function () {
         function StrategiesApiClient(baseUrl, http) {
             this.jsonParseReviver = undefined;
@@ -2275,16 +2251,15 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         StrategiesApiClient.prototype.processGeStrategySummaries = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
                     if (resultData200 && resultData200.constructor === Array) {
                         result200 = [];
                         for (var _i = 0, resultData200_13 = resultData200; _i < resultData200_13.length; _i++) {
                             var item = resultData200_13[_i];
-                            result200.push(StrategySummary.fromJS(item, _mappings));
+                            result200.push(StrategySummary.fromJS(item));
                         }
                     }
                     return result200;
@@ -2318,12 +2293,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         StrategiesApiClient.prototype.processGetStrategyByUrl = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? StrategyModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? StrategyModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -2355,12 +2329,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         StrategiesApiClient.prototype.processGetStrategySummaryByUrl = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? StrategySummary.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? StrategySummary.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -2392,12 +2365,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         StrategiesApiClient.prototype.processGetStrategyById = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? Strategy.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? Strategy.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -2428,12 +2400,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         StrategiesApiClient.prototype.processSaveStrategy = function (response) {
             var _this = this;
             var status = response.status;
-            var _mappings = [];
             if (status === 200) {
                 return response.text().then(function (responseText) {
                     var result200 = null;
-                    var resultData200 = responseText === "" ? null : jsonParse(responseText, _this.jsonParseReviver);
-                    result200 = resultData200 ? StrategyModel.fromJS(resultData200, _mappings) : null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? StrategyModel.fromJS(resultData200) : null;
                     return result200;
                 });
             }
@@ -2482,6 +2453,168 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         tslib_1.__metadata("design:paramtypes", [String, Object])
     ], StrategiesApiClient);
     exports.StrategiesApiClient = StrategiesApiClient;
+    var UserInfo = (function () {
+        function UserInfo(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        UserInfo.prototype.init = function (data) {
+            if (data) {
+                this.username = data["username"] !== undefined ? data["username"] : null;
+                this.isAuthenticated = data["isAuthenticated"] !== undefined ? data["isAuthenticated"] : null;
+                this.firstName = data["firstName"] !== undefined ? data["firstName"] : null;
+            }
+        };
+        UserInfo.fromJS = function (data) {
+            var result = new UserInfo();
+            result.init(data);
+            return result;
+        };
+        UserInfo.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["username"] = this.username !== undefined ? this.username : null;
+            data["isAuthenticated"] = this.isAuthenticated !== undefined ? this.isAuthenticated : null;
+            data["firstName"] = this.firstName !== undefined ? this.firstName : null;
+            return data;
+        };
+        return UserInfo;
+    }());
+    exports.UserInfo = UserInfo;
+    var UpdateProfileResponse = (function () {
+        function UpdateProfileResponse(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        UpdateProfileResponse.prototype.init = function (data) {
+            if (data) {
+                this.status = data["status"] !== undefined ? data["status"] : null;
+                this.user = data["user"] ? UserInfo.fromJS(data["user"]) : null;
+                if (data["modelState"] && data["modelState"].constructor === Array) {
+                    this.modelState = [];
+                    for (var _i = 0, _a = data["modelState"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.modelState.push(item);
+                    }
+                }
+            }
+        };
+        UpdateProfileResponse.fromJS = function (data) {
+            var result = new UpdateProfileResponse();
+            result.init(data);
+            return result;
+        };
+        UpdateProfileResponse.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["status"] = this.status !== undefined ? this.status : null;
+            data["user"] = this.user ? this.user.toJSON() : null;
+            if (this.modelState && this.modelState.constructor === Array) {
+                data["modelState"] = [];
+                for (var _i = 0, _a = this.modelState; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["modelState"].push(item);
+                }
+            }
+            return data;
+        };
+        return UpdateProfileResponse;
+    }());
+    exports.UpdateProfileResponse = UpdateProfileResponse;
+    var UpdateProfileStatus;
+    (function (UpdateProfileStatus) {
+        UpdateProfileStatus[UpdateProfileStatus["Success"] = "Success"] = "Success";
+        UpdateProfileStatus[UpdateProfileStatus["Failure"] = "Failure"] = "Failure";
+        UpdateProfileStatus[UpdateProfileStatus["ValidationError"] = "ValidationError"] = "ValidationError";
+    })(UpdateProfileStatus = exports.UpdateProfileStatus || (exports.UpdateProfileStatus = {}));
+    var LoginViewModel = (function () {
+        function LoginViewModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        LoginViewModel.prototype.init = function (data) {
+            if (data) {
+                this.email = data["email"] !== undefined ? data["email"] : null;
+                this.password = data["password"] !== undefined ? data["password"] : null;
+                this.rememberMe = data["rememberMe"] !== undefined ? data["rememberMe"] : null;
+            }
+        };
+        LoginViewModel.fromJS = function (data) {
+            var result = new LoginViewModel();
+            result.init(data);
+            return result;
+        };
+        LoginViewModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["email"] = this.email !== undefined ? this.email : null;
+            data["password"] = this.password !== undefined ? this.password : null;
+            data["rememberMe"] = this.rememberMe !== undefined ? this.rememberMe : null;
+            return data;
+        };
+        return LoginViewModel;
+    }());
+    exports.LoginViewModel = LoginViewModel;
+    var LoginResponse = (function () {
+        function LoginResponse(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        LoginResponse.prototype.init = function (data) {
+            if (data) {
+                this.status = data["status"] !== undefined ? data["status"] : null;
+                this.user = data["user"] ? UserInfo.fromJS(data["user"]) : null;
+                if (data["modelState"] && data["modelState"].constructor === Array) {
+                    this.modelState = [];
+                    for (var _i = 0, _a = data["modelState"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.modelState.push(item);
+                    }
+                }
+            }
+        };
+        LoginResponse.fromJS = function (data) {
+            var result = new LoginResponse();
+            result.init(data);
+            return result;
+        };
+        LoginResponse.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["status"] = this.status !== undefined ? this.status : null;
+            data["user"] = this.user ? this.user.toJSON() : null;
+            if (this.modelState && this.modelState.constructor === Array) {
+                data["modelState"] = [];
+                for (var _i = 0, _a = this.modelState; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["modelState"].push(item);
+                }
+            }
+            return data;
+        };
+        return LoginResponse;
+    }());
+    exports.LoginResponse = LoginResponse;
+    var LoginStatus;
+    (function (LoginStatus) {
+        LoginStatus[LoginStatus["Success"] = "Success"] = "Success";
+        LoginStatus[LoginStatus["LockedOut"] = "LockedOut"] = "LockedOut";
+        LoginStatus[LoginStatus["RequiresVerification"] = "RequiresVerification"] = "RequiresVerification";
+        LoginStatus[LoginStatus["Failure"] = "Failure"] = "Failure";
+        LoginStatus[LoginStatus["ValidationError"] = "ValidationError"] = "ValidationError";
+    })(LoginStatus = exports.LoginStatus || (exports.LoginStatus = {}));
     var ArticleHeader = (function () {
         function ArticleHeader(data) {
             if (data) {
@@ -2491,31 +2624,33 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ArticleHeader.prototype.init = function (data, _mappings) {
+        ArticleHeader.prototype.init = function (data) {
             if (data) {
-                this.articleId = data["articleId"];
-                this.title = data["title"];
-                this.url = data["url"];
-                this.summary = data["summary"];
-                this.categoryId = data["categoryId"];
-                this.orderId = data["orderId"];
-                this.isFeatured = data["isFeatured"];
-                this.deleted = data["deleted"];
+                this.articleId = data["articleId"] !== undefined ? data["articleId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.isFeatured = data["isFeatured"] !== undefined ? data["isFeatured"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
             }
         };
-        ArticleHeader.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ArticleHeader);
+        ArticleHeader.fromJS = function (data) {
+            var result = new ArticleHeader();
+            result.init(data);
+            return result;
         };
         ArticleHeader.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["articleId"] = this.articleId;
-            data["title"] = this.title;
-            data["url"] = this.url;
-            data["summary"] = this.summary;
-            data["categoryId"] = this.categoryId;
-            data["orderId"] = this.orderId;
-            data["isFeatured"] = this.isFeatured;
-            data["deleted"] = this.deleted;
+            data["articleId"] = this.articleId !== undefined ? this.articleId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["categoryId"] = this.categoryId !== undefined ? this.categoryId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["isFeatured"] = this.isFeatured !== undefined ? this.isFeatured : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
             return data;
         };
         return ArticleHeader;
@@ -2526,20 +2661,22 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         function ArticleModel(data) {
             return _super.call(this, data) || this;
         }
-        ArticleModel.prototype.init = function (data, _mappings) {
+        ArticleModel.prototype.init = function (data) {
             _super.prototype.init.call(this, data);
             if (data) {
                 if (data["articleBlocks"] && data["articleBlocks"].constructor === Array) {
                     this.articleBlocks = [];
                     for (var _i = 0, _a = data["articleBlocks"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.articleBlocks.push(ArticleBlock.fromJS(item, _mappings));
+                        this.articleBlocks.push(ArticleBlock.fromJS(item));
                     }
                 }
             }
         };
-        ArticleModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ArticleModel);
+        ArticleModel.fromJS = function (data) {
+            var result = new ArticleModel();
+            result.init(data);
+            return result;
         };
         ArticleModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -2565,32 +2702,34 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ArticleBlock.prototype.init = function (data, _mappings) {
+        ArticleBlock.prototype.init = function (data) {
             if (data) {
-                this.valid = data["valid"];
-                this.blockType = data["blockType"];
-                this.text = data["text"];
-                this.headingType = data["headingType"];
-                this.imageUrl = data["imageUrl"];
+                this.valid = data["valid"] !== undefined ? data["valid"] : null;
+                this.blockType = data["blockType"] !== undefined ? data["blockType"] : null;
+                this.text = data["text"] !== undefined ? data["text"] : null;
+                this.headingType = data["headingType"] !== undefined ? data["headingType"] : null;
+                this.imageUrl = data["imageUrl"] !== undefined ? data["imageUrl"] : null;
                 if (data["items"] && data["items"].constructor === Array) {
                     this.items = [];
                     for (var _i = 0, _a = data["items"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.items.push(ArticleBlockItem.fromJS(item, _mappings));
+                        this.items.push(ArticleBlockItem.fromJS(item));
                     }
                 }
             }
         };
-        ArticleBlock.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ArticleBlock);
+        ArticleBlock.fromJS = function (data) {
+            var result = new ArticleBlock();
+            result.init(data);
+            return result;
         };
         ArticleBlock.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["valid"] = this.valid;
-            data["blockType"] = this.blockType;
-            data["text"] = this.text;
-            data["headingType"] = this.headingType;
-            data["imageUrl"] = this.imageUrl;
+            data["valid"] = this.valid !== undefined ? this.valid : null;
+            data["blockType"] = this.blockType !== undefined ? this.blockType : null;
+            data["text"] = this.text !== undefined ? this.text : null;
+            data["headingType"] = this.headingType !== undefined ? this.headingType : null;
+            data["imageUrl"] = this.imageUrl !== undefined ? this.imageUrl : null;
             if (this.items && this.items.constructor === Array) {
                 data["items"] = [];
                 for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
@@ -2628,19 +2767,21 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ArticleBlockItem.prototype.init = function (data, _mappings) {
+        ArticleBlockItem.prototype.init = function (data) {
             if (data) {
-                this.text = data["text"];
-                this.valid = data["valid"];
+                this.text = data["text"] !== undefined ? data["text"] : null;
+                this.valid = data["valid"] !== undefined ? data["valid"] : null;
             }
         };
-        ArticleBlockItem.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ArticleBlockItem);
+        ArticleBlockItem.fromJS = function (data) {
+            var result = new ArticleBlockItem();
+            result.init(data);
+            return result;
         };
         ArticleBlockItem.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["text"] = this.text;
-            data["valid"] = this.valid;
+            data["text"] = this.text !== undefined ? this.text : null;
+            data["valid"] = this.valid !== undefined ? this.valid : null;
             return data;
         };
         return ArticleBlockItem;
@@ -2655,19 +2796,21 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        UpdateArticleOrderModel.prototype.init = function (data, _mappings) {
+        UpdateArticleOrderModel.prototype.init = function (data) {
             if (data) {
-                this.articleId = data["articleId"];
-                this.orderId = data["orderId"];
+                this.articleId = data["articleId"] !== undefined ? data["articleId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
             }
         };
-        UpdateArticleOrderModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, UpdateArticleOrderModel);
+        UpdateArticleOrderModel.fromJS = function (data) {
+            var result = new UpdateArticleOrderModel();
+            result.init(data);
+            return result;
         };
         UpdateArticleOrderModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["articleId"] = this.articleId;
-            data["orderId"] = this.orderId;
+            data["articleId"] = this.articleId !== undefined ? this.articleId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
             return data;
         };
         return UpdateArticleOrderModel;
@@ -2682,25 +2825,27 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        SectionModel.prototype.init = function (data, _mappings) {
+        SectionModel.prototype.init = function (data) {
             if (data) {
-                this.sectionId = data["sectionId"];
-                this.title = data["title"];
-                this.url = data["url"];
-                this.orderId = data["orderId"];
-                this.isDeleted = data["isDeleted"];
+                this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.isDeleted = data["isDeleted"] !== undefined ? data["isDeleted"] : null;
             }
         };
-        SectionModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, SectionModel);
+        SectionModel.fromJS = function (data) {
+            var result = new SectionModel();
+            result.init(data);
+            return result;
         };
         SectionModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["sectionId"] = this.sectionId;
-            data["title"] = this.title;
-            data["url"] = this.url;
-            data["orderId"] = this.orderId;
-            data["isDeleted"] = this.isDeleted;
+            data["sectionId"] = this.sectionId !== undefined ? this.sectionId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["isDeleted"] = this.isDeleted !== undefined ? this.isDeleted : null;
             return data;
         };
         return SectionModel;
@@ -2715,27 +2860,29 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        CategoryModel.prototype.init = function (data, _mappings) {
+        CategoryModel.prototype.init = function (data) {
             if (data) {
-                this.categoryId = data["categoryId"];
-                this.title = data["title"];
-                this.orderId = data["orderId"];
-                this.url = data["url"];
-                this.sectionId = data["sectionId"];
-                this.deleted = data["deleted"];
+                this.categoryId = data["categoryId"] !== undefined ? data["categoryId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.sectionId = data["sectionId"] !== undefined ? data["sectionId"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
             }
         };
-        CategoryModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, CategoryModel);
+        CategoryModel.fromJS = function (data) {
+            var result = new CategoryModel();
+            result.init(data);
+            return result;
         };
         CategoryModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["categoryId"] = this.categoryId;
-            data["title"] = this.title;
-            data["orderId"] = this.orderId;
-            data["url"] = this.url;
-            data["sectionId"] = this.sectionId;
-            data["deleted"] = this.deleted;
+            data["categoryId"] = this.categoryId !== undefined ? this.categoryId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["sectionId"] = this.sectionId !== undefined ? this.sectionId : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
             return data;
         };
         return CategoryModel;
@@ -2750,21 +2897,23 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        FileDetails.prototype.init = function (data, _mappings) {
+        FileDetails.prototype.init = function (data) {
             if (data) {
-                this.fileName = data["fileName"];
-                this.fileBody = data["fileBody"];
-                this.category = data["category"];
+                this.fileName = data["fileName"] !== undefined ? data["fileName"] : null;
+                this.fileBody = data["fileBody"] !== undefined ? data["fileBody"] : null;
+                this.category = data["category"] !== undefined ? data["category"] : null;
             }
         };
-        FileDetails.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, FileDetails);
+        FileDetails.fromJS = function (data) {
+            var result = new FileDetails();
+            result.init(data);
+            return result;
         };
         FileDetails.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["fileName"] = this.fileName;
-            data["fileBody"] = this.fileBody;
-            data["category"] = this.category;
+            data["fileName"] = this.fileName !== undefined ? this.fileName : null;
+            data["fileBody"] = this.fileBody !== undefined ? this.fileBody : null;
+            data["category"] = this.category !== undefined ? this.category : null;
             return data;
         };
         return FileDetails;
@@ -2784,65 +2933,67 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        Company.prototype.init = function (data, _mappings) {
+        Company.prototype.init = function (data) {
             if (data) {
-                this.ticker = data["ticker"];
-                this.name = data["name"];
-                this.marketCap = data["marketCap"];
-                this.sector = data["sector"];
-                this.industry = data["industry"];
-                this.summaryUrl = data["summaryUrl"];
-                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : undefined;
-                this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : undefined;
-                this.volume = data["volume"];
-                this.price = data["price"];
-                this.highestPrice52 = data["highestPrice52"];
-                this.lowestPrice52 = data["lowestPrice52"];
-                this.chaosPercentage = data["chaosPercentage"];
-                this.liveQuoteJson = data["liveQuoteJson"];
-                this.historyQuotesJson = data["historyQuotesJson"];
-                this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : undefined;
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.marketCap = data["marketCap"] !== undefined ? data["marketCap"] : null;
+                this.sector = data["sector"] !== undefined ? data["sector"] : null;
+                this.industry = data["industry"] !== undefined ? data["industry"] : null;
+                this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : null;
+                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : null;
+                this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : null;
+                this.volume = data["volume"] !== undefined ? data["volume"] : null;
+                this.price = data["price"] !== undefined ? data["price"] : null;
+                this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : null;
+                this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : null;
+                this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : null;
+                this.liveQuoteJson = data["liveQuoteJson"] !== undefined ? data["liveQuoteJson"] : null;
+                this.historyQuotesJson = data["historyQuotesJson"] !== undefined ? data["historyQuotesJson"] : null;
+                this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : null;
                 if (data["historyQuotes"] && data["historyQuotes"].constructor === Array) {
                     this.historyQuotes = [];
                     for (var _i = 0, _a = data["historyQuotes"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.historyQuotes.push(QuotesModel.fromJS(item, _mappings));
+                        this.historyQuotes.push(QuotesModel.fromJS(item));
                     }
                 }
-                this.updateSuccessful = data["updateSuccessful"];
-                this.updateError = data["updateError"];
-                this.calculatedSuccessful = data["calculatedSuccessful"];
-                this.calculatedError = data["calculatedError"];
-                this.filtered = data["filtered"];
-                this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : undefined;
-                this.endDate = data["endDate"] ? new Date(data["endDate"].toString()) : undefined;
-                this.sectorId = data["sectorId"];
-                this.industryId = data["industryId"];
-                this.sP500 = data["sP500"];
-                this.isIndex = data["isIndex"];
+                this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : null;
+                this.updateError = data["updateError"] !== undefined ? data["updateError"] : null;
+                this.calculatedSuccessful = data["calculatedSuccessful"] !== undefined ? data["calculatedSuccessful"] : null;
+                this.calculatedError = data["calculatedError"] !== undefined ? data["calculatedError"] : null;
+                this.filtered = data["filtered"] !== undefined ? data["filtered"] : null;
+                this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : null;
+                this.endDate = data["endDate"] ? new Date(data["endDate"].toString()) : null;
+                this.sectorId = data["sectorId"] !== undefined ? data["sectorId"] : null;
+                this.industryId = data["industryId"] !== undefined ? data["industryId"] : null;
+                this.sP500 = data["sP500"] !== undefined ? data["sP500"] : null;
+                this.isIndex = data["isIndex"] !== undefined ? data["isIndex"] : null;
             }
         };
-        Company.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, Company);
+        Company.fromJS = function (data) {
+            var result = new Company();
+            result.init(data);
+            return result;
         };
         Company.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["ticker"] = this.ticker;
-            data["name"] = this.name;
-            data["marketCap"] = this.marketCap;
-            data["sector"] = this.sector;
-            data["industry"] = this.industry;
-            data["summaryUrl"] = this.summaryUrl;
-            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : undefined;
-            data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : undefined;
-            data["volume"] = this.volume;
-            data["price"] = this.price;
-            data["highestPrice52"] = this.highestPrice52;
-            data["lowestPrice52"] = this.lowestPrice52;
-            data["chaosPercentage"] = this.chaosPercentage;
-            data["liveQuoteJson"] = this.liveQuoteJson;
-            data["historyQuotesJson"] = this.historyQuotesJson;
-            data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : undefined;
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["marketCap"] = this.marketCap !== undefined ? this.marketCap : null;
+            data["sector"] = this.sector !== undefined ? this.sector : null;
+            data["industry"] = this.industry !== undefined ? this.industry : null;
+            data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : null;
+            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : null;
+            data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : null;
+            data["volume"] = this.volume !== undefined ? this.volume : null;
+            data["price"] = this.price !== undefined ? this.price : null;
+            data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : null;
+            data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : null;
+            data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : null;
+            data["liveQuoteJson"] = this.liveQuoteJson !== undefined ? this.liveQuoteJson : null;
+            data["historyQuotesJson"] = this.historyQuotesJson !== undefined ? this.historyQuotesJson : null;
+            data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : null;
             if (this.historyQuotes && this.historyQuotes.constructor === Array) {
                 data["historyQuotes"] = [];
                 for (var _i = 0, _a = this.historyQuotes; _i < _a.length; _i++) {
@@ -2850,17 +3001,17 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["historyQuotes"].push(item.toJSON());
                 }
             }
-            data["updateSuccessful"] = this.updateSuccessful;
-            data["updateError"] = this.updateError;
-            data["calculatedSuccessful"] = this.calculatedSuccessful;
-            data["calculatedError"] = this.calculatedError;
-            data["filtered"] = this.filtered;
-            data["startDate"] = this.startDate ? this.startDate.toISOString() : undefined;
-            data["endDate"] = this.endDate ? this.endDate.toISOString() : undefined;
-            data["sectorId"] = this.sectorId;
-            data["industryId"] = this.industryId;
-            data["sP500"] = this.sP500;
-            data["isIndex"] = this.isIndex;
+            data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : null;
+            data["updateError"] = this.updateError !== undefined ? this.updateError : null;
+            data["calculatedSuccessful"] = this.calculatedSuccessful !== undefined ? this.calculatedSuccessful : null;
+            data["calculatedError"] = this.calculatedError !== undefined ? this.calculatedError : null;
+            data["filtered"] = this.filtered !== undefined ? this.filtered : null;
+            data["startDate"] = this.startDate ? this.startDate.toISOString() : null;
+            data["endDate"] = this.endDate ? this.endDate.toISOString() : null;
+            data["sectorId"] = this.sectorId !== undefined ? this.sectorId : null;
+            data["industryId"] = this.industryId !== undefined ? this.industryId : null;
+            data["sP500"] = this.sP500 !== undefined ? this.sP500 : null;
+            data["isIndex"] = this.isIndex !== undefined ? this.isIndex : null;
             return data;
         };
         return Company;
@@ -2875,31 +3026,33 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        QuotesModel.prototype.init = function (data, _mappings) {
+        QuotesModel.prototype.init = function (data) {
             if (data) {
-                this.date = data["date"] ? new Date(data["date"].toString()) : undefined;
-                this.close = data["close"];
-                this.volume = data["volume"];
-                this.open = data["open"];
-                this.high = data["high"];
-                this.low = data["low"];
-                this.volumeAsText = data["volumeAsText"];
-                this.impulse = data["impulse"];
+                this.date = data["date"] ? new Date(data["date"].toString()) : null;
+                this.close = data["close"] !== undefined ? data["close"] : null;
+                this.volume = data["volume"] !== undefined ? data["volume"] : null;
+                this.open = data["open"] !== undefined ? data["open"] : null;
+                this.high = data["high"] !== undefined ? data["high"] : null;
+                this.low = data["low"] !== undefined ? data["low"] : null;
+                this.volumeAsText = data["volumeAsText"] !== undefined ? data["volumeAsText"] : null;
+                this.impulse = data["impulse"] !== undefined ? data["impulse"] : null;
             }
         };
-        QuotesModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, QuotesModel);
+        QuotesModel.fromJS = function (data) {
+            var result = new QuotesModel();
+            result.init(data);
+            return result;
         };
         QuotesModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["date"] = this.date ? this.date.toISOString() : undefined;
-            data["close"] = this.close;
-            data["volume"] = this.volume;
-            data["open"] = this.open;
-            data["high"] = this.high;
-            data["low"] = this.low;
-            data["volumeAsText"] = this.volumeAsText;
-            data["impulse"] = this.impulse;
+            data["date"] = this.date ? this.date.toISOString() : null;
+            data["close"] = this.close !== undefined ? this.close : null;
+            data["volume"] = this.volume !== undefined ? this.volume : null;
+            data["open"] = this.open !== undefined ? this.open : null;
+            data["high"] = this.high !== undefined ? this.high : null;
+            data["low"] = this.low !== undefined ? this.low : null;
+            data["volumeAsText"] = this.volumeAsText !== undefined ? this.volumeAsText : null;
+            data["impulse"] = this.impulse !== undefined ? this.impulse : null;
             return data;
         };
         return QuotesModel;
@@ -2914,19 +3067,21 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        CompanySearchRequest.prototype.init = function (data, _mappings) {
+        CompanySearchRequest.prototype.init = function (data) {
             if (data) {
-                this.ticker = data["ticker"];
-                this.maxCount = data["maxCount"];
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.maxCount = data["maxCount"] !== undefined ? data["maxCount"] : null;
             }
         };
-        CompanySearchRequest.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, CompanySearchRequest);
+        CompanySearchRequest.fromJS = function (data) {
+            var result = new CompanySearchRequest();
+            result.init(data);
+            return result;
         };
         CompanySearchRequest.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["ticker"] = this.ticker;
-            data["maxCount"] = this.maxCount;
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["maxCount"] = this.maxCount !== undefined ? this.maxCount : null;
             return data;
         };
         return CompanySearchRequest;
@@ -2941,41 +3096,43 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        CompanyDetails.prototype.init = function (data, _mappings) {
+        CompanyDetails.prototype.init = function (data) {
             if (data) {
-                this.ticker = data["ticker"];
-                this.name = data["name"];
-                this.sector = data["sector"];
-                this.industry = data["industry"];
-                this.summaryUrl = data["summaryUrl"];
-                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : undefined;
-                this.volume = data["volume"];
-                this.price = data["price"];
-                this.highestPrice52 = data["highestPrice52"];
-                this.lowestPrice52 = data["lowestPrice52"];
-                this.chaosPercentage = data["chaosPercentage"];
-                this.updateSuccessful = data["updateSuccessful"];
-                this.filtered = data["filtered"];
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.sector = data["sector"] !== undefined ? data["sector"] : null;
+                this.industry = data["industry"] !== undefined ? data["industry"] : null;
+                this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : null;
+                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : null;
+                this.volume = data["volume"] !== undefined ? data["volume"] : null;
+                this.price = data["price"] !== undefined ? data["price"] : null;
+                this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : null;
+                this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : null;
+                this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : null;
+                this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : null;
+                this.filtered = data["filtered"] !== undefined ? data["filtered"] : null;
             }
         };
-        CompanyDetails.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, CompanyDetails);
+        CompanyDetails.fromJS = function (data) {
+            var result = new CompanyDetails();
+            result.init(data);
+            return result;
         };
         CompanyDetails.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["ticker"] = this.ticker;
-            data["name"] = this.name;
-            data["sector"] = this.sector;
-            data["industry"] = this.industry;
-            data["summaryUrl"] = this.summaryUrl;
-            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : undefined;
-            data["volume"] = this.volume;
-            data["price"] = this.price;
-            data["highestPrice52"] = this.highestPrice52;
-            data["lowestPrice52"] = this.lowestPrice52;
-            data["chaosPercentage"] = this.chaosPercentage;
-            data["updateSuccessful"] = this.updateSuccessful;
-            data["filtered"] = this.filtered;
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["sector"] = this.sector !== undefined ? this.sector : null;
+            data["industry"] = this.industry !== undefined ? this.industry : null;
+            data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : null;
+            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : null;
+            data["volume"] = this.volume !== undefined ? this.volume : null;
+            data["price"] = this.price !== undefined ? this.price : null;
+            data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : null;
+            data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : null;
+            data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : null;
+            data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : null;
+            data["filtered"] = this.filtered !== undefined ? this.filtered : null;
             return data;
         };
         return CompanyDetails;
@@ -2990,43 +3147,45 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        Indicator.prototype.init = function (data, _mappings) {
+        Indicator.prototype.init = function (data) {
             if (data) {
-                this.indicatorId = data["indicatorId"];
-                this.name = data["name"];
-                this.description = data["description"];
-                this.period = data["period"];
-                this.jsonParams = data["jsonParams"];
-                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : undefined;
-                this.deleted = data["deleted"];
-                this.global = data["global"];
-                this.chartPlotNumber = data["chartPlotNumber"];
-                this.chartColor = data["chartColor"];
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : null;
+                this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.global = data["global"] !== undefined ? data["global"] : null;
+                this.chartPlotNumber = data["chartPlotNumber"] !== undefined ? data["chartPlotNumber"] : null;
+                this.chartColor = data["chartColor"] !== undefined ? data["chartColor"] : null;
                 if (data["params"] && data["params"].constructor === Array) {
                     this.params = [];
                     for (var _i = 0, _a = data["params"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.params.push(IndicatorParam.fromJS(item, _mappings));
+                        this.params.push(IndicatorParam.fromJS(item));
                     }
                 }
-                this.chartType = data["chartType"];
+                this.chartType = data["chartType"] !== undefined ? data["chartType"] : null;
             }
         };
-        Indicator.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, Indicator);
+        Indicator.fromJS = function (data) {
+            var result = new Indicator();
+            result.init(data);
+            return result;
         };
         Indicator.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["indicatorId"] = this.indicatorId;
-            data["name"] = this.name;
-            data["description"] = this.description;
-            data["period"] = this.period;
-            data["jsonParams"] = this.jsonParams;
-            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : undefined;
-            data["deleted"] = this.deleted;
-            data["global"] = this.global;
-            data["chartPlotNumber"] = this.chartPlotNumber;
-            data["chartColor"] = this.chartColor;
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : null;
+            data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["global"] = this.global !== undefined ? this.global : null;
+            data["chartPlotNumber"] = this.chartPlotNumber !== undefined ? this.chartPlotNumber : null;
+            data["chartColor"] = this.chartColor !== undefined ? this.chartColor : null;
             if (this.params && this.params.constructor === Array) {
                 data["params"] = [];
                 for (var _i = 0, _a = this.params; _i < _a.length; _i++) {
@@ -3034,7 +3193,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["params"].push(item.toJSON());
                 }
             }
-            data["chartType"] = this.chartType;
+            data["chartType"] = this.chartType !== undefined ? this.chartType : null;
             return data;
         };
         return Indicator;
@@ -3054,19 +3213,21 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IndicatorParam.prototype.init = function (data, _mappings) {
+        IndicatorParam.prototype.init = function (data) {
             if (data) {
-                this.paramName = data["paramName"];
-                this.value = data["value"];
+                this.paramName = data["paramName"] !== undefined ? data["paramName"] : null;
+                this.value = data["value"] !== undefined ? data["value"] : null;
             }
         };
-        IndicatorParam.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IndicatorParam);
+        IndicatorParam.fromJS = function (data) {
+            var result = new IndicatorParam();
+            result.init(data);
+            return result;
         };
         IndicatorParam.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["paramName"] = this.paramName;
-            data["value"] = this.value;
+            data["paramName"] = this.paramName !== undefined ? this.paramName : null;
+            data["value"] = this.value !== undefined ? this.value : null;
             return data;
         };
         return IndicatorParam;
@@ -3087,21 +3248,23 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IndicatorCore.prototype.init = function (data, _mappings) {
+        IndicatorCore.prototype.init = function (data) {
             if (data) {
-                this.name = data["name"];
-                this.id = data["id"];
-                this.period = data["period"];
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.id = data["id"] !== undefined ? data["id"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
             }
         };
-        IndicatorCore.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IndicatorCore);
+        IndicatorCore.fromJS = function (data) {
+            var result = new IndicatorCore();
+            result.init(data);
+            return result;
         };
         IndicatorCore.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["name"] = this.name;
-            data["id"] = this.id;
-            data["period"] = this.period;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["id"] = this.id !== undefined ? this.id : null;
+            data["period"] = this.period !== undefined ? this.period : null;
             return data;
         };
         return IndicatorCore;
@@ -3116,29 +3279,31 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ScheduledJob.prototype.init = function (data, _mappings) {
+        ScheduledJob.prototype.init = function (data) {
             if (data) {
-                this.jobId = data["jobId"];
-                this.jobType = data["jobType"];
-                this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : undefined;
-                this.completedDate = data["completedDate"] ? new Date(data["completedDate"].toString()) : undefined;
-                this.jobName = data["jobName"];
-                this.status = data["status"];
-                this.progress = data["progress"];
+                this.jobId = data["jobId"] !== undefined ? data["jobId"] : null;
+                this.jobType = data["jobType"] !== undefined ? data["jobType"] : null;
+                this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : null;
+                this.completedDate = data["completedDate"] ? new Date(data["completedDate"].toString()) : null;
+                this.jobName = data["jobName"] !== undefined ? data["jobName"] : null;
+                this.status = data["status"] !== undefined ? data["status"] : null;
+                this.progress = data["progress"] !== undefined ? data["progress"] : null;
             }
         };
-        ScheduledJob.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ScheduledJob);
+        ScheduledJob.fromJS = function (data) {
+            var result = new ScheduledJob();
+            result.init(data);
+            return result;
         };
         ScheduledJob.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["jobId"] = this.jobId;
-            data["jobType"] = this.jobType;
-            data["startDate"] = this.startDate ? this.startDate.toISOString() : undefined;
-            data["completedDate"] = this.completedDate ? this.completedDate.toISOString() : undefined;
-            data["jobName"] = this.jobName;
-            data["status"] = this.status;
-            data["progress"] = this.progress;
+            data["jobId"] = this.jobId !== undefined ? this.jobId : null;
+            data["jobType"] = this.jobType !== undefined ? this.jobType : null;
+            data["startDate"] = this.startDate ? this.startDate.toISOString() : null;
+            data["completedDate"] = this.completedDate ? this.completedDate.toISOString() : null;
+            data["jobName"] = this.jobName !== undefined ? this.jobName : null;
+            data["status"] = this.status !== undefined ? this.status : null;
+            data["progress"] = this.progress !== undefined ? this.progress : null;
             return data;
         };
         return ScheduledJob;
@@ -3170,25 +3335,27 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ChartLayoutModel.prototype.init = function (data, _mappings) {
+        ChartLayoutModel.prototype.init = function (data) {
             if (data) {
                 if (data["plots"] && data["plots"].constructor === Array) {
                     this.plots = [];
                     for (var _i = 0, _a = data["plots"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.plots.push(ChartPlotModel.fromJS(item, _mappings));
+                        this.plots.push(ChartPlotModel.fromJS(item));
                     }
                 }
-                this.layoutId = data["layoutId"];
-                this.title = data["title"];
-                this.description = data["description"];
-                this.deleted = data["deleted"];
-                this.period = data["period"];
-                this.default = data["default"];
+                this.layoutId = data["layoutId"] !== undefined ? data["layoutId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.default = data["default"] !== undefined ? data["default"] : null;
             }
         };
-        ChartLayoutModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ChartLayoutModel);
+        ChartLayoutModel.fromJS = function (data) {
+            var result = new ChartLayoutModel();
+            result.init(data);
+            return result;
         };
         ChartLayoutModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -3199,12 +3366,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["plots"].push(item.toJSON());
                 }
             }
-            data["layoutId"] = this.layoutId;
-            data["title"] = this.title;
-            data["description"] = this.description;
-            data["deleted"] = this.deleted;
-            data["period"] = this.period;
-            data["default"] = this.default;
+            data["layoutId"] = this.layoutId !== undefined ? this.layoutId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["default"] = this.default !== undefined ? this.default : null;
             return data;
         };
         return ChartLayoutModel;
@@ -3219,30 +3386,32 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ChartPlotModel.prototype.init = function (data, _mappings) {
+        ChartPlotModel.prototype.init = function (data) {
             if (data) {
-                this.layoutId = data["layoutId"];
-                this.plotId = data["plotId"];
-                this.orderId = data["orderId"];
-                this.height = data["height"];
+                this.layoutId = data["layoutId"] !== undefined ? data["layoutId"] : null;
+                this.plotId = data["plotId"] !== undefined ? data["plotId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.height = data["height"] !== undefined ? data["height"] : null;
                 if (data["indicators"] && data["indicators"].constructor === Array) {
                     this.indicators = [];
                     for (var _i = 0, _a = data["indicators"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.indicators.push(LayoutIndicatorModel.fromJS(item, _mappings));
+                        this.indicators.push(LayoutIndicatorModel.fromJS(item));
                     }
                 }
             }
         };
-        ChartPlotModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ChartPlotModel);
+        ChartPlotModel.fromJS = function (data) {
+            var result = new ChartPlotModel();
+            result.init(data);
+            return result;
         };
         ChartPlotModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["layoutId"] = this.layoutId;
-            data["plotId"] = this.plotId;
-            data["orderId"] = this.orderId;
-            data["height"] = this.height;
+            data["layoutId"] = this.layoutId !== undefined ? this.layoutId : null;
+            data["plotId"] = this.plotId !== undefined ? this.plotId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["height"] = this.height !== undefined ? this.height : null;
             if (this.indicators && this.indicators.constructor === Array) {
                 data["indicators"] = [];
                 for (var _i = 0, _a = this.indicators; _i < _a.length; _i++) {
@@ -3264,29 +3433,31 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        LayoutIndicatorModel.prototype.init = function (data, _mappings) {
+        LayoutIndicatorModel.prototype.init = function (data) {
             if (data) {
-                this.id = data["id"];
-                this.plotId = data["plotId"];
-                this.indicatorId = data["indicatorId"];
-                this.orderId = data["orderId"];
-                this.indicator = data["indicator"] ? IndicatorModel.fromJS(data["indicator"], _mappings) : undefined;
-                this.name = data["name"];
-                this.lineColor = data["lineColor"];
+                this.id = data["id"] !== undefined ? data["id"] : null;
+                this.plotId = data["plotId"] !== undefined ? data["plotId"] : null;
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.indicator = data["indicator"] ? IndicatorModel.fromJS(data["indicator"]) : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.lineColor = data["lineColor"] !== undefined ? data["lineColor"] : null;
             }
         };
-        LayoutIndicatorModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, LayoutIndicatorModel);
+        LayoutIndicatorModel.fromJS = function (data) {
+            var result = new LayoutIndicatorModel();
+            result.init(data);
+            return result;
         };
         LayoutIndicatorModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["id"] = this.id;
-            data["plotId"] = this.plotId;
-            data["indicatorId"] = this.indicatorId;
-            data["orderId"] = this.orderId;
-            data["indicator"] = this.indicator ? this.indicator.toJSON() : undefined;
-            data["name"] = this.name;
-            data["lineColor"] = this.lineColor;
+            data["id"] = this.id !== undefined ? this.id : null;
+            data["plotId"] = this.plotId !== undefined ? this.plotId : null;
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["indicator"] = this.indicator ? this.indicator.toJSON() : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["lineColor"] = this.lineColor !== undefined ? this.lineColor : null;
             return data;
         };
         return LayoutIndicatorModel;
@@ -3301,29 +3472,31 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IndicatorModel.prototype.init = function (data, _mappings) {
+        IndicatorModel.prototype.init = function (data) {
             if (data) {
-                this.indicatorId = data["indicatorId"];
-                this.period = data["period"];
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
                 if (data["params"] && data["params"].constructor === Array) {
                     this.params = [];
                     for (var _i = 0, _a = data["params"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.params.push(IndicatorParam.fromJS(item, _mappings));
+                        this.params.push(IndicatorParam.fromJS(item));
                     }
                 }
-                this.name = data["name"];
-                this.jsonParams = data["jsonParams"];
-                this.description = data["description"];
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
             }
         };
-        IndicatorModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IndicatorModel);
+        IndicatorModel.fromJS = function (data) {
+            var result = new IndicatorModel();
+            result.init(data);
+            return result;
         };
         IndicatorModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["indicatorId"] = this.indicatorId;
-            data["period"] = this.period;
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["period"] = this.period !== undefined ? this.period : null;
             if (this.params && this.params.constructor === Array) {
                 data["params"] = [];
                 for (var _i = 0, _a = this.params; _i < _a.length; _i++) {
@@ -3331,9 +3504,9 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["params"].push(item.toJSON());
                 }
             }
-            data["name"] = this.name;
-            data["jsonParams"] = this.jsonParams;
-            data["description"] = this.description;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : null;
+            data["description"] = this.description !== undefined ? this.description : null;
             return data;
         };
         return IndicatorModel;
@@ -3348,241 +3521,40 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ProcessorLog.prototype.init = function (data, _mappings) {
+        ProcessorLog.prototype.init = function (data) {
             if (data) {
-                this.id = data["id"];
-                this.logged = data["logged"] ? new Date(data["logged"].toString()) : undefined;
-                this.level = data["level"];
-                this.message = data["message"];
-                this.processor = data["processor"];
-                this.jobType = data["jobType"];
-                this.jobState = data["jobState"];
-                this.exception = data["exception"];
-                this.jobId = data["jobId"];
+                this.id = data["id"] !== undefined ? data["id"] : null;
+                this.logged = data["logged"] ? new Date(data["logged"].toString()) : null;
+                this.level = data["level"] !== undefined ? data["level"] : null;
+                this.message = data["message"] !== undefined ? data["message"] : null;
+                this.processor = data["processor"] !== undefined ? data["processor"] : null;
+                this.jobType = data["jobType"] !== undefined ? data["jobType"] : null;
+                this.jobState = data["jobState"] !== undefined ? data["jobState"] : null;
+                this.exception = data["exception"] !== undefined ? data["exception"] : null;
+                this.jobId = data["jobId"] !== undefined ? data["jobId"] : null;
             }
         };
-        ProcessorLog.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ProcessorLog);
+        ProcessorLog.fromJS = function (data) {
+            var result = new ProcessorLog();
+            result.init(data);
+            return result;
         };
         ProcessorLog.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["id"] = this.id;
-            data["logged"] = this.logged ? this.logged.toISOString() : undefined;
-            data["level"] = this.level;
-            data["message"] = this.message;
-            data["processor"] = this.processor;
-            data["jobType"] = this.jobType;
-            data["jobState"] = this.jobState;
-            data["exception"] = this.exception;
-            data["jobId"] = this.jobId;
+            data["id"] = this.id !== undefined ? this.id : null;
+            data["logged"] = this.logged ? this.logged.toISOString() : null;
+            data["level"] = this.level !== undefined ? this.level : null;
+            data["message"] = this.message !== undefined ? this.message : null;
+            data["processor"] = this.processor !== undefined ? this.processor : null;
+            data["jobType"] = this.jobType !== undefined ? this.jobType : null;
+            data["jobState"] = this.jobState !== undefined ? this.jobState : null;
+            data["exception"] = this.exception !== undefined ? this.exception : null;
+            data["jobId"] = this.jobId !== undefined ? this.jobId : null;
             return data;
         };
         return ProcessorLog;
     }());
     exports.ProcessorLog = ProcessorLog;
-    var Rule = (function () {
-        function Rule(data) {
-            if (data) {
-                for (var property in data) {
-                    if (data.hasOwnProperty(property))
-                        this[property] = data[property];
-                }
-            }
-        }
-        Rule.prototype.init = function (data, _mappings) {
-            if (data) {
-                this.ruleId = data["ruleId"];
-                this.name = data["name"];
-                this.description = data["description"];
-                this.deleted = data["deleted"];
-                this.period = data["period"];
-                this.dataSourceV1 = data["dataSourceV1"];
-                this.dataSourceV2 = data["dataSourceV2"];
-                this.dataSeriesV1 = data["dataSeriesV1"];
-                this.dataSeriesV2 = data["dataSeriesV2"];
-                this.constV1 = data["constV1"];
-                this.constV2 = data["constV2"];
-                this.skipItemsV1 = data["skipItemsV1"];
-                this.skipItemsV2 = data["skipItemsV2"];
-                this.takeItemsV1 = data["takeItemsV1"];
-                this.takeItemsV2 = data["takeItemsV2"];
-                this.transformItemsV1 = data["transformItemsV1"];
-                this.transformItemsV2 = data["transformItemsV2"];
-                this.condition = data["condition"];
-            }
-        };
-        Rule.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, Rule);
-        };
-        Rule.prototype.toJSON = function (data) {
-            data = typeof data === 'object' ? data : {};
-            data["ruleId"] = this.ruleId;
-            data["name"] = this.name;
-            data["description"] = this.description;
-            data["deleted"] = this.deleted;
-            data["period"] = this.period;
-            data["dataSourceV1"] = this.dataSourceV1;
-            data["dataSourceV2"] = this.dataSourceV2;
-            data["dataSeriesV1"] = this.dataSeriesV1;
-            data["dataSeriesV2"] = this.dataSeriesV2;
-            data["constV1"] = this.constV1;
-            data["constV2"] = this.constV2;
-            data["skipItemsV1"] = this.skipItemsV1;
-            data["skipItemsV2"] = this.skipItemsV2;
-            data["takeItemsV1"] = this.takeItemsV1;
-            data["takeItemsV2"] = this.takeItemsV2;
-            data["transformItemsV1"] = this.transformItemsV1;
-            data["transformItemsV2"] = this.transformItemsV2;
-            data["condition"] = this.condition;
-            return data;
-        };
-        return Rule;
-    }());
-    exports.Rule = Rule;
-    var DataSourceType;
-    (function (DataSourceType) {
-        DataSourceType[DataSourceType["Indicator"] = "Indicator"] = "Indicator";
-        DataSourceType[DataSourceType["HistoricalData"] = "HistoricalData"] = "HistoricalData";
-        DataSourceType[DataSourceType["Constant"] = "Constant"] = "Constant";
-    })(DataSourceType = exports.DataSourceType || (exports.DataSourceType = {}));
-    var TransformFunction;
-    (function (TransformFunction) {
-        TransformFunction[TransformFunction["First"] = "First"] = "First";
-        TransformFunction[TransformFunction["Max"] = "Max"] = "Max";
-        TransformFunction[TransformFunction["Sum"] = "Sum"] = "Sum";
-        TransformFunction[TransformFunction["Avg"] = "Avg"] = "Avg";
-        TransformFunction[TransformFunction["Min"] = "Min"] = "Min";
-    })(TransformFunction = exports.TransformFunction || (exports.TransformFunction = {}));
-    var CompareOperator;
-    (function (CompareOperator) {
-        CompareOperator[CompareOperator["Greater"] = "Greater"] = "Greater";
-        CompareOperator[CompareOperator["GreaterOrEqual"] = "GreaterOrEqual"] = "GreaterOrEqual";
-        CompareOperator[CompareOperator["Equal"] = "Equal"] = "Equal";
-        CompareOperator[CompareOperator["Less"] = "Less"] = "Less";
-        CompareOperator[CompareOperator["LessOrEqual"] = "LessOrEqual"] = "LessOrEqual";
-        CompareOperator[CompareOperator["NotEqual"] = "NotEqual"] = "NotEqual";
-    })(CompareOperator = exports.CompareOperator || (exports.CompareOperator = {}));
-    var RuleSetModel = (function () {
-        function RuleSetModel(data) {
-            if (data) {
-                for (var property in data) {
-                    if (data.hasOwnProperty(property))
-                        this[property] = data[property];
-                }
-            }
-        }
-        RuleSetModel.prototype.init = function (data, _mappings) {
-            if (data) {
-                if (data["rules"] && data["rules"].constructor === Array) {
-                    this.rules = [];
-                    for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
-                        var item = _a[_i];
-                        this.rules.push(RuleModel.fromJS(item, _mappings));
-                    }
-                }
-                this.period = data["period"];
-                this.ruleSetId = data["ruleSetId"];
-                this.name = data["name"];
-                this.deleted = data["deleted"];
-                this.description = data["description"];
-            }
-        };
-        RuleSetModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, RuleSetModel);
-        };
-        RuleSetModel.prototype.toJSON = function (data) {
-            data = typeof data === 'object' ? data : {};
-            if (this.rules && this.rules.constructor === Array) {
-                data["rules"] = [];
-                for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
-                    var item = _a[_i];
-                    data["rules"].push(item.toJSON());
-                }
-            }
-            data["period"] = this.period;
-            data["ruleSetId"] = this.ruleSetId;
-            data["name"] = this.name;
-            data["deleted"] = this.deleted;
-            data["description"] = this.description;
-            return data;
-        };
-        return RuleSetModel;
-    }());
-    exports.RuleSetModel = RuleSetModel;
-    var RuleModel = (function () {
-        function RuleModel(data) {
-            if (data) {
-                for (var property in data) {
-                    if (data.hasOwnProperty(property))
-                        this[property] = data[property];
-                }
-            }
-        }
-        RuleModel.prototype.init = function (data, _mappings) {
-            if (data) {
-                this.name = data["name"];
-                this.ruleId = data["ruleId"];
-                this.ruleSetId = data["ruleSetId"];
-                this.orderId = data["orderId"];
-                this.description = data["description"];
-                this.deleted = data["deleted"];
-            }
-        };
-        RuleModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, RuleModel);
-        };
-        RuleModel.prototype.toJSON = function (data) {
-            data = typeof data === 'object' ? data : {};
-            data["name"] = this.name;
-            data["ruleId"] = this.ruleId;
-            data["ruleSetId"] = this.ruleSetId;
-            data["orderId"] = this.orderId;
-            data["description"] = this.description;
-            data["deleted"] = this.deleted;
-            return data;
-        };
-        return RuleModel;
-    }());
-    exports.RuleModel = RuleModel;
-    var VStrategyRuleSet = (function () {
-        function VStrategyRuleSet(data) {
-            if (data) {
-                for (var property in data) {
-                    if (data.hasOwnProperty(property))
-                        this[property] = data[property];
-                }
-            }
-        }
-        VStrategyRuleSet.prototype.init = function (data, _mappings) {
-            if (data) {
-                this.strategyId = data["strategyId"];
-                this.strategyActive = data["strategyActive"];
-                this.ruleSetId = data["ruleSetId"];
-                this.ruleSetName = data["ruleSetName"];
-                this.ruleSetDescription = data["ruleSetDescription"];
-                this.ruleSetPeriod = data["ruleSetPeriod"];
-                this.ruleSetOrderId = data["ruleSetOrderId"];
-                this.ruleSetOptional = data["ruleSetOptional"];
-            }
-        };
-        VStrategyRuleSet.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, VStrategyRuleSet);
-        };
-        VStrategyRuleSet.prototype.toJSON = function (data) {
-            data = typeof data === 'object' ? data : {};
-            data["strategyId"] = this.strategyId;
-            data["strategyActive"] = this.strategyActive;
-            data["ruleSetId"] = this.ruleSetId;
-            data["ruleSetName"] = this.ruleSetName;
-            data["ruleSetDescription"] = this.ruleSetDescription;
-            data["ruleSetPeriod"] = this.ruleSetPeriod;
-            data["ruleSetOrderId"] = this.ruleSetOrderId;
-            data["ruleSetOptional"] = this.ruleSetOptional;
-            return data;
-        };
-        return VStrategyRuleSet;
-    }());
-    exports.VStrategyRuleSet = VStrategyRuleSet;
     var GlobalIndexChartData = (function () {
         function GlobalIndexChartData(data) {
             if (data) {
@@ -3592,20 +3564,22 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        GlobalIndexChartData.prototype.init = function (data, _mappings) {
+        GlobalIndexChartData.prototype.init = function (data) {
             if (data) {
                 if (data["periods"] && data["periods"].constructor === Array) {
                     this.periods = [];
                     for (var _i = 0, _a = data["periods"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.periods.push(ChartData.fromJS(item, _mappings));
+                        this.periods.push(ChartData.fromJS(item));
                     }
                 }
-                this.company = data["company"] ? CompanyInfo.fromJS(data["company"], _mappings) : undefined;
+                this.company = data["company"] ? CompanyInfo.fromJS(data["company"]) : null;
             }
         };
-        GlobalIndexChartData.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, GlobalIndexChartData);
+        GlobalIndexChartData.fromJS = function (data) {
+            var result = new GlobalIndexChartData();
+            result.init(data);
+            return result;
         };
         GlobalIndexChartData.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -3616,7 +3590,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["periods"].push(item.toJSON());
                 }
             }
-            data["company"] = this.company ? this.company.toJSON() : undefined;
+            data["company"] = this.company ? this.company.toJSON() : null;
             return data;
         };
         return GlobalIndexChartData;
@@ -3627,20 +3601,22 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         function CompanyChartData(data) {
             return _super.call(this, data) || this;
         }
-        CompanyChartData.prototype.init = function (data, _mappings) {
+        CompanyChartData.prototype.init = function (data) {
             _super.prototype.init.call(this, data);
             if (data) {
                 if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
                     this.ruleSets = [];
                     for (var _i = 0, _a = data["ruleSets"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.ruleSets.push(StrategyRuleSetResult.fromJS(item, _mappings));
+                        this.ruleSets.push(StrategyRuleSetResult.fromJS(item));
                     }
                 }
             }
         };
-        CompanyChartData.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, CompanyChartData);
+        CompanyChartData.fromJS = function (data) {
+            var result = new CompanyChartData();
+            result.init(data);
+            return result;
         };
         CompanyChartData.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -3666,28 +3642,30 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        StrategyRuleSetResult.prototype.init = function (data, _mappings) {
+        StrategyRuleSetResult.prototype.init = function (data) {
             if (data) {
-                this.ruleSetId = data["ruleSetId"];
-                this.name = data["name"];
-                this.progress = data["progress"];
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.progress = data["progress"] !== undefined ? data["progress"] : null;
                 if (data["rules"] && data["rules"].constructor === Array) {
                     this.rules = [];
                     for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.rules.push(StrategyRuleResult.fromJS(item, _mappings));
+                        this.rules.push(StrategyRuleResult.fromJS(item));
                     }
                 }
             }
         };
-        StrategyRuleSetResult.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, StrategyRuleSetResult);
+        StrategyRuleSetResult.fromJS = function (data) {
+            var result = new StrategyRuleSetResult();
+            result.init(data);
+            return result;
         };
         StrategyRuleSetResult.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["ruleSetId"] = this.ruleSetId;
-            data["name"] = this.name;
-            data["progress"] = this.progress;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["progress"] = this.progress !== undefined ? this.progress : null;
             if (this.rules && this.rules.constructor === Array) {
                 data["rules"] = [];
                 for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
@@ -3709,36 +3687,47 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        StrategyRuleResult.prototype.init = function (data, _mappings) {
+        StrategyRuleResult.prototype.init = function (data) {
             if (data) {
-                this.condition = data["condition"];
-                this.ruleSetId = data["ruleSetId"];
-                this.ruleId = data["ruleId"];
-                this.ruleName = data["ruleName"];
-                this.ruleSetName = data["ruleSetName"];
-                this.firstValue = data["firstValue"];
-                this.secondValue = data["secondValue"];
-                this.valid = data["valid"];
+                this.condition = data["condition"] !== undefined ? data["condition"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : null;
+                this.ruleName = data["ruleName"] !== undefined ? data["ruleName"] : null;
+                this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : null;
+                this.firstValue = data["firstValue"] !== undefined ? data["firstValue"] : null;
+                this.secondValue = data["secondValue"] !== undefined ? data["secondValue"] : null;
+                this.valid = data["valid"] !== undefined ? data["valid"] : null;
             }
         };
-        StrategyRuleResult.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, StrategyRuleResult);
+        StrategyRuleResult.fromJS = function (data) {
+            var result = new StrategyRuleResult();
+            result.init(data);
+            return result;
         };
         StrategyRuleResult.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["condition"] = this.condition;
-            data["ruleSetId"] = this.ruleSetId;
-            data["ruleId"] = this.ruleId;
-            data["ruleName"] = this.ruleName;
-            data["ruleSetName"] = this.ruleSetName;
-            data["firstValue"] = this.firstValue;
-            data["secondValue"] = this.secondValue;
-            data["valid"] = this.valid;
+            data["condition"] = this.condition !== undefined ? this.condition : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["ruleId"] = this.ruleId !== undefined ? this.ruleId : null;
+            data["ruleName"] = this.ruleName !== undefined ? this.ruleName : null;
+            data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : null;
+            data["firstValue"] = this.firstValue !== undefined ? this.firstValue : null;
+            data["secondValue"] = this.secondValue !== undefined ? this.secondValue : null;
+            data["valid"] = this.valid !== undefined ? this.valid : null;
             return data;
         };
         return StrategyRuleResult;
     }());
     exports.StrategyRuleResult = StrategyRuleResult;
+    var CompareOperator;
+    (function (CompareOperator) {
+        CompareOperator[CompareOperator["Greater"] = "Greater"] = "Greater";
+        CompareOperator[CompareOperator["GreaterOrEqual"] = "GreaterOrEqual"] = "GreaterOrEqual";
+        CompareOperator[CompareOperator["Equal"] = "Equal"] = "Equal";
+        CompareOperator[CompareOperator["Less"] = "Less"] = "Less";
+        CompareOperator[CompareOperator["LessOrEqual"] = "LessOrEqual"] = "LessOrEqual";
+        CompareOperator[CompareOperator["NotEqual"] = "NotEqual"] = "NotEqual";
+    })(CompareOperator = exports.CompareOperator || (exports.CompareOperator = {}));
     var ChartData = (function () {
         function ChartData(data) {
             if (data) {
@@ -3748,28 +3737,30 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        ChartData.prototype.init = function (data, _mappings) {
+        ChartData.prototype.init = function (data) {
             if (data) {
                 if (data["quotes"] && data["quotes"].constructor === Array) {
                     this.quotes = [];
                     for (var _i = 0, _a = data["quotes"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.quotes.push(QuotesModel.fromJS(item, _mappings));
+                        this.quotes.push(QuotesModel.fromJS(item));
                     }
                 }
                 if (data["indicators"] && data["indicators"].constructor === Array) {
                     this.indicators = [];
                     for (var _b = 0, _c = data["indicators"]; _b < _c.length; _b++) {
                         var item = _c[_b];
-                        this.indicators.push(IndicatorChartData.fromJS(item, _mappings));
+                        this.indicators.push(IndicatorChartData.fromJS(item));
                     }
                 }
-                this.period = data["period"];
-                this.name = data["name"];
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
             }
         };
-        ChartData.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, ChartData);
+        ChartData.fromJS = function (data) {
+            var result = new ChartData();
+            result.init(data);
+            return result;
         };
         ChartData.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -3787,8 +3778,8 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["indicators"].push(item.toJSON());
                 }
             }
-            data["period"] = this.period;
-            data["name"] = this.name;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["name"] = this.name !== undefined ? this.name : null;
             return data;
         };
         return ChartData;
@@ -3803,24 +3794,26 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IndicatorChartData.prototype.init = function (data, _mappings) {
+        IndicatorChartData.prototype.init = function (data) {
             if (data) {
-                this.indicator = data["indicator"] ? IIndicatorEntity.fromJS(data["indicator"], _mappings) : undefined;
+                this.indicator = data["indicator"] ? IIndicatorEntity.fromJS(data["indicator"]) : null;
                 if (data["indicatorValues"] && data["indicatorValues"].constructor === Array) {
                     this.indicatorValues = [];
                     for (var _i = 0, _a = data["indicatorValues"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.indicatorValues.push(IndicatorResult.fromJS(item, _mappings));
+                        this.indicatorValues.push(IndicatorResult.fromJS(item));
                     }
                 }
             }
         };
-        IndicatorChartData.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IndicatorChartData);
+        IndicatorChartData.fromJS = function (data) {
+            var result = new IndicatorChartData();
+            result.init(data);
+            return result;
         };
         IndicatorChartData.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["indicator"] = this.indicator ? this.indicator.toJSON() : undefined;
+            data["indicator"] = this.indicator ? this.indicator.toJSON() : null;
             if (this.indicatorValues && this.indicatorValues.constructor === Array) {
                 data["indicatorValues"] = [];
                 for (var _i = 0, _a = this.indicatorValues; _i < _a.length; _i++) {
@@ -3842,29 +3835,31 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IIndicatorEntity.prototype.init = function (data, _mappings) {
+        IIndicatorEntity.prototype.init = function (data) {
             if (data) {
-                this.indicatorId = data["indicatorId"];
-                this.period = data["period"];
+                this.indicatorId = data["indicatorId"] !== undefined ? data["indicatorId"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
                 if (data["params"] && data["params"].constructor === Array) {
                     this.params = [];
                     for (var _i = 0, _a = data["params"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.params.push(IndicatorParam.fromJS(item, _mappings));
+                        this.params.push(IndicatorParam.fromJS(item));
                     }
                 }
-                this.name = data["name"];
-                this.jsonParams = data["jsonParams"];
-                this.description = data["description"];
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.jsonParams = data["jsonParams"] !== undefined ? data["jsonParams"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
             }
         };
-        IIndicatorEntity.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IIndicatorEntity);
+        IIndicatorEntity.fromJS = function (data) {
+            var result = new IIndicatorEntity();
+            result.init(data);
+            return result;
         };
         IIndicatorEntity.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["indicatorId"] = this.indicatorId;
-            data["period"] = this.period;
+            data["indicatorId"] = this.indicatorId !== undefined ? this.indicatorId : null;
+            data["period"] = this.period !== undefined ? this.period : null;
             if (this.params && this.params.constructor === Array) {
                 data["params"] = [];
                 for (var _i = 0, _a = this.params; _i < _a.length; _i++) {
@@ -3872,9 +3867,9 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["params"].push(item.toJSON());
                 }
             }
-            data["name"] = this.name;
-            data["jsonParams"] = this.jsonParams;
-            data["description"] = this.description;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["jsonParams"] = this.jsonParams !== undefined ? this.jsonParams : null;
+            data["description"] = this.description !== undefined ? this.description : null;
             return data;
         };
         return IIndicatorEntity;
@@ -3889,24 +3884,26 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IndicatorResult.prototype.init = function (data, _mappings) {
+        IndicatorResult.prototype.init = function (data) {
             if (data) {
-                this.date = data["date"] ? new Date(data["date"].toString()) : undefined;
+                this.date = data["date"] ? new Date(data["date"].toString()) : null;
                 if (data["values"] && data["values"].constructor === Array) {
                     this.values = [];
                     for (var _i = 0, _a = data["values"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.values.push(IndicatorValueItem.fromJS(item, _mappings));
+                        this.values.push(IndicatorValueItem.fromJS(item));
                     }
                 }
             }
         };
-        IndicatorResult.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IndicatorResult);
+        IndicatorResult.fromJS = function (data) {
+            var result = new IndicatorResult();
+            result.init(data);
+            return result;
         };
         IndicatorResult.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["date"] = this.date ? this.date.toISOString() : undefined;
+            data["date"] = this.date ? this.date.toISOString() : null;
             if (this.values && this.values.constructor === Array) {
                 data["values"] = [];
                 for (var _i = 0, _a = this.values; _i < _a.length; _i++) {
@@ -3928,25 +3925,27 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        IndicatorValueItem.prototype.init = function (data, _mappings) {
+        IndicatorValueItem.prototype.init = function (data) {
             if (data) {
-                this.kind = data["kind"];
-                this.name = data["name"];
-                this.value = data["value"];
-                this.lineColor = data["lineColor"];
-                this.chartType = data["chartType"];
+                this.kind = data["kind"] !== undefined ? data["kind"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.value = data["value"] !== undefined ? data["value"] : null;
+                this.lineColor = data["lineColor"] !== undefined ? data["lineColor"] : null;
+                this.chartType = data["chartType"] !== undefined ? data["chartType"] : null;
             }
         };
-        IndicatorValueItem.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, IndicatorValueItem);
+        IndicatorValueItem.fromJS = function (data) {
+            var result = new IndicatorValueItem();
+            result.init(data);
+            return result;
         };
         IndicatorValueItem.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["kind"] = this.kind;
-            data["name"] = this.name;
-            data["value"] = this.value;
-            data["lineColor"] = this.lineColor;
-            data["chartType"] = this.chartType;
+            data["kind"] = this.kind !== undefined ? this.kind : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["value"] = this.value !== undefined ? this.value : null;
+            data["lineColor"] = this.lineColor !== undefined ? this.lineColor : null;
+            data["chartType"] = this.chartType !== undefined ? this.chartType : null;
             return data;
         };
         return IndicatorValueItem;
@@ -3969,24 +3968,228 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        CompanyInfo.prototype.init = function (data, _mappings) {
+        CompanyInfo.prototype.init = function (data) {
             if (data) {
-                this.ticker = data["ticker"];
-                this.name = data["name"];
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
             }
         };
-        CompanyInfo.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, CompanyInfo);
+        CompanyInfo.fromJS = function (data) {
+            var result = new CompanyInfo();
+            result.init(data);
+            return result;
         };
         CompanyInfo.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["ticker"] = this.ticker;
-            data["name"] = this.name;
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["name"] = this.name !== undefined ? this.name : null;
             return data;
         };
         return CompanyInfo;
     }());
     exports.CompanyInfo = CompanyInfo;
+    var Rule = (function () {
+        function Rule(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        Rule.prototype.init = function (data) {
+            if (data) {
+                this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.dataSourceV1 = data["dataSourceV1"] !== undefined ? data["dataSourceV1"] : null;
+                this.dataSourceV2 = data["dataSourceV2"] !== undefined ? data["dataSourceV2"] : null;
+                this.dataSeriesV1 = data["dataSeriesV1"] !== undefined ? data["dataSeriesV1"] : null;
+                this.dataSeriesV2 = data["dataSeriesV2"] !== undefined ? data["dataSeriesV2"] : null;
+                this.constV1 = data["constV1"] !== undefined ? data["constV1"] : null;
+                this.constV2 = data["constV2"] !== undefined ? data["constV2"] : null;
+                this.skipItemsV1 = data["skipItemsV1"] !== undefined ? data["skipItemsV1"] : null;
+                this.skipItemsV2 = data["skipItemsV2"] !== undefined ? data["skipItemsV2"] : null;
+                this.takeItemsV1 = data["takeItemsV1"] !== undefined ? data["takeItemsV1"] : null;
+                this.takeItemsV2 = data["takeItemsV2"] !== undefined ? data["takeItemsV2"] : null;
+                this.transformItemsV1 = data["transformItemsV1"] !== undefined ? data["transformItemsV1"] : null;
+                this.transformItemsV2 = data["transformItemsV2"] !== undefined ? data["transformItemsV2"] : null;
+                this.condition = data["condition"] !== undefined ? data["condition"] : null;
+            }
+        };
+        Rule.fromJS = function (data) {
+            var result = new Rule();
+            result.init(data);
+            return result;
+        };
+        Rule.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["ruleId"] = this.ruleId !== undefined ? this.ruleId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["dataSourceV1"] = this.dataSourceV1 !== undefined ? this.dataSourceV1 : null;
+            data["dataSourceV2"] = this.dataSourceV2 !== undefined ? this.dataSourceV2 : null;
+            data["dataSeriesV1"] = this.dataSeriesV1 !== undefined ? this.dataSeriesV1 : null;
+            data["dataSeriesV2"] = this.dataSeriesV2 !== undefined ? this.dataSeriesV2 : null;
+            data["constV1"] = this.constV1 !== undefined ? this.constV1 : null;
+            data["constV2"] = this.constV2 !== undefined ? this.constV2 : null;
+            data["skipItemsV1"] = this.skipItemsV1 !== undefined ? this.skipItemsV1 : null;
+            data["skipItemsV2"] = this.skipItemsV2 !== undefined ? this.skipItemsV2 : null;
+            data["takeItemsV1"] = this.takeItemsV1 !== undefined ? this.takeItemsV1 : null;
+            data["takeItemsV2"] = this.takeItemsV2 !== undefined ? this.takeItemsV2 : null;
+            data["transformItemsV1"] = this.transformItemsV1 !== undefined ? this.transformItemsV1 : null;
+            data["transformItemsV2"] = this.transformItemsV2 !== undefined ? this.transformItemsV2 : null;
+            data["condition"] = this.condition !== undefined ? this.condition : null;
+            return data;
+        };
+        return Rule;
+    }());
+    exports.Rule = Rule;
+    var DataSourceType;
+    (function (DataSourceType) {
+        DataSourceType[DataSourceType["Indicator"] = "Indicator"] = "Indicator";
+        DataSourceType[DataSourceType["HistoricalData"] = "HistoricalData"] = "HistoricalData";
+        DataSourceType[DataSourceType["Constant"] = "Constant"] = "Constant";
+    })(DataSourceType = exports.DataSourceType || (exports.DataSourceType = {}));
+    var TransformFunction;
+    (function (TransformFunction) {
+        TransformFunction[TransformFunction["First"] = "First"] = "First";
+        TransformFunction[TransformFunction["Max"] = "Max"] = "Max";
+        TransformFunction[TransformFunction["Sum"] = "Sum"] = "Sum";
+        TransformFunction[TransformFunction["Avg"] = "Avg"] = "Avg";
+        TransformFunction[TransformFunction["Min"] = "Min"] = "Min";
+    })(TransformFunction = exports.TransformFunction || (exports.TransformFunction = {}));
+    var RuleSetModel = (function () {
+        function RuleSetModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        RuleSetModel.prototype.init = function (data) {
+            if (data) {
+                if (data["rules"] && data["rules"].constructor === Array) {
+                    this.rules = [];
+                    for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.rules.push(RuleModel.fromJS(item));
+                    }
+                }
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+            }
+        };
+        RuleSetModel.fromJS = function (data) {
+            var result = new RuleSetModel();
+            result.init(data);
+            return result;
+        };
+        RuleSetModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.rules && this.rules.constructor === Array) {
+                data["rules"] = [];
+                for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["rules"].push(item.toJSON());
+                }
+            }
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            return data;
+        };
+        return RuleSetModel;
+    }());
+    exports.RuleSetModel = RuleSetModel;
+    var RuleModel = (function () {
+        function RuleModel(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        RuleModel.prototype.init = function (data) {
+            if (data) {
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+            }
+        };
+        RuleModel.fromJS = function (data) {
+            var result = new RuleModel();
+            result.init(data);
+            return result;
+        };
+        RuleModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["ruleId"] = this.ruleId !== undefined ? this.ruleId : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            return data;
+        };
+        return RuleModel;
+    }());
+    exports.RuleModel = RuleModel;
+    var VStrategyRuleSet = (function () {
+        function VStrategyRuleSet(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        VStrategyRuleSet.prototype.init = function (data) {
+            if (data) {
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.strategyActive = data["strategyActive"] !== undefined ? data["strategyActive"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
+                this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : null;
+                this.ruleSetDescription = data["ruleSetDescription"] !== undefined ? data["ruleSetDescription"] : null;
+                this.ruleSetPeriod = data["ruleSetPeriod"] !== undefined ? data["ruleSetPeriod"] : null;
+                this.ruleSetOrderId = data["ruleSetOrderId"] !== undefined ? data["ruleSetOrderId"] : null;
+                this.ruleSetOptional = data["ruleSetOptional"] !== undefined ? data["ruleSetOptional"] : null;
+            }
+        };
+        VStrategyRuleSet.fromJS = function (data) {
+            var result = new VStrategyRuleSet();
+            result.init(data);
+            return result;
+        };
+        VStrategyRuleSet.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["strategyActive"] = this.strategyActive !== undefined ? this.strategyActive : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
+            data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : null;
+            data["ruleSetDescription"] = this.ruleSetDescription !== undefined ? this.ruleSetDescription : null;
+            data["ruleSetPeriod"] = this.ruleSetPeriod !== undefined ? this.ruleSetPeriod : null;
+            data["ruleSetOrderId"] = this.ruleSetOrderId !== undefined ? this.ruleSetOrderId : null;
+            data["ruleSetOptional"] = this.ruleSetOptional !== undefined ? this.ruleSetOptional : null;
+            return data;
+        };
+        return VStrategyRuleSet;
+    }());
+    exports.VStrategyRuleSet = VStrategyRuleSet;
     var StrategySummary = (function () {
         function StrategySummary(data) {
             if (data) {
@@ -3996,25 +4199,27 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        StrategySummary.prototype.init = function (data, _mappings) {
+        StrategySummary.prototype.init = function (data) {
             if (data) {
-                this.active = data["active"];
-                this.url = data["url"];
-                this.summary = data["summary"];
-                this.strategyId = data["strategyId"];
-                this.title = data["title"];
+                this.active = data["active"] !== undefined ? data["active"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
             }
         };
-        StrategySummary.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, StrategySummary);
+        StrategySummary.fromJS = function (data) {
+            var result = new StrategySummary();
+            result.init(data);
+            return result;
         };
         StrategySummary.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["active"] = this.active;
-            data["url"] = this.url;
-            data["summary"] = this.summary;
-            data["strategyId"] = this.strategyId;
-            data["title"] = this.title;
+            data["active"] = this.active !== undefined ? this.active : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
             return data;
         };
         return StrategySummary;
@@ -4029,13 +4234,13 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        StrategyModel.prototype.init = function (data, _mappings) {
+        StrategyModel.prototype.init = function (data) {
             if (data) {
                 if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
                     this.ruleSets = [];
                     for (var _i = 0, _a = data["ruleSets"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.ruleSets.push(StrategyRuleSetModel.fromJS(item, _mappings));
+                        this.ruleSets.push(StrategyRuleSetModel.fromJS(item));
                     }
                 }
                 if (data["blocks"] && data["blocks"].constructor === Array) {
@@ -4045,16 +4250,18 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                         this.blocks.push(item);
                     }
                 }
-                this.strategyId = data["strategyId"];
-                this.title = data["title"];
-                this.deleted = data["deleted"];
-                this.summary = data["summary"];
-                this.active = data["active"];
-                this.url = data["url"];
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.title = data["title"] !== undefined ? data["title"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.active = data["active"] !== undefined ? data["active"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
             }
         };
-        StrategyModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, StrategyModel);
+        StrategyModel.fromJS = function (data) {
+            var result = new StrategyModel();
+            result.init(data);
+            return result;
         };
         StrategyModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -4072,12 +4279,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["blocks"].push(item);
                 }
             }
-            data["strategyId"] = this.strategyId;
-            data["title"] = this.title;
-            data["deleted"] = this.deleted;
-            data["summary"] = this.summary;
-            data["active"] = this.active;
-            data["url"] = this.url;
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["title"] = this.title !== undefined ? this.title : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["active"] = this.active !== undefined ? this.active : null;
+            data["url"] = this.url !== undefined ? this.url : null;
             return data;
         };
         return StrategyModel;
@@ -4092,25 +4299,27 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        StrategyRuleSetModel.prototype.init = function (data, _mappings) {
+        StrategyRuleSetModel.prototype.init = function (data) {
             if (data) {
                 if (data["rules"] && data["rules"].constructor === Array) {
                     this.rules = [];
                     for (var _i = 0, _a = data["rules"]; _i < _a.length; _i++) {
                         var item = _a[_i];
-                        this.rules.push(StrategyRuleModel.fromJS(item, _mappings));
+                        this.rules.push(StrategyRuleModel.fromJS(item));
                     }
                 }
-                this.description = data["description"];
-                this.name = data["name"];
-                this.optional = data["optional"];
-                this.orderId = data["orderId"];
-                this.period = data["period"];
-                this.ruleSetId = data["ruleSetId"];
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.optional = data["optional"] !== undefined ? data["optional"] : null;
+                this.orderId = data["orderId"] !== undefined ? data["orderId"] : null;
+                this.period = data["period"] !== undefined ? data["period"] : null;
+                this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : null;
             }
         };
-        StrategyRuleSetModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, StrategyRuleSetModel);
+        StrategyRuleSetModel.fromJS = function (data) {
+            var result = new StrategyRuleSetModel();
+            result.init(data);
+            return result;
         };
         StrategyRuleSetModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -4121,12 +4330,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                     data["rules"].push(item.toJSON());
                 }
             }
-            data["description"] = this.description;
-            data["name"] = this.name;
-            data["optional"] = this.optional;
-            data["orderId"] = this.orderId;
-            data["period"] = this.period;
-            data["ruleSetId"] = this.ruleSetId;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["optional"] = this.optional !== undefined ? this.optional : null;
+            data["orderId"] = this.orderId !== undefined ? this.orderId : null;
+            data["period"] = this.period !== undefined ? this.period : null;
+            data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : null;
             return data;
         };
         return StrategyRuleSetModel;
@@ -4141,12 +4350,14 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        StrategyRuleModel.prototype.init = function (data, _mappings) {
+        StrategyRuleModel.prototype.init = function (data) {
             if (data) {
             }
         };
-        StrategyRuleModel.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, StrategyRuleModel);
+        StrategyRuleModel.fromJS = function (data) {
+            var result = new StrategyRuleModel();
+            result.init(data);
+            return result;
         };
         StrategyRuleModel.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
@@ -4164,29 +4375,31 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
                 }
             }
         }
-        Strategy.prototype.init = function (data, _mappings) {
+        Strategy.prototype.init = function (data) {
             if (data) {
-                this.strategyId = data["strategyId"];
-                this.name = data["name"];
-                this.url = data["url"];
-                this.jsonArticleBlocks = data["jsonArticleBlocks"];
-                this.description = data["description"];
-                this.deleted = data["deleted"];
-                this.active = data["active"];
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.name = data["name"] !== undefined ? data["name"] : null;
+                this.url = data["url"] !== undefined ? data["url"] : null;
+                this.jsonArticleBlocks = data["jsonArticleBlocks"] !== undefined ? data["jsonArticleBlocks"] : null;
+                this.description = data["description"] !== undefined ? data["description"] : null;
+                this.deleted = data["deleted"] !== undefined ? data["deleted"] : null;
+                this.active = data["active"] !== undefined ? data["active"] : null;
             }
         };
-        Strategy.fromJS = function (data, _mappings) {
-            return createInstance(data, _mappings, Strategy);
+        Strategy.fromJS = function (data) {
+            var result = new Strategy();
+            result.init(data);
+            return result;
         };
         Strategy.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
-            data["strategyId"] = this.strategyId;
-            data["name"] = this.name;
-            data["url"] = this.url;
-            data["jsonArticleBlocks"] = this.jsonArticleBlocks;
-            data["description"] = this.description;
-            data["deleted"] = this.deleted;
-            data["active"] = this.active;
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["name"] = this.name !== undefined ? this.name : null;
+            data["url"] = this.url !== undefined ? this.url : null;
+            data["jsonArticleBlocks"] = this.jsonArticleBlocks !== undefined ? this.jsonArticleBlocks : null;
+            data["description"] = this.description !== undefined ? this.description : null;
+            data["deleted"] = this.deleted !== undefined ? this.deleted : null;
+            data["active"] = this.active !== undefined ? this.active : null;
             return data;
         };
         return Strategy;
@@ -4211,57 +4424,133 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         else
             throw new SwaggerException(message, status, response, null);
     }
-    function jsonParse(json, reviver) {
-        json = JSON.parse(json, reviver);
-        var byid = {};
-        var refs = [];
-        json = (function recurse(obj, prop, parent) {
-            if (typeof obj !== 'object' || !obj)
-                return obj;
-            if ("$ref" in obj) {
-                var ref = obj.$ref;
-                if (ref in byid)
-                    return byid[ref];
-                refs.push([parent, prop, ref]);
-                return undefined;
-            }
-            else if ("$id" in obj) {
-                var id = obj.$id;
-                delete obj.$id;
-                if ("$values" in obj)
-                    obj = obj.$values;
-                byid[id] = obj;
-            }
-            if (Array.isArray(obj)) {
-                obj = obj.map(function (v, i) { return recurse(v, i, obj); });
-            }
-            else {
-                for (var p in obj) {
-                    if (obj.hasOwnProperty(p) && obj[p] && typeof obj[p] === 'object')
-                        obj[p] = recurse(obj[p], p, obj);
-                }
-            }
-            return obj;
-        })(json);
-        for (var i = 0; i < refs.length; i++) {
-            var ref = refs[i];
-            ref[0][ref[1]] = byid[ref[2]];
+});
+
+define('services/account-service',["require", "exports", "tslib", "aurelia-framework", "./services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
+    "use strict";
+    var AccountService = (function () {
+        function AccountService(account) {
+            this.account = account;
         }
-        return json;
-    }
-    function createInstance(data, mappings, type) {
-        if (!mappings)
-            mappings = [];
-        else {
-            var mapping = mappings.filter(function (m) { return m.source === data; });
-            if (mapping.length === 1)
-                return mapping[0].target;
-        }
-        var result = new type();
-        mappings.push({ source: data, target: result });
-        result.init(data, mappings);
-        return result;
-    }
+        AccountService.prototype.initialize = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = this;
+                            return [4 /*yield*/, this.account.currentUser()];
+                        case 1:
+                            _a.currentUser = _b.sent();
+                            return [2 /*return*/, this.currentUser];
+                    }
+                });
+            });
+        };
+        AccountService.prototype.login = function (username, password) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var loginRequest, response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            loginRequest = new services_generated_1.LoginViewModel();
+                            loginRequest.email = username;
+                            loginRequest.password = password;
+                            loginRequest.rememberMe = true;
+                            return [4 /*yield*/, this.account.login(loginRequest)];
+                        case 1:
+                            response = _a.sent();
+                            this.currentUser = response.user;
+                            return [2 /*return*/, response];
+                    }
+                });
+            });
+        };
+        AccountService.prototype.logout = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.account.logout()];
+                        case 1:
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        AccountService.prototype.update = function (user) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var response;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.account.updateProfile(user)];
+                        case 1:
+                            response = _a.sent();
+                            this.currentUser = response.user;
+                            return [2 /*return*/, response];
+                    }
+                });
+            });
+        };
+        return AccountService;
+    }());
+    AccountService = tslib_1.__decorate([
+        aurelia_framework_1.autoinject,
+        tslib_1.__metadata("design:paramtypes", [services_generated_1.AccountApiClient])
+    ], AccountService);
+    exports.AccountService = AccountService;
+});
+
+define('common/types/enums',["require", "exports"], function (require, exports) {
+    "use strict";
+    var ChartType;
+    (function (ChartType) {
+        ChartType[ChartType["OHLC"] = 0] = "OHLC";
+        ChartType[ChartType["Line"] = 1] = "Line";
+        ChartType[ChartType["Column"] = 2] = "Column";
+    })(ChartType = exports.ChartType || (exports.ChartType = {}));
+    var Direction;
+    (function (Direction) {
+        Direction[Direction["Up"] = 0] = "Up";
+        Direction[Direction["Down"] = 1] = "Down";
+    })(Direction = exports.Direction || (exports.Direction = {}));
+    var ChartUpdateMode;
+    (function (ChartUpdateMode) {
+        ChartUpdateMode[ChartUpdateMode["Reset"] = 0] = "Reset";
+        ChartUpdateMode[ChartUpdateMode["Insert"] = 1] = "Insert";
+        ChartUpdateMode[ChartUpdateMode["Append"] = 2] = "Append";
+    })(ChartUpdateMode = exports.ChartUpdateMode || (exports.ChartUpdateMode = {}));
+    var TransformFunction;
+    (function (TransformFunction) {
+        TransformFunction[TransformFunction["First"] = 0] = "First";
+        TransformFunction[TransformFunction["Max"] = 1] = "Max";
+        TransformFunction[TransformFunction["Sum"] = 2] = "Sum";
+        TransformFunction[TransformFunction["Avg"] = 3] = "Avg";
+        TransformFunction[TransformFunction["Min"] = 4] = "Min";
+    })(TransformFunction = exports.TransformFunction || (exports.TransformFunction = {}));
+    var CompareOperator;
+    (function (CompareOperator) {
+        CompareOperator[CompareOperator["Greater"] = 0] = "Greater";
+        CompareOperator[CompareOperator["GreaterOrEqual"] = 1] = "GreaterOrEqual";
+        CompareOperator[CompareOperator["Equal"] = 2] = "Equal";
+        CompareOperator[CompareOperator["Less"] = 3] = "Less";
+        CompareOperator[CompareOperator["LessOrEqual"] = 4] = "LessOrEqual";
+        CompareOperator[CompareOperator["NotEqual"] = 5] = "NotEqual";
+    })(CompareOperator = exports.CompareOperator || (exports.CompareOperator = {}));
+    var QuoteType;
+    (function (QuoteType) {
+        QuoteType[QuoteType["Close"] = 0] = "Close";
+        QuoteType[QuoteType["Open"] = 1] = "Open";
+        QuoteType[QuoteType["High"] = 2] = "High";
+        QuoteType[QuoteType["Low"] = 3] = "Low";
+        QuoteType[QuoteType["Volume"] = 4] = "Volume";
+    })(QuoteType = exports.QuoteType || (exports.QuoteType = {}));
+    var RuleDataSource;
+    (function (RuleDataSource) {
+        RuleDataSource[RuleDataSource["Indicator"] = 0] = "Indicator";
+        RuleDataSource[RuleDataSource["HistoricalData"] = 1] = "HistoricalData";
+        RuleDataSource[RuleDataSource["Constant"] = 2] = "Constant";
+    })(RuleDataSource = exports.RuleDataSource || (exports.RuleDataSource = {}));
 });
 
 define('common/helpers/enum-helper',["require", "exports", "../types/enums", "../../services/services-generated"], function (require, exports, enums_1, services_generated_1) {
@@ -4414,15 +4703,21 @@ define('services/settings-service',["require", "exports", "tslib", "aurelia-fram
         };
         SettingsService.prototype.initialize = function () {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var section;
-                return tslib_1.__generator(this, function (_a) {
-                    section = new services_generated_1.SectionModel();
-                    section.url = "studies";
-                    section.title = "Studies";
-                    section.sectionId = 1;
-                    this.sections.push(section);
-                    this.initialized = true;
-                    return [2 /*return*/];
+                var _a, _b;
+                return tslib_1.__generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _a = this;
+                            return [4 /*yield*/, this.articleService.getSections()];
+                        case 1:
+                            _a.sections = _c.sent();
+                            _b = this;
+                            return [4 /*yield*/, this.indicatorService.getIndicators()];
+                        case 2:
+                            _b.indicators = _c.sent();
+                            this.initialized = true;
+                            return [2 /*return*/];
+                    }
                 });
             });
         };
@@ -4626,7 +4921,6 @@ define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environ
                         httpClient.configure(function (config) {
                             config
                                 .useStandardConfiguration()
-                                .withBaseUrl("api/")
                                 .withInterceptor(errorInterceptor);
                         });
                         account = aurelia.container.get(account_service_1.AccountService);
@@ -4860,7 +5154,7 @@ define('common/types/job-models',["require", "exports", "../../services/services
     exports.JobInfoExtentions = JobInfoExtentions;
 });
 
-define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-framework", "aurelia-dialog", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "../../services/account-service", "aurelia-binding"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_dialog_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, aurelia_binding_1) {
+define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-framework", "aurelia-dialog", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "aurelia-binding", "../../services/account-service", "../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_dialog_1, aurelia_validation_1, bootstrap_form_renderer_1, aurelia_binding_1, account_service_1, services_generated_1) {
     "use strict";
     var UserLogin = (function () {
         function UserLogin(controller, validation, account, bindingEngine) {
@@ -4890,8 +5184,8 @@ define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-frame
         UserLogin.prototype.activate = function (model) {
             this.model = model;
             aurelia_validation_1.ValidationRules
-                .ensure(function (m) { return m.email; }).displayName('Email').required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (m) { return m.password; }).displayName('Password').required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (m) { return m.email; }).displayName("Email").required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (m) { return m.password; }).displayName("Password").required().withMessage("${$displayName} cannot be blank.")
                 .on(this.model);
         };
         UserLogin.prototype.tryLogin = function () {
@@ -4905,7 +5199,7 @@ define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-frame
                             return [4 /*yield*/, this.account.login(this.model.email, this.model.password)];
                         case 2:
                             response = _a.sent();
-                            if (response.status === "success") {
+                            if (response.status === services_generated_1.LoginStatus.Success) {
                                 this.controller.ok(this.model);
                             }
                             else {
@@ -11154,84 +11448,83 @@ define('aurelia-dialog/dialog-service',['exports', 'aurelia-metadata', 'aurelia-
   }
 });
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><require from=\"./components/header/dream-header\"></require><require from=\"./components/footer/dream-footer\"></require><require from=\"./components/nav-menu/main-nav/main-nav\"></require><dream-header router.bind=\"router\"></dream-header><main-nav router.bind=\"router\"></main-nav><router-view></router-view><dream-footer></dream-footer></template>"; });
-define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/footer/dream-footer.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-footer.css\"></require></template>"; });
 define('text!components/header/dream-header.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-header.css\"></require><div class=\"container\"><div class=\"navbar-brand\"><img class=\"logo\" src=\"/content/images/logo.png\"> <a first-letter-span href=\"/\">Dream Space</a></div><ul class=\"nav navbar-nav navbar-right\"><li role=\"presentation\" class=\"dropdown\" if.bind=\"isAuthenticated === true\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> ${user.firstName} <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href.bind=\"loginUrl\">Account</a></li><li><a click.delegate=\"logout()\">Logout</a></li></ul></li><li if.bind=\"isAuthenticated !== true\"><a click.delegate=\"login()\">Login</a></li></ul></div></template>"; });
 define('text!components/market/navigation.html', ['module'], function(module) { module.exports = "<template><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
-define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/strategies/navigation.html', ['module'], function(module) { module.exports = "<template><strategy-navigation></strategy-navigation><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/strategies/strategy-playground.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy-playground.css\"></require><strategy-admin></strategy-admin><div class=\"c_playground-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_playground\"><header><h3 first-letter-span>Strategy Playground</h3></header><form><fieldset><div class=\"form-group\"><label>Selected Strategy</label><p class=\"form-control\" readonly=\"readonly\">${strategy.title}</p></div><div class=\"form-group\"><label>Selected Company</label><div class=\"input-group\"><p class=\"form-control\" readonly=\"readonly\">${company.ticker} - ${company.name}</p><div class=\"input-group-btn\"><button type=\"button\" if.bind=\"!company.show && !searchMode\" click.delegate=\"company.show = true\" class=\"btn btn-default\">Show Details</button> <button type=\"button\" click.delegate=\"searchMode = !!!searchMode\" class=\"btn ${searchMode ? 'btn-default' : 'btn-danger'}\">${searchMode ? 'Cancel' : 'Search'}</button></div></div><div class=\"c_company-details\" if.bind=\"company.show\"><company-details company.bind=\"company\"></company-details><div class=\"c_company-actions\"><button type=\"button\" click.delegate=\"updateCompany(company.ticker)\" class=\"btn btn-danger\">Update</button> <button type=\"button\" click.delegate=\"company.show = false\" class=\"btn btn-default\">Hide</button></div></div></div></fieldset></form><div if.bind=\"searchMode\" class=\"c_companies-content\"><form submit.delegate=\"searchCompanies()\"><fieldset><div class=\"form-inline right\"><label>Company Search:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control uppercase\" value.bind=\"searchCriteria\"><div class=\"input-group-btn\"><button type=\"submit\" disabled.bind=\"searchCriteria.length===0\" class=\"btn btn-danger\">Go</button></div></div></div></fieldset></form><div class=\"c_company_list\" if.bind=\"companies.length > 0\"><div repeat.for=\"company of companies\" class=\"c_company ${$index === $parent.companies.length-1 ? 'no-border': ''}\"><div class=\"c_company-header\"><button type=\"button\" click.trigger=\"selectCompany(company)\" class=\"btn btn-warning btn-xs\">Select</button> <span click.trigger=\"company.expanded = !!!company.expanded\"><span>${company.ticker} - ${company.name}</span> <a class=\"chevron\"><span class=\"glyphicon ${company.expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_company-details\" if.bind=\"company.expanded\"><company-details company.bind=\"company\"></company-details></div></div></div></div><div if.bind=\"strategy.strategyId && company.ticker && !playgroundLoaded\"><div class=\"right\"><button type=\"button\" click.delegate=\"loadPlayground()\" class=\"btn btn-danger\">Load Playground</button></div></div></div><div class=\"col-md-4 col-xs-12\"><side-navigation strategyurl.bind=\"strategy.url\"></side-navigation></div></div><div class=\"row o_chart-content\" if.bind=\"playgroundLoaded\"><div class=\"col-md-8 col-xs-12 c_playground\"><header><h3>Charts</h3></header><div class=\"o_chart\"><stock-chart model.bind=\"playgroundModel\"></stock-chart></div><br></div><div class=\"col-md-4 col-xs-12 c_strategy-runner\"><div class=\"side-navigation\"><h3>Strategy Runner</h3><form><fieldset><div class=\"c_strategy-runner--progress\"><div class=\"form-group\" repeat.for=\"ruleSet of playgroundModel.ruleSets\"><span>${ruleSet.name}</span><s-progress progress.bind=\"ruleSet.progress\"></s-progress><div class=\"col-sm-12\" repeat.for=\"rule of ruleSet.rules\"><span class=\"glyphicon ${rule.valid ? 'glyphicon-ok' : 'glyphicon-time'}\" aria-hidden=\"true\"></span><label>${rule.ruleName}</label></div></div></div><div class=\"c_strategy-runner--options\"><header>Runner</header><div class=\"form-group\"><div class=\"checkbox\"><label><input type=\"checkbox\"> Stop when rules met</label></div></div><div class=\"form-group\"><span class=\"btn-group btn-group-sm\"><button class=\"btn btn-default\" if.bind=\"streaming\" click.delegate=\"stopStreaming()\" type=\"button\"><span class=\"glyphicon glyphicon-pause\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" if.bind=\"!streaming\" click.delegate=\"startStreaming()\" type=\"button\"><span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadPlayground()\" type=\"button\"><span class=\"glyphicon glyphicon-stop\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadPrev()\" type=\"button\"><span class=\"glyphicon glyphicon-backward\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadNext()\" type=\"button\"><span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span></button></span></div></div></fieldset></form></div></div></div></div></template>"; });
+define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/strategies/strategy-rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules/rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Strategy Rule Sets</h3><h5>${strategy.title}</h5><p class=\"summary\">${strategy.summary}</p></header><div class=\"c_rule_set-list\"><strategy-rule-set repeat.for=\"ruleset of rulesets\" class=\"${$index === $parent.rulesets.length-1 && !editMode ? 'no-border': ''}\" ruleset.bind=\"ruleset\"></strategy-rule-set><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRuleSet()\"><a>Attach Rule Set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label>Period</label><select class=\"form-control\" value.bind=\"attachedRuleSet.period\" change.delegate=\"onPeriodSelected()\"><option>- Select Period -</option><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>Rule Set</label><select class=\"form-control\" value.bind=\"attachedRuleSet.ruleSetId\" change.delegate=\"onRuleSetSelected()\"><option>- Select Rule Set -</option><option repeat.for=\"periodRuleSet of periodRuleSets\" model.bind=\"periodRuleSet.ruleSetId\">${periodRuleSet.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRuleSet.ruleSetId > 0\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${attachedRuleSet.description}</p></div></fieldset><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRuleSet()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRuleSet()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div><div class=\"c_rule_set-actions\"><button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" click.delegate=\"trySaveRuleSets()\" if.bind=\"editMode\" class=\"btn btn-danger\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"col-md-4 col-xs-12\"><side-navigation strategyurl.bind=\"strategy.url\"></side-navigation></div></div></div></template>"; });
 define('text!components/strategies/strategy.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Article</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\" if.bind=\"editMode === true\"><button type=\"button\" click.delegate=\"trySaveArticle()\" class=\"btn btn-danger\">Apply Changes</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_strategy\"><header><h3>${strategy.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Strategy Name</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.title & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"strategy.summary & validate\"></textarea></div><div class=\"form-group\"><label>Strategy Url</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.url & validate\"></div><div class=\"form-group\"><label>Strategy Status:</label><div class=\"input-group\" style=\"width:40%\"><input type=\"text\" class=\"form-control\" disabled=\"disabled\" aria-label=\"...\" value=\"${strategy.active ? 'Active' : 'Inactive'}\"><div class=\"input-group-btn\"><button type=\"button\" click.delegate=\"setActiveStatus(true)\" if.bind=\"!strategy.active\" class=\"btn btn-danger\">Activate</button> <button type=\"button\" click.delegate=\"setActiveStatus(false)\" if.bind=\"strategy.active\" class=\"btn btn-danger\">Deactivate</button></div></div></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"strategy.blocks\"></article-parts></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''} ${summary.active ? '' : 'disabled'}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Strategies</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addStrategy()\">Register New Strategy</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Strategy</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteStrategy()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
-define('text!common/styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-nav/category-nav\"></require><category-nav menu.bind=\"menu\"></category-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/user/login.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
-define('text!common/styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
+define('text!common/styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
 define('text!components/user/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/user/profile.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
-define('text!common/styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n"; });
+define('text!common/styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
+define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/market/jobs-dashboard/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
+define('text!common/styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n"; });
 define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
 define('text!components/market/market-indices/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_market-indices\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
+define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
 define('text!components/nav-menu/main-nav/main-nav.html', ['module'], function(module) { module.exports = "<template><require from=\"./main-nav.css\"></require><div class=\"container\"><div class=\"main-nav-items\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></div></div></template>"; });
 define('text!components/nav-menu/sub-nav/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!common/styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
-define('text!common/styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
 define('text!components/strategies/indicators/indicators.html', ['module'], function(module) { module.exports = "<template><require from=\"./indicators.css\"></require><strategy-admin></strategy-admin><div class=\"c_indicators-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_indicators\"><header><h3 first-letter-span>Manage Indicators</h3></header><div class=\"c_indicator-list\"><indicator repeat.for=\"indicator of indicators\" indicator.bind=\"indicator\"></indicator><div class=\"c_indicator c_indicator-add\" click.delegate=\"addIndicator()\"><div class=\"c_indicator-header\"><a>Register new indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadIndicatorsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Indicators</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
+define('text!common/styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
 define('text!components/strategies/rules/rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Manage Rule Sets</h3></header><div class=\"c_rule_set-list\"><rule-set repeat.for=\"ruleset of rulesets\" ruleset.bind=\"ruleset\"></rule-set><div class=\"c_rule_set c_rule_set-add\" click.delegate=\"addRuleSet()\"><div class=\"c_rule_set-header\"><a>Register new rule set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRuleSetsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
-define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n"; });
 define('text!components/strategies/rules/rules.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules.css\"></require><strategy-admin></strategy-admin><div class=\"c_rules-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rules\"><header><h3 first-letter-span>Manage Rules</h3></header><div class=\"c_rule-list\"><rule repeat.for=\"rule of rules\" rule.bind=\"rule\"></rule><div class=\"c_rule c_rule-add\" click.delegate=\"addRule()\"><div class=\"c_rule-header\"><a>Register new rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRulesForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
 define('text!components/studies/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
+define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n"; });
 define('text!components/studies/category-nav/category-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of menu.items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"$parent.getUrl(item)\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
 define('text!components/studies/study/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><require from=\"./study-actions/study-actions\"></require><require from=\"./category-studies/category-studies\"></require><study-actions></study-actions><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"article.summary & validate\"></textarea></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"></div></div><div class=\"col-md-4\"><category-studies category.bind=\"category\"></category-studies></div></div></template>"; });
+define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
+define('text!resources/elements/chart/chart-layout.html', ['module'], function(module) { module.exports = "<template><div id=\"container-weekly\" class=\"o_chart-container\"></div><div id=\"container-daily\" class=\"o_chart-container\"></div></template>"; });
 define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
 define('text!common/styles/_progress.css', ['module'], function(module) { module.exports = ".s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"part.editMode !== true\" class=\"${part.headingType}\">${part.text}</span></template>"; });
 define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"part.editMode !== true\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
+define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!part.editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
 define('text!common/styles/_sub-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!common/styles/_variables.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!part.editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
-define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
-define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"part.editMode !== true\">${part.text}</p></template>"; });
 define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
+define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"part.editMode !== true\">${part.text}</p></template>"; });
 define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" if.bind=\"part.type === 'Paragraph'\"></article-part-paragraph><article-part-heading part.bind=\"part\" if.bind=\"part.type === 'Heading'\"></article-part-heading><article-part-image part.bind=\"part\" if.bind=\"part.type === 'Image'\"></article-part-image><article-part-list part.bind=\"part\" if.bind=\"part.type === 'List'\"></article-part-list><article-part-new part.bind=\"part\" if.bind=\"part.type === 'Unset'\"></article-part-new><article-part-actions part.bind=\"part\" if.bind=\"part.type !== 'Unset'\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode === true\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
-define('text!resources/elements/chart/chart-layout.html', ['module'], function(module) { module.exports = "<template><div id=\"container-weekly\" class=\"o_chart-container\"></div><div id=\"container-daily\" class=\"o_chart-container\"></div></template>"; });
-define('text!resources/elements/chart/stock-chart.html', ['module'], function(module) { module.exports = "<template><require from=\"./stock-chart.css\"></require><div id=\"container-Weekly\" class=\"o_chart-container\"></div><div id=\"container-Daily\" class=\"o_chart-container\"></div></template>"; });
 define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
 define('text!resources/elements/company/company-details.html', ['module'], function(module) { module.exports = "<template><form><fieldset disabled=\"disabled\"><div class=\"row\"><div class=\"col-md-6\"><div class=\"form-group\"><label>Sector</label><p class=\"form-control\" readonly=\"readonly\">${company.sector}</p></div></div><div class=\"col-md-6\"><div class=\"form-group\"><label>Industry</label><p class=\"form-control\" readonly=\"readonly\">${company.industry}</p></div></div></div><div class=\"row\"><div class=\"col-md-4\"><div class=\"form-group\"><label>Price</label><p class=\"form-control\" readonly=\"readonly\">${company.price}</p></div><div class=\"form-group\"><label>Volume</label><p class=\"form-control\" readonly=\"readonly\">${company.volume}</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Lowest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.lowestPrice52}</p></div><div class=\"form-group\"><label>Chaos</label><p class=\"form-control\" readonly=\"readonly\">${company.chaosPercentage}%</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Highest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.highestPrice52}</p></div><div class=\"form-group\"><label>Last Time Updated</label><p class=\"form-control\" readonly=\"readonly\">${formatDate(company.lastUpdated)}</p></div></div></div></fieldset></form></template>"; });
 define('text!resources/elements/indicator/indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_indicator\" if.bind=\"indicatorInfo.deleted !== true\"><div class=\"c_indicator-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"indicatorInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${indicatorInfo.description}</span> <a class=\"chevron\"><span if.bind=\"indicatorInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"indicatorInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_indicator-details\" if.bind=\"indicatorInfo.expanded === true\"><form submit.delegate=\"trySaveIndicator()\" if.bind=\"indicatorInfo.deleteMode !== true\"><fieldset disabled.bind=\"indicatorInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${indicatorInfo.indicatorId}\">Indicator Name</label><input type=\"text\" class=\"form-control\" id=\"txtDescription-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.description & validate\"></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${indicatorInfo.indicatorId}\">Period:</label><select id=\"ddlPeriod-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlFormula-${indicatorInfo.indicatorId}\">Formula:</label><select id=\"ddlFormula-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.name\" change.delegate=\"onFormulaChange()\"><option repeat.for=\"formula of formulaes\" value.bind=\"formula.name\">${formula.name}</option></select></div></div><div class=\"col-md-6\"><h4>Chart Properties</h4><div class=\"form-inline-stack\"><div class=\"form-group\"><label for=\"ddlChartType-${indicatorInfo.indicatorId}\">Chart Type:</label><select id=\"ddlChartType-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartType\"><option repeat.for=\"chartType of chartTypes\" model.bind=\"chartType.id\">${chartType.name}</option></select></div><div class=\"form-group\"><label for=\"txtChartPlot-${indicatorInfo.indicatorId}\">Plot Number:</label><select id=\"txtChartPlot-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartPlotNumber\"><option repeat.for=\"plotNumber of plotNumbers\" model.bind=\"plotNumber\">${plotNumber}</option></select></div><div class=\"form-group\"><label for=\"txtChartColor-${indicatorInfo.indicatorId}\">Line Color:</label><input type=\"text\" class=\"form-control\" id=\"txtChartColor-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.chartColor & validate\"></div></div></div><div class=\"col-md-6\"><h4>Formula Parameters</h4><div class=\"form-inline-stack\"><div class=\"form-group\" repeat.for=\"param of indicatorInfo.params\"><label for=\"txtParam-${param.paramName}\">${param.paramName}:</label><input type=\"text\" class=\"form-control\" id=\"txtParam-${param.paramName}\" value.bind=\"param.value\"></div></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_indicator-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"indicatorInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"indicatorInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"indicatorInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_indicator-actions\" if.bind=\"indicatorInfo.deleteMode === true\"><p><br>I'll try to delete the indicator, however, if this indicator is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!resources/elements/navigation/side-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></div></template>"; });
+define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!resources/elements/navigation/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!resources/elements/progress/s-progress.html', ['module'], function(module) { module.exports = "<template class=\"s-progress\" style=\"width:100%\"><div class=\"s-progress-bar\"></div></template>"; });
-define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
 define('text!resources/elements/rule/rule.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule\" if.bind=\"ruleInfo.deleted !== true\"><div class=\"c_rule-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${ruleInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_rule-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRule()\" if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleInfo.ruleId}\">Rule Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleInfo.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleInfo.ruleId}\">Period:</label><select id=\"ddlPeriod-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.period\" change.delegate=\"onPeriodChange()\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlCondition-${ruleInfo.ruleId}\">Compare operator:</label><select id=\"ddlCondition-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.condition\"><option repeat.for=\"compareType of compareTypes\" model.bind=\"compareType.id\">${compareType.name}</option></select></div></div><div class=\"col-md-6\"><h4>Compare What</h4><div class=\"form-group\"><label for=\"ddlDataSourceV1-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV1\" change.delegate=\"onDataSourceV1Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlDataSeriesV1-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV1\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV1\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 === 2\"><label for=\"txtConstV1-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV1\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtSkipItemsV1-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtTakeItemsV1-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlTransformItemsV1-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV1\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></div><div class=\"col-md-6\"><h4>Compare With</h4><div class=\"form-group\"><label for=\"ddlDataSourceV2-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV2\" change.delegate=\"onDataSourceV2Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlDataSeriesV2-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV2\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV2\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 === 2\"><label for=\"txtConstV2-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV2\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtSkipItemsV2-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV2 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtTakeItemsV2-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV2 & validate\"></div></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlTransformItemsV2-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV2\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule, however, if this rule is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
 define('text!resources/elements/rule-set/rule-set-item.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"rule.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${rule.name}</span><div class=\"chevron\"><a><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtDescription-${rule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${rule.ruleId}\" value.bind=\"rule.description\"></textarea></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!resources/elements/rule-set/rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleSetInfo.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span>${ruleSetInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRuleSet()\" if.bind=\"!ruleSetInfo.deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleSetInfo.ruleSetId}\">Rule Set Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleSetInfo.ruleSetId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlPeriod-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"ruleSetInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div></div></fieldset><h4>Set of Rules:</h4><div class=\"c_rule_set-list\"><rule-set-item class=\"c_rule_set-item\" repeat.for=\"rule of ruleSetInfo.rules\" rule.bind=\"rule\"></rule-set-item><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRule()\"><a>Attach rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div><div class=\"c_rule_set-details\" if.bind=\"addMode && editMode\"><div class=\"form-group\"><label for=\"ddlRules-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlRules-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"attachedRuleId\" change.delegate=\"onRuleChange()\"><option repeat.for=\"rule of rules\" model.bind=\"rule.ruleId\">${rule.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRule.ruleId > 0\"><label for=\"txtRuleDescription-${attachedRule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" readonly=\"readonly\" id=\"txtRuleDescription-${attachedRule.ruleId}\" value.bind=\"attachedRule.description\"></textarea></div><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRule()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRule()\" class=\"btn btn-default\">Cancel</button></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule_set-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator,\nchart-layout-plot {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
-define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
 define('text!resources/elements/strategy/side-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul></div></template>"; });
 define('text!resources/elements/strategy/strategy-admin.html', ['module'], function(module) { module.exports = "<template><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div></div></template>"; });
-define('text!components/nav-menu/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
+define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator,\nchart-layout-plot {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
+define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
 define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"!ruleset.deleted\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
+define('text!components/nav-menu/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
 define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div class=\"form-horizontal form-current-job\"><fieldset if.bind=\"currentJobStarted\"><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Job Number</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">#000000${currentJob.jobId}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Started Date</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${startDate}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Status</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${jobStatusName}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Progress</label><div class=\"col-sm-8 col-progress\"><span>${currentJob.progress}%</span><s-progress progress.bind=\"currentJob.progress\"></s-progress></div></div><div class=\"c_job-actions\"><button type=\"button\" if.bind=\"currentJobPaused\" click.delegate=\"resumeJob()\" class=\"btn btn-default\">Resume job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"cancelJob()\" class=\"btn btn-danger\">Cancel Job</button> <button type=\"button\" if.bind=\"currentJobInProgress\" click.delegate=\"pauseJob()\" class=\"btn btn-warning\">Pause job</button></div></fieldset></div><div class=\"c_job-actions\" if.bind=\"!currentJobStarted\"><button type=\"button\" click.delegate=\"startJob()\" class=\"btn btn-danger\">Start new job</button></div><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning\">Clear history</button></div></div></div></div></template>"; });
 define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
-define('text!components/strategies/rules/rule-sets.css', ['module'], function(module) { module.exports = ".c_rule_sets-content {\n  padding-bottom: 30px;\n}\n.c_rule_sets-content .c_rule_sets {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add,\n.c_rule_sets-content .c_rule_set .c_rule_set-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add .glyphicon,\n.c_rule_sets-content .c_rule_set .c_rule_set-add .glyphicon {\n  color: green;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .chevron {\n  float: right;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group .btn,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details {\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule_set-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_rule_sets-content .c_rule_set-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n"; });
+define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
 define('text!components/market/chart-layouts/layouts/chart-layout-plot.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${plot.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of plot.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></div></template>"; });
 define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-plot\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
+define('text!components/strategies/rules/rule-sets.css', ['module'], function(module) { module.exports = ".c_rule_sets-content {\n  padding-bottom: 30px;\n}\n.c_rule_sets-content .c_rule_sets {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add,\n.c_rule_sets-content .c_rule_set .c_rule_set-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add .glyphicon,\n.c_rule_sets-content .c_rule_set .c_rule_set-add .glyphicon {\n  color: green;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .chevron {\n  float: right;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group .btn,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details {\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule_set-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_rule_sets-content .c_rule_set-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n"; });
 define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
+define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
+define('text!components/studies/study/category-studies/category-studies.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-studies.css\"></require><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></template>"; });
 define('text!components/strategies/rules/rules.css', ['module'], function(module) { module.exports = ".c_rules-content .c_rules {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_rules-content .c_rule-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rules-content .c_rule {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add,\n.c_rules-content .c_rule .c_rule-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add .glyphicon,\n.c_rules-content .c_rule .c_rule-add .glyphicon {\n  color: green;\n}\n.c_rules-content .c_rule .c_rule-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rules-content .c_rule .c_rule-header .chevron {\n  float: right;\n}\n.c_rules-content .c_rule .c_rule-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rules-content .c_rule .c_rule-details {\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rules-content .c_rule .c_rule-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
 define('text!components/studies/categories/categories.css', ['module'], function(module) { module.exports = ""; });
-define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
-define('text!components/studies/category-nav/category-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
-define('text!components/studies/study/category-studies/category-studies.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-studies.css\"></require><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></template>"; });
 define('text!components/studies/study/study-actions/study-actions.html', ['module'], function(module) { module.exports = "<template><div if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a click.delegate=\"manageCategories()\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div></template>"; });
 define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"deleteJob()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
+define('text!components/studies/category-nav/category-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!components/studies/study/study.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
 define('text!components/market/jobs-dashboard/jobs/job.css', ['module'], function(module) { module.exports = ".c_dashboard {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_job-details-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_job-details-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n.c_job-details-list .c_jod_details {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_job-details-list .c_jod_details .c_jod_details-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .chevron {\n  float: right;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group .btn,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details {\n  padding-top: 10px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_job-actions {\n  padding-top: 12px;\n  padding-right: 20px;\n  text-align: right;\n  border-top: solid 1px rgba(204, 204, 204, 0.36);\n}\n.job-staus-2 {\n  color: #5cb85c;\n}\n.job-staus-3 {\n  color: #f59f25;\n}\n.job-staus-99,\n.chevron {\n  color: #CA1D04;\n}\n.label {\n  font-weight: 300;\n  font-size: 13px;\n  padding: 4px 8px;\n}\n.form-current-job fieldset {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  padding: 20px 0 12px;\n}\n.monospace {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  margin-top: 2px;\n}\n.form-group.exception .form-control {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  font-style: normal;\n  font-variant: normal;\n  font-weight: 400;\n  line-height: 19px;\n  color: rgba(0, 0, 0, 0.55);\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n}\n.form-group.error .form-control {\n  color: #CA1D04;\n}\n.col-progress {\n  text-align: center;\n}\n.col-progress span {\n  font-size: 13px;\n  position: relative;\n  color: #5cb85c;\n  font-weight: 500;\n}\n.col-progress s-progress {\n  position: relative;\n  top: -8px;\n}\n"; });
 define('text!components/studies/study/category-studies/category-studies.css', ['module'], function(module) { module.exports = ""; });

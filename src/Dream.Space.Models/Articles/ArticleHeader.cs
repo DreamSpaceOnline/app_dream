@@ -4,7 +4,7 @@
     {
         public ArticleHeader()
         {
-            
+
         }
 
         public ArticleHeader(IArticleEntity article)
@@ -31,5 +31,25 @@
         public bool IsFeatured { get; set; }
         public bool Deleted { get; set; }
 
+    }
+
+    public static class ArticleHeaderExtensions
+    {
+        public static ArticleHeader ToArticleHeader(this IArticleEntity article)
+        {
+            if (article == null) return null;
+
+            return new ArticleHeader
+            {
+                ArticleId = article.ArticleId,
+                Title = article.Title,
+                Url = article.Url,
+                CategoryId = article.CategoryId,
+                OrderId = article.OrderId,
+                IsFeatured = article.IsFeatured,
+                Summary = article.Summary,
+                Deleted = article.Deleted
+            };
+        }
     }
 }
