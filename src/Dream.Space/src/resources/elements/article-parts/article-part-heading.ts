@@ -5,6 +5,7 @@ import {ArticleBlock, HeadingType } from "../../../services/services-generated";
 @autoinject
 export class ArticlePartHeading {
     @bindable part: ArticleBlock;
+    @bindable editMode: boolean;
 
     headingTypes: HeadingType[];
     textValid: boolean;

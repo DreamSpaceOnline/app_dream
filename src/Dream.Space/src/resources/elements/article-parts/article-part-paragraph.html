@@ -1,6 +1,6 @@
 <template>
 
-    <form if.bind="part.editMode === true">
+    <form if.bind="editMode">
         <h4>Define Paragraph</h4>
         <fieldset>
             <div class="form-group ${!textValid ? 'has-error' : ''}">
@@ -14,5 +14,5 @@
         </fieldset>
     </form>
 
-    <p if.bind="part.editMode !== true">${part.text}</p>
+    <p if.bind="!editMode">${part.text}</p>
 </template>

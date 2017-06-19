@@ -1,6 +1,6 @@
 <template>
 
-    <form if.bind="part.editMode === true">
+    <form if.bind="editMode">
         <h4>Select Image</h4>
         <fieldset>
 
@@ -39,7 +39,7 @@
         </fieldset>
     </form>
 
-    <span if.bind="part.editMode !== true">
+    <span if.bind="!editMode">
         <img src.bind="part.imageUrl" />
         <p>${part.text}</p>
     </span>

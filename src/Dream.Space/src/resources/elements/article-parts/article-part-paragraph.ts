@@ -5,6 +5,8 @@ import {ArticleBlock} from "../../../services/services-generated";
 @autoinject()
 export class ArticlePartParagraph {
     @bindable part: ArticleBlock;
+    @bindable editMode: boolean;
+
     subscriptions: Disposable[];
     textValid: boolean;
 
@@ -12,9 +14,15 @@ export class ArticlePartParagraph {
         this.subscriptions = [];
     }
 
+    editModeChanged(newVaue) {
+        if (newVaue) {
+            
+        }
+    }
+
     attached() {
         if (!this.part.text) {
-            this.part.text = '';
+            this.part.text = "";
         }
 
         this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, "text")

@@ -1,44 +1,26 @@
 import { autoinject, bindable } from "aurelia-framework";
 import { BindingEngine, Disposable } from 'aurelia-binding';
-import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
+import { Subscription } from 'aurelia-event-aggregator';
 import { ArticleBlockAction } from "../../../common/types/enums";
-import { ArticleBlock, ArticleBlockType} from "../../../services/services-generated";
+import { ArticleBlock, ArticleBlockType } from "../../../services/services-generated";
 
 @autoinject
 export class ArticleParts {
     @bindable parts: ArticleBlock[];
-    editMode: boolean;
+    @bindable editMode: boolean;
 
     partsSubscriptions: Subscription[];
     eventSubscriptions: Subscription[];
     partsChangedSubscription: Disposable;
 
-    constructor (private bindingEngine: BindingEngine, private eventAggregator: EventAggregator) {
+    constructor (private bindingEngine: BindingEngine) {
         this.parts = [];
-        this.editMode = false;
         this.partsSubscriptions = [];
         this.partsChangedSubscription = null;
         this.eventSubscriptions = [];
     }
 
-    attached() {
-        this.eventSubscriptions.push(
-            this.eventAggregator.subscribe("article-edit-mode-changed", flag => this.setEditMode(flag)));
-
-    }
-
-    setEditMode(flag) {
-        this.editMode = flag;
-        if (this.parts) {
-            this.parts.forEach(item => {
-                if (item) {
-                    
-                }
-                //item.editMode = flag;
-            });
-        }
-    }
-
+    
     partsChanged(newValue) {
         if (newValue ) {
             if( !this.partsChangedSubscription) {
@@ -47,6 +29,32 @@ export class ArticleParts {
 
             this.renewPartsSubscriptions();
         }
+    }
+
+    editModeChanged(newValue: boolean) {
+        if (newValue) {
+            
+        }
+    }
+
+    isParagraph(part: ArticleBlock):boolean {
+        return part.type === ArticleBlockType.Paragraph;
+    }
+
+    isHeading(part: ArticleBlock): boolean {
+        return part.type === ArticleBlockType.Heading;
+    }
+
+    isImage(part: ArticleBlock): boolean {
+        return part.type === ArticleBlockType.Image;
+    }
+
+    isList(part: ArticleBlock): boolean {
+        return part.type === ArticleBlockType.List;
+    }
+
+    isUnset(part: ArticleBlock): boolean {
+        return part.type === ArticleBlockType.Unset;
     }
 
     detached() {
@@ -70,10 +78,10 @@ export class ArticleParts {
     addPart() {
 
         const part = new ArticleBlock();
-        part.blockType = ArticleBlockType.Unset;
+        part.type = ArticleBlockType.Unset;
         part.text = "";
 
-        const index = this.parts.findIndex(p => p.blockType === part.blockType);
+        const index = this.parts.findIndex(p => p.type === part.type);
         if (index === -1) {
             this.parts.push(part);
         }

@@ -1892,13 +1892,13 @@
       "additionalProperties": false,
       "required": [
         "valid",
-        "blockType"
+        "type"
       ],
       "properties": {
         "valid": {
           "type": "boolean"
         },
-        "blockType": {
+        "type": {
           "$ref": "#/definitions/ArticleBlockType"
         },
         "text": {
@@ -1921,18 +1921,18 @@
     "ArticleBlockType": {
       "type": "string",
       "x-enumNames": [
+        "Unset",
         "Paragraph",
         "Heading",
         "Image",
-        "List",
-        "Unset"
+        "List"
       ],
       "enum": [
+        "Unset",
         "Paragraph",
         "Heading",
         "Image",
-        "List",
-        "Unset"
+        "List"
       ],
       "description": ""
     },

@@ -4,6 +4,7 @@ import {ArticleBlock} from "../../../services/services-generated";
 //TODO: use EventEmitter
 export class ArticlePartActions {
     @bindable part: ArticleBlock;
+    @bindable editMode: boolean;
 
     remove() {
         if (this.part) {

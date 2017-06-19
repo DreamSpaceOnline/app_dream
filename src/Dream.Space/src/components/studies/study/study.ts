@@ -1,12 +1,13 @@
 ﻿import * as toastr from "toastr";
 import { autoinject } from "aurelia-framework";
-import { EventAggregator } from 'aurelia-event-aggregator';
+import { Subscription } from "aurelia-event-aggregator";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { Navigation } from "../navigation"
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
 import {BootstrapFormRenderer} from "../../../form-validation/bootstrap-form-renderer";
 import {AccountService} from "../../../services/account-service";
 import {ArticlesApiClient, ArticleModel, CategoryModel, ArticleHeader } from "../../../services/services-generated";
+import {EventEmitter} from "../../../infrastructure/event-emitter";
 
 @autoinject
 export class Study {
@@ -14,7 +15,7 @@ export class Study {
     powerUser: boolean;
     router: Router;
     articleUrl: string;
-    subscriptions: {}[];
+    subscriptions: Subscription[] = [];
     editMode: boolean;
     article: ArticleModel;
     category: CategoryModel;
@@ -22,7 +23,7 @@ export class Study {
     originalArticle: ArticleModel;
 
     constructor(
-        private readonly eventAggregator: EventAggregator,
+        private readonly eventEmitter: EventEmitter,
         private readonly articleService: ArticlesApiClient,
         private readonly navigation: Navigation,
         private readonly account: AccountService,
@@ -32,8 +33,15 @@ export class Study {
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
 
+        this.subscriptions.push(this.eventEmitter.subscribe("Article-StartEdit", () => this.startEdit()));
+        this.subscriptions.push(this.eventEmitter.subscribe("Article-CancelEdit", () => this.cancelEdit()));
+
         this.subscriptions = [];
         this.editMode = false;
+    }
+
+    detached() {
+        this.subscriptions.forEach(item => item.dispose());
     }
 
     activate(params, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
@@ -79,7 +87,6 @@ export class Study {
     setEditMode(editMode) {
         this.editMode = editMode;
         this.navigation.menu.editMode = editMode;
-        this.eventAggregator.publish("article-edit-mode-changed", editMode);
     }
 
     startEdit() {
@@ -88,9 +95,9 @@ export class Study {
         this.setEditMode(true);
 
         ValidationRules
-            .ensure((u: ArticleModel) => u.title).displayName('Strategy name').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: ArticleModel) => u.summary).displayName('Summary').required().withMessage(`\${$displayName} cannot be blank.`)
-            .ensure((u: ArticleModel) => u.url).displayName('Strategy url').required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ArticleModel) => u.title).displayName("Strategy name").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ArticleModel) => u.summary).displayName("Summary").required().withMessage(`\${$displayName} cannot be blank.`)
+            .ensure((u: ArticleModel) => u.url).displayName("Strategy url").required().withMessage(`\${$displayName} cannot be blank.`)
             .on(this.article);
 
     }

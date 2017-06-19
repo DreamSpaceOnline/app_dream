@@ -1,6 +1,6 @@
 <template>
 
-    <form if.bind="part.editMode === true">
+    <form if.bind="editMode">
         <h4>Define heading</h4>
         <fieldset>
             <div class="form-group ${!typeValid ? 'has-error' : ''}">
@@ -25,6 +25,6 @@
         </fieldset>
     </form>
 
-    <span if.bind="part.editMode !== true" class="${part.headingType}">${part.text}</span>
+    <span if.bind="!editMode" class="${part.headingType}">${part.text}</span>
 
 </template>

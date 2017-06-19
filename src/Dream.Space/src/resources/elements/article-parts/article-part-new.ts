@@ -4,6 +4,7 @@ import { ArticleBlock, ArticleBlockType } from "../../../services/services-gener
 
 export class ArticlePartNew {
     @bindable part: ArticleBlock;
+    @bindable editMode: boolean;
 
     partTypes: ArticleBlockType[];
     partAction: ArticleBlockAction;

@@ -2942,7 +2942,7 @@ export interface IArticleModel extends IArticleHeader {
 
 export class ArticleBlock implements IArticleBlock {
     valid: boolean;
-    blockType: ArticleBlockType;
+    type: ArticleBlockType;
     text: string | null;
     headingType: HeadingType | null;
     imageUrl: string | null;
@@ -2960,7 +2960,7 @@ export class ArticleBlock implements IArticleBlock {
     init(data?: any) {
         if (data) {
             this.valid = data["valid"] !== undefined ? data["valid"] : <any>null;
-            this.blockType = data["blockType"] !== undefined ? data["blockType"] : <any>null;
+            this.type = data["type"] !== undefined ? data["type"] : <any>null;
             this.text = data["text"] !== undefined ? data["text"] : <any>null;
             this.headingType = data["headingType"] !== undefined ? data["headingType"] : <any>null;
             this.imageUrl = data["imageUrl"] !== undefined ? data["imageUrl"] : <any>null;
@@ -2981,7 +2981,7 @@ export class ArticleBlock implements IArticleBlock {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["valid"] = this.valid !== undefined ? this.valid : <any>null;
-        data["blockType"] = this.blockType !== undefined ? this.blockType : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
         data["text"] = this.text !== undefined ? this.text : <any>null;
         data["headingType"] = this.headingType !== undefined ? this.headingType : <any>null;
         data["imageUrl"] = this.imageUrl !== undefined ? this.imageUrl : <any>null;
@@ -2996,7 +2996,7 @@ export class ArticleBlock implements IArticleBlock {
 
 export interface IArticleBlock {
     valid: boolean;
-    blockType: ArticleBlockType;
+    type: ArticleBlockType;
     text: string | null;
     headingType: HeadingType | null;
     imageUrl: string | null;
@@ -3004,11 +3004,11 @@ export interface IArticleBlock {
 }
 
 export enum ArticleBlockType {
+    Unset = <any>"Unset", 
     Paragraph = <any>"Paragraph", 
     Heading = <any>"Heading", 
     Image = <any>"Image", 
     List = <any>"List", 
-    Unset = <any>"Unset", 
 }
 
 export enum HeadingType {

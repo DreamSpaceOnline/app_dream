@@ -2705,7 +2705,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticleBlock.prototype.init = function (data) {
             if (data) {
                 this.valid = data["valid"] !== undefined ? data["valid"] : null;
-                this.blockType = data["blockType"] !== undefined ? data["blockType"] : null;
+                this.type = data["type"] !== undefined ? data["type"] : null;
                 this.text = data["text"] !== undefined ? data["text"] : null;
                 this.headingType = data["headingType"] !== undefined ? data["headingType"] : null;
                 this.imageUrl = data["imageUrl"] !== undefined ? data["imageUrl"] : null;
@@ -2726,7 +2726,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         ArticleBlock.prototype.toJSON = function (data) {
             data = typeof data === 'object' ? data : {};
             data["valid"] = this.valid !== undefined ? this.valid : null;
-            data["blockType"] = this.blockType !== undefined ? this.blockType : null;
+            data["type"] = this.type !== undefined ? this.type : null;
             data["text"] = this.text !== undefined ? this.text : null;
             data["headingType"] = this.headingType !== undefined ? this.headingType : null;
             data["imageUrl"] = this.imageUrl !== undefined ? this.imageUrl : null;
@@ -2744,11 +2744,11 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
     exports.ArticleBlock = ArticleBlock;
     var ArticleBlockType;
     (function (ArticleBlockType) {
+        ArticleBlockType[ArticleBlockType["Unset"] = "Unset"] = "Unset";
         ArticleBlockType[ArticleBlockType["Paragraph"] = "Paragraph"] = "Paragraph";
         ArticleBlockType[ArticleBlockType["Heading"] = "Heading"] = "Heading";
         ArticleBlockType[ArticleBlockType["Image"] = "Image"] = "Image";
         ArticleBlockType[ArticleBlockType["List"] = "List"] = "List";
-        ArticleBlockType[ArticleBlockType["Unset"] = "Unset"] = "Unset";
     })(ArticleBlockType = exports.ArticleBlockType || (exports.ArticleBlockType = {}));
     var HeadingType;
     (function (HeadingType) {
@@ -6612,21 +6612,28 @@ define('components/studies/category-nav/category-nav',["require", "exports", "ts
     exports.CategoryNav = CategoryNav;
 });
 
-define('components/studies/study/study',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "../navigation", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, navigation_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, services_generated_1) {
+define('components/studies/study/study',["require", "exports", "tslib", "toastr", "aurelia-framework", "../navigation", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/services-generated", "../../../infrastructure/event-emitter"], function (require, exports, tslib_1, toastr, aurelia_framework_1, navigation_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, services_generated_1, event_emitter_1) {
     "use strict";
     var Study = (function () {
-        function Study(eventAggregator, articleService, navigation, account, validation) {
-            this.eventAggregator = eventAggregator;
+        function Study(eventEmitter, articleService, navigation, account, validation) {
+            var _this = this;
+            this.eventEmitter = eventEmitter;
             this.articleService = articleService;
             this.navigation = navigation;
             this.account = account;
             this.validation = validation;
+            this.subscriptions = [];
             this.powerUser = this.account.currentUser.isAuthenticated;
             this.validation.validateTrigger = aurelia_validation_1.validateTrigger.change;
             this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
+            this.subscriptions.push(this.eventEmitter.subscribe("Article-StartEdit", function () { return _this.startEdit(); }));
+            this.subscriptions.push(this.eventEmitter.subscribe("Article-CancelEdit", function () { return _this.cancelEdit(); }));
             this.subscriptions = [];
             this.editMode = false;
         }
+        Study.prototype.detached = function () {
+            this.subscriptions.forEach(function (item) { return item.dispose(); });
+        };
         Study.prototype.activate = function (params, routeconfig, navigationInstruction) {
             this.router = navigationInstruction.router;
             this.articleUrl = routeconfig.name;
@@ -6686,15 +6693,14 @@ define('components/studies/study/study',["require", "exports", "tslib", "toastr"
         Study.prototype.setEditMode = function (editMode) {
             this.editMode = editMode;
             this.navigation.menu.editMode = editMode;
-            this.eventAggregator.publish("article-edit-mode-changed", editMode);
         };
         Study.prototype.startEdit = function () {
             this.originalArticle = Object.assign({}, this.article);
             this.setEditMode(true);
             aurelia_validation_1.ValidationRules
-                .ensure(function (u) { return u.title; }).displayName('Strategy name').required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (u) { return u.summary; }).displayName('Summary').required().withMessage("${$displayName} cannot be blank.")
-                .ensure(function (u) { return u.url; }).displayName('Strategy url').required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.title; }).displayName("Strategy name").required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.summary; }).displayName("Summary").required().withMessage("${$displayName} cannot be blank.")
+                .ensure(function (u) { return u.url; }).displayName("Strategy url").required().withMessage("${$displayName} cannot be blank.")
                 .on(this.article);
         };
         Study.prototype.cancelEdit = function () {
@@ -6806,7 +6812,7 @@ define('components/studies/study/study',["require", "exports", "tslib", "toastr"
     }());
     Study = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
+        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter,
             services_generated_1.ArticlesApiClient,
             navigation_1.Navigation,
             account_service_1.AccountService,
@@ -6838,6 +6844,10 @@ define('resources/elements/article-parts/article-part-actions',["require", "expo
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartActions.prototype, "part", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticlePartActions.prototype, "editMode", void 0);
     exports.ArticlePartActions = ArticlePartActions;
 });
 
@@ -6884,6 +6894,10 @@ define('resources/elements/article-parts/article-part-heading',["require", "expo
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartHeading.prototype, "part", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticlePartHeading.prototype, "editMode", void 0);
     ArticlePartHeading = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
         tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
@@ -6973,6 +6987,10 @@ define('resources/elements/article-parts/article-part-image',["require", "export
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartImage.prototype, "part", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticlePartImage.prototype, "editMode", void 0);
     ArticlePartImage = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
         tslib_1.__metadata("design:paramtypes", [services_generated_1.BlobApiClient, aurelia_binding_1.BindingEngine])
@@ -7061,6 +7079,10 @@ define('resources/elements/article-parts/article-part-list',["require", "exports
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartList.prototype, "part", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticlePartList.prototype, "editMode", void 0);
     ArticlePartList = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
         tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
@@ -7090,6 +7112,10 @@ define('resources/elements/article-parts/article-part-new',["require", "exports"
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartNew.prototype, "part", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticlePartNew.prototype, "editMode", void 0);
     exports.ArticlePartNew = ArticlePartNew;
 });
 
@@ -7100,10 +7126,14 @@ define('resources/elements/article-parts/article-part-paragraph',["require", "ex
             this.bindingEngine = bindingEngine;
             this.subscriptions = [];
         }
+        ArticlePartParagraph.prototype.editModeChanged = function (newVaue) {
+            if (newVaue) {
+            }
+        };
         ArticlePartParagraph.prototype.attached = function () {
             var _this = this;
             if (!this.part.text) {
-                this.part.text = '';
+                this.part.text = "";
             }
             this.subscriptions.push(this.bindingEngine.propertyObserver(this.part, "text")
                 .subscribe(function () { return _this.onChange(); }));
@@ -7129,6 +7159,10 @@ define('resources/elements/article-parts/article-part-paragraph',["require", "ex
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
     ], ArticlePartParagraph.prototype, "part", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticlePartParagraph.prototype, "editMode", void 0);
     ArticlePartParagraph = tslib_1.__decorate([
         aurelia_framework_1.autoinject(),
         tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
@@ -7136,31 +7170,16 @@ define('resources/elements/article-parts/article-part-paragraph',["require", "ex
     exports.ArticlePartParagraph = ArticlePartParagraph;
 });
 
-define('resources/elements/article-parts/article-parts',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "aurelia-event-aggregator", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, aurelia_event_aggregator_1, services_generated_1) {
+define('resources/elements/article-parts/article-parts',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
     var ArticleParts = (function () {
-        function ArticleParts(bindingEngine, eventAggregator) {
+        function ArticleParts(bindingEngine) {
             this.bindingEngine = bindingEngine;
-            this.eventAggregator = eventAggregator;
             this.parts = [];
-            this.editMode = false;
             this.partsSubscriptions = [];
             this.partsChangedSubscription = null;
             this.eventSubscriptions = [];
         }
-        ArticleParts.prototype.attached = function () {
-            var _this = this;
-            this.eventSubscriptions.push(this.eventAggregator.subscribe("article-edit-mode-changed", function (flag) { return _this.setEditMode(flag); }));
-        };
-        ArticleParts.prototype.setEditMode = function (flag) {
-            this.editMode = flag;
-            if (this.parts) {
-                this.parts.forEach(function (item) {
-                    if (item) {
-                    }
-                });
-            }
-        };
         ArticleParts.prototype.partsChanged = function (newValue) {
             var _this = this;
             if (newValue) {
@@ -7169,6 +7188,25 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
                 }
                 this.renewPartsSubscriptions();
             }
+        };
+        ArticleParts.prototype.editModeChanged = function (newValue) {
+            if (newValue) {
+            }
+        };
+        ArticleParts.prototype.isParagraph = function (part) {
+            return part.type === services_generated_1.ArticleBlockType.Paragraph;
+        };
+        ArticleParts.prototype.isHeading = function (part) {
+            return part.type === services_generated_1.ArticleBlockType.Heading;
+        };
+        ArticleParts.prototype.isImage = function (part) {
+            return part.type === services_generated_1.ArticleBlockType.Image;
+        };
+        ArticleParts.prototype.isList = function (part) {
+            return part.type === services_generated_1.ArticleBlockType.List;
+        };
+        ArticleParts.prototype.isUnset = function (part) {
+            return part.type === services_generated_1.ArticleBlockType.Unset;
         };
         ArticleParts.prototype.detached = function () {
             if (this.partsChangedSubscription) {
@@ -7187,9 +7225,9 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
         };
         ArticleParts.prototype.addPart = function () {
             var part = new services_generated_1.ArticleBlock();
-            part.blockType = services_generated_1.ArticleBlockType.Unset;
+            part.type = services_generated_1.ArticleBlockType.Unset;
             part.text = "";
-            var index = this.parts.findIndex(function (p) { return p.blockType === part.blockType; });
+            var index = this.parts.findIndex(function (p) { return p.type === part.type; });
             if (index === -1) {
                 this.parts.push(part);
             }
@@ -7238,9 +7276,13 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
         aurelia_framework_1.bindable,
         tslib_1.__metadata("design:type", Array)
     ], ArticleParts.prototype, "parts", void 0);
+    tslib_1.__decorate([
+        aurelia_framework_1.bindable,
+        tslib_1.__metadata("design:type", Boolean)
+    ], ArticleParts.prototype, "editMode", void 0);
     ArticleParts = tslib_1.__decorate([
         aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine, aurelia_event_aggregator_1.EventAggregator])
+        tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
     ], ArticleParts);
     exports.ArticleParts = ArticleParts;
 });
@@ -11485,20 +11527,20 @@ define('text!components/strategies/rules/rules.html', ['module'], function(modul
 define('text!components/studies/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
 define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n"; });
 define('text!components/studies/category-nav/category-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of menu.items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"$parent.getUrl(item)\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!components/studies/study/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><require from=\"./study-actions/study-actions\"></require><require from=\"./category-studies/category-studies\"></require><study-actions></study-actions><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"article.summary & validate\"></textarea></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"></div></div><div class=\"col-md-4\"><category-studies category.bind=\"category\"></category-studies></div></div></template>"; });
+define('text!components/studies/study/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><require from=\"./study-actions/study-actions\"></require><require from=\"./category-studies/category-studies\"></require><study-actions></study-actions><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"article.summary & validate\"></textarea></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"article.articleBlocks\" edit-mode.bind=\"editMode\"></article-parts></div></div><div class=\"col-md-4\"><category-studies category.bind=\"category\"></category-studies></div></div></template>"; });
 define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
 define('text!resources/elements/chart/chart-layout.html', ['module'], function(module) { module.exports = "<template><div id=\"container-weekly\" class=\"o_chart-container\"></div><div id=\"container-daily\" class=\"o_chart-container\"></div></template>"; });
-define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
+define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
 define('text!common/styles/_progress.css', ['module'], function(module) { module.exports = ".s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n"; });
-define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"part.editMode !== true\" class=\"${part.headingType}\">${part.text}</span></template>"; });
-define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"part.editMode !== true\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
-define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!part.editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
+define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"!editMode\" class=\"${part.headingType}\">${part.text}</span></template>"; });
+define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"!editMode\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
+define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
 define('text!common/styles/_sub-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!common/styles/_variables.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
+define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
 define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
-define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"part.editMode === true\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"part.editMode !== true\">${part.text}</p></template>"; });
-define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" if.bind=\"part.type === 'Paragraph'\"></article-part-paragraph><article-part-heading part.bind=\"part\" if.bind=\"part.type === 'Heading'\"></article-part-heading><article-part-image part.bind=\"part\" if.bind=\"part.type === 'Image'\"></article-part-image><article-part-list part.bind=\"part\" if.bind=\"part.type === 'List'\"></article-part-list><article-part-new part.bind=\"part\" if.bind=\"part.type === 'Unset'\"></article-part-new><article-part-actions part.bind=\"part\" if.bind=\"part.type !== 'Unset'\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode === true\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
+define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"!editMode\">${part.text}</p></template>"; });
+define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isParagraph(part)\"></article-part-paragraph><article-part-heading part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isHeading(part)\"></article-part-heading><article-part-image part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isImage(part)\"></article-part-image><article-part-list part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isList(part)\"></article-part-list><article-part-new part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isUnset(part)\"></article-part-new><article-part-actions part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"!isUnset(part)\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
 define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
 define('text!resources/elements/company/company-details.html', ['module'], function(module) { module.exports = "<template><form><fieldset disabled=\"disabled\"><div class=\"row\"><div class=\"col-md-6\"><div class=\"form-group\"><label>Sector</label><p class=\"form-control\" readonly=\"readonly\">${company.sector}</p></div></div><div class=\"col-md-6\"><div class=\"form-group\"><label>Industry</label><p class=\"form-control\" readonly=\"readonly\">${company.industry}</p></div></div></div><div class=\"row\"><div class=\"col-md-4\"><div class=\"form-group\"><label>Price</label><p class=\"form-control\" readonly=\"readonly\">${company.price}</p></div><div class=\"form-group\"><label>Volume</label><p class=\"form-control\" readonly=\"readonly\">${company.volume}</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Lowest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.lowestPrice52}</p></div><div class=\"form-group\"><label>Chaos</label><p class=\"form-control\" readonly=\"readonly\">${company.chaosPercentage}%</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Highest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.highestPrice52}</p></div><div class=\"form-group\"><label>Last Time Updated</label><p class=\"form-control\" readonly=\"readonly\">${formatDate(company.lastUpdated)}</p></div></div></div></fieldset></form></template>"; });
 define('text!resources/elements/indicator/indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_indicator\" if.bind=\"indicatorInfo.deleted !== true\"><div class=\"c_indicator-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"indicatorInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${indicatorInfo.description}</span> <a class=\"chevron\"><span if.bind=\"indicatorInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"indicatorInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_indicator-details\" if.bind=\"indicatorInfo.expanded === true\"><form submit.delegate=\"trySaveIndicator()\" if.bind=\"indicatorInfo.deleteMode !== true\"><fieldset disabled.bind=\"indicatorInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${indicatorInfo.indicatorId}\">Indicator Name</label><input type=\"text\" class=\"form-control\" id=\"txtDescription-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.description & validate\"></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${indicatorInfo.indicatorId}\">Period:</label><select id=\"ddlPeriod-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlFormula-${indicatorInfo.indicatorId}\">Formula:</label><select id=\"ddlFormula-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.name\" change.delegate=\"onFormulaChange()\"><option repeat.for=\"formula of formulaes\" value.bind=\"formula.name\">${formula.name}</option></select></div></div><div class=\"col-md-6\"><h4>Chart Properties</h4><div class=\"form-inline-stack\"><div class=\"form-group\"><label for=\"ddlChartType-${indicatorInfo.indicatorId}\">Chart Type:</label><select id=\"ddlChartType-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartType\"><option repeat.for=\"chartType of chartTypes\" model.bind=\"chartType.id\">${chartType.name}</option></select></div><div class=\"form-group\"><label for=\"txtChartPlot-${indicatorInfo.indicatorId}\">Plot Number:</label><select id=\"txtChartPlot-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartPlotNumber\"><option repeat.for=\"plotNumber of plotNumbers\" model.bind=\"plotNumber\">${plotNumber}</option></select></div><div class=\"form-group\"><label for=\"txtChartColor-${indicatorInfo.indicatorId}\">Line Color:</label><input type=\"text\" class=\"form-control\" id=\"txtChartColor-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.chartColor & validate\"></div></div></div><div class=\"col-md-6\"><h4>Formula Parameters</h4><div class=\"form-inline-stack\"><div class=\"form-group\" repeat.for=\"param of indicatorInfo.params\"><label for=\"txtParam-${param.paramName}\">${param.paramName}:</label><input type=\"text\" class=\"form-control\" id=\"txtParam-${param.paramName}\" value.bind=\"param.value\"></div></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_indicator-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"indicatorInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"indicatorInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"indicatorInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_indicator-actions\" if.bind=\"indicatorInfo.deleteMode === true\"><p><br>I'll try to delete the indicator, however, if this indicator is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });

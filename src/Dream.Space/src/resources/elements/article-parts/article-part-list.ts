@@ -5,7 +5,9 @@ import { ArticleBlock, ArticleBlockItem } from "../../../services/services-gener
 @autoinject
 export class ArticlePartList {
     
-    @bindable part:ArticleBlock;
+    @bindable part: ArticleBlock;
+    @bindable editMode: boolean;
+
     itemsChangedSubscription: Disposable;
     itemsSubscriptions: Disposable[];
 

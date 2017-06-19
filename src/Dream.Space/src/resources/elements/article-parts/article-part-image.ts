@@ -6,6 +6,8 @@ import {BlobApiClient, FileDetails, ArticleBlock } from "../../../services/servi
 @autoinject
 export class ArticlePartImage {
     @bindable part: ArticleBlock;
+    @bindable editMode: boolean;
+
     subscriptions: Disposable[];
     selectedFiles: any;
     textValid:boolean;

@@ -1,13 +1,21 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Dream.Space.Models.Articles
 {
     public class ArticleBlock
     {
         public bool Valid { get; set; }
-        public ArticleBlockType BlockType { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ArticleBlockType Type { get; set; }
+
         public string Text { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public HeadingType? HeadingType { get; set; }
+
         public string ImageUrl { get; set; }
 
         public IList<ArticleBlockItem> Items { get; set; }
@@ -15,7 +23,11 @@ namespace Dream.Space.Models.Articles
 
     public enum ArticleBlockType
     {
-       Paragraph, Heading, Image, List, Unset
+        Unset = 0,
+        Paragraph = 1,
+        Heading = 2,
+        Image = 3,
+        List = 4
     }
 
     public enum HeadingType

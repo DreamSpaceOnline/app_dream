@@ -1,6 +1,6 @@
 <template>
 
-    <form if.bind="part.editMode === true">
+    <form if.bind="editMode">
         <h4>Define List Items</h4>
         <fieldset>
             <div repeat.for="item of part.items" class="form-group ${!item.valid ? 'has-error' : ''}">
@@ -18,7 +18,7 @@
         </fieldset>
     </form>
 
-    <ol class="f" if.bind="!part.editMode && part.items && part.items.length > 0">
+    <ol class="f" if.bind="!editMode && part.items && part.items.length > 0">
         <li repeat.for="item of part.items">${item.text}</li>
     </ol>
 </template>
