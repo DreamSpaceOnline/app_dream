@@ -22,7 +22,7 @@ namespace Dream.Space.Data.Services
             _container = container;
         }
 
-        public Company Register(CompanyModel company)
+        public CompanyModel Register(CompanyModel company)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -36,14 +36,11 @@ namespace Dream.Space.Data.Services
 
                 record.LastUpdated = DateTime.UtcNow;
                 record.Name = company.Name;
-                record.Sector = company.Sector;
-                record.Industry = company.Industry;
-                record.SummaryUrl = company.SummaryUrl;
                 record.Price = company.Price;
 
                 repository.Commit();
 
-                return record;
+                return new CompanyModel(record);
             }
         }
 
@@ -138,18 +135,18 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public async Task<CompanyHeader> GetAsync(string ticker)
+        public async Task<CompanyModel> GetAsync(string ticker)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICompanyRepository>();
                 var company = await repository.GetAsync(ticker);
-
-                return company;
+                
+                return new CompanyModel(company);
             }
         }
 
-        public async Task<List<CompanyDetails>> SearchAsync(CompanySearchRequest request)
+        public async Task<List<CompanyHeader>> SearchAsync(CompanySearchRequest request)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -165,14 +162,14 @@ namespace Dream.Space.Data.Services
             return new CompanyManager(company, this);
         }
 
-        public Company Get(string ticker)
+        public CompanyModel Get(string ticker)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
                 var repository = scope.Resolve<ICompanyRepository>();
                 var company = repository.Get(ticker);
 
-                return company;
+                return new CompanyModel(company);
             }
         }
 

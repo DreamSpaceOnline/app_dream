@@ -22,7 +22,7 @@ namespace Dream.Space.Controllers
 
         [HttpGet]
         [Route("{ticker}")]
-        [ResponseType(typeof(Company))]
+        [ResponseType(typeof(CompanyModel))]
         public async Task<IHttpActionResult> GetCompany(string ticker)
         {
             var company = await _service.GetAsync(ticker);
@@ -32,7 +32,7 @@ namespace Dream.Space.Controllers
 
         [HttpPost]
         [Route("search")]
-        [ResponseType(typeof(List<CompanyDetails>))]
+        [ResponseType(typeof(List<CompanyHeader>))]
         public async Task<IHttpActionResult> Search([FromBody] CompanySearchRequest request)
         {
             var rules = await _service.SearchAsync(request);

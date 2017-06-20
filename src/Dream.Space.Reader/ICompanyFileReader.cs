@@ -5,6 +5,6 @@ namespace Dream.Space.Reader
 {
     public interface ICompanyFileReader
     {
-        List<CompanyModel> Read(string filePath);
+        List<CompanyReaderModel> Read(string filePath);
     }
 }

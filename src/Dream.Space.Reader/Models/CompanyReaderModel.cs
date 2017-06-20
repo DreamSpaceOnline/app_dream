@@ -1,6 +1,6 @@
 ﻿namespace Dream.Space.Reader.Models
 {
-    public class CompanyModel
+    public class CompanyReaderModel
     {
         public string Ticker { get; set; }
         public string Name { get; set; }

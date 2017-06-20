@@ -4,9 +4,9 @@ using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Reader.Models
 {
-    public class QuotesModelMap : CsvClassMap<QuotesModel>
+    public class QuotesReaderModelMap : CsvClassMap<QuotesReaderModel>
     {
-        public QuotesModelMap()
+        public QuotesReaderModelMap()
         {
             Map(m => m.Date).Name("date").Default(DateTime.MinValue);
             Map(m => m.Close).Name("close").Default(0);

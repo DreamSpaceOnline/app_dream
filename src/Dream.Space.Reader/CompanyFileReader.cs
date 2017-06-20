@@ -3,7 +3,7 @@ using Dream.Space.Reader.Validators;
 
 namespace Dream.Space.Reader
 {
-    public class CompanyFileReader : FileReader<CompanyModelMap, CompanyModel>, ICompanyFileReader
+    public class CompanyFileReader : FileReader<CompanyReaderModelMap, CompanyReaderModel>, ICompanyFileReader
     {
 
         public CompanyFileReader(FileReaderConfiguration configuration, IFileReaderValidator validator)

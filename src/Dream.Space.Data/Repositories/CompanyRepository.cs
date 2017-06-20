@@ -14,8 +14,8 @@ namespace Dream.Space.Data.Repositories
         Company Get(string ticker);
         List<CompanyQuotesModel> FindCompaniesForUpdate(TimeSpan fromTimeAgo, int count);
         List<CompanyToProcess> FindCompaniesToCalculate(int maxCompanyCount);
-        Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount);
-        Task<CompanyHeader> GetAsync(string ticker);
+        Task<List<CompanyHeader>> SearchAsync(string ticker, int maxCount);
+        Task<Company> GetAsync(string ticker);
         Task<List<CompanyQuotesModel>> FindCompaniesForJobAsync(string requestJobId, int maxRecordCount, int sectorId, bool sp500, bool isIndex);
         Task<int> GetSP500CountAsync();
         Task<int> GetCountAsync(int sectorId);
@@ -72,37 +72,47 @@ namespace Dream.Space.Data.Repositories
             return companies;
         }
 
-        public async Task<List<CompanyDetails>> SearchAsync(string ticker, int maxCount)
+        public async Task<List<CompanyHeader>> SearchAsync(string ticker, int maxCount)
         {
             var records = await Dbset
                             .Where(c => c.Filtered && c.Ticker.StartsWith(ticker))
                             .OrderBy(c => c.Ticker)
                             .Take(maxCount)
-                            .Select(c =>
-                                new CompanyDetails
+                            .Select(company =>
+                                new CompanyHeader
                                 {
-                                    Ticker = c.Ticker,
-                                    Name = c.Name,
-                                    LastUpdated = c.LastUpdated,
-                                    Sector = c.Sector,
-                                    Industry = c.Industry,
-                                    SummaryUrl = c.SummaryUrl,
-                                    Volume = c.Volume,
-                                    Price = c.Price,
-                                    HighestPrice52 = c.HighestPrice52,
-                                    LowestPrice52 = c.LowestPrice52,
-                                    ChaosPercentage = c.ChaosPercentage,
-                                    UpdateSuccessful = c.UpdateSuccessful
-                            })
+                                    Ticker = company.Ticker,
+                                    Name = company.Name,
+                                    LastUpdated = company.LastUpdated,
+                                    Volume = company.Volume,
+                                    Price = company.Price,
+                                    HighestPrice52 = company.HighestPrice52,
+                                    LowestPrice52 = company.LowestPrice52,
+                                    ChaosPercentage = company.ChaosPercentage,
+                                    UpdateSuccessful = company.UpdateSuccessful,
+                                    UpdateError = company.UpdateError,
+                                    Filtered = company.Filtered,
+                                    MarketCap = company.MarketCap,
+                                    LastCalculated = company.LastCalculated,
+                                    NextReportDate = company.NextReportDate,
+                                    CalculatedSuccessful = company.CalculatedSuccessful,
+                                    CalculatedError = company.CalculatedError,
+                                    StartDate = company.StartDate,
+                                    EndDate = company.EndDate,
+                                    SectorId = company.SectorId,
+                                    IndustryId = company.IndustryId,
+                                    SP500 = company.SP500,
+                                    IsIndex = company.IsIndex,
+        })
                             .ToListAsync();
 
             return records;
         }
 
-        public async Task<CompanyHeader> GetAsync(string ticker)
+        public async Task<Company> GetAsync(string ticker)
         {
             var record = await Dbset.Where(r => r.Ticker == ticker).FirstOrDefaultAsync();
-            return new CompanyHeader(record);
+            return record;
         }
 
         //TODO:

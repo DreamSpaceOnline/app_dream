@@ -19,9 +19,6 @@ namespace Dream.Space.Data.Entities.Companies
         public string Ticker { get; set; }
         public string Name { get; set; }
         public decimal MarketCap { get; set; }
-        public string Sector { get; set; }
-        public string Industry { get; set; }
-        public string SummaryUrl { get; set; }
         public DateTime LastUpdated { get; set; }
         public DateTime LastCalculated { get; set; }
         public decimal Volume { get; set; }
@@ -29,7 +26,6 @@ namespace Dream.Space.Data.Entities.Companies
         public decimal HighestPrice52 { get; set; }
         public decimal LowestPrice52 { get; set; }
         public int ChaosPercentage { get; set; }
-        public string LiveQuoteJson { get; set; }
         public string HistoryQuotesJson { get; set; }
         public DateTime NextReportDate { get; set; }
 

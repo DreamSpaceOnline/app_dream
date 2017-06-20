@@ -834,8 +834,8 @@ export class BlobApiClient implements IBlobApiClient {
 }
 
 export interface ICompaniesApiClient {
-    getCompany(ticker: string): Promise<Company | null>;
-    search(request: CompanySearchRequest): Promise<CompanyDetails[] | null>;
+    getCompany(ticker: string): Promise<CompanyModel | null>;
+    search(request: CompanySearchRequest): Promise<CompanyHeader[] | null>;
 }
 
 @inject(String, HttpClient)
@@ -849,7 +849,7 @@ export class CompaniesApiClient implements ICompaniesApiClient {
         this.http = http ? http : <any>window;
     }
 
-    getCompany(ticker: string): Promise<Company | null> {
+    getCompany(ticker: string): Promise<CompanyModel | null> {
         let url_ = this.baseUrl + "/api/company/{ticker}";
         if (ticker === undefined || ticker === null)
             throw new Error("The parameter 'ticker' must be defined.");
@@ -869,13 +869,13 @@ export class CompaniesApiClient implements ICompaniesApiClient {
         });
     }
 
-    protected processGetCompany(response: Response): Promise<Company | null> {
+    protected processGetCompany(response: Response): Promise<CompanyModel | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: Company | null = null;
+            let result200: CompanyModel | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Company.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? CompanyModel.fromJS(resultData200) : <any>null;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -883,10 +883,10 @@ export class CompaniesApiClient implements ICompaniesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<Company | null>(<any>null);
+        return Promise.resolve<CompanyModel | null>(<any>null);
     }
 
-    search(request: CompanySearchRequest): Promise<CompanyDetails[] | null> {
+    search(request: CompanySearchRequest): Promise<CompanyHeader[] | null> {
         let url_ = this.baseUrl + "/api/company/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -906,16 +906,16 @@ export class CompaniesApiClient implements ICompaniesApiClient {
         });
     }
 
-    protected processSearch(response: Response): Promise<CompanyDetails[] | null> {
+    protected processSearch(response: Response): Promise<CompanyHeader[] | null> {
         const status = response.status;
         if (status === 200) {
             return response.text().then((responseText) => {
-            let result200: CompanyDetails[] | null = null;
+            let result200: CompanyHeader[] | null = null;
             let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
             if (resultData200 && resultData200.constructor === Array) {
                 result200 = [];
                 for (let item of resultData200)
-                    result200.push(CompanyDetails.fromJS(item));
+                    result200.push(CompanyHeader.fromJS(item));
             }
             return result200;
             });
@@ -924,7 +924,7 @@ export class CompaniesApiClient implements ICompaniesApiClient {
             return throwException("An unexpected server error occurred.", status, responseText);
             });
         }
-        return Promise.resolve<CompanyDetails[] | null>(<any>null);
+        return Promise.resolve<CompanyHeader[] | null>(<any>null);
     }
 }
 
@@ -3251,29 +3251,24 @@ export enum FileCategory {
     Journal = <any>"Journal", 
 }
 
-export class Company implements ICompany {
+export class CompanyHeader implements ICompanyHeader {
     ticker: string | null;
     name: string | null;
-    marketCap: number;
-    sector: string | null;
-    industry: string | null;
-    summaryUrl: string | null;
     lastUpdated: Date;
-    lastCalculated: Date;
     volume: number;
     price: number;
     highestPrice52: number;
     lowestPrice52: number;
     chaosPercentage: number;
-    liveQuoteJson: string | null;
-    historyQuotesJson: string | null;
-    nextReportDate: Date;
-    historyQuotes: QuotesModel[] | null;
     updateSuccessful: boolean;
+    filtered: boolean;
+    fullName: string | null;
     updateError: string | null;
+    marketCap: number;
+    lastCalculated: Date;
+    nextReportDate: Date;
     calculatedSuccessful: boolean;
     calculatedError: string | null;
-    filtered: boolean;
     startDate: Date;
     endDate: Date;
     sectorId: number;
@@ -3281,7 +3276,7 @@ export class Company implements ICompany {
     sP500: boolean;
     isIndex: boolean;
 
-    constructor(data?: ICompany) {
+    constructor(data?: ICompanyHeader) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3294,30 +3289,21 @@ export class Company implements ICompany {
         if (data) {
             this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
             this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.marketCap = data["marketCap"] !== undefined ? data["marketCap"] : <any>null;
-            this.sector = data["sector"] !== undefined ? data["sector"] : <any>null;
-            this.industry = data["industry"] !== undefined ? data["industry"] : <any>null;
-            this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : <any>null;
             this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>null;
-            this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : <any>null;
             this.volume = data["volume"] !== undefined ? data["volume"] : <any>null;
             this.price = data["price"] !== undefined ? data["price"] : <any>null;
             this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : <any>null;
             this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : <any>null;
             this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : <any>null;
-            this.liveQuoteJson = data["liveQuoteJson"] !== undefined ? data["liveQuoteJson"] : <any>null;
-            this.historyQuotesJson = data["historyQuotesJson"] !== undefined ? data["historyQuotesJson"] : <any>null;
-            this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : <any>null;
-            if (data["historyQuotes"] && data["historyQuotes"].constructor === Array) {
-                this.historyQuotes = [];
-                for (let item of data["historyQuotes"])
-                    this.historyQuotes.push(QuotesModel.fromJS(item));
-            }
             this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : <any>null;
+            this.filtered = data["filtered"] !== undefined ? data["filtered"] : <any>null;
+            this.fullName = data["fullName"] !== undefined ? data["fullName"] : <any>null;
             this.updateError = data["updateError"] !== undefined ? data["updateError"] : <any>null;
+            this.marketCap = data["marketCap"] !== undefined ? data["marketCap"] : <any>null;
+            this.lastCalculated = data["lastCalculated"] ? new Date(data["lastCalculated"].toString()) : <any>null;
+            this.nextReportDate = data["nextReportDate"] ? new Date(data["nextReportDate"].toString()) : <any>null;
             this.calculatedSuccessful = data["calculatedSuccessful"] !== undefined ? data["calculatedSuccessful"] : <any>null;
             this.calculatedError = data["calculatedError"] !== undefined ? data["calculatedError"] : <any>null;
-            this.filtered = data["filtered"] !== undefined ? data["filtered"] : <any>null;
             this.startDate = data["startDate"] ? new Date(data["startDate"].toString()) : <any>null;
             this.endDate = data["endDate"] ? new Date(data["endDate"].toString()) : <any>null;
             this.sectorId = data["sectorId"] !== undefined ? data["sectorId"] : <any>null;
@@ -3327,8 +3313,8 @@ export class Company implements ICompany {
         }
     }
 
-    static fromJS(data: any): Company {
-        let result = new Company();
+    static fromJS(data: any): CompanyHeader {
+        let result = new CompanyHeader();
         result.init(data);
         return result;
     }
@@ -3337,30 +3323,21 @@ export class Company implements ICompany {
         data = typeof data === 'object' ? data : {};
         data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
         data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["marketCap"] = this.marketCap !== undefined ? this.marketCap : <any>null;
-        data["sector"] = this.sector !== undefined ? this.sector : <any>null;
-        data["industry"] = this.industry !== undefined ? this.industry : <any>null;
-        data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : <any>null;
         data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>null;
-        data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : <any>null;
         data["volume"] = this.volume !== undefined ? this.volume : <any>null;
         data["price"] = this.price !== undefined ? this.price : <any>null;
         data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : <any>null;
         data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : <any>null;
         data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : <any>null;
-        data["liveQuoteJson"] = this.liveQuoteJson !== undefined ? this.liveQuoteJson : <any>null;
-        data["historyQuotesJson"] = this.historyQuotesJson !== undefined ? this.historyQuotesJson : <any>null;
-        data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : <any>null;
-        if (this.historyQuotes && this.historyQuotes.constructor === Array) {
-            data["historyQuotes"] = [];
-            for (let item of this.historyQuotes)
-                data["historyQuotes"].push(item.toJSON());
-        }
         data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : <any>null;
+        data["filtered"] = this.filtered !== undefined ? this.filtered : <any>null;
+        data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
         data["updateError"] = this.updateError !== undefined ? this.updateError : <any>null;
+        data["marketCap"] = this.marketCap !== undefined ? this.marketCap : <any>null;
+        data["lastCalculated"] = this.lastCalculated ? this.lastCalculated.toISOString() : <any>null;
+        data["nextReportDate"] = this.nextReportDate ? this.nextReportDate.toISOString() : <any>null;
         data["calculatedSuccessful"] = this.calculatedSuccessful !== undefined ? this.calculatedSuccessful : <any>null;
         data["calculatedError"] = this.calculatedError !== undefined ? this.calculatedError : <any>null;
-        data["filtered"] = this.filtered !== undefined ? this.filtered : <any>null;
         data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
         data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>null;
         data["sectorId"] = this.sectorId !== undefined ? this.sectorId : <any>null;
@@ -3371,35 +3348,78 @@ export class Company implements ICompany {
     }
 }
 
-export interface ICompany {
+export interface ICompanyHeader {
     ticker: string | null;
     name: string | null;
-    marketCap: number;
-    sector: string | null;
-    industry: string | null;
-    summaryUrl: string | null;
     lastUpdated: Date;
-    lastCalculated: Date;
     volume: number;
     price: number;
     highestPrice52: number;
     lowestPrice52: number;
     chaosPercentage: number;
-    liveQuoteJson: string | null;
-    historyQuotesJson: string | null;
-    nextReportDate: Date;
-    historyQuotes: QuotesModel[] | null;
     updateSuccessful: boolean;
+    filtered: boolean;
+    fullName: string | null;
     updateError: string | null;
+    marketCap: number;
+    lastCalculated: Date;
+    nextReportDate: Date;
     calculatedSuccessful: boolean;
     calculatedError: string | null;
-    filtered: boolean;
     startDate: Date;
     endDate: Date;
     sectorId: number;
     industryId: number;
     sP500: boolean;
     isIndex: boolean;
+}
+
+export class CompanyModel extends CompanyHeader implements ICompanyModel {
+    sectorName: string | null;
+    industryName: string | null;
+    historyQuotes: QuotesModel[] | null;
+
+    constructor(data?: ICompanyModel) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
+            this.sectorName = data["sectorName"] !== undefined ? data["sectorName"] : <any>null;
+            this.industryName = data["industryName"] !== undefined ? data["industryName"] : <any>null;
+            if (data["historyQuotes"] && data["historyQuotes"].constructor === Array) {
+                this.historyQuotes = [];
+                for (let item of data["historyQuotes"])
+                    this.historyQuotes.push(QuotesModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CompanyModel {
+        let result = new CompanyModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sectorName"] = this.sectorName !== undefined ? this.sectorName : <any>null;
+        data["industryName"] = this.industryName !== undefined ? this.industryName : <any>null;
+        if (this.historyQuotes && this.historyQuotes.constructor === Array) {
+            data["historyQuotes"] = [];
+            for (let item of this.historyQuotes)
+                data["historyQuotes"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface ICompanyModel extends ICompanyHeader {
+    sectorName: string | null;
+    industryName: string | null;
+    historyQuotes: QuotesModel[] | null;
 }
 
 export class QuotesModel implements IQuotesModel {
@@ -3409,7 +3429,6 @@ export class QuotesModel implements IQuotesModel {
     open: number;
     high: number;
     low: number;
-    volumeAsText: string | null;
     impulse: number;
 
     constructor(data?: IQuotesModel) {
@@ -3429,7 +3448,6 @@ export class QuotesModel implements IQuotesModel {
             this.open = data["open"] !== undefined ? data["open"] : <any>null;
             this.high = data["high"] !== undefined ? data["high"] : <any>null;
             this.low = data["low"] !== undefined ? data["low"] : <any>null;
-            this.volumeAsText = data["volumeAsText"] !== undefined ? data["volumeAsText"] : <any>null;
             this.impulse = data["impulse"] !== undefined ? data["impulse"] : <any>null;
         }
     }
@@ -3448,7 +3466,6 @@ export class QuotesModel implements IQuotesModel {
         data["open"] = this.open !== undefined ? this.open : <any>null;
         data["high"] = this.high !== undefined ? this.high : <any>null;
         data["low"] = this.low !== undefined ? this.low : <any>null;
-        data["volumeAsText"] = this.volumeAsText !== undefined ? this.volumeAsText : <any>null;
         data["impulse"] = this.impulse !== undefined ? this.impulse : <any>null;
         return data; 
     }
@@ -3461,7 +3478,6 @@ export interface IQuotesModel {
     open: number;
     high: number;
     low: number;
-    volumeAsText: string | null;
     impulse: number;
 }
 
@@ -3502,89 +3518,6 @@ export class CompanySearchRequest implements ICompanySearchRequest {
 export interface ICompanySearchRequest {
     ticker: string | null;
     maxCount: number;
-}
-
-export class CompanyDetails implements ICompanyDetails {
-    ticker: string | null;
-    name: string | null;
-    sector: string | null;
-    industry: string | null;
-    summaryUrl: string | null;
-    lastUpdated: Date;
-    volume: number;
-    price: number;
-    highestPrice52: number;
-    lowestPrice52: number;
-    chaosPercentage: number;
-    updateSuccessful: boolean;
-    filtered: boolean;
-
-    constructor(data?: ICompanyDetails) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
-            this.name = data["name"] !== undefined ? data["name"] : <any>null;
-            this.sector = data["sector"] !== undefined ? data["sector"] : <any>null;
-            this.industry = data["industry"] !== undefined ? data["industry"] : <any>null;
-            this.summaryUrl = data["summaryUrl"] !== undefined ? data["summaryUrl"] : <any>null;
-            this.lastUpdated = data["lastUpdated"] ? new Date(data["lastUpdated"].toString()) : <any>null;
-            this.volume = data["volume"] !== undefined ? data["volume"] : <any>null;
-            this.price = data["price"] !== undefined ? data["price"] : <any>null;
-            this.highestPrice52 = data["highestPrice52"] !== undefined ? data["highestPrice52"] : <any>null;
-            this.lowestPrice52 = data["lowestPrice52"] !== undefined ? data["lowestPrice52"] : <any>null;
-            this.chaosPercentage = data["chaosPercentage"] !== undefined ? data["chaosPercentage"] : <any>null;
-            this.updateSuccessful = data["updateSuccessful"] !== undefined ? data["updateSuccessful"] : <any>null;
-            this.filtered = data["filtered"] !== undefined ? data["filtered"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): CompanyDetails {
-        let result = new CompanyDetails();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["sector"] = this.sector !== undefined ? this.sector : <any>null;
-        data["industry"] = this.industry !== undefined ? this.industry : <any>null;
-        data["summaryUrl"] = this.summaryUrl !== undefined ? this.summaryUrl : <any>null;
-        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>null;
-        data["volume"] = this.volume !== undefined ? this.volume : <any>null;
-        data["price"] = this.price !== undefined ? this.price : <any>null;
-        data["highestPrice52"] = this.highestPrice52 !== undefined ? this.highestPrice52 : <any>null;
-        data["lowestPrice52"] = this.lowestPrice52 !== undefined ? this.lowestPrice52 : <any>null;
-        data["chaosPercentage"] = this.chaosPercentage !== undefined ? this.chaosPercentage : <any>null;
-        data["updateSuccessful"] = this.updateSuccessful !== undefined ? this.updateSuccessful : <any>null;
-        data["filtered"] = this.filtered !== undefined ? this.filtered : <any>null;
-        return data; 
-    }
-}
-
-export interface ICompanyDetails {
-    ticker: string | null;
-    name: string | null;
-    sector: string | null;
-    industry: string | null;
-    summaryUrl: string | null;
-    lastUpdated: Date;
-    volume: number;
-    price: number;
-    highestPrice52: number;
-    lowestPrice52: number;
-    chaosPercentage: number;
-    updateSuccessful: boolean;
-    filtered: boolean;
 }
 
 export class Indicator implements IIndicator {

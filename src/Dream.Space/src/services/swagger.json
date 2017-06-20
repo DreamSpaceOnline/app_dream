@@ -565,7 +565,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/Company"
+              "$ref": "#/definitions/CompanyModel"
             },
             "x-nullable": true
           }
@@ -594,7 +594,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/CompanyDetails"
+                "$ref": "#/definitions/CompanyHeader"
               }
             },
             "x-nullable": true
@@ -2118,131 +2118,28 @@
       ],
       "description": ""
     },
-    "Company": {
+    "CompanyModel": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "marketCap",
-        "lastUpdated",
-        "lastCalculated",
-        "volume",
-        "price",
-        "highestPrice52",
-        "lowestPrice52",
-        "chaosPercentage",
-        "nextReportDate",
-        "updateSuccessful",
-        "calculatedSuccessful",
-        "filtered",
-        "startDate",
-        "endDate",
-        "sectorId",
-        "industryId",
-        "sP500",
-        "isIndex"
-      ],
       "properties": {
-        "ticker": {
+        "sectorName": {
           "type": "string"
         },
-        "name": {
+        "industryName": {
           "type": "string"
-        },
-        "marketCap": {
-          "type": "number",
-          "format": "decimal"
-        },
-        "sector": {
-          "type": "string"
-        },
-        "industry": {
-          "type": "string"
-        },
-        "summaryUrl": {
-          "type": "string"
-        },
-        "lastUpdated": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "lastCalculated": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "volume": {
-          "type": "number",
-          "format": "decimal"
-        },
-        "price": {
-          "type": "number",
-          "format": "decimal"
-        },
-        "highestPrice52": {
-          "type": "number",
-          "format": "decimal"
-        },
-        "lowestPrice52": {
-          "type": "number",
-          "format": "decimal"
-        },
-        "chaosPercentage": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "liveQuoteJson": {
-          "type": "string"
-        },
-        "historyQuotesJson": {
-          "type": "string"
-        },
-        "nextReportDate": {
-          "type": "string",
-          "format": "date-time"
         },
         "historyQuotes": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/QuotesModel"
           }
-        },
-        "updateSuccessful": {
-          "type": "boolean"
-        },
-        "updateError": {
-          "type": "string"
-        },
-        "calculatedSuccessful": {
-          "type": "boolean"
-        },
-        "calculatedError": {
-          "type": "string"
-        },
-        "filtered": {
-          "type": "boolean"
-        },
-        "startDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "endDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "sectorId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "industryId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "sP500": {
-          "type": "boolean"
-        },
-        "isIndex": {
-          "type": "boolean"
         }
-      }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/CompanyHeader"
+        }
+      ]
     },
     "QuotesModel": {
       "type": "object",
@@ -2281,32 +2178,13 @@
           "type": "number",
           "format": "decimal"
         },
-        "volumeAsText": {
-          "type": "string"
-        },
         "impulse": {
           "type": "number",
           "format": "decimal"
         }
       }
     },
-    "CompanySearchRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "maxCount"
-      ],
-      "properties": {
-        "ticker": {
-          "type": "string"
-        },
-        "maxCount": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "CompanyDetails": {
+    "CompanyHeader": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -2317,22 +2195,23 @@
         "lowestPrice52",
         "chaosPercentage",
         "updateSuccessful",
-        "filtered"
+        "filtered",
+        "marketCap",
+        "lastCalculated",
+        "nextReportDate",
+        "calculatedSuccessful",
+        "startDate",
+        "endDate",
+        "sectorId",
+        "industryId",
+        "sP500",
+        "isIndex"
       ],
       "properties": {
         "ticker": {
           "type": "string"
         },
         "name": {
-          "type": "string"
-        },
-        "sector": {
-          "type": "string"
-        },
-        "industry": {
-          "type": "string"
-        },
-        "summaryUrl": {
           "type": "string"
         },
         "lastUpdated": {
@@ -2364,6 +2243,68 @@
         },
         "filtered": {
           "type": "boolean"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "updateError": {
+          "type": "string"
+        },
+        "marketCap": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "lastCalculated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "nextReportDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "calculatedSuccessful": {
+          "type": "boolean"
+        },
+        "calculatedError": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sectorId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "industryId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sP500": {
+          "type": "boolean"
+        },
+        "isIndex": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CompanySearchRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxCount"
+      ],
+      "properties": {
+        "ticker": {
+          "type": "string"
+        },
+        "maxCount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

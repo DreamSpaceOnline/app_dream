@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Dream.Space.Data.Services;
+using Dream.Space.Models.Companies;
 using Dream.Space.Reader;
 
 namespace Dream.Space.Jobs
@@ -42,7 +43,15 @@ namespace Dream.Space.Jobs
                 {
                     try
                     {
-                        var manager = _companyService.CreateManager(company);
+                        var companyModel = new CompanyModel
+                        {
+                            Name = company.Name,
+                            Ticker = company.Ticker,
+                            Price = company.Price,
+                            LastUpdated = DateTime.UtcNow
+                        };
+
+                        var manager = _companyService.CreateManager(companyModel);
                         manager.MarkAsSP500();
                         Console.WriteLine("Imported: " + company.Ticker);
 

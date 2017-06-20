@@ -2,7 +2,7 @@
 import { AccountService } from "../../../../services/account-service";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { EventAggregator, Subscription } from "aurelia-event-aggregator";
-import { CompaniesApiClient, Company } from "../../../../services/services-generated";
+import { CompaniesApiClient, CompanyModel } from "../../../../services/services-generated";
 
 @autoinject()
 export class MarketIndex {
@@ -11,7 +11,7 @@ export class MarketIndex {
     router: Router = null;
     title = "";
     indexUrl = "";
-    indexInfo: Company = null;
+    indexInfo: CompanyModel = null;
 
     constructor(account: AccountService, eventAggregator: EventAggregator, private readonly companyService: CompaniesApiClient) {
         this.powerUser = account.currentUser.isAuthenticated;

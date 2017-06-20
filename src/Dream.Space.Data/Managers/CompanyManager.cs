@@ -1,5 +1,5 @@
 ﻿using Dream.Space.Data.Services;
-using Dream.Space.Reader.Models;
+using Dream.Space.Models.Companies;
 
 namespace Dream.Space.Data.Managers
 {

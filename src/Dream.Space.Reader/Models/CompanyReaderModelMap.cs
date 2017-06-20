@@ -1,11 +1,12 @@
 using CsvHelper.Configuration;
+using Dream.Space.Models.Companies;
 
 namespace Dream.Space.Reader.Models
 {
     //"Symbol","Name","LastSale","MarketCap","IPOyear","Sector","industry","Summary Url"
-    public sealed class CompanyModelMap : CsvClassMap<CompanyModel>
+    public sealed class CompanyReaderModelMap : CsvClassMap<CompanyReaderModel>
     {
-        public CompanyModelMap()
+        public CompanyReaderModelMap()
         {
             Map(m => m.Ticker).Index(0);
             Map(m => m.Name).Index(1);

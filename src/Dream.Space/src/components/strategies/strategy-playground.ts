@@ -3,8 +3,8 @@ import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { SettingsService} from "../../services/settings-service";
 import { IdName} from "../../common/helpers/enum-helper";
-import {StrategySummary, StrategiesApiClient, CompaniesApiClient, StockApiClient, PlaygroundApiClient, Company,
-    CompanySearchRequest, CompanyChartData, CompanyDetails } from "../../services/services-generated";
+import {StrategySummary, StrategiesApiClient, CompaniesApiClient, StockApiClient, PlaygroundApiClient, CompanyModel,
+    CompanySearchRequest, CompanyChartData, CompanyHeader } from "../../services/services-generated";
 //import { EventEmitter } from "../../infrastructure/event-emitter";
 
 @autoinject
@@ -14,9 +14,9 @@ export class StrategyPlayground {
     playgroundModel: CompanyChartData;
     periods: IdName[] = [];
     strategy: StrategySummary;
-    company: Company;
+    company: CompanyModel;
     searchCriteria = "";
-    companies: CompanyDetails[] = [];
+    companies: CompanyHeader[] = [];
     chartWeeklyContainer = "weekly-container";
     playgroundLoaded = false;
     routeName: string;

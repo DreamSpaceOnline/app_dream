@@ -33,10 +33,6 @@ namespace Dream.Space.Data
         {
             //Company
             modelBuilder.Entity<Company>().Property(e => e.Name).IsRequired().HasColumnType("varchar").HasMaxLength(255);
-            modelBuilder.Entity<Company>().Property(e => e.Industry).HasColumnType("varchar").HasMaxLength(255);
-            modelBuilder.Entity<Company>().Property(e => e.Sector).HasColumnType("varchar").HasMaxLength(255);
-            modelBuilder.Entity<Company>().Property(e => e.SummaryUrl).HasColumnType("varchar").HasMaxLength(255);
-            modelBuilder.Entity<Company>().Property(e => e.LiveQuoteJson).HasColumnType("varchar").HasMaxLength(255);
             modelBuilder.Entity<Company>().Property(e => e.HighestPrice52).HasPrecision(10, 2);
             modelBuilder.Entity<Company>().Property(e => e.LowestPrice52).HasPrecision(10, 2);
             modelBuilder.Entity<Company>().Property(e => e.Price).HasPrecision(10, 2);

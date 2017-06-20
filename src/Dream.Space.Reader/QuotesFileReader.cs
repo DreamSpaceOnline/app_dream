@@ -4,7 +4,7 @@ using Dream.Space.Reader.Validators;
 
 namespace Dream.Space.Reader
 {
-    public class QuotesFileReader : FileReader<QuotesModelMap, QuotesModel>, IQuotesFileReader
+    public class QuotesFileReader : FileReader<QuotesReaderModelMap, QuotesModel>, IQuotesFileReader
     {
 
         public QuotesFileReader(FileReaderConfiguration configuration, IFileReaderValidator validator)

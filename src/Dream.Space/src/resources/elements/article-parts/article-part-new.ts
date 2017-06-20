@@ -23,7 +23,7 @@ export class ArticlePartNew {
     }
 
     add() {
-        this.part.blockType = this.selectedType;
+        this.part.type = this.selectedType;
     }
 
     cancel() {
