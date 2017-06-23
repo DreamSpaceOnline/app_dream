@@ -7,6 +7,7 @@ using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
 using Dream.Space.Data.Entities.Jobs;
+using Dream.Space.Data.Entities.Journals;
 using Dream.Space.Data.Entities.Layouts;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Entities.Logs;
@@ -105,6 +106,12 @@ namespace Dream.Space.Data
             //ChartLayout
             modelBuilder.Entity<ChartLayoutPeriod>().HasKey(e => e.Id);
 
+            //Journal
+            modelBuilder.Entity<Journal>().HasKey(e => e.JournalId);
+
+            //TradeOrder
+            modelBuilder.Entity<TradeOrder>().HasKey(e => e.TradeOrderId);
+
             //ChartPlot
             modelBuilder.Entity<ChartPlot>().HasKey(e => e.PlotId);
 
@@ -165,5 +172,7 @@ namespace Dream.Space.Data
         public virtual DbSet<ChartLayout> ChartLayouts { get; set; }
         public virtual DbSet<ChartLayoutPeriod> ChartLayoutPeriods { get; set; }
         public virtual DbSet<ChartPlot> ChartPlots { get; set; }
+        public virtual DbSet<Journal> Journals { get; set; }
+        public virtual DbSet<TradeOrder> TradeOrders { get; set; }
     }
 }

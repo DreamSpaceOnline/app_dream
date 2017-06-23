@@ -97,6 +97,8 @@
     <Compile Include="Entities\Companies\CompanyIndustry.cs" />
     <Compile Include="Entities\Companies\CompanyRuleSet.cs" />
     <Compile Include="Entities\Companies\CompanySector.cs" />
+    <Compile Include="Entities\Journals\Journal.cs" />
+    <Compile Include="Entities\Journals\TradeOrder.cs" />
     <Compile Include="Entities\Layouts\ChartLayout.cs" />
     <Compile Include="Entities\Indicators\GlobalIndicator.cs" />
     <Compile Include="Entities\Indicators\IndicatorIntermediateResult.cs" />
@@ -250,6 +252,10 @@
     <Compile Include="Migrations\201706201603010_AlterCompany1.cs" />
     <Compile Include="Migrations\201706201603010_AlterCompany1.Designer.cs">
       <DependentUpon>201706201603010_AlterCompany1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706221554231_CreateJournal.cs" />
+    <Compile Include="Migrations\201706221554231_CreateJournal.Designer.cs">
+      <DependentUpon>201706221554231_CreateJournal.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
@@ -436,6 +442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706201603010_AlterCompany1.resx">
       <DependentUpon>201706201603010_AlterCompany1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706221554231_CreateJournal.resx">
+      <DependentUpon>201706221554231_CreateJournal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

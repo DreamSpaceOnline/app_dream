@@ -60,6 +60,12 @@
     <Compile Include="Enums\ValueKind.cs" />
     <Compile Include="Indicators\IndicatorValueItem.cs" />
     <Compile Include="Indicators\IndicatorValueItemExtensions.cs" />
+    <Compile Include="Journals\IJournalEntity.cs" />
+    <Compile Include="Enums\TradeType.cs" />
+    <Compile Include="Journals\ITradeOrderEntity.cs" />
+    <Compile Include="Journals\JournalHeader.cs" />
+    <Compile Include="Journals\JournalModel.cs" />
+    <Compile Include="Journals\TradeOrder.cs" />
     <Compile Include="Layouts\ChartLayoutData.cs" />
     <Compile Include="Layouts\ChartLayoutModel.cs" />
     <Compile Include="Charts\ChartPlotData.cs" />

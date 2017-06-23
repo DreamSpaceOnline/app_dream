@@ -318,6 +318,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\app-bundle.js" />
     <Content Include="Scripts\vendor-bundle.js" />
+    <Content Include="src\components\journal\journals\journal-periods\journal-periods.html" />
+    <Content Include="src\components\journal\journals\journals.html" />
+    <Content Include="src\components\journal\journals\journal\journal.html" />
+    <Content Include="src\components\journal\navigation.html" />
     <Content Include="src\components\studies\categories\categories.html" />
     <Content Include="src\components\footer\dream-footer.html" />
     <Content Include="src\components\header\dream-header.html" />
@@ -470,6 +474,10 @@
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
+    <TypeScriptCompile Include="src\components\journal\journals\journal-periods\journal-periods.ts" />
+    <TypeScriptCompile Include="src\components\journal\journals\journal\journal.ts" />
+    <TypeScriptCompile Include="src\components\journal\journals\journals.ts" />
+    <TypeScriptCompile Include="src\components\journal\navigation.ts" />
     <TypeScriptCompile Include="src\components\studies\categories\categories.ts" />
     <TypeScriptCompile Include="src\components\footer\dream-footer.ts" />
     <TypeScriptCompile Include="src\components\header\dream-header.ts" />
@@ -671,6 +679,7 @@
     <Content Include="src\components\market\chart-layouts\chart-layouts.less" />
     <Content Include="src\services\swagger.json" />
     <Content Include="src\components\studies\study\category-studies\category-studies.less" />
+    <Content Include="src\components\journal\journals\journals.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
