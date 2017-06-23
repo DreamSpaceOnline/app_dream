@@ -978,6 +978,33 @@
         }
       }
     },
+    "/api/journal/{id}": {
+      "get": {
+        "tags": [
+          "JournalApi"
+        ],
+        "operationId": "JournalApi_GetJournal",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/JournalModel"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
     "/api/layout/period/{period}": {
       "get": {
         "tags": [
@@ -2500,6 +2527,150 @@
         "Cancelled",
         "Paused",
         "Error"
+      ],
+      "description": ""
+    },
+    "JournalModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategyId",
+        "maxRisk",
+        "entryDate",
+        "exitDate"
+      ],
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TradeOrder"
+          }
+        },
+        "exists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TradeOrder"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "strategyId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxRisk": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "entryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "exitDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/JournalHeader"
+        }
+      ]
+    },
+    "TradeOrder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created",
+        "journalId",
+        "sharePrice",
+        "sharesCount",
+        "tradeOrderId"
+      ],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "journalId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sharePrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "sharesCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tradeOrderId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "JournalHeader": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "journalId",
+        "accountId",
+        "created",
+        "trade",
+        "entryPrice",
+        "stopLossPrice",
+        "takeProfitPrice"
+      ],
+      "properties": {
+        "journalId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ticker": {
+          "type": "string"
+        },
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "trade": {
+          "$ref": "#/definitions/TradeType"
+        },
+        "entryPrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "stopLossPrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "takeProfitPrice": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "TradeType": {
+      "type": "string",
+      "x-enumNames": [
+        "Buy",
+        "Sell"
+      ],
+      "enum": [
+        "Buy",
+        "Sell"
       ],
       "description": ""
     },

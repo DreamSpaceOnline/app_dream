@@ -265,6 +265,7 @@
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />
     <Compile Include="Repositories\GlobalIndicatorRepository.cs" />
     <Compile Include="Repositories\ICompanySectorRepository.cs" />
+    <Compile Include="Repositories\IJournalRepository.cs" />
     <Compile Include="Repositories\IScheduledJobRepository.cs" />
     <Compile Include="Repositories\IndicatorIntermediateResultsRepository.cs" />
     <Compile Include="Repositories\ProcessorLogRepository.cs" />
@@ -303,6 +304,7 @@
     <Compile Include="Services\CompanyIndicatorService.cs" />
     <Compile Include="Requests\CompleteJobRequest.cs" />
     <Compile Include="Services\IChartLayoutService.cs" />
+    <Compile Include="Services\IJournalService.cs" />
     <Compile Include="Services\ProcessorLogService.cs" />
     <Compile Include="Services\GlobalIndicatorService.cs" />
     <Compile Include="Services\CompanyManagerService.cs" />

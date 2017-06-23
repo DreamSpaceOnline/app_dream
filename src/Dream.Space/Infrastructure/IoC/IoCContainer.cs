@@ -93,6 +93,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<ChartLayoutRepository>().As<IChartLayoutRepository>().InstancePerDependency();
             builder.RegisterType<ChartIndicatorRepository>().As<IChartIndicatorRepository>().InstancePerDependency();
             builder.RegisterType<ChartPlotRepository>().As<IChartPlotRepository>().InstancePerDependency();
+            builder.RegisterType<JournalRepository>().As<IJournalRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
 
@@ -114,6 +115,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<RuleSetService>().As<IRuleSetService>();
             builder.RegisterType<PlaygroundService>().As<IPlaygroundService>();
             builder.RegisterType<CompanyManagerService>().As<ICompanyService>();
+            builder.RegisterType<JournalService>().As<IJournalService>();
 
             builder.RegisterType<FileReaderConfiguration>().SingleInstance();
             builder.RegisterType<CalculatorFactory>().SingleInstance();

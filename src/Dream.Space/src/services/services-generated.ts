@@ -1484,6 +1484,59 @@ export class JobsApiClient implements IJobsApiClient {
     }
 }
 
+export interface IJournalApiClient {
+    getJournal(id: number): Promise<JournalModel | null>;
+}
+
+@inject(String, HttpClient)
+export class JournalApiClient implements IJournalApiClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.baseUrl = baseUrl ? baseUrl : "";
+        this.http = http ? http : <any>window;
+    }
+
+    getJournal(id: number): Promise<JournalModel | null> {
+        let url_ = this.baseUrl + "/api/journal/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetJournal(_response);
+        });
+    }
+
+    protected processGetJournal(response: Response): Promise<JournalModel | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: JournalModel | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? JournalModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<JournalModel | null>(<any>null);
+    }
+}
+
 export interface ILayoutApiClient {
     getLayoutsForPeriod(period: number): Promise<ChartLayoutModel[] | null>;
     getLayout(layoutId: number): Promise<ChartLayoutModel | null>;
@@ -3774,6 +3827,205 @@ export enum JobStatus {
     Cancelled = <any>"Cancelled", 
     Paused = <any>"Paused", 
     Error = <any>"Error", 
+}
+
+export class JournalHeader implements IJournalHeader {
+    journalId: number;
+    ticker: string | null;
+    accountId: number;
+    accountName: string | null;
+    created: Date;
+    userId: string | null;
+    trade: TradeType;
+    entryPrice: number;
+    stopLossPrice: number;
+    takeProfitPrice: number;
+
+    constructor(data?: IJournalHeader) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.journalId = data["journalId"] !== undefined ? data["journalId"] : <any>null;
+            this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
+            this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.accountName = data["accountName"] !== undefined ? data["accountName"] : <any>null;
+            this.created = data["created"] ? new Date(data["created"].toString()) : <any>null;
+            this.userId = data["userId"] !== undefined ? data["userId"] : <any>null;
+            this.trade = data["trade"] !== undefined ? data["trade"] : <any>null;
+            this.entryPrice = data["entryPrice"] !== undefined ? data["entryPrice"] : <any>null;
+            this.stopLossPrice = data["stopLossPrice"] !== undefined ? data["stopLossPrice"] : <any>null;
+            this.takeProfitPrice = data["takeProfitPrice"] !== undefined ? data["takeProfitPrice"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): JournalHeader {
+        let result = new JournalHeader();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["journalId"] = this.journalId !== undefined ? this.journalId : <any>null;
+        data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
+        data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["accountName"] = this.accountName !== undefined ? this.accountName : <any>null;
+        data["created"] = this.created ? this.created.toISOString() : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["trade"] = this.trade !== undefined ? this.trade : <any>null;
+        data["entryPrice"] = this.entryPrice !== undefined ? this.entryPrice : <any>null;
+        data["stopLossPrice"] = this.stopLossPrice !== undefined ? this.stopLossPrice : <any>null;
+        data["takeProfitPrice"] = this.takeProfitPrice !== undefined ? this.takeProfitPrice : <any>null;
+        return data; 
+    }
+}
+
+export interface IJournalHeader {
+    journalId: number;
+    ticker: string | null;
+    accountId: number;
+    accountName: string | null;
+    created: Date;
+    userId: string | null;
+    trade: TradeType;
+    entryPrice: number;
+    stopLossPrice: number;
+    takeProfitPrice: number;
+}
+
+export class JournalModel extends JournalHeader implements IJournalModel {
+    entries: TradeOrder[] | null;
+    exists: TradeOrder[] | null;
+    summary: string | null;
+    strategyId: number;
+    maxRisk: number;
+    entryDate: Date;
+    exitDate: Date;
+
+    constructor(data?: IJournalModel) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
+            if (data["entries"] && data["entries"].constructor === Array) {
+                this.entries = [];
+                for (let item of data["entries"])
+                    this.entries.push(TradeOrder.fromJS(item));
+            }
+            if (data["exists"] && data["exists"].constructor === Array) {
+                this.exists = [];
+                for (let item of data["exists"])
+                    this.exists.push(TradeOrder.fromJS(item));
+            }
+            this.summary = data["summary"] !== undefined ? data["summary"] : <any>null;
+            this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
+            this.maxRisk = data["maxRisk"] !== undefined ? data["maxRisk"] : <any>null;
+            this.entryDate = data["entryDate"] ? new Date(data["entryDate"].toString()) : <any>null;
+            this.exitDate = data["exitDate"] ? new Date(data["exitDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): JournalModel {
+        let result = new JournalModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.entries && this.entries.constructor === Array) {
+            data["entries"] = [];
+            for (let item of this.entries)
+                data["entries"].push(item.toJSON());
+        }
+        if (this.exists && this.exists.constructor === Array) {
+            data["exists"] = [];
+            for (let item of this.exists)
+                data["exists"].push(item.toJSON());
+        }
+        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
+        data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
+        data["maxRisk"] = this.maxRisk !== undefined ? this.maxRisk : <any>null;
+        data["entryDate"] = this.entryDate ? this.entryDate.toISOString() : <any>null;
+        data["exitDate"] = this.exitDate ? this.exitDate.toISOString() : <any>null;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJournalModel extends IJournalHeader {
+    entries: TradeOrder[] | null;
+    exists: TradeOrder[] | null;
+    summary: string | null;
+    strategyId: number;
+    maxRisk: number;
+    entryDate: Date;
+    exitDate: Date;
+}
+
+export class TradeOrder implements ITradeOrder {
+    created: Date;
+    journalId: number;
+    sharePrice: number;
+    sharesCount: number;
+    tradeOrderId: number;
+
+    constructor(data?: ITradeOrder) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.created = data["created"] ? new Date(data["created"].toString()) : <any>null;
+            this.journalId = data["journalId"] !== undefined ? data["journalId"] : <any>null;
+            this.sharePrice = data["sharePrice"] !== undefined ? data["sharePrice"] : <any>null;
+            this.sharesCount = data["sharesCount"] !== undefined ? data["sharesCount"] : <any>null;
+            this.tradeOrderId = data["tradeOrderId"] !== undefined ? data["tradeOrderId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): TradeOrder {
+        let result = new TradeOrder();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["created"] = this.created ? this.created.toISOString() : <any>null;
+        data["journalId"] = this.journalId !== undefined ? this.journalId : <any>null;
+        data["sharePrice"] = this.sharePrice !== undefined ? this.sharePrice : <any>null;
+        data["sharesCount"] = this.sharesCount !== undefined ? this.sharesCount : <any>null;
+        data["tradeOrderId"] = this.tradeOrderId !== undefined ? this.tradeOrderId : <any>null;
+        return data; 
+    }
+}
+
+export interface ITradeOrder {
+    created: Date;
+    journalId: number;
+    sharePrice: number;
+    sharesCount: number;
+    tradeOrderId: number;
+}
+
+export enum TradeType {
+    Buy = <any>"Buy", 
+    Sell = <any>"Sell", 
 }
 
 export class ChartLayoutModel implements IChartLayoutModel {
