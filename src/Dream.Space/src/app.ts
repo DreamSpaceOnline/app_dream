@@ -1,5 +1,5 @@
 import { autoinject } from "aurelia-framework";
-import { Router, RedirectToRoute } from "aurelia-router";
+import { Router, RouterConfiguration, RedirectToRoute, NavigationInstruction, Next } from "aurelia-router";
 import {AccountService} from "./services/account-service";
 import {SettingsService} from "./services/settings-service";
 import {UserInfo} from "./services/services-generated";
@@ -10,11 +10,11 @@ export class App {
     router: Router;
     user: UserInfo;
 
-    constructor(private account: AccountService) {
+    constructor(private readonly account: AccountService) {
         this.user = this.account.currentUser;
     }
 
-    configureRouter(config, router: Router) {
+    configureRouter(config: RouterConfiguration, router: Router) {
 
         config.title = "Dream Space";
         config.options.pushState = true;
@@ -46,7 +46,7 @@ class AuthorizeStep {
         this.homePage = settings.homePage;
     }
 
-    run(navigationInstruction, next) {
+    run(navigationInstruction: NavigationInstruction, next: Next) {
         if (navigationInstruction.getAllInstructions().some(i => i.config.auth)) {
 
             if (this.isAuthenticated) {

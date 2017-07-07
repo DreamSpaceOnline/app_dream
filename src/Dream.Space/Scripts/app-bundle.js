@@ -1,5 +1,6 @@
 define('services/services-generated',["require", "exports", "tslib", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_fetch_client_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var AccountApiClient = (function () {
         function AccountApiClient(baseUrl, http) {
             this.jsonParseReviver = undefined;
@@ -170,12 +171,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        AccountApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], AccountApiClient);
         return AccountApiClient;
     }());
-    AccountApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], AccountApiClient);
     exports.AccountApiClient = AccountApiClient;
     var ArticlesApiClient = (function () {
         function ArticlesApiClient(baseUrl, http) {
@@ -680,12 +681,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        ArticlesApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], ArticlesApiClient);
         return ArticlesApiClient;
     }());
-    ArticlesApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], ArticlesApiClient);
     exports.ArticlesApiClient = ArticlesApiClient;
     var BlobApiClient = (function () {
         function BlobApiClient(baseUrl, http) {
@@ -761,12 +762,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        BlobApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], BlobApiClient);
         return BlobApiClient;
     }());
-    BlobApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], BlobApiClient);
     exports.BlobApiClient = BlobApiClient;
     var CompaniesApiClient = (function () {
         function CompaniesApiClient(baseUrl, http) {
@@ -851,12 +852,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        CompaniesApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], CompaniesApiClient);
         return CompaniesApiClient;
     }());
-    CompaniesApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], CompaniesApiClient);
     exports.CompaniesApiClient = CompaniesApiClient;
     var IndicatorsApiClient = (function () {
         function IndicatorsApiClient(baseUrl, http) {
@@ -1047,12 +1048,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        IndicatorsApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], IndicatorsApiClient);
         return IndicatorsApiClient;
     }());
-    IndicatorsApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], IndicatorsApiClient);
     exports.IndicatorsApiClient = IndicatorsApiClient;
     var JobsApiClient = (function () {
         function JobsApiClient(baseUrl, http) {
@@ -1367,13 +1368,62 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        JobsApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], JobsApiClient);
         return JobsApiClient;
     }());
-    JobsApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], JobsApiClient);
     exports.JobsApiClient = JobsApiClient;
+    var JournalApiClient = (function () {
+        function JournalApiClient(baseUrl, http) {
+            this.jsonParseReviver = undefined;
+            this.baseUrl = baseUrl ? baseUrl : "";
+            this.http = http ? http : window;
+        }
+        JournalApiClient.prototype.getJournal = function (id) {
+            var _this = this;
+            var url_ = this.baseUrl + "/api/journal/{id}";
+            if (id === undefined || id === null)
+                throw new Error("The parameter 'id' must be defined.");
+            url_ = url_.replace("{id}", encodeURIComponent("" + id));
+            url_ = url_.replace(/[?&]$/, "");
+            var options_ = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Accept": "application/json; charset=UTF-8"
+                }
+            };
+            return this.http.fetch(url_, options_).then(function (_response) {
+                return _this.processGetJournal(_response);
+            });
+        };
+        JournalApiClient.prototype.processGetJournal = function (response) {
+            var _this = this;
+            var status = response.status;
+            if (status === 200) {
+                return response.text().then(function (responseText) {
+                    var result200 = null;
+                    var resultData200 = responseText === "" ? null : JSON.parse(responseText, _this.jsonParseReviver);
+                    result200 = resultData200 ? JournalModel.fromJS(resultData200) : null;
+                    return result200;
+                });
+            }
+            else if (status !== 200 && status !== 204) {
+                return response.text().then(function (responseText) {
+                    return throwException("An unexpected server error occurred.", status, responseText);
+                });
+            }
+            return Promise.resolve(null);
+        };
+        JournalApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], JournalApiClient);
+        return JournalApiClient;
+    }());
+    exports.JournalApiClient = JournalApiClient;
     var LayoutApiClient = (function () {
         function LayoutApiClient(baseUrl, http) {
             this.jsonParseReviver = undefined;
@@ -1529,12 +1579,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        LayoutApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], LayoutApiClient);
         return LayoutApiClient;
     }());
-    LayoutApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], LayoutApiClient);
     exports.LayoutApiClient = LayoutApiClient;
     var LogsApiClient = (function () {
         function LogsApiClient(baseUrl, http) {
@@ -1646,12 +1696,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        LogsApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], LogsApiClient);
         return LogsApiClient;
     }());
-    LogsApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], LogsApiClient);
     exports.LogsApiClient = LogsApiClient;
     var PlaygroundApiClient = (function () {
         function PlaygroundApiClient(baseUrl, http) {
@@ -1782,12 +1832,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        PlaygroundApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], PlaygroundApiClient);
         return PlaygroundApiClient;
     }());
-    PlaygroundApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], PlaygroundApiClient);
     exports.PlaygroundApiClient = PlaygroundApiClient;
     var RulesApiClient = (function () {
         function RulesApiClient(baseUrl, http) {
@@ -1939,12 +1989,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        RulesApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], RulesApiClient);
         return RulesApiClient;
     }());
-    RulesApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], RulesApiClient);
     exports.RulesApiClient = RulesApiClient;
     var RuleSetsApiClient = (function () {
         function RuleSetsApiClient(baseUrl, http) {
@@ -2176,12 +2226,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        RuleSetsApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], RuleSetsApiClient);
         return RuleSetsApiClient;
     }());
-    RuleSetsApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], RuleSetsApiClient);
     exports.RuleSetsApiClient = RuleSetsApiClient;
     var StockApiClient = (function () {
         function StockApiClient(baseUrl, http) {
@@ -2220,12 +2270,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        StockApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], StockApiClient);
         return StockApiClient;
     }());
-    StockApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], StockApiClient);
     exports.StockApiClient = StockApiClient;
     var StrategiesApiClient = (function () {
         function StrategiesApiClient(baseUrl, http) {
@@ -2446,12 +2496,12 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
             }
             return Promise.resolve(null);
         };
+        StrategiesApiClient = tslib_1.__decorate([
+            aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
+            tslib_1.__metadata("design:paramtypes", [String, Object])
+        ], StrategiesApiClient);
         return StrategiesApiClient;
     }());
-    StrategiesApiClient = tslib_1.__decorate([
-        aurelia_framework_1.inject(String, aurelia_fetch_client_1.HttpClient),
-        tslib_1.__metadata("design:paramtypes", [String, Object])
-    ], StrategiesApiClient);
     exports.StrategiesApiClient = StrategiesApiClient;
     var UserInfo = (function () {
         function UserInfo(data) {
@@ -3292,6 +3342,152 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
         JobStatus[JobStatus["Paused"] = "Paused"] = "Paused";
         JobStatus[JobStatus["Error"] = "Error"] = "Error";
     })(JobStatus = exports.JobStatus || (exports.JobStatus = {}));
+    var JournalHeader = (function () {
+        function JournalHeader(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        JournalHeader.prototype.init = function (data) {
+            if (data) {
+                this.journalId = data["journalId"] !== undefined ? data["journalId"] : null;
+                this.ticker = data["ticker"] !== undefined ? data["ticker"] : null;
+                this.accountId = data["accountId"] !== undefined ? data["accountId"] : null;
+                this.accountName = data["accountName"] !== undefined ? data["accountName"] : null;
+                this.created = data["created"] ? new Date(data["created"].toString()) : null;
+                this.userId = data["userId"] !== undefined ? data["userId"] : null;
+                this.trade = data["trade"] !== undefined ? data["trade"] : null;
+                this.entryPrice = data["entryPrice"] !== undefined ? data["entryPrice"] : null;
+                this.stopLossPrice = data["stopLossPrice"] !== undefined ? data["stopLossPrice"] : null;
+                this.takeProfitPrice = data["takeProfitPrice"] !== undefined ? data["takeProfitPrice"] : null;
+            }
+        };
+        JournalHeader.fromJS = function (data) {
+            var result = new JournalHeader();
+            result.init(data);
+            return result;
+        };
+        JournalHeader.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["journalId"] = this.journalId !== undefined ? this.journalId : null;
+            data["ticker"] = this.ticker !== undefined ? this.ticker : null;
+            data["accountId"] = this.accountId !== undefined ? this.accountId : null;
+            data["accountName"] = this.accountName !== undefined ? this.accountName : null;
+            data["created"] = this.created ? this.created.toISOString() : null;
+            data["userId"] = this.userId !== undefined ? this.userId : null;
+            data["trade"] = this.trade !== undefined ? this.trade : null;
+            data["entryPrice"] = this.entryPrice !== undefined ? this.entryPrice : null;
+            data["stopLossPrice"] = this.stopLossPrice !== undefined ? this.stopLossPrice : null;
+            data["takeProfitPrice"] = this.takeProfitPrice !== undefined ? this.takeProfitPrice : null;
+            return data;
+        };
+        return JournalHeader;
+    }());
+    exports.JournalHeader = JournalHeader;
+    var JournalModel = (function (_super) {
+        tslib_1.__extends(JournalModel, _super);
+        function JournalModel(data) {
+            return _super.call(this, data) || this;
+        }
+        JournalModel.prototype.init = function (data) {
+            _super.prototype.init.call(this, data);
+            if (data) {
+                if (data["entries"] && data["entries"].constructor === Array) {
+                    this.entries = [];
+                    for (var _i = 0, _a = data["entries"]; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        this.entries.push(TradeOrder.fromJS(item));
+                    }
+                }
+                if (data["exists"] && data["exists"].constructor === Array) {
+                    this.exists = [];
+                    for (var _b = 0, _c = data["exists"]; _b < _c.length; _b++) {
+                        var item = _c[_b];
+                        this.exists.push(TradeOrder.fromJS(item));
+                    }
+                }
+                this.summary = data["summary"] !== undefined ? data["summary"] : null;
+                this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : null;
+                this.maxRisk = data["maxRisk"] !== undefined ? data["maxRisk"] : null;
+                this.entryDate = data["entryDate"] ? new Date(data["entryDate"].toString()) : null;
+                this.exitDate = data["exitDate"] ? new Date(data["exitDate"].toString()) : null;
+            }
+        };
+        JournalModel.fromJS = function (data) {
+            var result = new JournalModel();
+            result.init(data);
+            return result;
+        };
+        JournalModel.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            if (this.entries && this.entries.constructor === Array) {
+                data["entries"] = [];
+                for (var _i = 0, _a = this.entries; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    data["entries"].push(item.toJSON());
+                }
+            }
+            if (this.exists && this.exists.constructor === Array) {
+                data["exists"] = [];
+                for (var _b = 0, _c = this.exists; _b < _c.length; _b++) {
+                    var item = _c[_b];
+                    data["exists"].push(item.toJSON());
+                }
+            }
+            data["summary"] = this.summary !== undefined ? this.summary : null;
+            data["strategyId"] = this.strategyId !== undefined ? this.strategyId : null;
+            data["maxRisk"] = this.maxRisk !== undefined ? this.maxRisk : null;
+            data["entryDate"] = this.entryDate ? this.entryDate.toISOString() : null;
+            data["exitDate"] = this.exitDate ? this.exitDate.toISOString() : null;
+            _super.prototype.toJSON.call(this, data);
+            return data;
+        };
+        return JournalModel;
+    }(JournalHeader));
+    exports.JournalModel = JournalModel;
+    var TradeOrder = (function () {
+        function TradeOrder(data) {
+            if (data) {
+                for (var property in data) {
+                    if (data.hasOwnProperty(property))
+                        this[property] = data[property];
+                }
+            }
+        }
+        TradeOrder.prototype.init = function (data) {
+            if (data) {
+                this.created = data["created"] ? new Date(data["created"].toString()) : null;
+                this.journalId = data["journalId"] !== undefined ? data["journalId"] : null;
+                this.sharePrice = data["sharePrice"] !== undefined ? data["sharePrice"] : null;
+                this.sharesCount = data["sharesCount"] !== undefined ? data["sharesCount"] : null;
+                this.tradeOrderId = data["tradeOrderId"] !== undefined ? data["tradeOrderId"] : null;
+            }
+        };
+        TradeOrder.fromJS = function (data) {
+            var result = new TradeOrder();
+            result.init(data);
+            return result;
+        };
+        TradeOrder.prototype.toJSON = function (data) {
+            data = typeof data === 'object' ? data : {};
+            data["created"] = this.created ? this.created.toISOString() : null;
+            data["journalId"] = this.journalId !== undefined ? this.journalId : null;
+            data["sharePrice"] = this.sharePrice !== undefined ? this.sharePrice : null;
+            data["sharesCount"] = this.sharesCount !== undefined ? this.sharesCount : null;
+            data["tradeOrderId"] = this.tradeOrderId !== undefined ? this.tradeOrderId : null;
+            return data;
+        };
+        return TradeOrder;
+    }());
+    exports.TradeOrder = TradeOrder;
+    var TradeType;
+    (function (TradeType) {
+        TradeType[TradeType["Buy"] = "Buy"] = "Buy";
+        TradeType[TradeType["Sell"] = "Sell"] = "Sell";
+    })(TradeType = exports.TradeType || (exports.TradeType = {}));
     var ChartLayoutModel = (function () {
         function ChartLayoutModel(data) {
             if (data) {
@@ -4394,6 +4590,7 @@ define('services/services-generated',["require", "exports", "tslib", "aurelia-fr
 
 define('services/account-service',["require", "exports", "tslib", "aurelia-framework", "./services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var AccountService = (function () {
         function AccountService(account) {
             this.account = account;
@@ -4405,10 +4602,10 @@ define('services/account-service',["require", "exports", "tslib", "aurelia-frame
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.account.currentUser()];
+                            return [4, this.account.currentUser()];
                         case 1:
                             _a.currentUser = _b.sent();
-                            return [2 /*return*/, this.currentUser];
+                            return [2, this.currentUser];
                     }
                 });
             });
@@ -4423,11 +4620,11 @@ define('services/account-service',["require", "exports", "tslib", "aurelia-frame
                             loginRequest.email = username;
                             loginRequest.password = password;
                             loginRequest.rememberMe = true;
-                            return [4 /*yield*/, this.account.login(loginRequest)];
+                            return [4, this.account.login(loginRequest)];
                         case 1:
                             response = _a.sent();
                             this.currentUser = response.user;
-                            return [2 /*return*/, response];
+                            return [2, response];
                     }
                 });
             });
@@ -4436,10 +4633,10 @@ define('services/account-service',["require", "exports", "tslib", "aurelia-frame
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.account.logout()];
+                        case 0: return [4, this.account.logout()];
                         case 1:
                             _a.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -4449,26 +4646,27 @@ define('services/account-service',["require", "exports", "tslib", "aurelia-frame
                 var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.account.updateProfile(user)];
+                        case 0: return [4, this.account.updateProfile(user)];
                         case 1:
                             response = _a.sent();
                             this.currentUser = response.user;
-                            return [2 /*return*/, response];
+                            return [2, response];
                     }
                 });
             });
         };
+        AccountService = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.AccountApiClient])
+        ], AccountService);
         return AccountService;
     }());
-    AccountService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.AccountApiClient])
-    ], AccountService);
     exports.AccountService = AccountService;
 });
 
 define('common/types/enums',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ChartType;
     (function (ChartType) {
         ChartType[ChartType["OHLC"] = 0] = "OHLC";
@@ -4521,6 +4719,7 @@ define('common/types/enums',["require", "exports"], function (require, exports) 
 
 define('common/helpers/enum-helper',["require", "exports", "../types/enums", "../../services/services-generated"], function (require, exports, enums_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var EnumHelper = (function () {
         function EnumHelper() {
         }
@@ -4643,6 +4842,7 @@ define('common/helpers/enum-helper',["require", "exports", "../types/enums", "..
 
 define('services/settings-service',["require", "exports", "tslib", "aurelia-framework", "../common/helpers/enum-helper", "./services-generated"], function (require, exports, tslib_1, aurelia_framework_1, enum_helper_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SettingsService = (function () {
         function SettingsService(indicatorService, articleService) {
             this.indicatorService = indicatorService;
@@ -4674,15 +4874,15 @@ define('services/settings-service',["require", "exports", "tslib", "aurelia-fram
                     switch (_c.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.articleService.getSections()];
+                            return [4, this.articleService.getSections()];
                         case 1:
                             _a.sections = _c.sent();
                             _b = this;
-                            return [4 /*yield*/, this.indicatorService.getIndicators()];
+                            return [4, this.indicatorService.getIndicators()];
                         case 2:
                             _b.indicators = _c.sent();
                             this.initialized = true;
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -4690,17 +4890,18 @@ define('services/settings-service',["require", "exports", "tslib", "aurelia-fram
         SettingsService.prototype.getIndicators = function (period) {
             return this.indicators.filter(function (indicator) { return indicator.period === period; });
         };
+        SettingsService = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient, services_generated_1.ArticlesApiClient])
+        ], SettingsService);
         return SettingsService;
     }());
-    SettingsService = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient, services_generated_1.ArticlesApiClient])
-    ], SettingsService);
     exports.SettingsService = SettingsService;
 });
 
 define('app',["require", "exports", "tslib", "aurelia-framework", "aurelia-router", "./services/account-service", "./services/settings-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1, account_service_1, settings_service_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var App = (function () {
         function App(account) {
             this.account = account;
@@ -4721,12 +4922,12 @@ define('app',["require", "exports", "tslib", "aurelia-framework", "aurelia-route
                 { route: "", redirect: "studies" }
             ]);
         };
+        App = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
+        ], App);
         return App;
     }());
-    App = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
-    ], App);
     exports.App = App;
     var AuthorizeStep = (function () {
         function AuthorizeStep(account, settings) {
@@ -4751,26 +4952,27 @@ define('app',["require", "exports", "tslib", "aurelia-framework", "aurelia-route
                 return next();
             }
         };
+        AuthorizeStep = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, settings_service_1.SettingsService])
+        ], AuthorizeStep);
         return AuthorizeStep;
     }());
-    AuthorizeStep = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, settings_service_1.SettingsService])
-    ], AuthorizeStep);
 });
 
 define('environment',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var settings = {
         debug: true,
         testing: true
     };
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = settings;
 });
 
 define('infrastructure/event-emitter',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var EventEmitter = (function () {
         function EventEmitter(eventAggregator) {
             this.eventAggregator = eventAggregator;
@@ -4781,17 +4983,18 @@ define('infrastructure/event-emitter',["require", "exports", "tslib", "aurelia-f
         EventEmitter.prototype.subscribe = function (eventType, handler) {
             return this.eventAggregator.subscribe(eventType, handler);
         };
+        EventEmitter = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], EventEmitter);
         return EventEmitter;
     }());
-    EventEmitter = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-    ], EventEmitter);
     exports.EventEmitter = EventEmitter;
 });
 
 define('infrastructure/error-interceptor',["require", "exports", "tslib", "aurelia-framework", "./event-emitter"], function (require, exports, tslib_1, aurelia_framework_1, event_emitter_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ErrorInterceptor = (function () {
         function ErrorInterceptor(eventEmitter) {
             this.eventEmitter = eventEmitter;
@@ -4813,47 +5016,49 @@ define('infrastructure/error-interceptor',["require", "exports", "tslib", "aurel
             this.eventEmitter.publish("ServerError", { message: message });
             return request;
         };
-        ErrorInterceptor.prototype.responseError = function (response, _request) {
+        ErrorInterceptor.prototype.responseError = function (response, request) {
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 var validationError;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(response.status === 400)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, response.json()];
+                            if (!(response.status === 400)) return [3, 2];
+                            return [4, response.json()];
                         case 1:
                             validationError = (_a.sent()).message;
-                            this.eventEmitter.publish('ValidationError', validationError);
-                            return [2 /*return*/, Promise.reject(validationError)];
+                            this.eventEmitter.publish("ValidationError", validationError);
+                            return [2, Promise.reject(validationError)];
                         case 2:
                             if (response.status === 401) {
                                 this.eventEmitter.publish("ServerError", { message: "401" });
-                                return [2 /*return*/, Promise.reject(null)];
+                                return [2, Promise.reject(null)];
                             }
                             if (response.status === 403) {
                                 this.eventEmitter.publish("ServerError", { message: "NotAuthorised" });
-                                return [2 /*return*/, Promise.reject(null)];
+                                return [2, Promise.reject(null)];
                             }
                             if (response.status >= 500) {
                                 this.eventEmitter.publish("ServerError", { message: "Unhandled" });
-                                return [2 /*return*/, Promise.reject(null)];
+                                return [2, Promise.reject(null)];
                             }
-                            return [2 /*return*/];
+                            if (request != null) { }
+                            return [2, Promise.resolve(response)];
                     }
                 });
             });
         };
+        ErrorInterceptor = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
+        ], ErrorInterceptor);
         return ErrorInterceptor;
     }());
-    ErrorInterceptor = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
-    ], ErrorInterceptor);
     exports.ErrorInterceptor = ErrorInterceptor;
 });
 
 define('form-validation/custom-validation-rules',["require", "exports", "aurelia-validation", "moment"], function (require, exports, aurelia_validation_1, moment) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var CustomValidationRules = (function () {
         function CustomValidationRules() {
         }
@@ -4870,6 +5075,7 @@ define('form-validation/custom-validation-rules',["require", "exports", "aurelia
 
 define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environment", "./infrastructure/error-interceptor", "./services/account-service", "./services/settings-service", "./form-validation/custom-validation-rules"], function (require, exports, tslib_1, aurelia_fetch_client_1, environment_1, error_interceptor_1, account_service_1, settings_service_1, custom_validation_rules_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     Promise.config({
         warnings: {
             wForgottenReturn: false
@@ -4891,11 +5097,11 @@ define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environ
                                 .withInterceptor(errorInterceptor);
                         });
                         account = aurelia.container.get(account_service_1.AccountService);
-                        return [4 /*yield*/, account.initialize()];
+                        return [4, account.initialize()];
                     case 1:
                         _a.sent();
                         settings = aurelia.container.get(settings_service_1.SettingsService);
-                        return [4 /*yield*/, settings.initialize()];
+                        return [4, settings.initialize()];
                     case 2:
                         _a.sent();
                         aurelia.use
@@ -4915,11 +5121,11 @@ define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environ
                         if (environment_1.default.testing) {
                             aurelia.use.plugin("aurelia-testing");
                         }
-                        return [4 /*yield*/, aurelia.start()];
+                        return [4, aurelia.start()];
                     case 3:
                         _a.sent();
                         aurelia.setRoot();
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -4929,6 +5135,7 @@ define('main',["require", "exports", "tslib", "aurelia-fetch-client", "./environ
 
 define('form-validation/bootstrap-form-renderer',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BootstrapFormRenderer = (function () {
         function BootstrapFormRenderer() {
         }
@@ -4989,6 +5196,7 @@ define('form-validation/bootstrap-form-renderer',["require", "exports"], functio
 
 define('resources/index',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function configure(config) {
         config.globalResources([
             "./value-converters/blob-to-url",
@@ -5027,6 +5235,7 @@ define('resources/index',["require", "exports"], function (require, exports) {
 
 define('common/helpers/date-helper',["require", "exports", "moment"], function (require, exports, moment) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DateHelper = (function () {
         function DateHelper() {
         }
@@ -5046,10 +5255,10 @@ define('common/helpers/date-helper',["require", "exports", "moment"], function (
         DateHelper.secondsToTime = function (secs) {
             secs = Math.round(secs);
             var hours = Math.floor(secs / (60 * 60));
-            var divisor_for_minutes = secs % (60 * 60);
-            var minutes = Math.floor(divisor_for_minutes / 60);
-            var divisor_for_seconds = divisor_for_minutes % 60;
-            var seconds = Math.ceil(divisor_for_seconds);
+            var divisorForMinutes = secs % (60 * 60);
+            var minutes = Math.floor(divisorForMinutes / 60);
+            var divisorForSeconds = divisorForMinutes % 60;
+            var seconds = Math.ceil(divisorForSeconds);
             if (hours > 0) {
                 return hours + "h " + minutes + "m";
             }
@@ -5065,6 +5274,7 @@ define('common/helpers/date-helper',["require", "exports", "moment"], function (
 
 define('common/types/job-models',["require", "exports", "../../services/services-generated"], function (require, exports, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var JobInfoExtentions = (function () {
         function JobInfoExtentions() {
         }
@@ -5121,18 +5331,9 @@ define('common/types/job-models',["require", "exports", "../../services/services
     exports.JobInfoExtentions = JobInfoExtentions;
 });
 
-define('components/footer/dream-footer',["require", "exports"], function (require, exports) {
-    "use strict";
-    var DreamFooter = (function () {
-        function DreamFooter() {
-        }
-        return DreamFooter;
-    }());
-    exports.DreamFooter = DreamFooter;
-});
-
 define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-framework", "aurelia-dialog", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "aurelia-binding", "../../services/account-service", "../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_dialog_1, aurelia_validation_1, bootstrap_form_renderer_1, aurelia_binding_1, account_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var UserLogin = (function () {
         function UserLogin(controller, validation, account, bindingEngine) {
             this.controller = controller;
@@ -5145,8 +5346,8 @@ define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-frame
         UserLogin.prototype.attached = function () {
             var _this = this;
             this.subscriptions = [];
-            this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, 'email').subscribe(function () { return _this.onChange(); }));
-            this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, 'password').subscribe(function () { return _this.onChange(); }));
+            this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, "email").subscribe(function () { return _this.onChange(); }));
+            this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, "password").subscribe(function () { return _this.onChange(); }));
         };
         UserLogin.prototype.detached = function () {
             if (this.subscriptions.length > 0) {
@@ -5170,10 +5371,10 @@ define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-frame
                 var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.validation.validate()];
+                        case 0: return [4, this.validation.validate()];
                         case 1:
-                            if (!(_a.sent()).valid) return [3 /*break*/, 3];
-                            return [4 /*yield*/, this.account.login(this.model.email, this.model.password)];
+                            if (!(_a.sent()).valid) return [3, 3];
+                            return [4, this.account.login(this.model.email, this.model.password)];
                         case 2:
                             response = _a.sent();
                             if (response.status === services_generated_1.LoginStatus.Success) {
@@ -5183,17 +5384,17 @@ define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-frame
                                 this.loginFailed = true;
                             }
                             _a.label = 3;
-                        case 3: return [2 /*return*/];
+                        case 3: return [2];
                     }
                 });
             });
         };
+        UserLogin = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_dialog_1.DialogController, aurelia_validation_1.ValidationController, account_service_1.AccountService, aurelia_binding_1.BindingEngine])
+        ], UserLogin);
         return UserLogin;
     }());
-    UserLogin = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_dialog_1.DialogController, aurelia_validation_1.ValidationController, account_service_1.AccountService, aurelia_binding_1.BindingEngine])
-    ], UserLogin);
     exports.UserLogin = UserLogin;
     var UserLoginModel = (function () {
         function UserLoginModel() {
@@ -5203,8 +5404,20 @@ define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-frame
     exports.UserLoginModel = UserLoginModel;
 });
 
+define('components/footer/dream-footer',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var DreamFooter = (function () {
+        function DreamFooter() {
+        }
+        return DreamFooter;
+    }());
+    exports.DreamFooter = DreamFooter;
+});
+
 define('components/header/dream-header',["require", "exports", "tslib", "aurelia-framework", "aurelia-router", "aurelia-dialog", "../../services/account-service", "../../dialogs/login/user-login"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1, aurelia_dialog_1, account_service_1, user_login_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var DreamHeader = (function () {
         function DreamHeader(account, dialogService) {
             this.account = account;
@@ -5219,11 +5432,11 @@ define('components/header/dream-header',["require", "exports", "tslib", "aurelia
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.account.logout()];
+                        case 0: return [4, this.account.logout()];
                         case 1:
                             _a.sent();
                             window.location.href = "/";
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -5235,32 +5448,64 @@ define('components/header/dream-header',["require", "exports", "tslib", "aurelia
                     switch (_a.label) {
                         case 0:
                             model = new user_login_1.UserLoginModel();
-                            return [4 /*yield*/, this.dialogService.open({ viewModel: user_login_1.UserLogin, model: model })];
+                            return [4, this.dialogService.open({ viewModel: user_login_1.UserLogin, model: model })];
                         case 1:
                             response = _a.sent();
                             if (!response.wasCancelled) {
                                 window.location.reload();
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", aurelia_router_1.Router)
+        ], DreamHeader.prototype, "router", void 0);
+        DreamHeader = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_dialog_1.DialogService])
+        ], DreamHeader);
         return DreamHeader;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", aurelia_router_1.Router)
-    ], DreamHeader.prototype, "router", void 0);
-    DreamHeader = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_dialog_1.DialogService])
-    ], DreamHeader);
     exports.DreamHeader = DreamHeader;
+});
+
+define('components/journal/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Navigation = (function () {
+        function Navigation(eventAggregator) {
+            this.eventAggregator = eventAggregator;
+            this.url = "";
+        }
+        Navigation.prototype.configureRouter = function (config, router) {
+            config.title = "Journal";
+            config.map([
+                { route: ["", ":period"], moduleId: "./journals/journals", name: "journals", title: "Journals", nav: false },
+                { route: ["create"], moduleId: "./journals/journal/journal", name: "create-journal", title: "Create Journal", nav: false },
+                { route: ["journal/:id"], moduleId: "./journals/journal/journal", name: "view-journal", title: "View Journal", nav: false },
+                { route: ["journal/:id/edit"], moduleId: "./journals/journal/journal", name: "edit-journal", title: "Edit Journal", nav: false }
+            ]);
+            this.router = router;
+            this.section = config.title;
+        };
+        Navigation.prototype.attached = function () {
+            this.eventAggregator.publish("this.journalChangedEvent", this.url);
+        };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], Navigation);
+        return Navigation;
+    }());
+    exports.Navigation = Navigation;
 });
 
 define('components/market/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation(eventAggregator) {
             this.eventAggregator = eventAggregator;
@@ -5280,17 +5525,18 @@ define('components/market/navigation',["require", "exports", "tslib", "aurelia-f
         Navigation.prototype.attached = function () {
             this.eventAggregator.publish("this.marketChangedEvent", this.url);
         };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], Navigation);
         return Navigation;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-    ], Navigation);
     exports.Navigation = Navigation;
 });
 
 define('components/strategies/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation(eventAggregator) {
             this.eventAggregator = eventAggregator;
@@ -5312,17 +5558,18 @@ define('components/strategies/navigation',["require", "exports", "tslib", "aurel
         Navigation.prototype.attached = function () {
             this.eventAggregator.publish("this.strategyChangedEvent", this.url);
         };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], Navigation);
         return Navigation;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-    ], Navigation);
     exports.Navigation = Navigation;
 });
 
 define('components/strategies/strategy-playground',["require", "exports", "tslib", "toastr", "aurelia-framework", "../../services/settings-service", "../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var StrategyPlayground = (function () {
         function StrategyPlayground(strategyService, companyService, stockService, playgroundService, settings) {
             this.strategyService = strategyService;
@@ -5347,35 +5594,35 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                             this.router = navigationInstruction.router;
                             this.routeName = routeConfig.name;
                             this.playgroundLoaded = false;
-                            if (!params.strategyUrl) return [3 /*break*/, 9];
+                            if (!params.strategyUrl) return [3, 9];
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 8, , 9]);
-                            return [4 /*yield*/, this.strategyService.getStrategySummaryByUrl(params.strategyUrl)];
+                            return [4, this.strategyService.getStrategySummaryByUrl(params.strategyUrl)];
                         case 2:
                             response = _a.sent();
-                            if (!(response && response.strategyId > 0)) return [3 /*break*/, 6];
+                            if (!(response && response.strategyId > 0)) return [3, 6];
                             this.strategy = response;
-                            if (!params.ticker) return [3 /*break*/, 5];
-                            return [4 /*yield*/, this.companyService.getCompany(params.ticker)];
+                            if (!params.ticker) return [3, 5];
+                            return [4, this.companyService.getCompany(params.ticker)];
                         case 3:
                             company = _a.sent();
-                            if (!(company && company.ticker)) return [3 /*break*/, 5];
+                            if (!(company && company.ticker)) return [3, 5];
                             this.company = company;
-                            return [4 /*yield*/, this.loadPlayground()];
+                            return [4, this.loadPlayground()];
                         case 4:
                             _a.sent();
                             _a.label = 5;
-                        case 5: return [3 /*break*/, 7];
+                        case 5: return [3, 7];
                         case 6:
                             toastr.error("Failed to load summary for url " + params.strategyUrl, "Load Summary Failed");
                             _a.label = 7;
-                        case 7: return [3 /*break*/, 9];
+                        case 7: return [3, 9];
                         case 8:
                             e_1 = _a.sent();
                             toastr.error("Failed to load summary for url " + params.strategyUrl, "Exception");
-                            return [3 /*break*/, 9];
-                        case 9: return [2 /*return*/];
+                            return [3, 9];
+                        case 9: return [2];
                     }
                 });
             });
@@ -5390,10 +5637,10 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                             request.ticker = this.searchCriteria;
                             request.maxCount = 15;
                             _a = this;
-                            return [4 /*yield*/, this.companyService.search(request)];
+                            return [4, this.companyService.search(request)];
                         case 1:
                             _a.companies = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -5411,19 +5658,19 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_b.label) {
                         case 0:
                             _b.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.stockService.updateQuotes(ticker)];
+                            return [4, this.stockService.updateQuotes(ticker)];
                         case 1:
                             _b.sent();
                             _a = this;
-                            return [4 /*yield*/, this.companyService.getCompany(ticker)];
+                            return [4, this.companyService.getCompany(ticker)];
                         case 2:
                             _a.company = _b.sent();
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_2 = _b.sent();
                             toastr.error("Failed to load company for ticker " + ticker, "Exception");
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
+                            return [3, 4];
+                        case 4: return [2];
                     }
                 });
             });
@@ -5435,7 +5682,7 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_a.label) {
                         case 0:
                             self = this;
-                            return [4 /*yield*/, this.loadNext().then(function (data) {
+                            return [4, this.loadNext().then(function (data) {
                                     var flag = data;
                                     setTimeout(function () {
                                         if (self.streaming && flag) {
@@ -5445,7 +5692,7 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                                 })];
                         case 1:
                             _a.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -5464,7 +5711,7 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.playgroundService.loadPlayground(this.company.ticker, this.strategy.strategyId, 100, 0)];
+                            return [4, this.playgroundService.loadPlayground(this.company.ticker, this.strategy.strategyId, 100, 0)];
                         case 1:
                             playground = _a.sent();
                             if (playground && playground.company) {
@@ -5474,12 +5721,12 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                             else {
                                 toastr.error("Failed to load playground for company " + this.company.name, "Load Playground Failed");
                             }
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             e_3 = _a.sent();
                             toastr.error("Failed to load playground", "Exception");
-                            return [3 /*break*/, 3];
-                        case 3: return [2 /*return*/];
+                            return [3, 3];
+                        case 3: return [2];
                     }
                 });
             });
@@ -5491,18 +5738,18 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.playgroundService.next(this.company.ticker, this.strategy.strategyId)];
+                            return [4, this.playgroundService.next(this.company.ticker, this.strategy.strategyId)];
                         case 1:
                             playground = _a.sent();
                             if (playground && playground.company) {
                                 this.playgroundModel = playground;
                             }
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             e_4 = _a.sent();
                             toastr.error("Failed to load next playground", "Exception");
-                            return [3 /*break*/, 3];
-                        case 3: return [2 /*return*/];
+                            return [3, 3];
+                        case 3: return [2];
                     }
                 });
             });
@@ -5514,37 +5761,38 @@ define('components/strategies/strategy-playground',["require", "exports", "tslib
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.playgroundService.prev(this.company.ticker, this.strategy.strategyId)];
+                            return [4, this.playgroundService.prev(this.company.ticker, this.strategy.strategyId)];
                         case 1:
                             playground = _a.sent();
                             if (playground && playground.company) {
                                 this.playgroundModel = playground;
                             }
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             e_5 = _a.sent();
                             toastr.error("Failed to load previous playground", "Exception");
-                            return [3 /*break*/, 3];
-                        case 3: return [2 /*return*/];
+                            return [3, 3];
+                        case 3: return [2];
                     }
                 });
             });
         };
+        StrategyPlayground = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient,
+                services_generated_1.CompaniesApiClient,
+                services_generated_1.StockApiClient,
+                services_generated_1.PlaygroundApiClient,
+                settings_service_1.SettingsService])
+        ], StrategyPlayground);
         return StrategyPlayground;
     }());
-    StrategyPlayground = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient,
-            services_generated_1.CompaniesApiClient,
-            services_generated_1.StockApiClient,
-            services_generated_1.PlaygroundApiClient,
-            settings_service_1.SettingsService])
-    ], StrategyPlayground);
     exports.StrategyPlayground = StrategyPlayground;
 });
 
 define('components/strategies/strategy-rule-sets',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "../../services/settings-service", "../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var StrategyRuleSets = (function () {
         function StrategyRuleSets(eventAggregator, strategyService, ruleSetService, settings) {
             this.eventAggregator = eventAggregator;
@@ -5597,28 +5845,28 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!params.strategyUrl) return [3 /*break*/, 7];
+                            if (!params.strategyUrl) return [3, 7];
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, this.strategyService.getStrategySummaryByUrl(params.strategyUrl)];
+                            return [4, this.strategyService.getStrategySummaryByUrl(params.strategyUrl)];
                         case 2:
                             strategy = _a.sent();
-                            if (!(strategy && strategy.strategyId)) return [3 /*break*/, 4];
+                            if (!(strategy && strategy.strategyId)) return [3, 4];
                             this.strategy = strategy;
-                            return [4 /*yield*/, this.loadRuleSets(this.strategy.strategyId)];
+                            return [4, this.loadRuleSets(this.strategy.strategyId)];
                         case 3:
                             _a.sent();
-                            return [3 /*break*/, 5];
+                            return [3, 5];
                         case 4:
                             toastr.error("Failed to load summary for url " + params.strategyUrl, "Load Summary Failed");
                             _a.label = 5;
-                        case 5: return [3 /*break*/, 7];
+                        case 5: return [3, 7];
                         case 6:
                             e_1 = _a.sent();
                             toastr.error("Failed to load summary for url " + params.strategyUrl, "Exception");
-                            return [3 /*break*/, 7];
-                        case 7: return [2 /*return*/];
+                            return [3, 7];
+                        case 7: return [2];
                     }
                 });
             });
@@ -5630,10 +5878,10 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleSetService.getStrategyRuleSets(strategyId)];
+                            return [4, this.ruleSetService.getStrategyRuleSets(strategyId)];
                         case 1:
                             _a.rulesets = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -5677,10 +5925,10 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleSetService.getRuleSets(this.attachedRuleSet.period)];
+                            return [4, this.ruleSetService.getRuleSets(this.attachedRuleSet.period)];
                         case 1:
                             _a.periodRuleSets = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -5723,15 +5971,15 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(this.rulesets && this.rulesets.length > 0)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, this.saveRuleSets()];
+                            if (!(this.rulesets && this.rulesets.length > 0)) return [3, 2];
+                            return [4, this.saveRuleSets()];
                         case 1:
                             _a.sent();
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             toastr.warning("At least 1 rule set must be attached", "Validation Error");
                             _a.label = 3;
-                        case 3: return [2 /*return*/];
+                        case 3: return [2];
                     }
                 });
             });
@@ -5752,35 +6000,36 @@ define('components/strategies/strategy-rule-sets',["require", "exports", "tslib"
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.ruleSetService.saveStrategyRuleSets(this.strategy.strategyId, this.rulesets)];
+                            return [4, this.ruleSetService.saveStrategyRuleSets(this.strategy.strategyId, this.rulesets)];
                         case 2:
                             _a.sent();
                             this.setEditMode(false);
                             toastr.success("Rule Sets are successfully saved", "Rule Sets Attached");
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_2 = _a.sent();
                             toastr.error("Rule Sets failed to save", "Exception");
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
+                            return [3, 4];
+                        case 4: return [2];
                     }
                 });
             });
         };
+        StrategyRuleSets = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
+                services_generated_1.StrategiesApiClient,
+                services_generated_1.RuleSetsApiClient,
+                settings_service_1.SettingsService])
+        ], StrategyRuleSets);
         return StrategyRuleSets;
     }());
-    StrategyRuleSets = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            services_generated_1.StrategiesApiClient,
-            services_generated_1.RuleSetsApiClient,
-            settings_service_1.SettingsService])
-    ], StrategyRuleSets);
     exports.StrategyRuleSets = StrategyRuleSets;
 });
 
 define('components/strategies/strategy',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "../../services/account-service", "../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Strategy = (function () {
         function Strategy(eventAggregator, strategyService, account, validation) {
             this.eventAggregator = eventAggregator;
@@ -5804,13 +6053,13 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                             this.router = navigationInstruction.router;
                             this.routeName = routeConfig.name;
                             _a = this;
-                            return [4 /*yield*/, this.strategyService.geStrategySummaries()];
+                            return [4, this.strategyService.geStrategySummaries()];
                         case 1:
                             _a.summaries = _b.sent();
-                            return [4 /*yield*/, this.loadStrategy(params.strategyUrl)];
+                            return [4, this.loadStrategy(params.strategyUrl)];
                         case 2:
                             _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -5826,22 +6075,22 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(this.strategy && this.strategy.strategyId > 0)) return [3 /*break*/, 4];
+                            if (!(this.strategy && this.strategy.strategyId > 0)) return [3, 4];
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.strategyService.deleteStrategy(this.strategy.strategyId)];
+                            return [4, this.strategyService.deleteStrategy(this.strategy.strategyId)];
                         case 2:
                             _a.sent();
                             toastr.success("Strategy deleted successfully", "Strategy Deleted");
                             this.setEditMode(false);
                             this.router.navigate("/strategies");
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_1 = _a.sent();
                             toastr.error("Failed to delete strategy", "Delete Failed");
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
+                            return [3, 4];
+                        case 4: return [2];
                     }
                 });
             });
@@ -5867,28 +6116,28 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
-                            if (!(url && url.length > 0)) return [3 /*break*/, 5];
+                            if (!(url && url.length > 0)) return [3, 5];
                             _b.label = 1;
                         case 1:
                             _b.trys.push([1, 3, , 4]);
                             _a = this;
-                            return [4 /*yield*/, this.strategyService.getStrategyByUrl(url)];
+                            return [4, this.strategyService.getStrategyByUrl(url)];
                         case 2:
                             _a.strategy = _b.sent();
                             if (!this.strategy.blocks) {
                                 this.strategy.blocks = [];
                             }
                             this.selectActiveSummary(this.strategy.strategyId);
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_2 = _b.sent();
                             toastr.error("Failed to load strategy", "Load Failed");
-                            return [3 /*break*/, 4];
-                        case 4: return [3 /*break*/, 6];
+                            return [3, 4];
+                        case 4: return [3, 6];
                         case 5:
                             this.navigateToDefaultStrategy();
                             _b.label = 6;
-                        case 6: return [2 /*return*/];
+                        case 6: return [2];
                     }
                 });
             });
@@ -5936,7 +6185,7 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                     switch (_a.label) {
                         case 0:
                             valid = false;
-                            return [4 /*yield*/, this.validation.validate()];
+                            return [4, this.validation.validate()];
                         case 1:
                             response = _a.sent();
                             if (response.valid) {
@@ -5944,15 +6193,15 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                                     valid = true;
                                 }
                             }
-                            if (!valid) return [3 /*break*/, 3];
-                            return [4 /*yield*/, this.saveStrategy()];
+                            if (!valid) return [3, 3];
+                            return [4, this.saveStrategy()];
                         case 2:
                             _a.sent();
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             toastr.warning("Please correct validation errors.", "Validation Errors");
                             _a.label = 4;
-                        case 4: return [2 /*return*/];
+                        case 4: return [2];
                     }
                 });
             });
@@ -5977,37 +6226,38 @@ define('components/strategies/strategy',["require", "exports", "tslib", "toastr"
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.strategyService.saveStrategy(this.strategy)];
+                            return [4, this.strategyService.saveStrategy(this.strategy)];
                         case 2:
                             response = _a.sent();
                             if (response.url.length > 0) {
                                 toastr.success("Strategy staved successfully!", 'Strategy saved');
                                 this.navigateToStrategy(response.url);
                             }
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_3 = _a.sent();
                             toastr.error("Failed to save strategy!", "Application Error");
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
+                            return [3, 4];
+                        case 4: return [2];
                     }
                 });
             });
         };
+        Strategy = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
+                services_generated_1.StrategiesApiClient,
+                account_service_1.AccountService,
+                aurelia_validation_1.ValidationController])
+        ], Strategy);
         return Strategy;
     }());
-    Strategy = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            services_generated_1.StrategiesApiClient,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController])
-    ], Strategy);
     exports.Strategy = Strategy;
 });
 
 define('components/studies/navigation',["require", "exports", "tslib", "aurelia-framework", "../../services/settings-service", "../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation(articleService, settings) {
             this.articleService = articleService;
@@ -6026,11 +6276,11 @@ define('components/studies/navigation',["require", "exports", "tslib", "aurelia-
                 var categories;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.articleService.getCategories(sectionId)];
+                        case 0: return [4, this.articleService.getCategories(sectionId)];
                         case 1:
                             categories = _a.sent();
                             this.menu.items = categories;
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -6051,17 +6301,18 @@ define('components/studies/navigation',["require", "exports", "tslib", "aurelia-
                 });
             }
         };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient, settings_service_1.SettingsService])
+        ], Navigation);
         return Navigation;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient, settings_service_1.SettingsService])
-    ], Navigation);
     exports.Navigation = Navigation;
 });
 
 define('components/user/login',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Login = (function () {
         function Login() {
         }
@@ -6072,11 +6323,12 @@ define('components/user/login',["require", "exports"], function (require, export
 
 define('components/user/navigation',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation() {
         }
         Navigation.prototype.configureRouter = function (config, router) {
-            config.title = 'Login';
+            config.title = "Login";
             config.map([
                 { route: ["", "login"], moduleId: "./login", name: "user-login", title: "Login", nav: false },
                 {
@@ -6097,6 +6349,7 @@ define('components/user/navigation',["require", "exports"], function (require, e
 
 define('components/user/profile',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Profile = (function () {
         function Profile() {
         }
@@ -6107,6 +6360,7 @@ define('components/user/profile',["require", "exports"], function (require, expo
 
 define('resources/attributes/first-letter-span',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var FirstLetterSpan = (function () {
         function FirstLetterSpan(element) {
             this.element = element;
@@ -6120,18 +6374,19 @@ define('resources/attributes/first-letter-span',["require", "exports", "tslib", 
             transformed = transformed.replace(/\b([a-z])/gi, "<span>$1</span>");
             this.element.innerHTML = transformed;
         };
+        FirstLetterSpan = tslib_1.__decorate([
+            aurelia_framework_1.inject(Element),
+            aurelia_framework_1.customAttribute('first-letter-span'),
+            tslib_1.__metadata("design:paramtypes", [Element])
+        ], FirstLetterSpan);
         return FirstLetterSpan;
     }());
-    FirstLetterSpan = tslib_1.__decorate([
-        aurelia_framework_1.inject(Element),
-        aurelia_framework_1.customAttribute('first-letter-span'),
-        tslib_1.__metadata("design:paramtypes", [Object])
-    ], FirstLetterSpan);
     exports.FirstLetterSpan = FirstLetterSpan;
 });
 
 define('resources/value-converters/blob-to-url',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var BlobToUrlValueConverter = (function () {
         function BlobToUrlValueConverter() {
         }
@@ -6146,6 +6401,7 @@ define('resources/value-converters/blob-to-url',["require", "exports"], function
 
 define('resources/value-converters/filelist-to-array',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var FileListToArrayValueConverter = (function () {
         function FileListToArrayValueConverter() {
         }
@@ -6164,8 +6420,63 @@ define('resources/value-converters/filelist-to-array',["require", "exports"], fu
     exports.FileListToArrayValueConverter = FileListToArrayValueConverter;
 });
 
+define('components/journal/journals/journals',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Journals = (function () {
+        function Journals() {
+        }
+        return Journals;
+    }());
+    exports.Journals = Journals;
+});
+
+define('components/nav-menu/main-nav/main-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var MainNav = (function () {
+        function MainNav() {
+            this.router = null;
+        }
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", aurelia_router_1.Router)
+        ], MainNav.prototype, "router", void 0);
+        return MainNav;
+    }());
+    exports.MainNav = MainNav;
+});
+
+define('components/nav-menu/sub-nav/sub-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/account-service", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, account_service_1, aurelia_router_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var SubNav = (function () {
+        function SubNav(account, eventAggregator) {
+            this.account = account;
+            this.eventAggregator = eventAggregator;
+            this.powerUser = this.account.currentUser.isAuthenticated;
+        }
+        SubNav.prototype.publishEvent = function (channel, params) {
+            this.eventAggregator.publish(channel, params);
+        };
+        SubNav.prototype.attached = function () {
+        };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", aurelia_router_1.Router)
+        ], SubNav.prototype, "router", void 0);
+        SubNav = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator])
+        ], SubNav);
+        return SubNav;
+    }());
+    exports.SubNav = SubNav;
+});
+
 define('components/market/chart-layouts/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation() {
         }
@@ -6178,16 +6489,17 @@ define('components/market/chart-layouts/navigation',["require", "exports", "tsli
             ]);
             this.router = router;
         };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject
+        ], Navigation);
         return Navigation;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject
-    ], Navigation);
     exports.Navigation = Navigation;
 });
 
 define('components/market/jobs-dashboard/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation() {
         }
@@ -6202,16 +6514,17 @@ define('components/market/jobs-dashboard/navigation',["require", "exports", "tsl
             ]);
             this.router = router;
         };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject
+        ], Navigation);
         return Navigation;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject
-    ], Navigation);
     exports.Navigation = Navigation;
 });
 
 define('components/market/market-indices/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Navigation = (function () {
         function Navigation() {
         }
@@ -6227,57 +6540,17 @@ define('components/market/market-indices/navigation',["require", "exports", "tsl
             ]);
             this.router = router;
         };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject
+        ], Navigation);
         return Navigation;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject
-    ], Navigation);
     exports.Navigation = Navigation;
-});
-
-define('components/nav-menu/main-nav/main-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
-    "use strict";
-    var MainNav = (function () {
-        function MainNav() {
-            this.router = null;
-        }
-        return MainNav;
-    }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", aurelia_router_1.Router)
-    ], MainNav.prototype, "router", void 0);
-    exports.MainNav = MainNav;
-});
-
-define('components/nav-menu/sub-nav/sub-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, account_service_1) {
-    "use strict";
-    var SubNav = (function () {
-        function SubNav(account, eventAggregator) {
-            this.account = account;
-            this.eventAggregator = eventAggregator;
-            this.powerUser = this.account.currentUser.isAuthenticated;
-        }
-        SubNav.prototype.publishEvent = function (channel, params) {
-            this.eventAggregator.publish(channel, params);
-        };
-        SubNav.prototype.attached = function () {
-        };
-        return SubNav;
-    }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
-    ], SubNav.prototype, "router", void 0);
-    SubNav = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator])
-    ], SubNav);
-    exports.SubNav = SubNav;
 });
 
 define('components/strategies/indicators/indicators',["require", "exports", "tslib", "aurelia-framework", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Indicators = (function () {
         function Indicators(indicatorService, globalSettings) {
             this.indicatorService = indicatorService;
@@ -6334,25 +6607,26 @@ define('components/strategies/indicators/indicators',["require", "exports", "tsl
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.indicatorService.getIndicatorsAll(periodId)];
+                            return [4, this.indicatorService.getIndicatorsAll(periodId)];
                         case 1:
                             _a.indicators = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        Indicators = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient, settings_service_1.SettingsService])
+        ], Indicators);
         return Indicators;
     }());
-    Indicators = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient, settings_service_1.SettingsService])
-    ], Indicators);
     exports.Indicators = Indicators;
 });
 
 define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "aurelia-framework", "../../../services/settings-service", "../../../services/account-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, account_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RuleSets = (function () {
         function RuleSets(ruleSetService, globalSettings, account) {
             this.ruleSetService = ruleSetService;
@@ -6410,27 +6684,28 @@ define('components/strategies/rules/rule-sets',["require", "exports", "tslib", "
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleSetService.getRuleSets(periodId)];
+                            return [4, this.ruleSetService.getRuleSets(periodId)];
                         case 1:
                             _a.rulesets = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        RuleSets = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.RuleSetsApiClient,
+                settings_service_1.SettingsService,
+                account_service_1.AccountService])
+        ], RuleSets);
         return RuleSets;
     }());
-    RuleSets = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.RuleSetsApiClient,
-            settings_service_1.SettingsService,
-            account_service_1.AccountService])
-    ], RuleSets);
     exports.RuleSets = RuleSets;
 });
 
 define('components/strategies/rules/rules',["require", "exports", "tslib", "aurelia-framework", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Rules = (function () {
         function Rules(ruleService, globalSettings) {
             this.ruleService = ruleService;
@@ -6487,25 +6762,26 @@ define('components/strategies/rules/rules',["require", "exports", "tslib", "aure
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.ruleService.getRules(periodId)];
+                            return [4, this.ruleService.getRules(periodId)];
                         case 1:
                             _a.rules = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        Rules = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.RulesApiClient, settings_service_1.SettingsService])
+        ], Rules);
         return Rules;
     }());
-    Rules = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.RulesApiClient, settings_service_1.SettingsService])
-    ], Rules);
     exports.Rules = Rules;
 });
 
 define('components/studies/categories/categories',["require", "exports", "tslib", "aurelia-framework", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/settings-service", "../../../services/account-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_validation_1, Bootstrapformrenderer, settings_service_1, account_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Categories = (function () {
         function Categories(articleService, settings, account, validation) {
             this.articleService = articleService;
@@ -6531,14 +6807,14 @@ define('components/studies/categories/categories',["require", "exports", "tslib"
                                     this.sectionId = this.sections[0].sectionId;
                                 }
                             }
-                            if (!(this.sectionId > 0)) return [3 /*break*/, 2];
+                            if (!(this.sectionId > 0)) return [3, 2];
                             this.section = this.settings.getSection(this.sectionId);
                             _a = this;
-                            return [4 /*yield*/, this.articleService.getCategories(this.sectionId)];
+                            return [4, this.articleService.getCategories(this.sectionId)];
                         case 1:
                             _a.categories = _b.sent();
                             _b.label = 2;
-                        case 2: return [2 /*return*/];
+                        case 2: return [2];
                     }
                 });
             });
@@ -6546,20 +6822,21 @@ define('components/studies/categories/categories',["require", "exports", "tslib"
         Categories.prototype.getSectionUrl = function (section) {
             return "/categories/" + section.SectionId;
         };
+        Categories = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient,
+                settings_service_1.SettingsService,
+                account_service_1.AccountService,
+                aurelia_validation_1.ValidationController])
+        ], Categories);
         return Categories;
     }());
-    Categories = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient,
-            settings_service_1.SettingsService,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController])
-    ], Categories);
     exports.Categories = Categories;
 });
 
 define('components/studies/category-nav/category-nav',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var CategoryNav = (function () {
         function CategoryNav() {
             this.categoriesUrl = "";
@@ -6570,17 +6847,18 @@ define('components/studies/category-nav/category-nav',["require", "exports", "ts
         CategoryNav.prototype.getUrl = function (menuItem) {
             return this.menu.section.url + "/" + menuItem.url;
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Object)
+        ], CategoryNav.prototype, "menu", void 0);
         return CategoryNav;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
-    ], CategoryNav.prototype, "menu", void 0);
     exports.CategoryNav = CategoryNav;
 });
 
 define('components/studies/study/study',["require", "exports", "tslib", "toastr", "aurelia-framework", "../navigation", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/services-generated", "../../../infrastructure/event-emitter"], function (require, exports, tslib_1, toastr, aurelia_framework_1, navigation_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, services_generated_1, event_emitter_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Study = (function () {
         function Study(eventEmitter, articleService, navigation, account, validation) {
             var _this = this;
@@ -6620,11 +6898,11 @@ define('components/studies/study/study',["require", "exports", "tslib", "toastr"
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.articleService.getArticles(categoryId)];
+                            return [4, this.articleService.getArticles(categoryId)];
                         case 1:
                             _a.articles = _b.sent();
                             this.selectSideNavigationItem();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -6637,22 +6915,22 @@ define('components/studies/study/study',["require", "exports", "tslib", "toastr"
                         case 0:
                             this.setEditMode(false);
                             _a = this;
-                            return [4 /*yield*/, this.articleService.getCategory(categoryUrl)];
+                            return [4, this.articleService.getCategory(categoryUrl)];
                         case 1:
                             _a.category = _b.sent();
-                            if (!(this.category && this.category.categoryId > 0)) return [3 /*break*/, 4];
+                            if (!(this.category && this.category.categoryId > 0)) return [3, 4];
                             this.navigation.selectMenuItem(this.category.url);
-                            return [4 /*yield*/, this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl)];
+                            return [4, this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl)];
                         case 2:
                             result = _b.sent();
-                            if (!(result.articleId > 0)) return [3 /*break*/, 4];
+                            if (!(result.articleId > 0)) return [3, 4];
                             this.article = result;
                             this.setEditMode(false);
-                            return [4 /*yield*/, this.loadArticles(this.category.categoryId)];
+                            return [4, this.loadArticles(this.category.categoryId)];
                         case 3:
                             _b.sent();
                             _b.label = 4;
-                        case 4: return [2 /*return*/];
+                        case 4: return [2];
                     }
                 });
             });
@@ -6715,15 +6993,15 @@ define('components/studies/study/study',["require", "exports", "tslib", "toastr"
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(this.article && this.article.articleId > 0)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, this.articleService.deleteArticle(this.article.articleId)];
+                            if (!(this.article && this.article.articleId > 0)) return [3, 2];
+                            return [4, this.articleService.deleteArticle(this.article.articleId)];
                         case 1:
                             _a.sent();
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             toastr.warning("Article is not selected", "Delete Failed");
                             _a.label = 3;
-                        case 3: return [2 /*return*/];
+                        case 3: return [2];
                     }
                 });
             });
@@ -6763,33 +7041,34 @@ define('components/studies/study/study',["require", "exports", "tslib", "toastr"
                     switch (_a.label) {
                         case 0:
                             this.setEditMode(false);
-                            return [4 /*yield*/, this.articleService.saveArticle(this.article)];
+                            return [4, this.articleService.saveArticle(this.article)];
                         case 1:
                             a = _a.sent();
                             if (a.url && a.url.length > 0) {
                                 toastr.success("Article staved successfully!", "Strategy saved");
                                 this.navigateToArticle(a.url);
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        Study = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter,
+                services_generated_1.ArticlesApiClient,
+                navigation_1.Navigation,
+                account_service_1.AccountService,
+                aurelia_validation_1.ValidationController])
+        ], Study);
         return Study;
     }());
-    Study = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter,
-            services_generated_1.ArticlesApiClient,
-            navigation_1.Navigation,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController])
-    ], Study);
     exports.Study = Study;
 });
 
 define('resources/elements/article-parts/article-part-actions',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticlePartActions = (function () {
         function ArticlePartActions() {
         }
@@ -6805,21 +7084,22 @@ define('resources/elements/article-parts/article-part-actions',["require", "expo
             if (this.part) {
             }
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
+        ], ArticlePartActions.prototype, "part", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticlePartActions.prototype, "editMode", void 0);
         return ArticlePartActions;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
-    ], ArticlePartActions.prototype, "part", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticlePartActions.prototype, "editMode", void 0);
     exports.ArticlePartActions = ArticlePartActions;
 });
 
 define('resources/elements/article-parts/article-part-heading',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticlePartHeading = (function () {
         function ArticlePartHeading(bindingEngine) {
             this.bindingEngine = bindingEngine;
@@ -6855,25 +7135,26 @@ define('resources/elements/article-parts/article-part-heading',["require", "expo
             this.textValid = this.part.text.length > 0;
             this.part.valid = this.typeValid && this.textValid;
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
+        ], ArticlePartHeading.prototype, "part", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticlePartHeading.prototype, "editMode", void 0);
+        ArticlePartHeading = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
+        ], ArticlePartHeading);
         return ArticlePartHeading;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
-    ], ArticlePartHeading.prototype, "part", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticlePartHeading.prototype, "editMode", void 0);
-    ArticlePartHeading = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
-    ], ArticlePartHeading);
     exports.ArticlePartHeading = ArticlePartHeading;
 });
 
 define('resources/elements/article-parts/article-part-image',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticlePartImage = (function () {
         function ArticlePartImage(blobServices, bindingEngine) {
             this.blobServices = blobServices;
@@ -6923,11 +7204,11 @@ define('resources/elements/article-parts/article-part-image',["require", "export
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        if (!(reader_1.readyState === 2)) return [3 /*break*/, 2];
+                                        if (!(reader_1.readyState === 2)) return [3, 2];
                                         payload = new services_generated_1.FileDetails();
                                         payload.fileName = file_1.name;
                                         payload.fileBody = reader_1.result;
-                                        return [4 /*yield*/, this.blobServices.uploadSingle(payload)];
+                                        return [4, this.blobServices.uploadSingle(payload)];
                                     case 1:
                                         imageUrl = _a.sent();
                                         if (imageUrl) {
@@ -6938,35 +7219,36 @@ define('resources/elements/article-parts/article-part-image',["require", "export
                                             toastr.error('Sorry, this image is too big. Must be 2MB max.', 'Failed to Uploaded');
                                         }
                                         _a.label = 2;
-                                    case 2: return [2 /*return*/];
+                                    case 2: return [2];
                                 }
                             });
                         }); });
                         reader_1.readAsDataURL(file_1);
                     }
-                    return [2 /*return*/];
+                    return [2];
                 });
             });
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
+        ], ArticlePartImage.prototype, "part", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticlePartImage.prototype, "editMode", void 0);
+        ArticlePartImage = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.BlobApiClient, aurelia_binding_1.BindingEngine])
+        ], ArticlePartImage);
         return ArticlePartImage;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
-    ], ArticlePartImage.prototype, "part", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticlePartImage.prototype, "editMode", void 0);
-    ArticlePartImage = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.BlobApiClient, aurelia_binding_1.BindingEngine])
-    ], ArticlePartImage);
     exports.ArticlePartImage = ArticlePartImage;
 });
 
 define('resources/elements/article-parts/article-part-list',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticlePartList = (function () {
         function ArticlePartList(bindingEngine) {
             this.bindingEngine = bindingEngine;
@@ -7011,7 +7293,7 @@ define('resources/elements/article-parts/article-part-list',["require", "exports
             if (this.part.items && this.part.items.length > 0) {
                 var self_1 = this;
                 this.part.items.forEach(function (item) {
-                    self_1.itemsSubscriptions.push(self_1.bindingEngine.propertyObserver(item, 'text')
+                    self_1.itemsSubscriptions.push(self_1.bindingEngine.propertyObserver(item, "text")
                         .subscribe(function () { return self_1.onItemTextChange(); }));
                 });
             }
@@ -7040,25 +7322,26 @@ define('resources/elements/article-parts/article-part-list',["require", "exports
                 });
             }
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
+        ], ArticlePartList.prototype, "part", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticlePartList.prototype, "editMode", void 0);
+        ArticlePartList = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
+        ], ArticlePartList);
         return ArticlePartList;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
-    ], ArticlePartList.prototype, "part", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticlePartList.prototype, "editMode", void 0);
-    ArticlePartList = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
-    ], ArticlePartList);
     exports.ArticlePartList = ArticlePartList;
 });
 
 define('resources/elements/article-parts/article-part-new',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticlePartNew = (function () {
         function ArticlePartNew() {
             this.partTypes = [services_generated_1.ArticleBlockType.Unset, services_generated_1.ArticleBlockType.Heading, services_generated_1.ArticleBlockType.Image, services_generated_1.ArticleBlockType.List];
@@ -7073,21 +7356,22 @@ define('resources/elements/article-parts/article-part-new',["require", "exports"
         };
         ArticlePartNew.prototype.cancel = function () {
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
+        ], ArticlePartNew.prototype, "part", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticlePartNew.prototype, "editMode", void 0);
         return ArticlePartNew;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
-    ], ArticlePartNew.prototype, "part", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticlePartNew.prototype, "editMode", void 0);
     exports.ArticlePartNew = ArticlePartNew;
 });
 
 define('resources/elements/article-parts/article-part-paragraph',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticlePartParagraph = (function () {
         function ArticlePartParagraph(bindingEngine) {
             this.bindingEngine = bindingEngine;
@@ -7120,25 +7404,26 @@ define('resources/elements/article-parts/article-part-paragraph',["require", "ex
             this.textValid = this.part.text.length > 0;
             this.part.valid = this.textValid;
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
+        ], ArticlePartParagraph.prototype, "part", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticlePartParagraph.prototype, "editMode", void 0);
+        ArticlePartParagraph = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
+        ], ArticlePartParagraph);
         return ArticlePartParagraph;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ArticleBlock)
-    ], ArticlePartParagraph.prototype, "part", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticlePartParagraph.prototype, "editMode", void 0);
-    ArticlePartParagraph = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
-    ], ArticlePartParagraph);
     exports.ArticlePartParagraph = ArticlePartParagraph;
 });
 
 define('resources/elements/article-parts/article-parts',["require", "exports", "tslib", "aurelia-framework", "aurelia-binding", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_binding_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ArticleParts = (function () {
         function ArticleParts(bindingEngine) {
             this.bindingEngine = bindingEngine;
@@ -7237,25 +7522,26 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
         };
         ArticleParts.prototype.movePartDown = function () {
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Array)
+        ], ArticleParts.prototype, "parts", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ArticleParts.prototype, "editMode", void 0);
+        ArticleParts = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
+        ], ArticleParts);
         return ArticleParts;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Array)
-    ], ArticleParts.prototype, "parts", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ArticleParts.prototype, "editMode", void 0);
-    ArticleParts = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_binding_1.BindingEngine])
-    ], ArticleParts);
     exports.ArticleParts = ArticleParts;
 });
 
 define('resources/elements/chart/chart-layout',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ChartLayout = (function () {
         function ChartLayout() {
             this.data = null;
@@ -7390,17 +7676,18 @@ define('resources/elements/chart/chart-layout',["require", "exports", "tslib", "
                     break;
             }
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Object)
+        ], ChartLayout.prototype, "data", void 0);
         return ChartLayout;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Object)
-    ], ChartLayout.prototype, "data", void 0);
     exports.ChartLayout = ChartLayout;
 });
 
 define('resources/elements/company/company-details',["require", "exports", "tslib", "aurelia-framework", "moment", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, moment, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var CompanyDetails = (function () {
         function CompanyDetails() {
         }
@@ -7410,19 +7697,20 @@ define('resources/elements/company/company-details',["require", "exports", "tsli
             var diff = date2.diff(date1);
             var duration = moment.duration(diff);
             var days = duration.asDays();
-            return Math.round(days) + ' days ago';
+            return Math.round(days) + " days ago";
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.CompanyModel)
+        ], CompanyDetails.prototype, "company", void 0);
         return CompanyDetails;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.CompanyModel)
-    ], CompanyDetails.prototype, "company", void 0);
     exports.CompanyDetails = CompanyDetails;
 });
 
 define('resources/elements/indicator/indicator',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Formula = (function () {
         function Formula() {
         }
@@ -7557,18 +7845,18 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.indicatorService.deleteIndicator(this.indicatorInfo.indicatorId)];
+                            return [4, this.indicatorService.deleteIndicator(this.indicatorInfo.indicatorId)];
                         case 1:
                             _a.sent();
                             this.indicatorInfo.deleted = true;
                             toastr.success("Indicator " + this.indicatorInfo
                                 .description + " deleted successfully!", "Indicator Deleted");
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             e_1 = _a.sent();
                             this.errors.push(e_1);
-                            return [3 /*break*/, 3];
-                        case 3: return [2 /*return*/];
+                            return [3, 3];
+                        case 3: return [2];
                     }
                 });
             });
@@ -7578,18 +7866,18 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                 var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.validation.validate()];
+                        case 0: return [4, this.validation.validate()];
                         case 1:
                             response = _a.sent();
-                            if (!response.valid) return [3 /*break*/, 3];
-                            return [4 /*yield*/, this.saveIndicator()];
+                            if (!response.valid) return [3, 3];
+                            return [4, this.saveIndicator()];
                         case 2:
                             _a.sent();
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             toastr.warning("Please correct validation errors.", "Validation Errors");
                             _a.label = 4;
-                        case 4: return [2 /*return*/];
+                        case 4: return [2];
                     }
                 });
             });
@@ -7602,7 +7890,7 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                         case 0:
                             this.errors = [];
                             this.indicatorInfo.jsonParams = JSON.stringify(this.indicatorInfo.params);
-                            return [4 /*yield*/, this.indicatorService.saveIndicator(this.indicatorInfo)];
+                            return [4, this.indicatorService.saveIndicator(this.indicatorInfo)];
                         case 1:
                             response = _a.sent();
                             if (response.name) {
@@ -7610,59 +7898,62 @@ define('resources/elements/indicator/indicator',["require", "exports", "tslib", 
                                 this.expanded = false;
                                 toastr.success("indicator " + response.name + " saved successfully!", "Indicator Saved");
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.Indicator)
+        ], Indicator.prototype, "indicator", void 0);
+        Indicator = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient,
+                account_service_1.AccountService,
+                aurelia_validation_1.ValidationController,
+                settings_service_1.SettingsService])
+        ], Indicator);
         return Indicator;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.Indicator)
-    ], Indicator.prototype, "indicator", void 0);
-    Indicator = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.IndicatorsApiClient,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController,
-            settings_service_1.SettingsService])
-    ], Indicator);
     exports.Indicator = Indicator;
 });
 
 define('resources/elements/navigation/side-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SideNav = (function () {
         function SideNav() {
             this.router = null;
         }
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", aurelia_router_1.Router)
+        ], SideNav.prototype, "router", void 0);
         return SideNav;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", aurelia_router_1.Router)
-    ], SideNav.prototype, "router", void 0);
     exports.SideNav = SideNav;
 });
 
 define('resources/elements/navigation/sub-nav',["require", "exports", "tslib", "aurelia-framework", "aurelia-router"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SubNav = (function () {
         function SubNav() {
             this.router = null;
         }
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", aurelia_router_1.Router)
+        ], SubNav.prototype, "router", void 0);
         return SubNav;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", aurelia_router_1.Router)
-    ], SubNav.prototype, "router", void 0);
     exports.SubNav = SubNav;
 });
 
 define('resources/elements/progress/s-progress',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SProgress = (function () {
         function SProgress(element) {
             this.element = element;
@@ -7676,21 +7967,22 @@ define('resources/elements/progress/s-progress',["require", "exports", "tslib", 
         };
         SProgress.prototype.unbind = function () {
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Number)
+        ], SProgress.prototype, "progress", void 0);
+        SProgress = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [Element])
+        ], SProgress);
         return SProgress;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Number)
-    ], SProgress.prototype, "progress", void 0);
-    SProgress = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [Element])
-    ], SProgress);
     exports.SProgress = SProgress;
 });
 
 define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../services/account-service", "../../../form-validation/bootstrap-form-renderer", "../../../services/settings-service", "../../../common/helpers/enum-helper", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, account_service_1, bootstrap_form_renderer_1, settings_service_1, enum_helper_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Rule = (function () {
         function Rule(ruleService, account, validation, globalSettings) {
             this.ruleService = ruleService;
@@ -7795,17 +8087,17 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.ruleService.deleteRule(this.ruleInfo.ruleId)];
+                            return [4, this.ruleService.deleteRule(this.ruleInfo.ruleId)];
                         case 1:
                             _a.sent();
                             this.ruleInfo.deleted = true;
                             toastr.success("Rule " + this.ruleInfo.name + " deleted successfully!", "Rule Deleted");
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             e_1 = _a.sent();
                             toastr.error("Failed to delete rule", "Error");
-                            return [3 /*break*/, 3];
-                        case 3: return [2 /*return*/];
+                            return [3, 3];
+                        case 3: return [2];
                     }
                 });
             });
@@ -7815,7 +8107,7 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
                 var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.validation.validate()];
+                        case 0: return [4, this.validation.validate()];
                         case 1:
                             response = _a.sent();
                             if (response.valid) {
@@ -7824,7 +8116,7 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
                             else {
                                 toastr.warning("Please correct validation errors.", "Validation Errors");
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -7834,7 +8126,7 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
                 var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.ruleService.saveRule(this.ruleInfo)];
+                        case 0: return [4, this.ruleService.saveRule(this.ruleInfo)];
                         case 1:
                             response = _a.sent();
                             if (response.ruleId > 0) {
@@ -7845,29 +8137,30 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
                             else {
                                 toastr.error("Failed to save rule", "Error");
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.Rule)
+        ], Rule.prototype, "rule", void 0);
+        Rule = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.RulesApiClient,
+                account_service_1.AccountService,
+                aurelia_validation_1.ValidationController,
+                settings_service_1.SettingsService])
+        ], Rule);
         return Rule;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.Rule)
-    ], Rule.prototype, "rule", void 0);
-    Rule = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.RulesApiClient,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController,
-            settings_service_1.SettingsService])
-    ], Rule);
     exports.Rule = Rule;
 });
 
 define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RuleSetItem = (function () {
         function RuleSetItem(eventAggregator) {
             this.eventAggregator = eventAggregator;
@@ -7916,21 +8209,22 @@ define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib
             this.subscriptions.push(this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, function (flag) { return _this.setEditMode(flag); }));
             this.subscriptions.push(this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, function (flag) { return _this.setEditMode(flag); }));
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.RuleModel)
+        ], RuleSetItem.prototype, "rule", void 0);
+        RuleSetItem = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], RuleSetItem);
         return RuleSetItem;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.RuleModel)
-    ], RuleSetItem.prototype, "rule", void 0);
-    RuleSetItem = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-    ], RuleSetItem);
     exports.RuleSetItem = RuleSetItem;
 });
 
 define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-event-aggregator", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_event_aggregator_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RuleSet = (function () {
         function RuleSet(eventAggregator, ruleSetService, ruleService, account, validation, globalSettings) {
             this.eventAggregator = eventAggregator;
@@ -7996,18 +8290,18 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
-                            return [4 /*yield*/, this.ruleSetService.deleteRuleSet(this.ruleSetInfo.ruleSetId)];
+                            return [4, this.ruleSetService.deleteRuleSet(this.ruleSetInfo.ruleSetId)];
                         case 1:
                             _a.sent();
                             this.ruleSetInfo.deleted = true;
                             toastr.success("Rule set " + this.ruleSetInfo.description + " deleted successfully!", 'Rule Set Deleted');
-                            return [3 /*break*/, 3];
+                            return [3, 3];
                         case 2:
                             e_1 = _a.sent();
                             toastr.error("Failed to delete rule set", "Error");
                             this.errors.push(e_1);
-                            return [3 /*break*/, 3];
-                        case 3: return [2 /*return*/];
+                            return [3, 3];
+                        case 3: return [2];
                     }
                 });
             });
@@ -8019,24 +8313,24 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                     switch (_a.label) {
                         case 0:
                             this.addMode = !this.addMode;
-                            if (!(this.addMode && this.rules.length === 0)) return [3 /*break*/, 4];
+                            if (!(this.addMode && this.rules.length === 0)) return [3, 4];
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.ruleService.getRules(this.ruleSetInfo.period)];
+                            return [4, this.ruleService.getRules(this.ruleSetInfo.period)];
                         case 2:
                             response = _a.sent();
                             this.rules = response;
                             if (this.rules.length > 0) {
                                 this.attachedRule = this.rules[0];
                             }
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_2 = _a.sent();
                             toastr.error("Failed to get rules", "ruleService.getRulesForPeriod");
                             this.errors.push(e_2);
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
+                            return [3, 4];
+                        case 4: return [2];
                     }
                 });
             });
@@ -8062,18 +8356,18 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                 var response;
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.validation.validate()];
+                        case 0: return [4, this.validation.validate()];
                         case 1:
                             response = _a.sent();
-                            if (!response.valid) return [3 /*break*/, 3];
-                            return [4 /*yield*/, this.saveRuleSet()];
+                            if (!response.valid) return [3, 3];
+                            return [4, this.saveRuleSet()];
                         case 2:
                             _a.sent();
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             toastr.warning("Please correct validation errors.", "Validation Errors");
                             _a.label = 4;
-                        case 4: return [2 /*return*/];
+                        case 4: return [2];
                     }
                 });
             });
@@ -8088,7 +8382,7 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, this.ruleSetService.saveRuleSet(this.ruleSetInfo)];
+                            return [4, this.ruleSetService.saveRuleSet(this.ruleSetInfo)];
                         case 2:
                             response = _a.sent();
                             if (response.ruleSetId > 0) {
@@ -8097,13 +8391,13 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
                                 toastr.success("Rule set " + response.name + " saved successfully!", "Rule set Saved");
                                 this.eventAggregator.publish("rule-set-edit-mode-" + this.ruleSetInfo.ruleSetId, false);
                             }
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_3 = _a.sent();
                             toastr.error("Failed to save rule set", "Error");
                             this.errors.push(e_3);
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
+                            return [3, 4];
+                        case 4: return [2];
                     }
                 });
             });
@@ -8139,26 +8433,27 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
             this.subscriptions.push(this.eventAggregator.subscribe('rule-set-item-up-' + this.ruleset.ruleSetId, function (rule) { return _this.moveRuleUp(rule); }));
             this.subscriptions.push(this.eventAggregator.subscribe('rule-set-item-down-' + this.ruleset.ruleSetId, function (rule) { return _this.moveRuleDown(rule); }));
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.RuleSetModel)
+        ], RuleSet.prototype, "ruleset", void 0);
+        RuleSet = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
+                services_generated_1.RuleSetsApiClient,
+                services_generated_1.RulesApiClient,
+                account_service_1.AccountService,
+                aurelia_validation_1.ValidationController,
+                settings_service_1.SettingsService])
+        ], RuleSet);
         return RuleSet;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.RuleSetModel)
-    ], RuleSet.prototype, "ruleset", void 0);
-    RuleSet = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator,
-            services_generated_1.RuleSetsApiClient,
-            services_generated_1.RulesApiClient,
-            account_service_1.AccountService,
-            aurelia_validation_1.ValidationController,
-            settings_service_1.SettingsService])
-    ], RuleSet);
     exports.RuleSet = RuleSet;
 });
 
 define('resources/elements/strategy/side-navigation',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-router", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_router_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var SideNavigation = (function () {
         function SideNavigation(strategyService, router) {
             this.strategyService = strategyService;
@@ -8172,26 +8467,26 @@ define('resources/elements/strategy/side-navigation',["require", "exports", "tsl
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
-                            if (!(newValue && newValue.length > 0)) return [3 /*break*/, 6];
-                            if (!this.summaryNotFound(newValue)) return [3 /*break*/, 5];
+                            if (!(newValue && newValue.length > 0)) return [3, 6];
+                            if (!this.summaryNotFound(newValue)) return [3, 5];
                             _b.label = 1;
                         case 1:
                             _b.trys.push([1, 3, , 4]);
                             _a = this;
-                            return [4 /*yield*/, this.strategyService.geStrategySummaries()];
+                            return [4, this.strategyService.geStrategySummaries()];
                         case 2:
                             _a.summaries = _b.sent();
                             this.setActiveStrategy(newValue);
-                            return [3 /*break*/, 4];
+                            return [3, 4];
                         case 3:
                             e_1 = _b.sent();
                             toastr.error("Failed to load summaries", "Load Summaries Failed");
-                            return [3 /*break*/, 4];
-                        case 4: return [3 /*break*/, 6];
+                            return [3, 4];
+                        case 4: return [3, 6];
                         case 5:
                             this.setActiveStrategy(newValue);
                             _b.label = 6;
-                        case 6: return [2 /*return*/];
+                        case 6: return [2];
                     }
                 });
             });
@@ -8228,36 +8523,38 @@ define('resources/elements/strategy/side-navigation',["require", "exports", "tsl
                 this.router.navigate(strategyUrl);
             }
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", String)
+        ], SideNavigation.prototype, "strategyurl", void 0);
+        SideNavigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient, aurelia_router_1.Router])
+        ], SideNavigation);
         return SideNavigation;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", String)
-    ], SideNavigation.prototype, "strategyurl", void 0);
-    SideNavigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient, aurelia_router_1.Router])
-    ], SideNavigation);
     exports.SideNavigation = SideNavigation;
 });
 
 define('resources/elements/strategy/strategy-admin',["require", "exports", "tslib", "aurelia-framework", "../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var StrategyAdmin = (function () {
         function StrategyAdmin(account) {
             this.powerUser = account.currentUser.isAuthenticated;
         }
+        StrategyAdmin = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
+        ], StrategyAdmin);
         return StrategyAdmin;
     }());
-    StrategyAdmin = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
-    ], StrategyAdmin);
     exports.StrategyAdmin = StrategyAdmin;
 });
 
 define('resources/elements/strategy/strategy-navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var StrategyNavigation = (function () {
         function StrategyNavigation(eventAggregator) {
             var _this = this;
@@ -8305,12 +8602,12 @@ define('resources/elements/strategy/strategy-navigation',["require", "exports", 
             this.items.push(rulesetsMenuItem);
             this.items.push(playgroundMenuItem);
         };
+        StrategyNavigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], StrategyNavigation);
         return StrategyNavigation;
     }());
-    StrategyNavigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-    ], StrategyNavigation);
     exports.StrategyNavigation = StrategyNavigation;
     var LinkInfo = (function () {
         function LinkInfo() {
@@ -8323,6 +8620,7 @@ define('resources/elements/strategy/strategy-navigation',["require", "exports", 
 
 define('resources/elements/strategy/strategy-rule-set',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, settings_service_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var StrategyRuleSet = (function () {
         function StrategyRuleSet(eventAggregator, settings) {
             this.eventAggregator = eventAggregator;
@@ -8355,21 +8653,44 @@ define('resources/elements/strategy/strategy-rule-set',["require", "exports", "t
         StrategyRuleSet.prototype.confirmDelete = function () {
             this.eventAggregator.publish("strategy-rule-set-detach", this.ruleset.ruleSetId);
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.VStrategyRuleSet)
+        ], StrategyRuleSet.prototype, "ruleset", void 0);
+        StrategyRuleSet = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator, settings_service_1.SettingsService])
+        ], StrategyRuleSet);
         return StrategyRuleSet;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.VStrategyRuleSet)
-    ], StrategyRuleSet.prototype, "ruleset", void 0);
-    StrategyRuleSet = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator, settings_service_1.SettingsService])
-    ], StrategyRuleSet);
     exports.StrategyRuleSet = StrategyRuleSet;
+});
+
+define('components/journal/journals/journal/journal',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var JournalEntry = (function () {
+        function JournalEntry() {
+        }
+        return JournalEntry;
+    }());
+    exports.JournalEntry = JournalEntry;
+});
+
+define('components/journal/journals/journal-periods/journal-periods',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var JournalPeriods = (function () {
+        function JournalPeriods() {
+        }
+        return JournalPeriods;
+    }());
+    exports.JournalPeriods = JournalPeriods;
 });
 
 define('components/market/chart-layouts/layouts/chart-layout-indicator',["require", "exports", "tslib", "aurelia-framework", "../../../../infrastructure/event-emitter", "../../../../common/types/enums", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, event_emitter_1, Enums, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ChartLayoutIndicator = (function () {
         function ChartLayoutIndicator(eventEmitter) {
             this.eventEmitter = eventEmitter;
@@ -8394,25 +8715,26 @@ define('components/market/chart-layouts/layouts/chart-layout-indicator',["requir
             };
             this.eventEmitter.publish("LayoutIndicatorMoved", event);
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.LayoutIndicatorModel)
+        ], ChartLayoutIndicator.prototype, "indicator", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", Boolean)
+        ], ChartLayoutIndicator.prototype, "editMode", void 0);
+        ChartLayoutIndicator = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
+        ], ChartLayoutIndicator);
         return ChartLayoutIndicator;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.LayoutIndicatorModel)
-    ], ChartLayoutIndicator.prototype, "indicator", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", Boolean)
-    ], ChartLayoutIndicator.prototype, "editMode", void 0);
-    ChartLayoutIndicator = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter])
-    ], ChartLayoutIndicator);
     exports.ChartLayoutIndicator = ChartLayoutIndicator;
 });
 
 define('components/market/chart-layouts/layouts/chart-layout-plot',["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ChartLayoutPlot = (function () {
         function ChartLayoutPlot() {
         }
@@ -8423,6 +8745,7 @@ define('components/market/chart-layouts/layouts/chart-layout-plot',["require", "
 
 define('components/market/chart-layouts/layouts/chart-layout',["require", "exports", "tslib", "aurelia-framework", "aurelia-validation", "../../../../form-validation/bootstrap-form-renderer", "../../../../services/settings-service", "../../../../infrastructure/event-emitter", "../../../../common/types/enums", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_validation_1, bootstrap_form_renderer_1, settings_service_1, event_emitter_1, Enums, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ChartLayout = (function () {
         function ChartLayout(validation, layoutService, globalSettings, eventEmitter) {
             this.validation = validation;
@@ -8474,7 +8797,7 @@ define('components/market/chart-layouts/layouts/chart-layout',["require", "expor
                     switch (_a.label) {
                         case 0:
                             valid = false;
-                            return [4 /*yield*/, this.validation.validate()];
+                            return [4, this.validation.validate()];
                         case 1:
                             response = _a.sent();
                             if (response.valid) {
@@ -8486,7 +8809,7 @@ define('components/market/chart-layouts/layouts/chart-layout',["require", "expor
                             else {
                                 toastr.warning("Please correct validation errors.", "Validation Errors");
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8500,11 +8823,11 @@ define('components/market/chart-layouts/layouts/chart-layout',["require", "expor
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.layoutService.saveLayout(this.layout)];
+                        case 0: return [4, this.layoutService.saveLayout(this.layout)];
                         case 1:
                             _a.sent();
                             this.editMode = false;
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8524,22 +8847,23 @@ define('components/market/chart-layouts/layouts/chart-layout',["require", "expor
             if (event.direction === Enums.Direction.Up) {
             }
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ChartLayoutModel)
+        ], ChartLayout.prototype, "layout", void 0);
+        ChartLayout = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [aurelia_validation_1.ValidationController, services_generated_1.LayoutApiClient,
+                settings_service_1.SettingsService, event_emitter_1.EventEmitter])
+        ], ChartLayout);
         return ChartLayout;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ChartLayoutModel)
-    ], ChartLayout.prototype, "layout", void 0);
-    ChartLayout = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [aurelia_validation_1.ValidationController, services_generated_1.LayoutApiClient,
-            settings_service_1.SettingsService, event_emitter_1.EventEmitter])
-    ], ChartLayout);
     exports.ChartLayout = ChartLayout;
 });
 
 define('components/market/chart-layouts/layouts/chart-layouts',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../common/helpers/enum-helper", "aurelia-validation", "../../../../form-validation/bootstrap-form-renderer", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, enum_helper_1, aurelia_validation_1, bootstrap_form_renderer_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ChartLayouts = (function () {
         function ChartLayouts(account, eventAggregator, layoutService, validation) {
             this.eventAggregator = eventAggregator;
@@ -8588,10 +8912,10 @@ define('components/market/chart-layouts/layouts/chart-layouts',["require", "expo
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.layoutService.getLayoutsForPeriod(this.period.id)];
+                            return [4, this.layoutService.getLayoutsForPeriod(this.period.id)];
                         case 1:
                             _a.layouts = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8609,7 +8933,7 @@ define('components/market/chart-layouts/layouts/chart-layouts',["require", "expo
                     switch (_a.label) {
                         case 0:
                             valid = false;
-                            return [4 /*yield*/, this.validation.validate()];
+                            return [4, this.validation.validate()];
                         case 1:
                             response = _a.sent();
                             if (response.valid) {
@@ -8621,7 +8945,7 @@ define('components/market/chart-layouts/layouts/chart-layouts',["require", "expo
                             else {
                                 toastr.warning("Please correct validation errors.", "Validation Errors");
                             }
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8641,27 +8965,28 @@ define('components/market/chart-layouts/layouts/chart-layouts',["require", "expo
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.layoutService.saveLayout(this.newLayout)];
+                        case 0: return [4, this.layoutService.saveLayout(this.newLayout)];
                         case 1:
                             _a.sent();
                             this.addingMode = false;
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        ChartLayouts = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator,
+                services_generated_1.LayoutApiClient, aurelia_validation_1.ValidationController])
+        ], ChartLayouts);
         return ChartLayouts;
     }());
-    ChartLayouts = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator,
-            services_generated_1.LayoutApiClient, aurelia_validation_1.ValidationController])
-    ], ChartLayouts);
     exports.ChartLayouts = ChartLayouts;
 });
 
 define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../common/helpers/date-helper", "../../../../services/services-generated", "../../../../common/types/job-models"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, date_helper_1, services_generated_1, job_models_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Job = (function () {
         function Job(account, jobService, eventAggregator) {
             var _this = this;
@@ -8692,14 +9017,14 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.loadCurrentJob()];
+                        case 0: return [4, this.loadCurrentJob()];
                         case 1:
                             _a.sent();
-                            return [4 /*yield*/, this.loadHistory()];
+                            return [4, this.loadHistory()];
                         case 2:
                             _a.sent();
                             this.watchCurrentJob();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8713,10 +9038,10 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                             this.jobs = [];
                             jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
                             _a = this;
-                            return [4 /*yield*/, this.jobService.getSheduledJobHistory(jobType)];
+                            return [4, this.jobService.getSheduledJobHistory(jobType)];
                         case 1:
                             _a.jobs = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8729,10 +9054,10 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                         case 0:
                             jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
                             _a = this;
-                            return [4 /*yield*/, this.jobService.getCurrentJob(jobType)];
+                            return [4, this.jobService.getCurrentJob(jobType)];
                         case 1:
                             _a.currentJob = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8748,11 +9073,11 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                         case 0:
                             jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
                             _a = this;
-                            return [4 /*yield*/, this.jobService.startScheduledJobs(jobType)];
+                            return [4, this.jobService.startScheduledJobs(jobType)];
                         case 1:
                             _a.currentJob = _b.sent();
                             this.watchCurrentJob();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8763,24 +9088,24 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(this.currentJob != null && this.currentJob.jobId > 0)) return [3 /*break*/, 1];
+                            if (!(this.currentJob != null && this.currentJob.jobId > 0)) return [3, 1];
                             setTimeout(function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                 return tslib_1.__generator(this, function (_a) {
                                     switch (_a.label) {
-                                        case 0: return [4 /*yield*/, this.loadCurrentJob()];
+                                        case 0: return [4, this.loadCurrentJob()];
                                         case 1:
                                             _a.sent();
                                             this.watchCurrentJob();
-                                            return [2 /*return*/];
+                                            return [2];
                                     }
                                 });
                             }); }, 1000);
-                            return [3 /*break*/, 3];
-                        case 1: return [4 /*yield*/, this.loadHistory()];
+                            return [3, 3];
+                        case 1: return [4, this.loadHistory()];
                         case 2:
                             _a.sent();
                             _a.label = 3;
-                        case 3: return [2 /*return*/];
+                        case 3: return [2];
                     }
                 });
             });
@@ -8790,14 +9115,14 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                 var _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0: return [4 /*yield*/, this.jobService.resumeScheduledJob(this.currentJob.jobId)];
+                        case 0: return [4, this.jobService.resumeScheduledJob(this.currentJob.jobId)];
                         case 1:
                             _b.sent();
                             _a = this;
-                            return [4 /*yield*/, this.jobService.getJob(this.currentJob.jobId)];
+                            return [4, this.jobService.getJob(this.currentJob.jobId)];
                         case 2:
                             _a.currentJob = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8807,14 +9132,14 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
                 var _a;
                 return tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0: return [4 /*yield*/, this.jobService.pauseScheduledJob(this.currentJob.jobId)];
+                        case 0: return [4, this.jobService.pauseScheduledJob(this.currentJob.jobId)];
                         case 1:
                             _b.sent();
                             _a = this;
-                            return [4 /*yield*/, this.jobService.getJob(this.currentJob.jobId)];
+                            return [4, this.jobService.getJob(this.currentJob.jobId)];
                         case 2:
                             _a.currentJob = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8823,13 +9148,13 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
             return tslib_1.__awaiter(this, void 0, void 0, function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.jobService.cancelScheduledJob(this.currentJob.jobId)];
+                        case 0: return [4, this.jobService.cancelScheduledJob(this.currentJob.jobId)];
                         case 1:
                             _a.sent();
-                            return [4 /*yield*/, this.loadJobs()];
+                            return [4, this.loadJobs()];
                         case 2:
                             _a.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -8888,47 +9213,48 @@ define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib
             enumerable: true,
             configurable: true
         });
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
+            tslib_1.__metadata("design:type", Boolean),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "currentJobInProgress", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
+            tslib_1.__metadata("design:type", Boolean),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "currentJobPaused", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobId"),
+            tslib_1.__metadata("design:type", Boolean),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "currentJobStarted", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobType"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "jobTypeName", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.status"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "jobStatusName", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.startDate"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "startDate", null);
+        Job = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, services_generated_1.JobsApiClient, aurelia_event_aggregator_1.EventAggregator])
+        ], Job);
         return Job;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
-        tslib_1.__metadata("design:type", Boolean),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], Job.prototype, "currentJobInProgress", null);
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
-        tslib_1.__metadata("design:type", Boolean),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], Job.prototype, "currentJobPaused", null);
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("currentJob.jobId"),
-        tslib_1.__metadata("design:type", Boolean),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], Job.prototype, "currentJobStarted", null);
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("currentJob.jobType"),
-        tslib_1.__metadata("design:type", String),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], Job.prototype, "jobTypeName", null);
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("currentJob.status"),
-        tslib_1.__metadata("design:type", String),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], Job.prototype, "jobStatusName", null);
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("currentJob.startDate"),
-        tslib_1.__metadata("design:type", String),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], Job.prototype, "startDate", null);
-    Job = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, services_generated_1.JobsApiClient, aurelia_event_aggregator_1.EventAggregator])
-    ], Job);
     exports.Job = Job;
 });
 
 define('components/market/market-indices/indices/market-index',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MarketIndex = (function () {
         function MarketIndex(account, eventAggregator, companyService) {
             var _this = this;
@@ -8964,25 +9290,26 @@ define('components/market/market-indices/indices/market-index',["require", "expo
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.companyService.getCompany(this.indexUrl)];
+                            return [4, this.companyService.getCompany(this.indexUrl)];
                         case 1:
                             _a.indexInfo = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
         };
+        MarketIndex = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator, services_generated_1.CompaniesApiClient])
+        ], MarketIndex);
         return MarketIndex;
     }());
-    MarketIndex = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, aurelia_event_aggregator_1.EventAggregator, services_generated_1.CompaniesApiClient])
-    ], MarketIndex);
     exports.MarketIndex = MarketIndex;
 });
 
 define('components/studies/study/category-studies/category-studies',["require", "exports", "tslib", "aurelia-framework", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var CategoryStudies = (function () {
         function CategoryStudies(articleService) {
             this.articleService = articleService;
@@ -8992,12 +9319,12 @@ define('components/studies/study/category-studies/category-studies',["require", 
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(this.category && this.category.categoryId > 0)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, this.loadArticles(this.category.categoryId)];
+                            if (!(this.category && this.category.categoryId > 0)) return [3, 2];
+                            return [4, this.loadArticles(this.category.categoryId)];
                         case 1:
                             _a.sent();
                             _a.label = 2;
-                        case 2: return [2 /*return*/];
+                        case 2: return [2];
                     }
                 });
             });
@@ -9009,10 +9336,10 @@ define('components/studies/study/category-studies/category-studies',["require", 
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.articleService.getArticles(categoryId)];
+                            return [4, this.articleService.getArticles(categoryId)];
                         case 1:
                             _a.articles = _b.sent();
-                            return [2 /*return*/];
+                            return [2];
                     }
                 });
             });
@@ -9024,21 +9351,22 @@ define('components/studies/study/category-studies/category-studies',["require", 
         };
         CategoryStudies.prototype.addArticle = function () {
         };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.CategoryModel)
+        ], CategoryStudies.prototype, "category", void 0);
+        CategoryStudies = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient])
+        ], CategoryStudies);
         return CategoryStudies;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.CategoryModel)
-    ], CategoryStudies.prototype, "category", void 0);
-    CategoryStudies = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.ArticlesApiClient])
-    ], CategoryStudies);
     exports.CategoryStudies = CategoryStudies;
 });
 
 define('components/studies/study/study-actions/study-actions',["require", "exports", "tslib", "aurelia-framework", "aurelia-router", "../../../../infrastructure/event-emitter", "../../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_router_1, event_emitter_1, account_service_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var StudyActions = (function () {
         function StudyActions(eventEmitter, router, account) {
             this.eventEmitter = eventEmitter;
@@ -9058,19 +9386,20 @@ define('components/studies/study/study-actions/study-actions',["require", "expor
         StudyActions.prototype.manageCategories = function () {
             this.router.navigateToRoute("categories");
         };
+        StudyActions = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter,
+                aurelia_router_1.Router,
+                account_service_1.AccountService])
+        ], StudyActions);
         return StudyActions;
     }());
-    StudyActions = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [event_emitter_1.EventEmitter,
-            aurelia_router_1.Router,
-            account_service_1.AccountService])
-    ], StudyActions);
     exports.StudyActions = StudyActions;
 });
 
 define('components/market/jobs-dashboard/jobs/job-details/job-details',["require", "exports", "tslib", "aurelia-framework", "../../../../../common/helpers/date-helper", "../../../../../common/types/job-models", "../../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, date_helper_1, job_models_1, services_generated_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var JobDetails = (function () {
         function JobDetails(logService, jobService) {
             this.logService = logService;
@@ -9086,13 +9415,13 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
                     switch (_b.label) {
                         case 0:
                             this.expanded = !this.expanded;
-                            if (!(this.expanded && this.jobLogs != null && this.jobLogs.length === 0 && this.job != null)) return [3 /*break*/, 2];
+                            if (!(this.expanded && this.jobLogs != null && this.jobLogs.length === 0 && this.job != null)) return [3, 2];
                             _a = this;
-                            return [4 /*yield*/, this.logService.getJobLogs(this.job.jobId)];
+                            return [4, this.logService.getJobLogs(this.job.jobId)];
                         case 1:
                             _a.jobLogs = _b.sent();
                             _b.label = 2;
-                        case 2: return [2 /*return*/];
+                        case 2: return [2];
                     }
                 });
             });
@@ -9102,16 +9431,16 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!(this.job != null && this.job.jobId > 0)) return [3 /*break*/, 3];
-                            return [4 /*yield*/, this.logService.deleteJobLogs(this.job.jobId)];
+                            if (!(this.job != null && this.job.jobId > 0)) return [3, 3];
+                            return [4, this.logService.deleteJobLogs(this.job.jobId)];
                         case 1:
                             _a.sent();
-                            return [4 /*yield*/, this.jobService.deleteScheduledJob(this.job.jobId)];
+                            return [4, this.jobService.deleteScheduledJob(this.job.jobId)];
                         case 2:
                             _a.sent();
                             this.deleted = true;
                             _a.label = 3;
-                        case 3: return [2 /*return*/];
+                        case 3: return [2];
                     }
                 });
             });
@@ -9142,21 +9471,21 @@ define('components/market/jobs-dashboard/jobs/job-details/job-details',["require
             enumerable: true,
             configurable: true
         });
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.ScheduledJob)
+        ], JobDetails.prototype, "job", void 0);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("job.status"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], JobDetails.prototype, "status", null);
+        JobDetails = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.LogsApiClient, services_generated_1.JobsApiClient])
+        ], JobDetails);
         return JobDetails;
     }());
-    tslib_1.__decorate([
-        aurelia_framework_1.bindable,
-        tslib_1.__metadata("design:type", services_generated_1.ScheduledJob)
-    ], JobDetails.prototype, "job", void 0);
-    tslib_1.__decorate([
-        aurelia_framework_1.computedFrom("job.status"),
-        tslib_1.__metadata("design:type", String),
-        tslib_1.__metadata("design:paramtypes", [])
-    ], JobDetails.prototype, "status", null);
-    JobDetails = tslib_1.__decorate([
-        aurelia_framework_1.autoinject(),
-        tslib_1.__metadata("design:paramtypes", [services_generated_1.LogsApiClient, services_generated_1.JobsApiClient])
-    ], JobDetails);
     exports.JobDetails = JobDetails;
 });
 
@@ -9216,7 +9545,7 @@ define('aurelia-validation/property-info',["require", "exports", "aurelia-bindin
         var object;
         var propertyName;
         if (expression instanceof aurelia_binding_1.AccessScope) {
-            object = source.bindingContext;
+            object = aurelia_binding_1.getContextFor(expression.name, source, expression.ancestor);
             propertyName = expression.name;
         }
         else if (expression instanceof aurelia_binding_1.AccessMember) {
@@ -9236,6 +9565,52 @@ define('aurelia-validation/property-info',["require", "exports", "aurelia-bindin
         return { object: object, propertyName: propertyName };
     }
     exports.getPropertyInfo = getPropertyInfo;
+});
+
+define('aurelia-validation/property-accessor-parser',["require", "exports", "aurelia-binding", "./util"], function (require, exports, aurelia_binding_1, util_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var PropertyAccessorParser = (function () {
+        function PropertyAccessorParser(parser) {
+            this.parser = parser;
+        }
+        PropertyAccessorParser.prototype.parse = function (property) {
+            if (util_1.isString(property)) {
+                return property;
+            }
+            var accessorText = getAccessorExpression(property.toString());
+            var accessor = this.parser.parse(accessorText);
+            if (accessor instanceof aurelia_binding_1.AccessScope
+                || accessor instanceof aurelia_binding_1.AccessMember && accessor.object instanceof aurelia_binding_1.AccessScope) {
+                return accessor.name;
+            }
+            throw new Error("Invalid property expression: \"" + accessor + "\"");
+        };
+        PropertyAccessorParser.inject = [aurelia_binding_1.Parser];
+        return PropertyAccessorParser;
+    }());
+    exports.PropertyAccessorParser = PropertyAccessorParser;
+    function getAccessorExpression(fn) {
+        /* tslint:disable:max-line-length */
+        var classic = /^function\s*\([$_\w\d]+\)\s*\{(?:\s*"use strict";)?\s*(?:[$_\w\d.['"\]+;]+)?\s*return\s+[$_\w\d]+\.([$_\w\d]+)\s*;?\s*\}$/;
+        /* tslint:enable:max-line-length */
+        var arrow = /^\(?[$_\w\d]+\)?\s*=>\s*[$_\w\d]+\.([$_\w\d]+)$/;
+        var match = classic.exec(fn) || arrow.exec(fn);
+        if (match === null) {
+            throw new Error("Unable to parse accessor function:\n" + fn);
+        }
+        return match[1];
+    }
+    exports.getAccessorExpression = getAccessorExpression;
+});
+
+define('aurelia-validation/util',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    function isString(value) {
+        return Object.prototype.toString.call(value) === '[object String]';
+    }
+    exports.isString = isString;
 });
 
 var __extends = (this && this.__extends) || (function () {
@@ -9264,9 +9639,9 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
         ValidateBindingBehavior.prototype.getValidateTrigger = function (controller) {
             return controller.validateTrigger;
         };
+        ValidateBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
         return ValidateBindingBehavior;
     }(validate_binding_behavior_base_1.ValidateBindingBehaviorBase));
-    ValidateBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
     exports.ValidateBindingBehavior = ValidateBindingBehavior;
     /**
      * Binding behavior. Indicates the bound property will be validated
@@ -9281,9 +9656,9 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
         ValidateManuallyBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.manual;
         };
+        ValidateManuallyBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
         return ValidateManuallyBindingBehavior;
     }(validate_binding_behavior_base_1.ValidateBindingBehaviorBase));
-    ValidateManuallyBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
     exports.ValidateManuallyBindingBehavior = ValidateManuallyBindingBehavior;
     /**
      * Binding behavior. Indicates the bound property should be validated
@@ -9297,9 +9672,9 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
         ValidateOnBlurBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.blur;
         };
+        ValidateOnBlurBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
         return ValidateOnBlurBindingBehavior;
     }(validate_binding_behavior_base_1.ValidateBindingBehaviorBase));
-    ValidateOnBlurBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
     exports.ValidateOnBlurBindingBehavior = ValidateOnBlurBindingBehavior;
     /**
      * Binding behavior. Indicates the bound property should be validated
@@ -9314,9 +9689,9 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
         ValidateOnChangeBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.change;
         };
+        ValidateOnChangeBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
         return ValidateOnChangeBindingBehavior;
     }(validate_binding_behavior_base_1.ValidateBindingBehaviorBase));
-    ValidateOnChangeBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
     exports.ValidateOnChangeBindingBehavior = ValidateOnChangeBindingBehavior;
     /**
      * Binding behavior. Indicates the bound property should be validated
@@ -9331,9 +9706,9 @@ define('aurelia-validation/validate-binding-behavior',["require", "exports", "au
         ValidateOnChangeOrBlurBindingBehavior.prototype.getValidateTrigger = function () {
             return validate_trigger_1.validateTrigger.changeOrBlur;
         };
+        ValidateOnChangeOrBlurBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
         return ValidateOnChangeOrBlurBindingBehavior;
     }(validate_binding_behavior_base_1.ValidateBindingBehaviorBase));
-    ValidateOnChangeOrBlurBindingBehavior.inject = [aurelia_task_queue_1.TaskQueue];
     exports.ValidateOnChangeOrBlurBindingBehavior = ValidateOnChangeOrBlurBindingBehavior;
 });
 
@@ -9364,7 +9739,6 @@ define('aurelia-validation/validate-trigger',["require", "exports"], function (r
          */
         validateTrigger[validateTrigger["changeOrBlur"] = 3] = "changeOrBlur";
     })(validateTrigger = exports.validateTrigger || (exports.validateTrigger = {}));
-    ;
 });
 
 define('aurelia-validation/validate-binding-behavior-base',["require", "exports", "aurelia-dependency-injection", "./validation-controller", "./validate-trigger", "./get-target-dom-element"], function (require, exports, aurelia_dependency_injection_1, validation_controller_1, validate_trigger_1, get_target_dom_element_1) {
@@ -9400,6 +9774,7 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
             if (trigger & validate_trigger_1.validateTrigger.change) {
                 binding.standardUpdateSource = binding.updateSource;
                 // tslint:disable-next-line:only-arrow-functions
+                // tslint:disable-next-line:space-before-function-paren
                 binding.updateSource = function (value) {
                     this.standardUpdateSource(value);
                     this.validationController.validateBinding(this);
@@ -9416,6 +9791,7 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
             if (trigger !== validate_trigger_1.validateTrigger.manual) {
                 binding.standardUpdateTarget = binding.updateTarget;
                 // tslint:disable-next-line:only-arrow-functions
+                // tslint:disable-next-line:space-before-function-paren
                 binding.updateTarget = function (value) {
                     this.standardUpdateTarget(value);
                     this.validationController.resetBinding(this);
@@ -9445,7 +9821,7 @@ define('aurelia-validation/validate-binding-behavior-base',["require", "exports"
     exports.ValidateBindingBehaviorBase = ValidateBindingBehaviorBase;
 });
 
-define('aurelia-validation/validation-controller',["require", "exports", "./validator", "./validate-trigger", "./property-info", "./validate-result"], function (require, exports, validator_1, validate_trigger_1, property_info_1, validate_result_1) {
+define('aurelia-validation/validation-controller',["require", "exports", "./validator", "./validate-trigger", "./property-info", "./validate-result", "./property-accessor-parser", "./validate-event"], function (require, exports, validator_1, validate_trigger_1, property_info_1, validate_result_1, property_accessor_parser_1, validate_event_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -9454,8 +9830,9 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
      * Exposes the current list of validation results for binding purposes.
      */
     var ValidationController = (function () {
-        function ValidationController(validator) {
+        function ValidationController(validator, propertyParser) {
             this.validator = validator;
+            this.propertyParser = propertyParser;
             // Registered bindings (via the validate binding behavior)
             this.bindings = new Map();
             // Renderers that have been added to the controller instance.
@@ -9482,7 +9859,26 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
             this.validateTrigger = validate_trigger_1.validateTrigger.blur;
             // Promise that resolves when validation has completed.
             this.finishValidating = Promise.resolve();
+            this.eventCallbacks = [];
         }
+        /**
+         * Subscribe to controller validate and reset events. These events occur when the
+         * controller's "validate"" and "reset" methods are called.
+         * @param callback The callback to be invoked when the controller validates or resets.
+         */
+        ValidationController.prototype.subscribe = function (callback) {
+            var _this = this;
+            this.eventCallbacks.push(callback);
+            return {
+                dispose: function () {
+                    var index = _this.eventCallbacks.indexOf(callback);
+                    if (index === -1) {
+                        return;
+                    }
+                    _this.eventCallbacks.splice(index, 1);
+                }
+            };
+        };
         /**
          * Adds an object to the set of objects that should be validated when validate is called.
          * @param object The object.
@@ -9504,7 +9900,14 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
          */
         ValidationController.prototype.addError = function (message, object, propertyName) {
             if (propertyName === void 0) { propertyName = null; }
-            var result = new validate_result_1.ValidateResult({}, object, propertyName, false, message);
+            var resolvedPropertyName;
+            if (propertyName === null) {
+                resolvedPropertyName = propertyName;
+            }
+            else {
+                resolvedPropertyName = this.propertyParser.parse(propertyName);
+            }
+            var result = new validate_result_1.ValidateResult({ __manuallyAdded__: true }, object, resolvedPropertyName, false, message);
             this.processResultDelta('validate', [], [result]);
             return result;
         };
@@ -9642,6 +10045,7 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
                     valid: newResults.find(function (x) { return !x.valid; }) === undefined,
                     results: newResults
                 };
+                _this.invokeCallbacks(instruction, result);
                 return result;
             })
                 .catch(function (exception) {
@@ -9662,6 +10066,7 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
             var predicate = this.getInstructionPredicate(instruction);
             var oldResults = this.results.filter(predicate);
             this.processResultDelta('reset', oldResults, []);
+            this.invokeCallbacks(instruction, null);
         };
         /**
          * Gets the elements associated with an object and propertyName (if any).
@@ -9786,9 +10191,45 @@ define('aurelia-validation/validation-controller',["require", "exports", "./vali
             var object = propertyInfo.object, propertyName = propertyInfo.propertyName;
             this.reset({ object: object, propertyName: propertyName });
         };
+        /**
+         * Changes the controller's validateTrigger.
+         * @param newTrigger The new validateTrigger
+         */
+        ValidationController.prototype.changeTrigger = function (newTrigger) {
+            this.validateTrigger = newTrigger;
+            var bindings = Array.from(this.bindings.keys());
+            for (var _i = 0, bindings_1 = bindings; _i < bindings_1.length; _i++) {
+                var binding = bindings_1[_i];
+                var source = binding.source;
+                binding.unbind();
+                binding.bind(source);
+            }
+        };
+        /**
+         * Revalidates the controller's current set of errors.
+         */
+        ValidationController.prototype.revalidateErrors = function () {
+            for (var _i = 0, _a = this.errors; _i < _a.length; _i++) {
+                var _b = _a[_i], object = _b.object, propertyName = _b.propertyName, rule = _b.rule;
+                if (rule.__manuallyAdded__) {
+                    continue;
+                }
+                var rules = [rule];
+                this.validate({ object: object, propertyName: propertyName, rules: rules });
+            }
+        };
+        ValidationController.prototype.invokeCallbacks = function (instruction, result) {
+            if (this.eventCallbacks.length === 0) {
+                return;
+            }
+            var event = new validate_event_1.ValidateEvent(result ? 'validate' : 'reset', this.errors, this.results, instruction || null, result);
+            for (var i = 0; i < this.eventCallbacks.length; i++) {
+                this.eventCallbacks[i](event);
+            }
+        };
+        ValidationController.inject = [validator_1.Validator, property_accessor_parser_1.PropertyAccessorParser];
         return ValidationController;
     }());
-    ValidationController.inject = [validator_1.Validator];
     exports.ValidationController = ValidationController;
 });
 
@@ -9831,13 +10272,57 @@ define('aurelia-validation/validate-result',["require", "exports"], function (re
         ValidateResult.prototype.toString = function () {
             return this.valid ? 'Valid.' : this.message;
         };
+        ValidateResult.nextId = 0;
         return ValidateResult;
     }());
-    ValidateResult.nextId = 0;
     exports.ValidateResult = ValidateResult;
 });
 
-define('aurelia-validation/validation-controller-factory',["require", "exports", "./validation-controller", "./validator"], function (require, exports, validation_controller_1, validator_1) {
+define('aurelia-validation/validate-event',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var ValidateEvent = (function () {
+        function ValidateEvent(
+            /**
+             * The type of validate event. Either "validate" or "reset".
+             */
+            type, 
+            /**
+             * The controller's current array of errors. For an array containing both
+             * failed rules and passed rules, use the "results" property.
+             */
+            errors, 
+            /**
+             * The controller's current array of validate results. This
+             * includes both passed rules and failed rules. For an array of only failed rules,
+             * use the "errors" property.
+             */
+            results, 
+            /**
+             * The instruction passed to the "validate" or "reset" event. Will be null when
+             * the controller's validate/reset method was called with no instruction argument.
+             */
+            instruction, 
+            /**
+             * In events with type === "validate", this property will contain the result
+             * of validating the instruction (see "instruction" property). Use the controllerValidateResult
+             * to access the validate results specific to the call to "validate"
+             * (as opposed to using the "results" and "errors" properties to access the controller's entire
+             * set of results/errors).
+             */
+            controllerValidateResult) {
+            this.type = type;
+            this.errors = errors;
+            this.results = results;
+            this.instruction = instruction;
+            this.controllerValidateResult = controllerValidateResult;
+        }
+        return ValidateEvent;
+    }());
+    exports.ValidateEvent = ValidateEvent;
+});
+
+define('aurelia-validation/validation-controller-factory',["require", "exports", "./validation-controller", "./validator", "./property-accessor-parser"], function (require, exports, validation_controller_1, validator_1, property_accessor_parser_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -9857,7 +10342,8 @@ define('aurelia-validation/validation-controller-factory',["require", "exports",
             if (!validator) {
                 validator = this.container.get(validator_1.Validator);
             }
-            return new validation_controller_1.ValidationController(validator);
+            var propertyParser = this.container.get(property_accessor_parser_1.PropertyAccessorParser);
+            return new validation_controller_1.ValidationController(validator, propertyParser);
         };
         /**
          * Creates a new controller and registers it in the current element's container so that it's
@@ -9941,18 +10427,18 @@ define('aurelia-validation/validation-errors-custom-attribute',["require", "expo
                 this.controller.removeRenderer(this);
             }
         };
+        ValidationErrorsCustomAttribute.inject = [aurelia_pal_1.DOM.Element, aurelia_dependency_injection_1.Lazy.of(validation_controller_1.ValidationController)];
+        __decorate([
+            aurelia_templating_1.bindable({ defaultBindingMode: aurelia_binding_1.bindingMode.oneWay })
+        ], ValidationErrorsCustomAttribute.prototype, "controller", void 0);
+        __decorate([
+            aurelia_templating_1.bindable({ primaryProperty: true, defaultBindingMode: aurelia_binding_1.bindingMode.twoWay })
+        ], ValidationErrorsCustomAttribute.prototype, "errors", void 0);
+        ValidationErrorsCustomAttribute = __decorate([
+            aurelia_templating_1.customAttribute('validation-errors')
+        ], ValidationErrorsCustomAttribute);
         return ValidationErrorsCustomAttribute;
     }());
-    ValidationErrorsCustomAttribute.inject = [aurelia_pal_1.DOM.Element, aurelia_dependency_injection_1.Lazy.of(validation_controller_1.ValidationController)];
-    __decorate([
-        aurelia_templating_1.bindable({ defaultBindingMode: aurelia_binding_1.bindingMode.oneWay })
-    ], ValidationErrorsCustomAttribute.prototype, "controller", void 0);
-    __decorate([
-        aurelia_templating_1.bindable({ primaryProperty: true, defaultBindingMode: aurelia_binding_1.bindingMode.twoWay })
-    ], ValidationErrorsCustomAttribute.prototype, "errors", void 0);
-    ValidationErrorsCustomAttribute = __decorate([
-        aurelia_templating_1.customAttribute('validation-errors')
-    ], ValidationErrorsCustomAttribute);
     exports.ValidationErrorsCustomAttribute = ValidationErrorsCustomAttribute;
 });
 
@@ -10013,12 +10499,12 @@ define('aurelia-validation/implementation/rules',["require", "exports"], functio
         Rules.get = function (target) {
             return target[Rules.key] || null;
         };
+        /**
+         * The name of the property that stores the rules.
+         */
+        Rules.key = '__rules__';
         return Rules;
     }());
-    /**
-     * The name of the property that stores the rules.
-     */
-    Rules.key = '__rules__';
     exports.Rules = Rules;
 });
 
@@ -10155,13 +10641,13 @@ define('aurelia-validation/implementation/standard-validator',["require", "expor
             }
             return this.validateRuleSequence(object, propertyName, rules, 0, []);
         };
+        StandardValidator.inject = [validation_messages_1.ValidationMessageProvider, aurelia_templating_1.ViewResources];
         return StandardValidator;
     }(validator_1.Validator));
-    StandardValidator.inject = [validation_messages_1.ValidationMessageProvider, aurelia_templating_1.ViewResources];
     exports.StandardValidator = StandardValidator;
 });
 
-define('aurelia-validation/implementation/validation-messages',["require", "exports", "./validation-parser"], function (require, exports, validation_parser_1) {
+define('aurelia-validation/implementation/validation-messages',["require", "exports", "./validation-message-parser"], function (require, exports, validation_message_parser_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -10200,7 +10686,7 @@ define('aurelia-validation/implementation/validation-messages',["require", "expo
             else {
                 message = exports.validationMessages['default'];
             }
-            return this.parser.parseMessage(message);
+            return this.parser.parse(message);
         };
         /**
          * Formulates a property display name using the property name and the configured
@@ -10217,9 +10703,9 @@ define('aurelia-validation/implementation/validation-messages',["require", "expo
             // capitalize first letter.
             return words.charAt(0).toUpperCase() + words.slice(1);
         };
+        ValidationMessageProvider.inject = [validation_message_parser_1.ValidationMessageParser];
         return ValidationMessageProvider;
     }());
-    ValidationMessageProvider.inject = [validation_parser_1.ValidationParser];
     exports.ValidationMessageProvider = ValidationMessageProvider;
 });
 
@@ -10233,19 +10719,18 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define('aurelia-validation/implementation/validation-parser',["require", "exports", "aurelia-binding", "aurelia-templating", "./util", "aurelia-logging"], function (require, exports, aurelia_binding_1, aurelia_templating_1, util_1, LogManager) {
+define('aurelia-validation/implementation/validation-message-parser',["require", "exports", "aurelia-binding", "aurelia-templating", "aurelia-logging", "./expression-visitor"], function (require, exports, aurelia_binding_1, aurelia_templating_1, LogManager, expression_visitor_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var ValidationParser = (function () {
-        function ValidationParser(parser, bindinqLanguage) {
-            this.parser = parser;
+    var ValidationMessageParser = (function () {
+        function ValidationMessageParser(bindinqLanguage) {
             this.bindinqLanguage = bindinqLanguage;
             this.emptyStringExpression = new aurelia_binding_1.LiteralString('');
             this.nullExpression = new aurelia_binding_1.LiteralPrimitive(null);
             this.undefinedExpression = new aurelia_binding_1.LiteralPrimitive(undefined);
             this.cache = {};
         }
-        ValidationParser.prototype.parseMessage = function (message) {
+        ValidationMessageParser.prototype.parse = function (message) {
             if (this.cache[message] !== undefined) {
                 return this.cache[message];
             }
@@ -10261,43 +10746,18 @@ define('aurelia-validation/implementation/validation-parser',["require", "export
             this.cache[message] = expression;
             return expression;
         };
-        ValidationParser.prototype.parseProperty = function (property) {
-            if (util_1.isString(property)) {
-                return { name: property, displayName: null };
-            }
-            var accessor = this.getAccessorExpression(property.toString());
-            if (accessor instanceof aurelia_binding_1.AccessScope
-                || accessor instanceof aurelia_binding_1.AccessMember && accessor.object instanceof aurelia_binding_1.AccessScope) {
-                return {
-                    name: accessor.name,
-                    displayName: null
-                };
-            }
-            throw new Error("Invalid subject: \"" + accessor + "\"");
-        };
-        ValidationParser.prototype.coalesce = function (part) {
+        ValidationMessageParser.prototype.coalesce = function (part) {
             // part === null || part === undefined ? '' : part
             return new aurelia_binding_1.Conditional(new aurelia_binding_1.Binary('||', new aurelia_binding_1.Binary('===', part, this.nullExpression), new aurelia_binding_1.Binary('===', part, this.undefinedExpression)), this.emptyStringExpression, new aurelia_binding_1.CallMember(part, 'toString', []));
         };
-        ValidationParser.prototype.getAccessorExpression = function (fn) {
-            /* tslint:disable:max-line-length */
-            var classic = /^function\s*\([$_\w\d]+\)\s*\{(?:\s*"use strict";)?\s*(?:[$_\w\d.['"\]+;]+)?\s*return\s+[$_\w\d]+\.([$_\w\d]+)\s*;?\s*\}$/;
-            /* tslint:enable:max-line-length */
-            var arrow = /^\(?[$_\w\d]+\)?\s*=>\s*[$_\w\d]+\.([$_\w\d]+)$/;
-            var match = classic.exec(fn) || arrow.exec(fn);
-            if (match === null) {
-                throw new Error("Unable to parse accessor function:\n" + fn);
-            }
-            return this.parser.parse(match[1]);
-        };
-        return ValidationParser;
+        ValidationMessageParser.inject = [aurelia_templating_1.BindingLanguage];
+        return ValidationMessageParser;
     }());
-    ValidationParser.inject = [aurelia_binding_1.Parser, aurelia_templating_1.BindingLanguage];
-    exports.ValidationParser = ValidationParser;
+    exports.ValidationMessageParser = ValidationMessageParser;
     var MessageExpressionValidator = (function (_super) {
         __extends(MessageExpressionValidator, _super);
         function MessageExpressionValidator(originalMessage) {
-            var _this = _super.call(this, []) || this;
+            var _this = _super.call(this) || this;
             _this.originalMessage = originalMessage;
             return _this;
         }
@@ -10315,31 +10775,102 @@ define('aurelia-validation/implementation/validation-parser',["require", "export
             }
         };
         return MessageExpressionValidator;
-    }(aurelia_binding_1.Unparser));
+    }(expression_visitor_1.ExpressionVisitor));
     exports.MessageExpressionValidator = MessageExpressionValidator;
 });
 
-define('aurelia-validation/implementation/util',["require", "exports"], function (require, exports) {
+define('aurelia-validation/implementation/expression-visitor',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function isString(value) {
-        return Object.prototype.toString.call(value) === '[object String]';
-    }
-    exports.isString = isString;
+    // tslint:disable:no-empty
+    var ExpressionVisitor = (function () {
+        function ExpressionVisitor() {
+        }
+        ExpressionVisitor.prototype.visitChain = function (chain) {
+            this.visitArgs(chain.expressions);
+        };
+        ExpressionVisitor.prototype.visitBindingBehavior = function (behavior) {
+            behavior.expression.accept(this);
+            this.visitArgs(behavior.args);
+        };
+        ExpressionVisitor.prototype.visitValueConverter = function (converter) {
+            converter.expression.accept(this);
+            this.visitArgs(converter.args);
+        };
+        ExpressionVisitor.prototype.visitAssign = function (assign) {
+            assign.target.accept(this);
+            assign.value.accept(this);
+        };
+        ExpressionVisitor.prototype.visitConditional = function (conditional) {
+            conditional.condition.accept(this);
+            conditional.yes.accept(this);
+            conditional.no.accept(this);
+        };
+        ExpressionVisitor.prototype.visitAccessThis = function (access) {
+            access.ancestor = access.ancestor;
+        };
+        ExpressionVisitor.prototype.visitAccessScope = function (access) {
+            access.name = access.name;
+        };
+        ExpressionVisitor.prototype.visitAccessMember = function (access) {
+            access.object.accept(this);
+        };
+        ExpressionVisitor.prototype.visitAccessKeyed = function (access) {
+            access.object.accept(this);
+            access.key.accept(this);
+        };
+        ExpressionVisitor.prototype.visitCallScope = function (call) {
+            this.visitArgs(call.args);
+        };
+        ExpressionVisitor.prototype.visitCallFunction = function (call) {
+            call.func.accept(this);
+            this.visitArgs(call.args);
+        };
+        ExpressionVisitor.prototype.visitCallMember = function (call) {
+            call.object.accept(this);
+            this.visitArgs(call.args);
+        };
+        ExpressionVisitor.prototype.visitPrefix = function (prefix) {
+            prefix.expression.accept(this);
+        };
+        ExpressionVisitor.prototype.visitBinary = function (binary) {
+            binary.left.accept(this);
+            binary.right.accept(this);
+        };
+        ExpressionVisitor.prototype.visitLiteralPrimitive = function (literal) {
+            literal.value = literal.value;
+        };
+        ExpressionVisitor.prototype.visitLiteralArray = function (literal) {
+            this.visitArgs(literal.elements);
+        };
+        ExpressionVisitor.prototype.visitLiteralObject = function (literal) {
+            this.visitArgs(literal.values);
+        };
+        ExpressionVisitor.prototype.visitLiteralString = function (literal) {
+            literal.value = literal.value;
+        };
+        ExpressionVisitor.prototype.visitArgs = function (args) {
+            for (var i = 0; i < args.length; i++) {
+                args[i].accept(this);
+            }
+        };
+        return ExpressionVisitor;
+    }());
+    exports.ExpressionVisitor = ExpressionVisitor;
 });
 
-define('aurelia-validation/implementation/validation-rules',["require", "exports", "./util", "./rules", "./validation-messages"], function (require, exports, util_1, rules_1, validation_messages_1) {
+define('aurelia-validation/implementation/validation-rules',["require", "exports", "./rules", "./validation-messages", "../util"], function (require, exports, rules_1, validation_messages_1, util_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Part of the fluent rule API. Enables customizing property rules.
      */
     var FluentRuleCustomizer = (function () {
-        function FluentRuleCustomizer(property, condition, config, fluentEnsure, fluentRules, parser) {
+        function FluentRuleCustomizer(property, condition, config, fluentEnsure, fluentRules, parsers) {
             if (config === void 0) { config = {}; }
             this.fluentEnsure = fluentEnsure;
             this.fluentRules = fluentRules;
-            this.parser = parser;
+            this.parsers = parsers;
             this.rule = {
                 property: property,
                 condition: condition,
@@ -10373,7 +10904,7 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
          */
         FluentRuleCustomizer.prototype.withMessage = function (message) {
             this.rule.messageKey = 'custom';
-            this.rule.message = this.parser.parseMessage(message);
+            this.rule.message = this.parsers.message.parse(message);
             return this;
         };
         /**
@@ -10511,9 +11042,9 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
      * Part of the fluent rule API. Enables applying rules to properties and objects.
      */
     var FluentRules = (function () {
-        function FluentRules(fluentEnsure, parser, property) {
+        function FluentRules(fluentEnsure, parsers, property) {
             this.fluentEnsure = fluentEnsure;
-            this.parser = parser;
+            this.parsers = parsers;
             this.property = property;
             /**
              * Current rule sequence number. Used to postpone evaluation of rules until rules
@@ -10536,7 +11067,7 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
          * Should return a boolean or a Promise that resolves to a boolean.
          */
         FluentRules.prototype.satisfies = function (condition, config) {
-            return new FluentRuleCustomizer(this.property, condition, config, this.fluentEnsure, this, this.parser);
+            return new FluentRuleCustomizer(this.property, condition, config, this.fluentEnsure, this, this.parsers);
         };
         /**
          * Applies a rule by name.
@@ -10635,16 +11166,16 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
             return this.satisfies(function (value) { return value === null || value === undefined || value === '' || value === expectedValue; }, { expectedValue: expectedValue })
                 .withMessageKey('equals');
         };
+        FluentRules.customRules = {};
         return FluentRules;
     }());
-    FluentRules.customRules = {};
     exports.FluentRules = FluentRules;
     /**
      * Part of the fluent rule API. Enables targeting properties and objects with rules.
      */
     var FluentEnsure = (function () {
-        function FluentEnsure(parser) {
-            this.parser = parser;
+        function FluentEnsure(parsers) {
+            this.parsers = parsers;
             /**
              * Rules that have been defined using the fluent API.
              */
@@ -10657,14 +11188,17 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
          */
         FluentEnsure.prototype.ensure = function (property) {
             this.assertInitialized();
-            return new FluentRules(this, this.parser, this.parser.parseProperty(property));
+            var name = this.parsers.property.parse(property);
+            var fluentRules = new FluentRules(this, this.parsers, { name: name, displayName: null });
+            return this.mergeRules(fluentRules, name);
         };
         /**
          * Targets an object with validation rules.
          */
         FluentEnsure.prototype.ensureObject = function () {
             this.assertInitialized();
-            return new FluentRules(this, this.parser, { name: null, displayName: null });
+            var fluentRules = new FluentRules(this, this.parsers, { name: null, displayName: null });
+            return this.mergeRules(fluentRules, null);
         };
         /**
          * Applies the rules to a class or object, making them discoverable by the StandardValidator.
@@ -10685,10 +11219,21 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
             this.rules[rule.sequence].push(rule);
         };
         FluentEnsure.prototype.assertInitialized = function () {
-            if (this.parser) {
+            if (this.parsers) {
                 return;
             }
             throw new Error("Did you forget to add \".plugin('aurelia-validation')\" to your main.js?");
+        };
+        FluentEnsure.prototype.mergeRules = function (fluentRules, propertyName) {
+            var existingRules = this.rules.find(function (r) { return r.length > 0 && r[0].property.name === propertyName; });
+            if (existingRules) {
+                var rule = existingRules[existingRules.length - 1];
+                fluentRules.sequence = rule.sequence;
+                if (rule.property.displayName !== null) {
+                    fluentRules = fluentRules.displayName(rule.property.displayName);
+                }
+            }
+            return fluentRules;
         };
         return FluentEnsure;
     }());
@@ -10699,21 +11244,24 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
     var ValidationRules = (function () {
         function ValidationRules() {
         }
-        ValidationRules.initialize = function (parser) {
-            ValidationRules.parser = parser;
+        ValidationRules.initialize = function (messageParser, propertyParser) {
+            this.parsers = {
+                message: messageParser,
+                property: propertyParser
+            };
         };
         /**
          * Target a property with validation rules.
          * @param property The property to target. Can be the property name or a property accessor function.
          */
         ValidationRules.ensure = function (property) {
-            return new FluentEnsure(ValidationRules.parser).ensure(property);
+            return new FluentEnsure(ValidationRules.parsers).ensure(property);
         };
         /**
          * Targets an object with validation rules.
          */
         ValidationRules.ensureObject = function () {
-            return new FluentEnsure(ValidationRules.parser).ensureObject();
+            return new FluentEnsure(ValidationRules.parsers).ensureObject();
         };
         /**
          * Defines a custom rule.
@@ -10736,6 +11284,13 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
             return rules.map(function (x) { return x.filter(function (r) { return r.tag === tag; }); });
         };
         /**
+         * Returns rules that have no tag.
+         * @param rules The rules to search.
+         */
+        ValidationRules.untaggedRules = function (rules) {
+            return rules.map(function (x) { return x.filter(function (r) { return r.tag === undefined; }); });
+        };
+        /**
          * Removes the rules from a class or object.
          * @param target A class or object.
          */
@@ -10747,890 +11302,938 @@ define('aurelia-validation/implementation/validation-rules',["require", "exports
     exports.ValidationRules = ValidationRules;
 });
 
-define('aurelia-dialog/ai-dialog',['exports', 'aurelia-templating'], function (exports, _aureliaTemplating) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.AiDialog = undefined;
-
-  
-
-  var _dec, _dec2, _class;
-
-  var AiDialog = exports.AiDialog = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <slot></slot>\n  </template>\n'), _dec(_class = _dec2(_class = function AiDialog() {
-    
-  }) || _class) || _class);
-});
-define('aurelia-dialog/ai-dialog-header',['exports', 'aurelia-templating', './dialog-controller'], function (exports, _aureliaTemplating, _dialogController) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.AiDialogHeader = undefined;
-
-  
-
-  var _dec, _dec2, _class, _class2, _temp;
-
-  var AiDialogHeader = exports.AiDialogHeader = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog-header'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <button type="button" class="dialog-close" aria-label="Close" if.bind="!controller.settings.lock" click.trigger="controller.cancel()">\n      <span aria-hidden="true">&times;</span>\n    </button>\n\n    <div class="dialog-header-content">\n      <slot></slot>\n    </div>\n  </template>\n'), _dec(_class = _dec2(_class = (_temp = _class2 = function AiDialogHeader(controller) {
-    
-
-    this.controller = controller;
-  }, _class2.inject = [_dialogController.DialogController], _temp)) || _class) || _class);
-});
-define('aurelia-dialog/dialog-controller',['exports', './lifecycle', './dialog-result'], function (exports, _lifecycle, _dialogResult) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.DialogController = undefined;
-
-  
-
-  var DialogController = exports.DialogController = function () {
-    function DialogController(renderer, settings, resolve, reject) {
-      
-
-      this.renderer = renderer;
-      this.settings = settings;
-      this._resolve = resolve;
-      this._reject = reject;
-    }
-
-    DialogController.prototype.ok = function ok(output) {
-      return this.close(true, output);
-    };
-
-    DialogController.prototype.cancel = function cancel(output) {
-      return this.close(false, output);
-    };
-
-    DialogController.prototype.error = function error(message) {
-      var _this = this;
-
-      return (0, _lifecycle.invokeLifecycle)(this.viewModel, 'deactivate').then(function () {
-        return _this.renderer.hideDialog(_this);
-      }).then(function () {
-        _this.controller.unbind();
-        _this._reject(message);
-      });
-    };
-
-    DialogController.prototype.close = function close(ok, output) {
-      var _this2 = this;
-
-      if (this._closePromise) {
-        return this._closePromise;
-      }
-
-      this._closePromise = (0, _lifecycle.invokeLifecycle)(this.viewModel, 'canDeactivate').then(function (canDeactivate) {
-        if (canDeactivate) {
-          return (0, _lifecycle.invokeLifecycle)(_this2.viewModel, 'deactivate').then(function () {
-            return _this2.renderer.hideDialog(_this2);
-          }).then(function () {
-            var result = new _dialogResult.DialogResult(!ok, output);
-            _this2.controller.unbind();
-            _this2._resolve(result);
-            return result;
-          });
-        }
-
-        _this2._closePromise = undefined;
-      }, function (e) {
-        _this2._closePromise = undefined;
-        return Promise.reject(e);
-      });
-
-      return this._closePromise;
-    };
-
-    return DialogController;
-  }();
-});
-define('aurelia-dialog/lifecycle',['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.invokeLifecycle = invokeLifecycle;
-  function invokeLifecycle(instance, name, model) {
-    if (typeof instance[name] === 'function') {
-      var result = instance[name](model);
-
-      if (result instanceof Promise) {
-        return result;
-      }
-
-      if (result !== null && result !== undefined) {
-        return Promise.resolve(result);
-      }
-
-      return Promise.resolve(true);
-    }
-
-    return Promise.resolve(true);
-  }
-});
-define('aurelia-dialog/dialog-result',["exports"], function (exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  
-
-  var DialogResult = exports.DialogResult = function DialogResult(cancelled, output) {
-    
-
-    this.wasCancelled = false;
-
-    this.wasCancelled = cancelled;
-    this.output = output;
-  };
-});
-define('aurelia-dialog/ai-dialog-body',['exports', 'aurelia-templating'], function (exports, _aureliaTemplating) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.AiDialogBody = undefined;
-
-  
-
-  var _dec, _dec2, _class;
-
-  var AiDialogBody = exports.AiDialogBody = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog-body'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <slot></slot>\n  </template>\n'), _dec(_class = _dec2(_class = function AiDialogBody() {
-    
-  }) || _class) || _class);
-});
-define('aurelia-dialog/ai-dialog-footer',['exports', 'aurelia-templating', './dialog-controller'], function (exports, _aureliaTemplating, _dialogController) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.AiDialogFooter = undefined;
-
-  function _initDefineProp(target, property, descriptor, context) {
-    if (!descriptor) return;
-    Object.defineProperty(target, property, {
-      enumerable: descriptor.enumerable,
-      configurable: descriptor.configurable,
-      writable: descriptor.writable,
-      value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
-    });
-  }
-
-  
-
-  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
-    var desc = {};
-    Object['ke' + 'ys'](descriptor).forEach(function (key) {
-      desc[key] = descriptor[key];
-    });
-    desc.enumerable = !!desc.enumerable;
-    desc.configurable = !!desc.configurable;
-
-    if ('value' in desc || desc.initializer) {
-      desc.writable = true;
-    }
-
-    desc = decorators.slice().reverse().reduce(function (desc, decorator) {
-      return decorator(target, property, desc) || desc;
-    }, desc);
-
-    if (context && desc.initializer !== void 0) {
-      desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
-      desc.initializer = undefined;
-    }
-
-    if (desc.initializer === void 0) {
-      Object['define' + 'Property'](target, property, desc);
-      desc = null;
-    }
-
-    return desc;
-  }
-
-  function _initializerWarningHelper(descriptor, context) {
-    throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
-  }
-
-  var _dec, _dec2, _class, _desc, _value, _class2, _descriptor, _descriptor2, _class3, _temp;
-
-  var AiDialogFooter = exports.AiDialogFooter = (_dec = (0, _aureliaTemplating.customElement)('ai-dialog-footer'), _dec2 = (0, _aureliaTemplating.inlineView)('\n  <template>\n    <slot></slot>\n\n    <template if.bind="buttons.length > 0">\n      <button type="button" class="btn btn-default" repeat.for="button of buttons" click.trigger="close(button)">${button}</button>\n    </template>\n  </template>\n'), _dec(_class = _dec2(_class = (_class2 = (_temp = _class3 = function () {
-    function AiDialogFooter(controller) {
-      
-
-      _initDefineProp(this, 'buttons', _descriptor, this);
-
-      _initDefineProp(this, 'useDefaultButtons', _descriptor2, this);
-
-      this.controller = controller;
-    }
-
-    AiDialogFooter.prototype.close = function close(buttonValue) {
-      if (AiDialogFooter.isCancelButton(buttonValue)) {
-        this.controller.cancel(buttonValue);
-      } else {
-        this.controller.ok(buttonValue);
-      }
-    };
-
-    AiDialogFooter.prototype.useDefaultButtonsChanged = function useDefaultButtonsChanged(newValue) {
-      if (newValue) {
-        this.buttons = ['Cancel', 'Ok'];
-      }
-    };
-
-    AiDialogFooter.isCancelButton = function isCancelButton(value) {
-      return value === 'Cancel';
-    };
-
-    return AiDialogFooter;
-  }(), _class3.inject = [_dialogController.DialogController], _temp), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, 'buttons', [_aureliaTemplating.bindable], {
-    enumerable: true,
-    initializer: function initializer() {
-      return [];
-    }
-  }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, 'useDefaultButtons', [_aureliaTemplating.bindable], {
-    enumerable: true,
-    initializer: function initializer() {
-      return false;
-    }
-  })), _class2)) || _class) || _class);
-});
-define('aurelia-dialog/attach-focus',['exports', 'aurelia-templating'], function (exports, _aureliaTemplating) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.AttachFocus = undefined;
-
-  
-
-  var _dec, _class, _class2, _temp;
-
-  var AttachFocus = exports.AttachFocus = (_dec = (0, _aureliaTemplating.customAttribute)('attach-focus'), _dec(_class = (_temp = _class2 = function () {
-    function AttachFocus(element) {
-      
-
-      this.value = true;
-
-      this.element = element;
-    }
-
-    AttachFocus.prototype.attached = function attached() {
-      if (this.value && this.value !== 'false') {
-        this.element.focus();
-      }
-    };
-
-    AttachFocus.prototype.valueChanged = function valueChanged(newValue) {
-      this.value = newValue;
-    };
-
-    return AttachFocus;
-  }(), _class2.inject = [Element], _temp)) || _class);
-});
-define('aurelia-dialog/dialog-configuration',['exports', './renderer', './dialog-renderer', './dialog-options', 'aurelia-pal'], function (exports, _renderer, _dialogRenderer, _dialogOptions, _aureliaPal) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.DialogConfiguration = undefined;
-
-  
-
-  var defaultRenderer = _dialogRenderer.DialogRenderer;
-
-  var resources = {
-    'ai-dialog': './ai-dialog',
-    'ai-dialog-header': './ai-dialog-header',
-    'ai-dialog-body': './ai-dialog-body',
-    'ai-dialog-footer': './ai-dialog-footer',
-    'attach-focus': './attach-focus'
-  };
-
-  var defaultCSSText = 'ai-dialog-container,ai-dialog-overlay{position:fixed;top:0;right:0;bottom:0;left:0}ai-dialog-overlay{opacity:0}ai-dialog-overlay.active{opacity:1}ai-dialog-container{display:block;transition:opacity .2s linear;opacity:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch}ai-dialog-container.active{opacity:1}ai-dialog-container>div{padding:30px}ai-dialog-container>div>div{display:block;min-width:300px;width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;height:-moz-fit-content;height:-webkit-fit-content;height:fit-content;margin:auto}ai-dialog-container,ai-dialog-container>div,ai-dialog-container>div>div{outline:0}ai-dialog{display:table;box-shadow:0 5px 15px rgba(0,0,0,.5);border:1px solid rgba(0,0,0,.2);border-radius:5px;padding:3;min-width:300px;width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;height:-moz-fit-content;height:-webkit-fit-content;height:fit-content;margin:auto;border-image-source:initial;border-image-slice:initial;border-image-width:initial;border-image-outset:initial;border-image-repeat:initial;background:#fff}ai-dialog>ai-dialog-header{display:block;padding:16px;border-bottom:1px solid #e5e5e5}ai-dialog>ai-dialog-header>button{float:right;border:none;display:block;width:32px;height:32px;background:0 0;font-size:22px;line-height:16px;margin:-14px -16px 0 0;padding:0;cursor:pointer}ai-dialog>ai-dialog-body{display:block;padding:16px}ai-dialog>ai-dialog-footer{display:block;padding:6px;border-top:1px solid #e5e5e5;text-align:right}ai-dialog>ai-dialog-footer button{color:#333;background-color:#fff;padding:6px 12px;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;background-image:none;border:1px solid #ccc;border-radius:4px;margin:5px 0 5px 5px}ai-dialog>ai-dialog-footer button:disabled{cursor:default;opacity:.45}ai-dialog>ai-dialog-footer button:hover:enabled{color:#333;background-color:#e6e6e6;border-color:#adadad}.ai-dialog-open{overflow:hidden}';
-
-  var DialogConfiguration = exports.DialogConfiguration = function () {
-    function DialogConfiguration(aurelia) {
-      
-
-      this.aurelia = aurelia;
-      this.settings = _dialogOptions.dialogOptions;
-      this.resources = [];
-      this.cssText = defaultCSSText;
-      this.renderer = defaultRenderer;
-    }
-
-    DialogConfiguration.prototype.useDefaults = function useDefaults() {
-      return this.useRenderer(defaultRenderer).useCSS(defaultCSSText).useStandardResources();
-    };
-
-    DialogConfiguration.prototype.useStandardResources = function useStandardResources() {
-      return this.useResource('ai-dialog').useResource('ai-dialog-header').useResource('ai-dialog-body').useResource('ai-dialog-footer').useResource('attach-focus');
-    };
-
-    DialogConfiguration.prototype.useResource = function useResource(resourceName) {
-      this.resources.push(resourceName);
-      return this;
-    };
-
-    DialogConfiguration.prototype.useRenderer = function useRenderer(renderer, settings) {
-      this.renderer = renderer;
-      this.settings = Object.assign(this.settings, settings || {});
-      return this;
-    };
-
-    DialogConfiguration.prototype.useCSS = function useCSS(cssText) {
-      this.cssText = cssText;
-      return this;
-    };
-
-    DialogConfiguration.prototype._apply = function _apply() {
-      var _this = this;
-
-      this.aurelia.transient(_renderer.Renderer, this.renderer);
-      this.resources.forEach(function (resourceName) {
-        return _this.aurelia.globalResources(resources[resourceName]);
-      });
-
-      if (this.cssText) {
-        _aureliaPal.DOM.injectStyles(this.cssText);
-      }
-    };
-
-    return DialogConfiguration;
-  }();
-});
-define('aurelia-dialog/renderer',['exports'], function (exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  
-
-  var Renderer = exports.Renderer = function () {
-    function Renderer() {
-      
-    }
-
-    Renderer.prototype.getDialogContainer = function getDialogContainer() {
-      throw new Error('DialogRenderer must implement getDialogContainer().');
-    };
-
-    Renderer.prototype.showDialog = function showDialog(dialogController) {
-      throw new Error('DialogRenderer must implement showDialog().');
-    };
-
-    Renderer.prototype.hideDialog = function hideDialog(dialogController) {
-      throw new Error('DialogRenderer must implement hideDialog().');
-    };
-
-    return Renderer;
-  }();
-});
-define('aurelia-dialog/dialog-renderer',['exports', 'aurelia-pal', 'aurelia-dependency-injection'], function (exports, _aureliaPal, _aureliaDependencyInjection) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.DialogRenderer = undefined;
-
-  
-
-  var _dec, _class;
-
-  var containerTagName = 'ai-dialog-container';
-  var overlayTagName = 'ai-dialog-overlay';
-  var transitionEvent = function () {
-    var transition = null;
-
-    return function () {
-      if (transition) return transition;
-
-      var t = void 0;
-      var el = _aureliaPal.DOM.createElement('fakeelement');
-      var transitions = {
-        'transition': 'transitionend',
-        'OTransition': 'oTransitionEnd',
-        'MozTransition': 'transitionend',
-        'WebkitTransition': 'webkitTransitionEnd'
-      };
-      for (t in transitions) {
-        if (el.style[t] !== undefined) {
-          transition = transitions[t];
-          return transition;
-        }
-      }
-    };
-  }();
-
-  var DialogRenderer = exports.DialogRenderer = (_dec = (0, _aureliaDependencyInjection.transient)(), _dec(_class = function () {
-    function DialogRenderer() {
-      var _this = this;
-
-      
-
-      this._escapeKeyEventHandler = function (e) {
-        if (e.keyCode === 27) {
-          var top = _this._dialogControllers[_this._dialogControllers.length - 1];
-          if (top && top.settings.lock !== true) {
-            top.cancel();
-          }
-        }
-      };
-    }
-
-    DialogRenderer.prototype.getDialogContainer = function getDialogContainer() {
-      return _aureliaPal.DOM.createElement('div');
-    };
-
-    DialogRenderer.prototype.showDialog = function showDialog(dialogController) {
-      var _this2 = this;
-
-      var settings = dialogController.settings;
-      var body = _aureliaPal.DOM.querySelectorAll('body')[0];
-      var wrapper = document.createElement('div');
-
-      this.modalOverlay = _aureliaPal.DOM.createElement(overlayTagName);
-      this.modalContainer = _aureliaPal.DOM.createElement(containerTagName);
-      this.anchor = dialogController.slot.anchor;
-      wrapper.appendChild(this.anchor);
-      this.modalContainer.appendChild(wrapper);
-
-      this.stopPropagation = function (e) {
-        e._aureliaDialogHostClicked = true;
-      };
-      this.closeModalClick = function (e) {
-        if (!settings.lock && !e._aureliaDialogHostClicked) {
-          dialogController.cancel();
-        } else {
-          return false;
-        }
-      };
-
-      dialogController.centerDialog = function () {
-        if (settings.centerHorizontalOnly) return;
-        centerDialog(_this2.modalContainer);
-      };
-
-      this.modalOverlay.style.zIndex = settings.startingZIndex;
-      this.modalContainer.style.zIndex = settings.startingZIndex;
-
-      var lastContainer = Array.from(body.querySelectorAll(containerTagName)).pop();
-
-      if (lastContainer) {
-        lastContainer.parentNode.insertBefore(this.modalContainer, lastContainer.nextSibling);
-        lastContainer.parentNode.insertBefore(this.modalOverlay, lastContainer.nextSibling);
-      } else {
-        body.insertBefore(this.modalContainer, body.firstChild);
-        body.insertBefore(this.modalOverlay, body.firstChild);
-      }
-
-      if (!this._dialogControllers.length) {
-        _aureliaPal.DOM.addEventListener('keyup', this._escapeKeyEventHandler);
-      }
-
-      this._dialogControllers.push(dialogController);
-
-      dialogController.slot.attached();
-
-      if (typeof settings.position === 'function') {
-        settings.position(this.modalContainer, this.modalOverlay);
-      } else {
-        dialogController.centerDialog();
-      }
-
-      this.modalContainer.addEventListener('click', this.closeModalClick);
-      this.anchor.addEventListener('click', this.stopPropagation);
-
-      return new Promise(function (resolve) {
-        var renderer = _this2;
-        if (settings.ignoreTransitions) {
-          resolve();
-        } else {
-          _this2.modalContainer.addEventListener(transitionEvent(), onTransitionEnd);
-        }
-
-        _this2.modalOverlay.classList.add('active');
-        _this2.modalContainer.classList.add('active');
-        body.classList.add('ai-dialog-open');
-
-        function onTransitionEnd(e) {
-          if (e.target !== renderer.modalContainer) {
-            return;
-          }
-          renderer.modalContainer.removeEventListener(transitionEvent(), onTransitionEnd);
-          resolve();
-        }
-      });
-    };
-
-    DialogRenderer.prototype.hideDialog = function hideDialog(dialogController) {
-      var _this3 = this;
-
-      var settings = dialogController.settings;
-      var body = _aureliaPal.DOM.querySelectorAll('body')[0];
-
-      this.modalContainer.removeEventListener('click', this.closeModalClick);
-      this.anchor.removeEventListener('click', this.stopPropagation);
-
-      var i = this._dialogControllers.indexOf(dialogController);
-      if (i !== -1) {
-        this._dialogControllers.splice(i, 1);
-      }
-
-      if (!this._dialogControllers.length) {
-        _aureliaPal.DOM.removeEventListener('keyup', this._escapeKeyEventHandler);
-      }
-
-      return new Promise(function (resolve) {
-        var renderer = _this3;
-        if (settings.ignoreTransitions) {
-          resolve();
-        } else {
-          _this3.modalContainer.addEventListener(transitionEvent(), onTransitionEnd);
-        }
-
-        _this3.modalOverlay.classList.remove('active');
-        _this3.modalContainer.classList.remove('active');
-
-        function onTransitionEnd() {
-          renderer.modalContainer.removeEventListener(transitionEvent(), onTransitionEnd);
-          resolve();
-        }
-      }).then(function () {
-        body.removeChild(_this3.modalOverlay);
-        body.removeChild(_this3.modalContainer);
-        dialogController.slot.detached();
-
-        if (!_this3._dialogControllers.length) {
-          body.classList.remove('ai-dialog-open');
-        }
-
-        return Promise.resolve();
-      });
-    };
-
-    return DialogRenderer;
-  }()) || _class);
-
-
-  DialogRenderer.prototype._dialogControllers = [];
-
-  function centerDialog(modalContainer) {
-    var child = modalContainer.children[0];
-    var vh = Math.max(_aureliaPal.DOM.querySelectorAll('html')[0].clientHeight, window.innerHeight || 0);
-
-    child.style.marginTop = Math.max((vh - child.offsetHeight) / 2, 30) + 'px';
-    child.style.marginBottom = Math.max((vh - child.offsetHeight) / 2, 30) + 'px';
-  }
-});
-define('aurelia-dialog/dialog-options',["exports"], function (exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  var dialogOptions = exports.dialogOptions = {
-    lock: true,
-    centerHorizontalOnly: false,
-    startingZIndex: 1000,
-    ignoreTransitions: false
-  };
-});
-define('aurelia-dialog/dialog-service',['exports', 'aurelia-metadata', 'aurelia-dependency-injection', 'aurelia-templating', './dialog-controller', './renderer', './lifecycle', './dialog-result', './dialog-options'], function (exports, _aureliaMetadata, _aureliaDependencyInjection, _aureliaTemplating, _dialogController, _renderer, _lifecycle, _dialogResult, _dialogOptions) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.DialogService = undefined;
-
-  
-
-  var _class, _temp;
-
-  var DialogService = exports.DialogService = (_temp = _class = function () {
-    function DialogService(container, compositionEngine) {
-      
-
-      this.container = container;
-      this.compositionEngine = compositionEngine;
-      this.controllers = [];
-      this.hasActiveDialog = false;
-    }
-
-    DialogService.prototype.open = function open(settings) {
-      return this.openAndYieldController(settings).then(function (controller) {
-        return controller.result;
-      });
-    };
-
-    DialogService.prototype.openAndYieldController = function openAndYieldController(settings) {
-      var _this = this;
-
-      var childContainer = this.container.createChild();
-      var dialogController = void 0;
-      var promise = new Promise(function (resolve, reject) {
-        dialogController = new _dialogController.DialogController(childContainer.get(_renderer.Renderer), _createSettings(settings), resolve, reject);
-      });
-      childContainer.registerInstance(_dialogController.DialogController, dialogController);
-      dialogController.result = promise;
-      dialogController.result.then(function () {
-        _removeController(_this, dialogController);
-      }, function () {
-        _removeController(_this, dialogController);
-      });
-      return _openDialog(this, childContainer, dialogController).then(function () {
-        return dialogController;
-      });
-    };
-
-    return DialogService;
-  }(), _class.inject = [_aureliaDependencyInjection.Container, _aureliaTemplating.CompositionEngine], _temp);
-
-
-  function _createSettings(settings) {
-    settings = Object.assign({}, _dialogOptions.dialogOptions, settings);
-    settings.startingZIndex = _dialogOptions.dialogOptions.startingZIndex;
-    return settings;
-  }
-
-  function _openDialog(service, childContainer, dialogController) {
-    var host = dialogController.renderer.getDialogContainer();
-    var instruction = {
-      container: service.container,
-      childContainer: childContainer,
-      model: dialogController.settings.model,
-      view: dialogController.settings.view,
-      viewModel: dialogController.settings.viewModel,
-      viewSlot: new _aureliaTemplating.ViewSlot(host, true),
-      host: host
-    };
-
-    return _getViewModel(instruction, service.compositionEngine).then(function (returnedInstruction) {
-      dialogController.viewModel = returnedInstruction.viewModel;
-      dialogController.slot = returnedInstruction.viewSlot;
-
-      return (0, _lifecycle.invokeLifecycle)(dialogController.viewModel, 'canActivate', dialogController.settings.model).then(function (canActivate) {
-        if (canActivate) {
-          return service.compositionEngine.compose(returnedInstruction).then(function (controller) {
-            service.controllers.push(dialogController);
-            service.hasActiveDialog = !!service.controllers.length;
-            dialogController.controller = controller;
-            dialogController.view = controller.view;
-
-            return dialogController.renderer.showDialog(dialogController);
-          });
-        }
-      });
-    });
-  }
-
-  function _getViewModel(instruction, compositionEngine) {
-    if (typeof instruction.viewModel === 'function') {
-      instruction.viewModel = _aureliaMetadata.Origin.get(instruction.viewModel).moduleId;
-    }
-
-    if (typeof instruction.viewModel === 'string') {
-      return compositionEngine.ensureViewModel(instruction);
-    }
-
-    return Promise.resolve(instruction);
-  }
-
-  function _removeController(service, controller) {
-    var i = service.controllers.indexOf(controller);
-    if (i !== -1) {
-      service.controllers.splice(i, 1);
-      service.hasActiveDialog = !!service.controllers.length;
-    }
-  }
-});
-define('components/journal/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
+define('aurelia-dialog/dialog-configuration',["require", "exports", "./renderer", "./dialog-settings", "./dialog-renderer", "aurelia-pal"], function (require, exports, renderer_1, dialog_settings_1, dialog_renderer_1, aurelia_pal_1) {
     "use strict";
-    var Navigation = (function () {
-        function Navigation(eventAggregator) {
-            this.eventAggregator = eventAggregator;
-            this.url = "";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var defaultRenderer = dialog_renderer_1.DialogRenderer;
+    var resources = {
+        'ux-dialog': aurelia_pal_1.PLATFORM.moduleName('./ux-dialog'),
+        'ux-dialog-header': aurelia_pal_1.PLATFORM.moduleName('./ux-dialog-header'),
+        'ux-dialog-body': aurelia_pal_1.PLATFORM.moduleName('./ux-dialog-body'),
+        'ux-dialog-footer': aurelia_pal_1.PLATFORM.moduleName('./ux-dialog-footer'),
+        'attach-focus': aurelia_pal_1.PLATFORM.moduleName('./attach-focus')
+    };
+    // tslint:disable-next-line:max-line-length
+    var defaultCSSText = "ux-dialog-container,ux-dialog-overlay{position:fixed;top:0;right:0;bottom:0;left:0}ux-dialog-overlay{opacity:0}ux-dialog-overlay.active{opacity:1}ux-dialog-container{display:block;transition:opacity .2s linear;opacity:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch}ux-dialog-container.active{opacity:1}ux-dialog-container>div{padding:30px}ux-dialog-container>div>div{display:block;min-width:300px;width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;height:-moz-fit-content;height:-webkit-fit-content;height:fit-content;margin:auto}ux-dialog-container,ux-dialog-container>div,ux-dialog-container>div>div{outline:0}ux-dialog{display:table;box-shadow:0 5px 15px rgba(0,0,0,.5);border:1px solid rgba(0,0,0,.2);border-radius:5px;padding:3px;min-width:300px;width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;height:-moz-fit-content;height:-webkit-fit-content;height:fit-content;margin:auto;border-image-source:initial;border-image-slice:initial;border-image-width:initial;border-image-outset:initial;border-image-repeat:initial;background:#fff}ux-dialog>ux-dialog-header{display:block;padding:16px;border-bottom:1px solid #e5e5e5}ux-dialog>ux-dialog-header>button{float:right;border:none;display:block;width:32px;height:32px;background:0 0;font-size:22px;line-height:16px;margin:-14px -16px 0 0;padding:0;cursor:pointer}ux-dialog>ux-dialog-body{display:block;padding:16px}ux-dialog>ux-dialog-footer{display:block;padding:6px;border-top:1px solid #e5e5e5;text-align:right}ux-dialog>ux-dialog-footer button{color:#333;background-color:#fff;padding:6px 12px;font-size:14px;text-align:center;white-space:nowrap;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;background-image:none;border:1px solid #ccc;border-radius:4px;margin:5px 0 5px 5px}ux-dialog>ux-dialog-footer button:disabled{cursor:default;opacity:.45}ux-dialog>ux-dialog-footer button:hover:enabled{color:#333;background-color:#e6e6e6;border-color:#adadad}.ux-dialog-open{overflow:hidden}";
+    /**
+     * A configuration builder for the dialog plugin.
+     */
+    var DialogConfiguration = (function () {
+        function DialogConfiguration(frameworkConfiguration, applySetter) {
+            var _this = this;
+            this.resources = [];
+            this.fwConfig = frameworkConfiguration;
+            this.settings = this.fwConfig.container.get(dialog_settings_1.DefaultDialogSettings);
+            applySetter(function () { return _this._apply(); });
         }
-        Navigation.prototype.configureRouter = function (config, router) {
-            config.title = "Journal";
-            config.map([
-                { route: ["", ":period"], moduleId: "./journals/journals", name: "journals", title: "Journals", nav: false },
-                { route: ["create"], moduleId: "./journals/journal/journal", name: "create-journal", title: "Create Journal", nav: false },
-                { route: ["journal/:id"], moduleId: "./journals/journal/journal", name: "view-journal", title: "View Journal", nav: false },
-                { route: ["journal/:id/edit"], moduleId: "./journals/journal/journal", name: "edit-journal", title: "Edit Journal", nav: false }
-            ]);
-            this.router = router;
-            this.section = config.title;
+        DialogConfiguration.prototype._apply = function () {
+            var _this = this;
+            this.fwConfig.transient(renderer_1.Renderer, this.renderer);
+            this.resources.forEach(function (resourceName) { return _this.fwConfig.globalResources(resources[resourceName]); });
+            if (this.cssText) {
+                aurelia_pal_1.DOM.injectStyles(this.cssText);
+            }
         };
-        Navigation.prototype.attached = function () {
-            this.eventAggregator.publish("this.journalChangedEvent", this.url);
+        /**
+         * Selects the Aurelia conventional defaults for the dialog plugin.
+         * @return This instance.
+         */
+        DialogConfiguration.prototype.useDefaults = function () {
+            return this.useRenderer(defaultRenderer)
+                .useCSS(defaultCSSText)
+                .useStandardResources();
         };
-        return Navigation;
+        /**
+         * Exports the standard set of dialog behaviors to Aurelia's global resources.
+         * @return This instance.
+         */
+        DialogConfiguration.prototype.useStandardResources = function () {
+            return this.useResource('ux-dialog')
+                .useResource('ux-dialog-header')
+                .useResource('ux-dialog-body')
+                .useResource('ux-dialog-footer')
+                .useResource('attach-focus');
+        };
+        /**
+         * Exports the chosen dialog element or view to Aurelia's global resources.
+         * @param resourceName The name of the dialog resource to export.
+         * @return This instance.
+         */
+        DialogConfiguration.prototype.useResource = function (resourceName) {
+            this.resources.push(resourceName);
+            return this;
+        };
+        /**
+         * Configures the plugin to use a specific dialog renderer.
+         * @param renderer A type that implements the Renderer interface.
+         * @param settings Global settings for the renderer.
+         * @return This instance.
+         */
+        DialogConfiguration.prototype.useRenderer = function (renderer, settings) {
+            this.renderer = renderer;
+            if (settings) {
+                Object.assign(this.settings, settings);
+            }
+            return this;
+        };
+        /**
+         * Configures the plugin to use specific css.
+         * @param cssText The css to use in place of the default styles.
+         * @return This instance.
+         */
+        DialogConfiguration.prototype.useCSS = function (cssText) {
+            this.cssText = cssText;
+            return this;
+        };
+        return DialogConfiguration;
     }());
-    Navigation = tslib_1.__decorate([
-        aurelia_framework_1.autoinject,
-        tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-    ], Navigation);
-    exports.Navigation = Navigation;
+    exports.DialogConfiguration = DialogConfiguration;
 });
 
-define('components/journal/journals/journals',["require", "exports"], function (require, exports) {
+define('aurelia-dialog/renderer',["require", "exports"], function (require, exports) {
     "use strict";
-    var Journals = (function () {
-        function Journals() {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * An abstract base class for implementors of the basic Renderer API.
+     */
+    var Renderer = (function () {
+        function Renderer() {
         }
-        return Journals;
+        /**
+         * Gets an anchor for the ViewSlot to insert a view into.
+         * @returns A DOM element.
+         */
+        Renderer.prototype.getDialogContainer = function () {
+            throw new Error('DialogRenderer must implement getDialogContainer().');
+        };
+        /**
+         * Displays the dialog.
+         * @returns Promise A promise that resolves when the dialog has been displayed.
+         */
+        Renderer.prototype.showDialog = function (dialogController) {
+            throw new Error('DialogRenderer must implement showDialog().');
+        };
+        /**
+         * Hides the dialog.
+         * @returns Promise A promise that resolves when the dialog has been hidden.
+         */
+        Renderer.prototype.hideDialog = function (dialogController) {
+            throw new Error('DialogRenderer must implement hideDialog().');
+        };
+        return Renderer;
     }());
-    exports.Journals = Journals;
+    exports.Renderer = Renderer;
 });
 
-define('components/journal/journals/journal-entry/journal-entry',["require", "exports"], function (require, exports) {
+define('aurelia-dialog/dialog-settings',["require", "exports"], function (require, exports) {
     "use strict";
-    var JournalEntry = (function () {
-        function JournalEntry() {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * @internal
+     */
+    var DefaultDialogSettings = (function () {
+        function DefaultDialogSettings() {
+            this.lock = true;
+            this.startingZIndex = 1000;
+            this.centerHorizontalOnly = false;
+            this.rejectOnCancel = false;
+            this.ignoreTransitions = false;
         }
-        return JournalEntry;
+        return DefaultDialogSettings;
     }());
-    exports.JournalEntry = JournalEntry;
+    exports.DefaultDialogSettings = DefaultDialogSettings;
 });
 
-define('components/journal/journals/journal/journal-entry',["require", "exports"], function (require, exports) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-dialog/dialog-renderer',["require", "exports", "aurelia-pal", "aurelia-dependency-injection"], function (require, exports, aurelia_pal_1, aurelia_dependency_injection_1) {
     "use strict";
-    var JournalEntry = (function () {
-        function JournalEntry() {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var containerTagName = 'ux-dialog-container';
+    var overlayTagName = 'ux-dialog-overlay';
+    exports.transitionEvent = (function () {
+        var transition;
+        return function () {
+            if (transition) {
+                return transition;
+            }
+            var el = aurelia_pal_1.DOM.createElement('fakeelement');
+            var transitions = {
+                transition: 'transitionend',
+                OTransition: 'oTransitionEnd',
+                MozTransition: 'transitionend',
+                WebkitTransition: 'webkitTransitionEnd'
+            };
+            for (var t in transitions) {
+                if (el.style[t] !== undefined) {
+                    transition = transitions[t];
+                    return transition;
+                }
+            }
+            return '';
+        };
+    })();
+    exports.hasTransition = (function () {
+        var unprefixedName = 'transitionDuration';
+        var el = aurelia_pal_1.DOM.createElement('fakeelement');
+        var prefixedNames = ['webkitTransitionDuration', 'oTransitionDuration'];
+        var transitionDurationName;
+        if (unprefixedName in el.style) {
+            transitionDurationName = unprefixedName;
         }
-        return JournalEntry;
+        else {
+            transitionDurationName = prefixedNames.find(function (prefixed) { return (prefixed in el.style); });
+        }
+        return function (element) {
+            return !!transitionDurationName && !!(aurelia_pal_1.DOM.getComputedStyle(element)[transitionDurationName]
+                .split(',')
+                .find(function (duration) { return !!parseFloat(duration); }));
+        };
+    })();
+    var body = aurelia_pal_1.DOM.querySelectorAll('body')[0];
+    function getActionKey(e) {
+        if ((e.code || e.key) === 'Escape' || e.keyCode === 27) {
+            return 'Escape';
+        }
+        if ((e.code || e.key) === 'Enter' || e.keyCode === 13) {
+            return 'Enter';
+        }
+        return undefined;
+    }
+    var DialogRenderer = DialogRenderer_1 = (function () {
+        function DialogRenderer() {
+        }
+        DialogRenderer.keyboardEventHandler = function (e) {
+            var key = getActionKey(e);
+            if (!key) {
+                return;
+            }
+            var top = DialogRenderer_1.dialogControllers[DialogRenderer_1.dialogControllers.length - 1];
+            if (!top || !top.settings.keyboard) {
+                return;
+            }
+            var keyboard = top.settings.keyboard;
+            if (key === 'Escape'
+                && (keyboard === true || keyboard === key || (Array.isArray(keyboard) && keyboard.indexOf(key) > -1))) {
+                top.cancel();
+            }
+            else if (key === 'Enter' && (keyboard === key || (Array.isArray(keyboard) && keyboard.indexOf(key) > -1))) {
+                top.ok();
+            }
+        };
+        DialogRenderer.trackController = function (dialogController) {
+            if (!DialogRenderer_1.dialogControllers.length) {
+                aurelia_pal_1.DOM.addEventListener('keyup', DialogRenderer_1.keyboardEventHandler, false);
+            }
+            DialogRenderer_1.dialogControllers.push(dialogController);
+        };
+        DialogRenderer.untrackController = function (dialogController) {
+            var i = DialogRenderer_1.dialogControllers.indexOf(dialogController);
+            if (i !== -1) {
+                DialogRenderer_1.dialogControllers.splice(i, 1);
+            }
+            if (!DialogRenderer_1.dialogControllers.length) {
+                aurelia_pal_1.DOM.removeEventListener('keyup', DialogRenderer_1.keyboardEventHandler, false);
+            }
+        };
+        DialogRenderer.prototype.getOwnElements = function (parent, selector) {
+            var elements = parent.querySelectorAll(selector);
+            var own = [];
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].parentElement === parent) {
+                    own.push(elements[i]);
+                }
+            }
+            return own;
+        };
+        DialogRenderer.prototype.attach = function (dialogController) {
+            var spacingWrapper = aurelia_pal_1.DOM.createElement('div'); // TODO: check if redundant
+            spacingWrapper.appendChild(this.anchor);
+            this.dialogContainer = aurelia_pal_1.DOM.createElement(containerTagName);
+            this.dialogContainer.appendChild(spacingWrapper);
+            this.dialogOverlay = aurelia_pal_1.DOM.createElement(overlayTagName);
+            var zIndex = typeof dialogController.settings.startingZIndex === 'number'
+                ? dialogController.settings.startingZIndex + ''
+                : null;
+            this.dialogOverlay.style.zIndex = zIndex;
+            this.dialogContainer.style.zIndex = zIndex;
+            var lastContainer = this.getOwnElements(this.host, containerTagName).pop();
+            if (lastContainer && lastContainer.parentElement) {
+                this.host.insertBefore(this.dialogContainer, lastContainer.nextSibling);
+                this.host.insertBefore(this.dialogOverlay, lastContainer.nextSibling);
+            }
+            else {
+                this.host.insertBefore(this.dialogContainer, this.host.firstChild);
+                this.host.insertBefore(this.dialogOverlay, this.host.firstChild);
+            }
+            dialogController.controller.attached();
+            this.host.classList.add('ux-dialog-open');
+        };
+        DialogRenderer.prototype.detach = function (dialogController) {
+            this.host.removeChild(this.dialogOverlay);
+            this.host.removeChild(this.dialogContainer);
+            dialogController.controller.detached();
+            if (!DialogRenderer_1.dialogControllers.length) {
+                this.host.classList.remove('ux-dialog-open');
+            }
+        };
+        DialogRenderer.prototype.setAsActive = function () {
+            this.dialogOverlay.classList.add('active');
+            this.dialogContainer.classList.add('active');
+        };
+        DialogRenderer.prototype.setAsInactive = function () {
+            this.dialogOverlay.classList.remove('active');
+            this.dialogContainer.classList.remove('active');
+        };
+        DialogRenderer.prototype.setupClickHandling = function (dialogController) {
+            this.stopPropagation = function (e) { e._aureliaDialogHostClicked = true; };
+            this.closeDialogClick = function (e) {
+                if (dialogController.settings.overlayDismiss && !e._aureliaDialogHostClicked) {
+                    dialogController.cancel();
+                }
+            };
+            this.dialogContainer.addEventListener('click', this.closeDialogClick);
+            this.anchor.addEventListener('click', this.stopPropagation);
+        };
+        DialogRenderer.prototype.clearClickHandling = function () {
+            this.dialogContainer.removeEventListener('click', this.closeDialogClick);
+            this.anchor.removeEventListener('click', this.stopPropagation);
+        };
+        DialogRenderer.prototype.centerDialog = function () {
+            var child = this.dialogContainer.children[0];
+            var vh = Math.max(aurelia_pal_1.DOM.querySelectorAll('html')[0].clientHeight, window.innerHeight || 0);
+            child.style.marginTop = Math.max((vh - child.offsetHeight) / 2, 30) + 'px';
+            child.style.marginBottom = Math.max((vh - child.offsetHeight) / 2, 30) + 'px';
+        };
+        DialogRenderer.prototype.awaitTransition = function (setActiveInactive, ignore) {
+            var _this = this;
+            return new Promise(function (resolve) {
+                var renderer = _this;
+                var eventName = exports.transitionEvent();
+                function onTransitionEnd(e) {
+                    if (e.target !== renderer.dialogContainer) {
+                        return;
+                    }
+                    renderer.dialogContainer.removeEventListener(eventName, onTransitionEnd);
+                    resolve();
+                }
+                if (ignore || !exports.hasTransition(_this.dialogContainer)) {
+                    resolve();
+                }
+                else {
+                    _this.dialogContainer.addEventListener(eventName, onTransitionEnd);
+                }
+                setActiveInactive();
+            });
+        };
+        DialogRenderer.prototype.getDialogContainer = function () {
+            return this.anchor || (this.anchor = aurelia_pal_1.DOM.createElement('div'));
+        };
+        DialogRenderer.prototype.showDialog = function (dialogController) {
+            var _this = this;
+            if (dialogController.settings.host) {
+                this.host = dialogController.settings.host;
+            }
+            else {
+                this.host = body;
+            }
+            var settings = dialogController.settings;
+            this.attach(dialogController);
+            if (typeof settings.position === 'function') {
+                settings.position(this.dialogContainer, this.dialogOverlay);
+            }
+            else if (!settings.centerHorizontalOnly) {
+                this.centerDialog();
+            }
+            DialogRenderer_1.trackController(dialogController);
+            this.setupClickHandling(dialogController);
+            return this.awaitTransition(function () { return _this.setAsActive(); }, dialogController.settings.ignoreTransitions);
+        };
+        DialogRenderer.prototype.hideDialog = function (dialogController) {
+            var _this = this;
+            this.clearClickHandling();
+            DialogRenderer_1.untrackController(dialogController);
+            return this.awaitTransition(function () { return _this.setAsInactive(); }, dialogController.settings.ignoreTransitions)
+                .then(function () { _this.detach(dialogController); });
+        };
+        return DialogRenderer;
     }());
-    exports.JournalEntry = JournalEntry;
+    DialogRenderer.dialogControllers = [];
+    DialogRenderer = DialogRenderer_1 = __decorate([
+        aurelia_dependency_injection_1.transient()
+    ], DialogRenderer);
+    exports.DialogRenderer = DialogRenderer;
+    var DialogRenderer_1;
 });
 
-define('components/journal/journals/journal/journal',["require", "exports"], function (require, exports) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-dialog/ux-dialog',["require", "exports", "aurelia-templating"], function (require, exports, aurelia_templating_1) {
     "use strict";
-    var JournalEntry = (function () {
-        function JournalEntry() {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var UxDialog = (function () {
+        function UxDialog() {
         }
-        return JournalEntry;
+        return UxDialog;
     }());
-    exports.JournalEntry = JournalEntry;
+    UxDialog = __decorate([
+        aurelia_templating_1.customElement('ux-dialog'),
+        aurelia_templating_1.inlineView("\n  <template>\n    <slot></slot>\n  </template>\n")
+    ], UxDialog);
+    exports.UxDialog = UxDialog;
 });
 
-define('components/journal/journals/journal-periods/journal-periods',["require", "exports"], function (require, exports) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-dialog/ux-dialog-header',["require", "exports", "aurelia-templating", "./dialog-controller"], function (require, exports, aurelia_templating_1, dialog_controller_1) {
     "use strict";
-    var JournalPeriods = (function () {
-        function JournalPeriods() {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var UxDialogHeader = (function () {
+        function UxDialogHeader(controller) {
+            this.controller = controller;
         }
-        return JournalPeriods;
+        UxDialogHeader.prototype.bind = function () {
+            if (typeof this.showCloseButton !== 'boolean') {
+                this.showCloseButton = !this.controller.settings.lock;
+            }
+        };
+        return UxDialogHeader;
     }());
-    exports.JournalPeriods = JournalPeriods;
+    /**
+     * @internal
+     */
+    UxDialogHeader.inject = [dialog_controller_1.DialogController];
+    __decorate([
+        aurelia_templating_1.bindable()
+    ], UxDialogHeader.prototype, "showCloseButton", void 0);
+    UxDialogHeader = __decorate([
+        aurelia_templating_1.customElement('ux-dialog-header'),
+        aurelia_templating_1.inlineView("\n  <template>\n    <button\n      type=\"button\"\n      class=\"dialog-close\"\n      aria-label=\"Close\"\n      if.bind=\"showCloseButton\"\n      click.trigger=\"controller.cancel()\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n\n    <div class=\"dialog-header-content\">\n      <slot></slot>\n    </div>\n  </template>\n")
+    ], UxDialogHeader);
+    exports.UxDialogHeader = UxDialogHeader;
+});
+
+define('aurelia-dialog/dialog-controller',["require", "exports", "./renderer", "./lifecycle", "./dialog-cancel-error"], function (require, exports, renderer_1, lifecycle_1, dialog_cancel_error_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * A controller object for a Dialog instance.
+     */
+    var DialogController = (function () {
+        /**
+         * Creates an instance of DialogController.
+         */
+        function DialogController(renderer, settings, resolve, reject) {
+            this.resolve = resolve;
+            this.reject = reject;
+            this.settings = settings;
+            this.renderer = renderer;
+        }
+        /**
+         * @internal
+         */
+        DialogController.prototype.releaseResources = function () {
+            var _this = this;
+            return lifecycle_1.invokeLifecycle(this.controller.viewModel || {}, 'deactivate')
+                .then(function () { return _this.renderer.hideDialog(_this); })
+                .then(function () { _this.controller.unbind(); });
+        };
+        /**
+         * @internal
+         */
+        DialogController.prototype.cancelOperation = function () {
+            if (!this.settings.rejectOnCancel) {
+                return { wasCancelled: true };
+            }
+            throw dialog_cancel_error_1.createDialogCancelError();
+        };
+        /**
+         * Closes the dialog with a successful output.
+         * @param output The returned success output.
+         */
+        DialogController.prototype.ok = function (output) {
+            return this.close(true, output);
+        };
+        /**
+         * Closes the dialog with a cancel output.
+         * @param output The returned cancel output.
+         */
+        DialogController.prototype.cancel = function (output) {
+            return this.close(false, output);
+        };
+        /**
+         * Closes the dialog with an error result.
+         * @param message An error message.
+         * @returns Promise An empty promise object.
+         */
+        DialogController.prototype.error = function (message) {
+            var _this = this;
+            return this.releaseResources().then(function () { _this.reject(message); });
+        };
+        /**
+         * Closes the dialog.
+         * @param ok Whether or not the user input signified success.
+         * @param output The specified output.
+         * @returns Promise An empty promise object.
+         */
+        DialogController.prototype.close = function (ok, output) {
+            var _this = this;
+            if (this.closePromise) {
+                return this.closePromise;
+            }
+            return this.closePromise = lifecycle_1.invokeLifecycle(this.controller.viewModel || {}, 'canDeactivate').catch(function (reason) {
+                _this.closePromise = undefined;
+                return Promise.reject(reason);
+            }).then(function (canDeactivate) {
+                if (!canDeactivate) {
+                    _this.closePromise = undefined; // we are done, do not block consecutive calls
+                    return _this.cancelOperation();
+                }
+                return _this.releaseResources().then(function () {
+                    if (!_this.settings.rejectOnCancel || ok) {
+                        _this.resolve({ wasCancelled: !ok, output: output });
+                    }
+                    else {
+                        _this.reject(dialog_cancel_error_1.createDialogCancelError(output));
+                    }
+                    return { wasCancelled: false };
+                }).catch(function (reason) {
+                    _this.closePromise = undefined;
+                    return Promise.reject(reason);
+                });
+            });
+        };
+        return DialogController;
+    }());
+    /**
+     * @internal
+     */
+    DialogController.inject = [renderer_1.Renderer];
+    exports.DialogController = DialogController;
+});
+
+define('aurelia-dialog/lifecycle',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * Call a lifecycle method on a viewModel if it exists.
+     * @function
+     * @param instance The viewModel instance.
+     * @param name The lifecycle method name.
+     * @param model The model to pass to the lifecycle method.
+     * @returns Promise The result of the lifecycle method.
+     */
+    function invokeLifecycle(instance, name, model) {
+        if (typeof instance[name] === 'function') {
+            return new Promise(function (resolve) {
+                resolve(instance[name](model));
+            }).then(function (result) {
+                if (result !== null && result !== undefined) {
+                    return result;
+                }
+                return true;
+            });
+        }
+        return Promise.resolve(true);
+    }
+    exports.invokeLifecycle = invokeLifecycle;
+});
+
+define('aurelia-dialog/dialog-cancel-error',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * @internal
+     */
+    function createDialogCancelError(output) {
+        var error = new Error('Operation cancelled.');
+        error.wasCancelled = true;
+        error.output = output;
+        return error;
+    }
+    exports.createDialogCancelError = createDialogCancelError;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-dialog/ux-dialog-body',["require", "exports", "aurelia-templating"], function (require, exports, aurelia_templating_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var UxDialogBody = (function () {
+        function UxDialogBody() {
+        }
+        return UxDialogBody;
+    }());
+    UxDialogBody = __decorate([
+        aurelia_templating_1.customElement('ux-dialog-body'),
+        aurelia_templating_1.inlineView("\n  <template>\n    <slot></slot>\n  </template>\n")
+    ], UxDialogBody);
+    exports.UxDialogBody = UxDialogBody;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-dialog/ux-dialog-footer',["require", "exports", "aurelia-templating", "./dialog-controller"], function (require, exports, aurelia_templating_1, dialog_controller_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /**
+     * View-model for footer of Dialog.
+     */
+    var UxDialogFooter = UxDialogFooter_1 = (function () {
+        function UxDialogFooter(controller) {
+            this.controller = controller;
+            this.buttons = [];
+            this.useDefaultButtons = false;
+        }
+        UxDialogFooter.isCancelButton = function (value) {
+            return value === 'Cancel';
+        };
+        UxDialogFooter.prototype.close = function (buttonValue) {
+            if (UxDialogFooter_1.isCancelButton(buttonValue)) {
+                this.controller.cancel(buttonValue);
+            }
+            else {
+                this.controller.ok(buttonValue);
+            }
+        };
+        UxDialogFooter.prototype.useDefaultButtonsChanged = function (newValue) {
+            if (newValue) {
+                this.buttons = ['Cancel', 'Ok'];
+            }
+        };
+        return UxDialogFooter;
+    }());
+    /**
+     * @internal
+     */
+    UxDialogFooter.inject = [dialog_controller_1.DialogController];
+    __decorate([
+        aurelia_templating_1.bindable
+    ], UxDialogFooter.prototype, "buttons", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], UxDialogFooter.prototype, "useDefaultButtons", void 0);
+    UxDialogFooter = UxDialogFooter_1 = __decorate([
+        aurelia_templating_1.customElement('ux-dialog-footer'),
+        aurelia_templating_1.inlineView("\n  <template>\n    <slot></slot>\n    <template if.bind=\"buttons.length > 0\">\n      <button type=\"button\"\n        class=\"btn btn-default\"\n        repeat.for=\"button of buttons\"\n        click.trigger=\"close(button)\">\n        ${button}\n      </button>\n    </template>\n  </template>\n")
+    ], UxDialogFooter);
+    exports.UxDialogFooter = UxDialogFooter;
+    var UxDialogFooter_1;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-dialog/attach-focus',["require", "exports", "aurelia-templating", "aurelia-pal"], function (require, exports, aurelia_templating_1, aurelia_pal_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var AttachFocus = (function () {
+        function AttachFocus(element) {
+            this.element = element;
+            this.value = true;
+        }
+        AttachFocus.prototype.attached = function () {
+            if (this.value && this.value !== 'false') {
+                this.element.focus();
+            }
+        };
+        AttachFocus.prototype.valueChanged = function (newValue) {
+            this.value = newValue;
+        };
+        return AttachFocus;
+    }());
+    /**
+     * @internal
+     */
+    AttachFocus.inject = [aurelia_pal_1.DOM.Element];
+    AttachFocus = __decorate([
+        aurelia_templating_1.customAttribute('attach-focus')
+    ], AttachFocus);
+    exports.AttachFocus = AttachFocus;
+});
+
+define('aurelia-dialog/dialog-service',["require", "exports", "aurelia-dependency-injection", "aurelia-metadata", "aurelia-templating", "./dialog-settings", "./dialog-cancel-error", "./lifecycle", "./dialog-controller"], function (require, exports, aurelia_dependency_injection_1, aurelia_metadata_1, aurelia_templating_1, dialog_settings_1, dialog_cancel_error_1, lifecycle_1, dialog_controller_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    /* tslint:enable:max-line-length */
+    function whenClosed(onfulfilled, onrejected) {
+        return this.then(function (r) { return r.wasCancelled ? r : r.closeResult; }).then(onfulfilled, onrejected);
+    }
+    function asDialogOpenPromise(promise) {
+        promise.whenClosed = whenClosed;
+        return promise;
+    }
+    /**
+     * A service allowing for the creation of dialogs.
+     */
+    var DialogService = (function () {
+        function DialogService(container, compositionEngine, defaultSettings) {
+            /**
+             * The current dialog controllers
+             */
+            this.controllers = [];
+            /**
+             * Is there an open dialog
+             */
+            this.hasOpenDialog = false;
+            this.hasActiveDialog = false;
+            this.container = container;
+            this.compositionEngine = compositionEngine;
+            this.defaultSettings = defaultSettings;
+        }
+        DialogService.prototype.validateSettings = function (settings) {
+            if (!settings.viewModel && !settings.view) {
+                throw new Error('Invalid Dialog Settings. You must provide "viewModel", "view" or both.');
+            }
+        };
+        // tslint:disable-next-line:max-line-length
+        DialogService.prototype.createCompositionContext = function (childContainer, host, settings) {
+            return {
+                container: childContainer.parent,
+                childContainer: childContainer,
+                bindingContext: null,
+                viewResources: null,
+                model: settings.model,
+                view: settings.view,
+                viewModel: settings.viewModel,
+                viewSlot: new aurelia_templating_1.ViewSlot(host, true),
+                host: host
+            };
+        };
+        DialogService.prototype.ensureViewModel = function (compositionContext) {
+            if (typeof compositionContext.viewModel === 'function') {
+                compositionContext.viewModel = aurelia_metadata_1.Origin.get(compositionContext.viewModel).moduleId;
+            }
+            if (typeof compositionContext.viewModel === 'string') {
+                return this.compositionEngine.ensureViewModel(compositionContext);
+            }
+            return Promise.resolve(compositionContext);
+        };
+        DialogService.prototype._cancelOperation = function (rejectOnCancel) {
+            if (!rejectOnCancel) {
+                return { wasCancelled: true };
+            }
+            throw dialog_cancel_error_1.createDialogCancelError();
+        };
+        // tslint:disable-next-line:max-line-length
+        DialogService.prototype.composeAndShowDialog = function (compositionContext, dialogController) {
+            var _this = this;
+            if (!compositionContext.viewModel) {
+                // provide access to the dialog controller for view only dialogs
+                compositionContext.bindingContext = { controller: dialogController };
+            }
+            return this.compositionEngine.compose(compositionContext).then(function (controller) {
+                dialogController.controller = controller;
+                return dialogController.renderer.showDialog(dialogController).then(function () {
+                    _this.controllers.push(dialogController);
+                    _this.hasActiveDialog = _this.hasOpenDialog = !!_this.controllers.length;
+                }, function (reason) {
+                    if (controller.viewModel) {
+                        lifecycle_1.invokeLifecycle(controller.viewModel, 'deactivate');
+                    }
+                    return Promise.reject(reason);
+                });
+            });
+        };
+        /**
+         * @internal
+         */
+        DialogService.prototype.createSettings = function (settings) {
+            settings = Object.assign({}, this.defaultSettings, settings);
+            if (typeof settings.keyboard !== 'boolean' && !settings.keyboard) {
+                settings.keyboard = !settings.lock;
+            }
+            if (typeof settings.overlayDismiss !== 'boolean') {
+                settings.overlayDismiss = !settings.lock;
+            }
+            Object.defineProperty(settings, 'rejectOnCancel', {
+                writable: false,
+                configurable: true,
+                enumerable: true
+            });
+            this.validateSettings(settings);
+            return settings;
+        };
+        DialogService.prototype.open = function (settings) {
+            var _this = this;
+            if (settings === void 0) { settings = {}; }
+            // tslint:enable:max-line-length
+            settings = this.createSettings(settings);
+            var childContainer = settings.childContainer || this.container.createChild();
+            var resolveCloseResult;
+            var rejectCloseResult;
+            var closeResult = new Promise(function (resolve, reject) {
+                resolveCloseResult = resolve;
+                rejectCloseResult = reject;
+            });
+            var dialogController = childContainer.invoke(dialog_controller_1.DialogController, [settings, resolveCloseResult, rejectCloseResult]);
+            childContainer.registerInstance(dialog_controller_1.DialogController, dialogController);
+            closeResult.then(function () {
+                removeController(_this, dialogController);
+            }, function () {
+                removeController(_this, dialogController);
+            });
+            var compositionContext = this.createCompositionContext(childContainer, dialogController.renderer.getDialogContainer(), dialogController.settings);
+            var openResult = this.ensureViewModel(compositionContext).then(function (compositionContext) {
+                if (!compositionContext.viewModel) {
+                    return true;
+                }
+                return lifecycle_1.invokeLifecycle(compositionContext.viewModel, 'canActivate', dialogController.settings.model);
+            }).then(function (canActivate) {
+                if (!canActivate) {
+                    return _this._cancelOperation(dialogController.settings.rejectOnCancel);
+                }
+                // if activation granted, compose and show
+                return _this.composeAndShowDialog(compositionContext, dialogController)
+                    .then(function () { return ({ controller: dialogController, closeResult: closeResult, wasCancelled: false }); });
+            });
+            return asDialogOpenPromise(openResult);
+        };
+        /**
+         * Closes all open dialogs at the time of invocation.
+         * @return Promise<DialogController[]> All controllers whose close operation was cancelled.
+         */
+        DialogService.prototype.closeAll = function () {
+            return Promise.all(this.controllers.slice(0).map(function (controller) {
+                if (!controller.settings.rejectOnCancel) {
+                    return controller.cancel().then(function (result) {
+                        if (result.wasCancelled) {
+                            return controller;
+                        }
+                        return;
+                    });
+                }
+                return controller.cancel().then(function () { return; }).catch(function (reason) {
+                    if (reason.wasCancelled) {
+                        return controller;
+                    }
+                    return Promise.reject(reason);
+                });
+            })).then(function (unclosedControllers) { return unclosedControllers.filter(function (unclosed) { return !!unclosed; }); });
+        };
+        return DialogService;
+    }());
+    /**
+     * @internal
+     */
+    DialogService.inject = [aurelia_dependency_injection_1.Container, aurelia_templating_1.CompositionEngine, dialog_settings_1.DefaultDialogSettings];
+    exports.DialogService = DialogService;
+    function removeController(service, dialogController) {
+        var i = service.controllers.indexOf(dialogController);
+        if (i !== -1) {
+            service.controllers.splice(i, 1);
+            service.hasActiveDialog = service.hasOpenDialog = !!service.controllers.length;
+        }
+    }
 });
 
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><require from=\"./components/header/dream-header\"></require><require from=\"./components/footer/dream-footer\"></require><require from=\"./components/nav-menu/main-nav/main-nav\"></require><dream-header router.bind=\"router\"></dream-header><main-nav router.bind=\"router\"></main-nav><router-view></router-view><dream-footer></dream-footer></template>"; });
 define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/footer/dream-footer.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-footer.css\"></require></template>"; });
 define('text!components/header/dream-header.html', ['module'], function(module) { module.exports = "<template><require from=\"./dream-header.css\"></require><div class=\"container\"><div class=\"navbar-brand\"><img class=\"logo\" src=\"/content/images/logo.png\"> <a first-letter-span href=\"/\">Dream Space</a></div><ul class=\"nav navbar-nav navbar-right\"><li role=\"presentation\" class=\"dropdown\" if.bind=\"isAuthenticated === true\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> ${user.firstName} <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href.bind=\"loginUrl\">Account</a></li><li><a click.delegate=\"logout()\">Logout</a></li></ul></li><li if.bind=\"isAuthenticated !== true\"><a click.delegate=\"login()\">Login</a></li></ul></div></template>"; });
-define('text!components/market/navigation.html', ['module'], function(module) { module.exports = "<template><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!components/journal/navigation.html', ['module'], function(module) { module.exports = "<template><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!app.css', ['module'], function(module) { module.exports = "@charset 'UTF-8';\n@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
+define('text!components/market/navigation.html', ['module'], function(module) { module.exports = "<template><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/strategies/navigation.html', ['module'], function(module) { module.exports = "<template><strategy-navigation></strategy-navigation><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/strategies/strategy-playground.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy-playground.css\"></require><strategy-admin></strategy-admin><div class=\"c_playground-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_playground\"><header><h3 first-letter-span>Strategy Playground</h3></header><form><fieldset><div class=\"form-group\"><label>Selected Strategy</label><p class=\"form-control\" readonly=\"readonly\">${strategy.title}</p></div><div class=\"form-group\"><label>Selected Company</label><div class=\"input-group\"><p class=\"form-control\" readonly=\"readonly\">${company.ticker} - ${company.name}</p><div class=\"input-group-btn\"><button type=\"button\" if.bind=\"!company.show && !searchMode\" click.delegate=\"company.show = true\" class=\"btn btn-default\">Show Details</button> <button type=\"button\" click.delegate=\"searchMode = !!!searchMode\" class=\"btn ${searchMode ? 'btn-default' : 'btn-danger'}\">${searchMode ? 'Cancel' : 'Search'}</button></div></div><div class=\"c_company-details\" if.bind=\"company.show\"><company-details company.bind=\"company\"></company-details><div class=\"c_company-actions\"><button type=\"button\" click.delegate=\"updateCompany(company.ticker)\" class=\"btn btn-danger\">Update</button> <button type=\"button\" click.delegate=\"company.show = false\" class=\"btn btn-default\">Hide</button></div></div></div></fieldset></form><div if.bind=\"searchMode\" class=\"c_companies-content\"><form submit.delegate=\"searchCompanies()\"><fieldset><div class=\"form-inline right\"><label>Company Search:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control uppercase\" value.bind=\"searchCriteria\"><div class=\"input-group-btn\"><button type=\"submit\" disabled.bind=\"searchCriteria.length===0\" class=\"btn btn-danger\">Go</button></div></div></div></fieldset></form><div class=\"c_company_list\" if.bind=\"companies.length > 0\"><div repeat.for=\"company of companies\" class=\"c_company ${$index === $parent.companies.length-1 ? 'no-border': ''}\"><div class=\"c_company-header\"><button type=\"button\" click.trigger=\"selectCompany(company)\" class=\"btn btn-warning btn-xs\">Select</button> <span click.trigger=\"company.expanded = !!!company.expanded\"><span>${company.ticker} - ${company.name}</span> <a class=\"chevron\"><span class=\"glyphicon ${company.expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_company-details\" if.bind=\"company.expanded\"><company-details company.bind=\"company\"></company-details></div></div></div></div><div if.bind=\"strategy.strategyId && company.ticker && !playgroundLoaded\"><div class=\"right\"><button type=\"button\" click.delegate=\"loadPlayground()\" class=\"btn btn-danger\">Load Playground</button></div></div></div><div class=\"col-md-4 col-xs-12\"><side-navigation strategyurl.bind=\"strategy.url\"></side-navigation></div></div><div class=\"row o_chart-content\" if.bind=\"playgroundLoaded\"><div class=\"col-md-8 col-xs-12 c_playground\"><header><h3>Charts</h3></header><div class=\"o_chart\"><stock-chart model.bind=\"playgroundModel\"></stock-chart></div><br></div><div class=\"col-md-4 col-xs-12 c_strategy-runner\"><div class=\"side-navigation\"><h3>Strategy Runner</h3><form><fieldset><div class=\"c_strategy-runner--progress\"><div class=\"form-group\" repeat.for=\"ruleSet of playgroundModel.ruleSets\"><span>${ruleSet.name}</span><s-progress progress.bind=\"ruleSet.progress\"></s-progress><div class=\"col-sm-12\" repeat.for=\"rule of ruleSet.rules\"><span class=\"glyphicon ${rule.valid ? 'glyphicon-ok' : 'glyphicon-time'}\" aria-hidden=\"true\"></span><label>${rule.ruleName}</label></div></div></div><div class=\"c_strategy-runner--options\"><header>Runner</header><div class=\"form-group\"><div class=\"checkbox\"><label><input type=\"checkbox\"> Stop when rules met</label></div></div><div class=\"form-group\"><span class=\"btn-group btn-group-sm\"><button class=\"btn btn-default\" if.bind=\"streaming\" click.delegate=\"stopStreaming()\" type=\"button\"><span class=\"glyphicon glyphicon-pause\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" if.bind=\"!streaming\" click.delegate=\"startStreaming()\" type=\"button\"><span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadPlayground()\" type=\"button\"><span class=\"glyphicon glyphicon-stop\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadPrev()\" type=\"button\"><span class=\"glyphicon glyphicon-backward\" aria-hidden=\"true\"></span></button> <button class=\"btn btn-default\" click.delegate=\"loadNext()\" type=\"button\"><span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span></button></span></div></div></fieldset></form></div></div></div></div></template>"; });
 define('text!components/strategies/strategy-rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules/rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Strategy Rule Sets</h3><h5>${strategy.title}</h5><p class=\"summary\">${strategy.summary}</p></header><div class=\"c_rule_set-list\"><strategy-rule-set repeat.for=\"ruleset of rulesets\" class=\"${$index === $parent.rulesets.length-1 && !editMode ? 'no-border': ''}\" ruleset.bind=\"ruleset\"></strategy-rule-set><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRuleSet()\"><a>Attach Rule Set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label>Period</label><select class=\"form-control\" value.bind=\"attachedRuleSet.period\" change.delegate=\"onPeriodSelected()\"><option>- Select Period -</option><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>Rule Set</label><select class=\"form-control\" value.bind=\"attachedRuleSet.ruleSetId\" change.delegate=\"onRuleSetSelected()\"><option>- Select Rule Set -</option><option repeat.for=\"periodRuleSet of periodRuleSets\" model.bind=\"periodRuleSet.ruleSetId\">${periodRuleSet.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRuleSet.ruleSetId > 0\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${attachedRuleSet.description}</p></div></fieldset><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRuleSet()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRuleSet()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div><div class=\"c_rule_set-actions\"><button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" click.delegate=\"trySaveRuleSets()\" if.bind=\"editMode\" class=\"btn btn-danger\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"col-md-4 col-xs-12\"><side-navigation strategyurl.bind=\"strategy.url\"></side-navigation></div></div></div></template>"; });
-define('text!components/strategies/strategy.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Article</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\" if.bind=\"editMode === true\"><button type=\"button\" click.delegate=\"trySaveArticle()\" class=\"btn btn-danger\">Apply Changes</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_strategy\"><header><h3>${strategy.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Strategy Name</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.title & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"strategy.summary & validate\"></textarea></div><div class=\"form-group\"><label>Strategy Url</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.url & validate\"></div><div class=\"form-group\"><label>Strategy Status:</label><div class=\"input-group\" style=\"width:40%\"><input type=\"text\" class=\"form-control\" disabled=\"disabled\" aria-label=\"...\" value=\"${strategy.active ? 'Active' : 'Inactive'}\"><div class=\"input-group-btn\"><button type=\"button\" click.delegate=\"setActiveStatus(true)\" if.bind=\"!strategy.active\" class=\"btn btn-danger\">Activate</button> <button type=\"button\" click.delegate=\"setActiveStatus(false)\" if.bind=\"strategy.active\" class=\"btn btn-danger\">Deactivate</button></div></div></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"strategy.blocks\"></article-parts></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''} ${summary.active ? '' : 'disabled'}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Strategies</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addStrategy()\">Register New Strategy</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Strategy</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteStrategy()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
 define('text!common/styles/common.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\nbody {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n.btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n.page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\nai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n.form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n.sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n.article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\nh3 {\n  font-family: 'Lato', sans-serif;\n}\n.categories .category edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 10px 10px 0 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.categories .category edit-mode .btn-group {\n  float: right;\n  position: relative;\n  top: -20px;\n}\n.side-navigation {\n  font-family: 'Lato', sans-serif;\n  padding: 0 15px;\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.side-navigation h3 {\n  padding-top: 20px;\n  margin-top: 0;\n  color: #333333;\n  margin-bottom: 20px;\n}\n.side-navigation .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.side-navigation .block-actions .glyphicon {\n  color: #333333;\n  position: relative;\n  font-size: 12px;\n  top: 1px;\n  margin-right: 2px;\n}\n.side-navigation ul {\n  list-style-type: none;\n  padding-left: 0;\n  padding-bottom: 10px;\n}\n.side-navigation ul li {\n  border-bottom: 1px dotted #777;\n  margin-bottom: 5px;\n  padding: 2px 10px 7px;\n}\n.side-navigation ul li a {\n  color: #333333;\n}\n.side-navigation ul li a.active,\n.side-navigation ul li a:hover {\n  color: #e22004;\n  cursor: pointer;\n  /*text-decoration: none;*/\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\n.side-navigation ul li a.disabled {\n  opacity: 0.6;\n}\n.side-navigation ul li .glyphicon {\n  font-size: 8px;\n  color: #e22004;\n  position: relative;\n  top: -1px;\n  margin-right: 5px;\n}\n.side-navigation ul li.edit-mode {\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid #DDD;\n}\n.side-navigation ul li.active a {\n  color: #e22004;\n}\n.side-navigation .side-navigation-add .glyphicon,\n.side-navigation .side-navigation-delete .glyphicon {\n  position: relative;\n  font-size: 13px;\n  top: 2px;\n}\n.side-navigation .side-navigation-add .glyphicon {\n  color: #008000;\n}\n.side-navigation .glyphicon-ok {\n  color: #5cb85c;\n}\n.side-navigation .glyphicon-time {\n  color: #f59f25;\n}\n"; });
-define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-nav/category-nav\"></require><category-nav menu.bind=\"menu\"></category-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
+define('text!components/strategies/strategy.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Article</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\" if.bind=\"editMode === true\"><button type=\"button\" click.delegate=\"trySaveArticle()\" class=\"btn btn-danger\">Apply Changes</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_strategy\"><header><h3>${strategy.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Strategy Name</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.title & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"strategy.summary & validate\"></textarea></div><div class=\"form-group\"><label>Strategy Url</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.url & validate\"></div><div class=\"form-group\"><label>Strategy Status:</label><div class=\"input-group\" style=\"width:40%\"><input type=\"text\" class=\"form-control\" disabled=\"disabled\" aria-label=\"...\" value=\"${strategy.active ? 'Active' : 'Inactive'}\"><div class=\"input-group-btn\"><button type=\"button\" click.delegate=\"setActiveStatus(true)\" if.bind=\"!strategy.active\" class=\"btn btn-danger\">Activate</button> <button type=\"button\" click.delegate=\"setActiveStatus(false)\" if.bind=\"strategy.active\" class=\"btn btn-danger\">Deactivate</button></div></div></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"strategy.blocks\"></article-parts></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''} ${summary.active ? '' : 'disabled'}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Strategies</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addStrategy()\">Register New Strategy</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Strategy</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteStrategy()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
 define('text!components/user/login.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
 define('text!common/styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
 define('text!components/user/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!components/user/profile.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
+define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-nav/category-nav\"></require><category-nav menu.bind=\"menu\"></category-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!common/styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\n"; });
-define('text!components/market/jobs-dashboard/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!components/market/market-indices/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_market-indices\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
-define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
-define('text!components/nav-menu/main-nav/main-nav.html', ['module'], function(module) { module.exports = "<template><require from=\"./main-nav.css\"></require><div class=\"container\"><div class=\"main-nav-items\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></div></div></template>"; });
-define('text!common/styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
 define('text!components/nav-menu/sub-nav/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
+define('text!components/journal/journals/journals.html', ['module'], function(module) { module.exports = "<template><div class=\"journals\"></div></template>"; });
+define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
+define('text!components/nav-menu/main-nav/main-nav.html', ['module'], function(module) { module.exports = "<template><require from=\"./main-nav.css\"></require><div class=\"container\"><div class=\"main-nav-items\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></div></div></template>"; });
+define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
+define('text!common/styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
+define('text!components/market/jobs-dashboard/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
 define('text!common/styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
+define('text!components/market/market-indices/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_market-indices\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
 define('text!components/strategies/indicators/indicators.html', ['module'], function(module) { module.exports = "<template><require from=\"./indicators.css\"></require><strategy-admin></strategy-admin><div class=\"c_indicators-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_indicators\"><header><h3 first-letter-span>Manage Indicators</h3></header><div class=\"c_indicator-list\"><indicator repeat.for=\"indicator of indicators\" indicator.bind=\"indicator\"></indicator><div class=\"c_indicator c_indicator-add\" click.delegate=\"addIndicator()\"><div class=\"c_indicator-header\"><a>Register new indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadIndicatorsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Indicators</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
-define('text!components/strategies/rules/rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Manage Rule Sets</h3></header><div class=\"c_rule_set-list\"><rule-set repeat.for=\"ruleset of rulesets\" ruleset.bind=\"ruleset\"></rule-set><div class=\"c_rule_set c_rule_set-add\" click.delegate=\"addRuleSet()\"><div class=\"c_rule_set-header\"><a>Register new rule set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRuleSetsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
 define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n"; });
+define('text!components/strategies/rules/rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Manage Rule Sets</h3></header><div class=\"c_rule_set-list\"><rule-set repeat.for=\"ruleset of rulesets\" ruleset.bind=\"ruleset\"></rule-set><div class=\"c_rule_set c_rule_set-add\" click.delegate=\"addRuleSet()\"><div class=\"c_rule_set-header\"><a>Register new rule set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRuleSetsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
 define('text!components/strategies/rules/rules.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules.css\"></require><strategy-admin></strategy-admin><div class=\"c_rules-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rules\"><header><h3 first-letter-span>Manage Rules</h3></header><div class=\"c_rule-list\"><rule repeat.for=\"rule of rules\" rule.bind=\"rule\"></rule><div class=\"c_rule c_rule-add\" click.delegate=\"addRule()\"><div class=\"c_rule-header\"><a>Register new rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRulesForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
-define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
 define('text!components/studies/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
+define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
 define('text!components/studies/category-nav/category-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of menu.items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"$parent.getUrl(item)\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!common/styles/_progress.css', ['module'], function(module) { module.exports = ".s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n"; });
 define('text!components/studies/study/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><require from=\"./study-actions/study-actions\"></require><require from=\"./category-studies/category-studies\"></require><study-actions></study-actions><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"article.summary & validate\"></textarea></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"article.articleBlocks\" edit-mode.bind=\"editMode\"></article-parts></div></div><div class=\"col-md-4\"><category-studies category.bind=\"category\"></category-studies></div></div></template>"; });
+define('text!common/styles/_progress.css', ['module'], function(module) { module.exports = ".s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
+define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"!editMode\" class=\"${part.headingType}\">${part.text}</span></template>"; });
 define('text!common/styles/_sub-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!common/styles/_variables.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"!editMode\" class=\"${part.headingType}\">${part.text}</span></template>"; });
-define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
-define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"!editMode\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
 define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
-define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
+define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
 define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"!editMode\">${part.text}</p></template>"; });
-define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
+define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
 define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isParagraph(part)\"></article-part-paragraph><article-part-heading part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isHeading(part)\"></article-part-heading><article-part-image part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isImage(part)\"></article-part-image><article-part-list part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isList(part)\"></article-part-list><article-part-new part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isUnset(part)\"></article-part-new><article-part-actions part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"!isUnset(part)\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
 define('text!resources/elements/chart/chart-layout.html', ['module'], function(module) { module.exports = "<template><div id=\"container-weekly\" class=\"o_chart-container\"></div><div id=\"container-daily\" class=\"o_chart-container\"></div></template>"; });
-define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
-define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
 define('text!resources/elements/company/company-details.html', ['module'], function(module) { module.exports = "<template><form><fieldset disabled=\"disabled\"><div class=\"row\"><div class=\"col-md-6\"><div class=\"form-group\"><label>Sector</label><p class=\"form-control\" readonly=\"readonly\">${company.sectorName}</p></div></div><div class=\"col-md-6\"><div class=\"form-group\"><label>Industry</label><p class=\"form-control\" readonly=\"readonly\">${company.industryName}</p></div></div></div><div class=\"row\"><div class=\"col-md-4\"><div class=\"form-group\"><label>Price</label><p class=\"form-control\" readonly=\"readonly\">${company.price}</p></div><div class=\"form-group\"><label>Volume</label><p class=\"form-control\" readonly=\"readonly\">${company.volume}</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Lowest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.lowestPrice52}</p></div><div class=\"form-group\"><label>Chaos</label><p class=\"form-control\" readonly=\"readonly\">${company.chaosPercentage}%</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Highest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.highestPrice52}</p></div><div class=\"form-group\"><label>Last Time Updated</label><p class=\"form-control\" readonly=\"readonly\">${formatDate(company.lastUpdated)}</p></div></div></div></fieldset></form></template>"; });
 define('text!resources/elements/indicator/indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_indicator\" if.bind=\"indicatorInfo.deleted !== true\"><div class=\"c_indicator-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"indicatorInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${indicatorInfo.description}</span> <a class=\"chevron\"><span if.bind=\"indicatorInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"indicatorInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_indicator-details\" if.bind=\"indicatorInfo.expanded === true\"><form submit.delegate=\"trySaveIndicator()\" if.bind=\"indicatorInfo.deleteMode !== true\"><fieldset disabled.bind=\"indicatorInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${indicatorInfo.indicatorId}\">Indicator Name</label><input type=\"text\" class=\"form-control\" id=\"txtDescription-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.description & validate\"></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${indicatorInfo.indicatorId}\">Period:</label><select id=\"ddlPeriod-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlFormula-${indicatorInfo.indicatorId}\">Formula:</label><select id=\"ddlFormula-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.name\" change.delegate=\"onFormulaChange()\"><option repeat.for=\"formula of formulaes\" value.bind=\"formula.name\">${formula.name}</option></select></div></div><div class=\"col-md-6\"><h4>Chart Properties</h4><div class=\"form-inline-stack\"><div class=\"form-group\"><label for=\"ddlChartType-${indicatorInfo.indicatorId}\">Chart Type:</label><select id=\"ddlChartType-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartType\"><option repeat.for=\"chartType of chartTypes\" model.bind=\"chartType.id\">${chartType.name}</option></select></div><div class=\"form-group\"><label for=\"txtChartPlot-${indicatorInfo.indicatorId}\">Plot Number:</label><select id=\"txtChartPlot-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartPlotNumber\"><option repeat.for=\"plotNumber of plotNumbers\" model.bind=\"plotNumber\">${plotNumber}</option></select></div><div class=\"form-group\"><label for=\"txtChartColor-${indicatorInfo.indicatorId}\">Line Color:</label><input type=\"text\" class=\"form-control\" id=\"txtChartColor-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.chartColor & validate\"></div></div></div><div class=\"col-md-6\"><h4>Formula Parameters</h4><div class=\"form-inline-stack\"><div class=\"form-group\" repeat.for=\"param of indicatorInfo.params\"><label for=\"txtParam-${param.paramName}\">${param.paramName}:</label><input type=\"text\" class=\"form-control\" id=\"txtParam-${param.paramName}\" value.bind=\"param.value\"></div></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_indicator-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"indicatorInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"indicatorInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"indicatorInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_indicator-actions\" if.bind=\"indicatorInfo.deleteMode === true\"><p><br>I'll try to delete the indicator, however, if this indicator is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator,\nchart-layout-plot {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
+define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
 define('text!resources/elements/navigation/side-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></div></template>"; });
 define('text!resources/elements/navigation/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!components/nav-menu/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
-define('text!resources/elements/progress/s-progress.html', ['module'], function(module) { module.exports = "<template class=\"s-progress\" style=\"width:100%\"><div class=\"s-progress-bar\"></div></template>"; });
 define('text!resources/elements/rule/rule.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule\" if.bind=\"ruleInfo.deleted !== true\"><div class=\"c_rule-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${ruleInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_rule-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRule()\" if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleInfo.ruleId}\">Rule Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleInfo.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleInfo.ruleId}\">Period:</label><select id=\"ddlPeriod-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.period\" change.delegate=\"onPeriodChange()\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlCondition-${ruleInfo.ruleId}\">Compare operator:</label><select id=\"ddlCondition-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.condition\"><option repeat.for=\"compareType of compareTypes\" model.bind=\"compareType.id\">${compareType.name}</option></select></div></div><div class=\"col-md-6\"><h4>Compare What</h4><div class=\"form-group\"><label for=\"ddlDataSourceV1-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV1\" change.delegate=\"onDataSourceV1Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlDataSeriesV1-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV1\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV1\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 === 2\"><label for=\"txtConstV1-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV1\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtSkipItemsV1-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtTakeItemsV1-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlTransformItemsV1-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV1\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></div><div class=\"col-md-6\"><h4>Compare With</h4><div class=\"form-group\"><label for=\"ddlDataSourceV2-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV2\" change.delegate=\"onDataSourceV2Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlDataSeriesV2-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV2\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV2\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 === 2\"><label for=\"txtConstV2-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV2\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtSkipItemsV2-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV2 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtTakeItemsV2-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV2 & validate\"></div></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlTransformItemsV2-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV2\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule, however, if this rule is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
+define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
+define('text!components/journal/journals/journals.css', ['module'], function(module) { module.exports = ""; });
+define('text!resources/elements/progress/s-progress.html', ['module'], function(module) { module.exports = "<template class=\"s-progress\" style=\"width:100%\"><div class=\"s-progress-bar\"></div></template>"; });
 define('text!resources/elements/rule-set/rule-set-item.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"rule.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${rule.name}</span><div class=\"chevron\"><a><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtDescription-${rule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${rule.ruleId}\" value.bind=\"rule.description\"></textarea></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/nav-menu/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
 define('text!resources/elements/rule-set/rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleSetInfo.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span>${ruleSetInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRuleSet()\" if.bind=\"!ruleSetInfo.deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleSetInfo.ruleSetId}\">Rule Set Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleSetInfo.ruleSetId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlPeriod-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"ruleSetInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div></div></fieldset><h4>Set of Rules:</h4><div class=\"c_rule_set-list\"><rule-set-item class=\"c_rule_set-item\" repeat.for=\"rule of ruleSetInfo.rules\" rule.bind=\"rule\"></rule-set-item><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRule()\"><a>Attach rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div><div class=\"c_rule_set-details\" if.bind=\"addMode && editMode\"><div class=\"form-group\"><label for=\"ddlRules-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlRules-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"attachedRuleId\" change.delegate=\"onRuleChange()\"><option repeat.for=\"rule of rules\" model.bind=\"rule.ruleId\">${rule.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRule.ruleId > 0\"><label for=\"txtRuleDescription-${attachedRule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" readonly=\"readonly\" id=\"txtRuleDescription-${attachedRule.ruleId}\" value.bind=\"attachedRule.description\"></textarea></div><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRule()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRule()\" class=\"btn btn-default\">Cancel</button></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule_set-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!components/strategies/rules/rule-sets.css', ['module'], function(module) { module.exports = ".c_rule_sets-content {\n  padding-bottom: 30px;\n}\n.c_rule_sets-content .c_rule_sets {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add,\n.c_rule_sets-content .c_rule_set .c_rule_set-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add .glyphicon,\n.c_rule_sets-content .c_rule_set .c_rule_set-add .glyphicon {\n  color: green;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .chevron {\n  float: right;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group .btn,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details {\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule_set-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_rule_sets-content .c_rule_set-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n"; });
 define('text!resources/elements/strategy/side-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul></div></template>"; });
+define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator,\nchart-layout-plot {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
+define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
 define('text!resources/elements/strategy/strategy-admin.html', ['module'], function(module) { module.exports = "<template><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div></div></template>"; });
+define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
+define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
+define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"!ruleset.deleted\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/journal/journals/journal/journal.html', ['module'], function(module) { module.exports = "<template><div class=\"journal\"></div></template>"; });
+define('text!components/strategies/rules/rule-sets.css', ['module'], function(module) { module.exports = ".c_rule_sets-content {\n  padding-bottom: 30px;\n}\n.c_rule_sets-content .c_rule_sets {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add,\n.c_rule_sets-content .c_rule_set .c_rule_set-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add .glyphicon,\n.c_rule_sets-content .c_rule_set .c_rule_set-add .glyphicon {\n  color: green;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .chevron {\n  float: right;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group .btn,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details {\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule_set-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_rule_sets-content .c_rule_set-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n"; });
+define('text!components/journal/journals/journal-periods/journal-periods.html', ['module'], function(module) { module.exports = "<template></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
 define('text!components/strategies/rules/rules.css', ['module'], function(module) { module.exports = ".c_rules-content .c_rules {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_rules-content .c_rule-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rules-content .c_rule {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add,\n.c_rules-content .c_rule .c_rule-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add .glyphicon,\n.c_rules-content .c_rule .c_rule-add .glyphicon {\n  color: green;\n}\n.c_rules-content .c_rule .c_rule-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rules-content .c_rule .c_rule-header .chevron {\n  float: right;\n}\n.c_rules-content .c_rule .c_rule-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rules-content .c_rule .c_rule-details {\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rules-content .c_rule .c_rule-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
 define('text!components/studies/categories/categories.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"!ruleset.deleted\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout-plot.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${plot.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of plot.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-plot\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
 define('text!components/studies/category-nav/category-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
+define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
 define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div class=\"form-horizontal form-current-job\"><fieldset if.bind=\"currentJobStarted\"><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Job Number</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">#000000${currentJob.jobId}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Started Date</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${startDate}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Status</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${jobStatusName}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Progress</label><div class=\"col-sm-8 col-progress\"><span>${currentJob.progress}%</span><s-progress progress.bind=\"currentJob.progress\"></s-progress></div></div><div class=\"c_job-actions\"><button type=\"button\" if.bind=\"currentJobPaused\" click.delegate=\"resumeJob()\" class=\"btn btn-default\">Resume job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"cancelJob()\" class=\"btn btn-danger\">Cancel Job</button> <button type=\"button\" if.bind=\"currentJobInProgress\" click.delegate=\"pauseJob()\" class=\"btn btn-warning\">Pause job</button></div></fieldset></div><div class=\"c_job-actions\" if.bind=\"!currentJobStarted\"><button type=\"button\" click.delegate=\"startJob()\" class=\"btn btn-danger\">Start new job</button></div><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning\">Clear history</button></div></div></div></div></template>"; });
 define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
 define('text!components/studies/study/study.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
-define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layout-plot.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${plot.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of plot.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></div></template>"; });
-define('text!components/market/jobs-dashboard/jobs/job.css', ['module'], function(module) { module.exports = ".c_dashboard {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_job-details-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_job-details-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n.c_job-details-list .c_jod_details {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_job-details-list .c_jod_details .c_jod_details-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .chevron {\n  float: right;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group .btn,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details {\n  padding-top: 10px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_job-actions {\n  padding-top: 12px;\n  padding-right: 20px;\n  text-align: right;\n  border-top: solid 1px rgba(204, 204, 204, 0.36);\n}\n.job-staus-2 {\n  color: #5cb85c;\n}\n.job-staus-3 {\n  color: #f59f25;\n}\n.job-staus-99,\n.chevron {\n  color: #CA1D04;\n}\n.label {\n  font-weight: 300;\n  font-size: 13px;\n  padding: 4px 8px;\n}\n.form-current-job fieldset {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  padding: 20px 0 12px;\n}\n.monospace {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  margin-top: 2px;\n}\n.form-group.exception .form-control {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  font-style: normal;\n  font-variant: normal;\n  font-weight: 400;\n  line-height: 19px;\n  color: rgba(0, 0, 0, 0.55);\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n}\n.form-group.error .form-control {\n  color: #CA1D04;\n}\n.col-progress {\n  text-align: center;\n}\n.col-progress span {\n  font-size: 13px;\n  position: relative;\n  color: #5cb85c;\n  font-weight: 500;\n}\n.col-progress s-progress {\n  position: relative;\n  top: -8px;\n}\n"; });
-define('text!components/studies/study/category-studies/category-studies.css', ['module'], function(module) { module.exports = ""; });
-define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-plot\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
 define('text!components/studies/study/category-studies/category-studies.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-studies.css\"></require><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></template>"; });
 define('text!components/studies/study/study-actions/study-actions.html', ['module'], function(module) { module.exports = "<template><div if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a click.delegate=\"manageCategories()\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div></template>"; });
+define('text!components/market/jobs-dashboard/jobs/job.css', ['module'], function(module) { module.exports = ".c_dashboard {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_job-details-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_job-details-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n.c_job-details-list .c_jod_details {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_job-details-list .c_jod_details .c_jod_details-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .chevron {\n  float: right;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group .btn,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details {\n  padding-top: 10px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_job-actions {\n  padding-top: 12px;\n  padding-right: 20px;\n  text-align: right;\n  border-top: solid 1px rgba(204, 204, 204, 0.36);\n}\n.job-staus-2 {\n  color: #5cb85c;\n}\n.job-staus-3 {\n  color: #f59f25;\n}\n.job-staus-99,\n.chevron {\n  color: #CA1D04;\n}\n.label {\n  font-weight: 300;\n  font-size: 13px;\n  padding: 4px 8px;\n}\n.form-current-job fieldset {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  padding: 20px 0 12px;\n}\n.monospace {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  margin-top: 2px;\n}\n.form-group.exception .form-control {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  font-style: normal;\n  font-variant: normal;\n  font-weight: 400;\n  line-height: 19px;\n  color: rgba(0, 0, 0, 0.55);\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n}\n.form-group.error .form-control {\n  color: #CA1D04;\n}\n.col-progress {\n  text-align: center;\n}\n.col-progress span {\n  font-size: 13px;\n  position: relative;\n  color: #5cb85c;\n  font-weight: 500;\n}\n.col-progress s-progress {\n  position: relative;\n  top: -8px;\n}\n"; });
+define('text!components/studies/study/category-studies/category-studies.css', ['module'], function(module) { module.exports = ""; });
 define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"deleteJob()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
-define('text!components/journal/navigation.html', ['module'], function(module) { module.exports = "<template><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
-define('text!components/journal/journals/journals.html', ['module'], function(module) { module.exports = "<template><div class=\"journals\"></div></template>"; });
-define('text!components/journal/journals/journals.css', ['module'], function(module) { module.exports = ""; });
-define('text!components/journal/journals/new-journal/new-journal.html', ['module'], function(module) { module.exports = "<template><div class=\"new-journal\"></div></template>"; });
-define('text!components/journal/journals/journal-entry/new-journal.html', ['module'], function(module) { module.exports = "<template><div class=\"new-journal\"></div></template>"; });
-define('text!components/journal/journals/journal-entry/journal-entry.html', ['module'], function(module) { module.exports = "<template><div class=\"journal-entry\"></div></template>"; });
-define('text!components/journal/journals/journal/journal-entry.html', ['module'], function(module) { module.exports = "<template><div class=\"journal-entry\"></div></template>"; });
-define('text!components/journal/journals/journal/journal.html', ['module'], function(module) { module.exports = "<template><div class=\"journal\"></div></template>"; });
-define('text!components/journal/journals/journal-periods/journal-periods.html', ['module'], function(module) { module.exports = "<template></template>"; });
 //# sourceMappingURL=app-bundle.js.map

@@ -1,6 +1,6 @@
 export class BlobToUrlValueConverter {  
-    toView(blob) {
-        let imageUrl = URL.createObjectURL(blob);
+    toView(blob: any) {
+        const imageUrl = URL.createObjectURL(blob);
         return imageUrl;
     }
 }

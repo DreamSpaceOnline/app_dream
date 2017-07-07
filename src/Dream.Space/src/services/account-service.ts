@@ -15,7 +15,7 @@ export class AccountService {
     }
 
 
-    async login(username, password): Promise<LoginResponse> {
+    async login(username: string, password: string): Promise<LoginResponse> {
 
         const loginRequest = new LoginViewModel();
         loginRequest.email = username;

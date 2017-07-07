@@ -11,7 +11,7 @@ export class ErrorInterceptor implements Interceptor {
 
     response(response: Response) {
         if (response.status >= 500) {
-            let message = `Received ${response.status} ${response.url}`;
+            const message = `Received ${response.status} ${response.url}`;
             this.eventEmitter.publish("ServerError", { message: message });
         }
 
@@ -27,16 +27,16 @@ export class ErrorInterceptor implements Interceptor {
     }
 
     request(request: Request) {
-        let message = `${request.url}`;
+        const message = `${request.url}`;
             this.eventEmitter.publish("ServerError", { message: message });
             return request;
     }
 
 
-    async responseError(response: Response, _request?: Request): Promise<Response> {
+    async responseError(response: Response, request?: Request): Promise<Response> {
         if (response.status === 400) {
-            let validationError = (await response.json()).message;
-            this.eventEmitter.publish('ValidationError', validationError);
+            const validationError = (await response.json()).message;
+            this.eventEmitter.publish("ValidationError", validationError);
             return Promise.reject(validationError);
         }
 
@@ -54,6 +54,10 @@ export class ErrorInterceptor implements Interceptor {
             this.eventEmitter.publish("ServerError", { message: "Unhandled" });
             return Promise.reject(null);
         }
+        if (request != null) {}
+
+        return Promise.resolve(response);
+
     }
 
 }

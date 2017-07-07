@@ -40,7 +40,7 @@ export class ChartLayouts {
         this.loadLayouts();
     }
 
-    activate(params, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params: any, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         if (params && routeconfig) {
 

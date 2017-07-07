@@ -20,7 +20,7 @@ export class ChartLayout {
     renderChart() {
         if (this.data.periods.length === 0) return;
 
-        this.data.periods.forEach(period => {
+        this.data.periods.forEach((period:any) => {
             $(`#container-${period.period}`).empty();
 
             const chart = anychart.stock();
@@ -39,7 +39,7 @@ export class ChartLayout {
 
         let plotNumber = 0;
 
-        period.plots.forEach(p => {
+        period.plots.forEach((p:any) => {
             let plot: anychart.core.stock.Plot;
 
             if (plotNumber === 0) {
@@ -128,23 +128,23 @@ export class ChartLayout {
         }
 
 
-        plotData.indicators.forEach(indicator => {
+        plotData.indicators.forEach((indicator: any) => {
 
             const table = anychart.data.table(0);
 
-            indicator.data.forEach(value => {
+            indicator.data.forEach((value: any) => {
 
-                const row = [];
+                const row: any[] = [];
                 row.push(value.date);
 
-                value.values.forEach((item) => {
+                value.values.forEach((item:any) => {
                     row.push(item.value);
                 });
 
                 table.addData([row]);
             });
 
-            indicator.data[0].values.forEach(item => {
+            indicator.data[0].values.forEach((item: any) => {
                 const mapping = table.mapAs();
                 mapping.addField("value", indicator.data[0].values.indexOf(item) + 1);
 
@@ -159,7 +159,7 @@ export class ChartLayout {
 
         switch (value.chartType) {
             case ChartType.Column:
-                var column = plotChart.column(mapping);
+                const column = plotChart.column(mapping);
                 column.name(value.name);
 
                 if (value.lineColor !== "") {
@@ -168,7 +168,7 @@ export class ChartLayout {
 
                 break;
         default: // "line""
-                var line = plotChart.line(mapping);
+                const line = plotChart.line(mapping);
                 line.name(value.name);
 
                 if (value.lineColor !== "") {

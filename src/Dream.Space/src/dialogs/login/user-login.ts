@@ -1,5 +1,5 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { DialogController } from 'aurelia-dialog';
+import { DialogController } from "aurelia-dialog";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { BootstrapFormRenderer } from "../../form-validation/bootstrap-form-renderer";
 import { BindingEngine, Disposable } from 'aurelia-binding';
@@ -20,8 +20,8 @@ export class UserLogin {
 
     attached() {
         this.subscriptions = [];
-        this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, 'email').subscribe(() => this.onChange()));
-        this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, 'password').subscribe(() => this.onChange()));
+        this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, "email").subscribe(() => this.onChange()));
+        this.subscriptions.push(this.bindingEngine.propertyObserver(this.model, "password").subscribe(() => this.onChange()));
     }
 
     detached() {
@@ -60,5 +60,5 @@ export class UserLogin {
 
 export class UserLoginModel {
     email: string;
-    password: number;
+    password: string;
 }

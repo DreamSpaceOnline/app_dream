@@ -19,7 +19,7 @@ export class Rules {
         this.periods = this.globalSettings.periods;
     }
 
-    activate(params, routeConfig: RouteConfig , navigationInstruction: NavigationInstruction) {
+    activate(params: any, routeConfig: RouteConfig , navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         this.routeName = routeConfig.name;
 
@@ -28,13 +28,13 @@ export class Rules {
             this.loadRules(this.activePeriod.id);
 
         } else {
-            const defaultUrl = "/strategies/rules/" + this.activePeriod.name.toLowerCase();
+            const defaultUrl = `/strategies/rules/${this.activePeriod.name.toLowerCase()}`;
             this.router.navigate(defaultUrl);
         }
 
     }
 
-    activatePeriod(periodUrl): IdName {
+    activatePeriod(periodUrl: string): IdName {
 
         this.periods.forEach(element => {
             element.active = false;
@@ -61,16 +61,16 @@ export class Rules {
         this.rules.push(rule);
     }
 
-    loadRulesForPeriod(period) {
+    loadRulesForPeriod(period: any) {
         const url = `/strategies/rules/${period.url}`;
         this.router.navigate(url);
     }
 
-    isPeriodActive(period) {
+    isPeriodActive(period: any) {
         return period.id === this.activePeriod.id;
     }
 
-    async loadRules(periodId) {
+    async loadRules(periodId: number) {
         this.rules = await this.ruleService.getRules(periodId);
     }
 

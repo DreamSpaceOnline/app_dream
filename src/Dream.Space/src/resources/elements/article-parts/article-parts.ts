@@ -21,7 +21,7 @@ export class ArticleParts {
     }
 
     
-    partsChanged(newValue) {
+    partsChanged(newValue: ArticleBlock[]) {
         if (newValue ) {
             if( !this.partsChangedSubscription) {
                 this.partsChangedSubscription = this.bindingEngine.collectionObserver(this.parts).subscribe( () => this.onPartsChanged());

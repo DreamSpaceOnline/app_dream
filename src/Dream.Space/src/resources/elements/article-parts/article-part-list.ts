@@ -16,7 +16,7 @@ export class ArticlePartList {
         this.itemsChangedSubscription = null;
     }
 
-    partChanged(newValue) {
+    partChanged(newValue: ArticleBlock) {
         if (newValue ) {
 
             if (!this.part.items) {
@@ -44,7 +44,7 @@ export class ArticlePartList {
         this.part.items.push(item);
     }
     
-    deleteItem(index) {
+    deleteItem(index: number) {
         this.part.items.splice(index, 1);
     }
 
@@ -66,7 +66,7 @@ export class ArticlePartList {
 
             this.part.items.forEach( item => {
                 self.itemsSubscriptions.push(
-                    self.bindingEngine.propertyObserver(item, 'text')
+                    self.bindingEngine.propertyObserver(item, "text")
                         .subscribe(() => self.onItemTextChange()));
             });
         }

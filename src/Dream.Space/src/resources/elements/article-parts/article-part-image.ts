@@ -50,7 +50,7 @@ export class ArticlePartImage {
         
     }
 
-    blobToUrl(blob) {
+    blobToUrl(blob: any) {
         return URL.createObjectURL(blob);
     }
 

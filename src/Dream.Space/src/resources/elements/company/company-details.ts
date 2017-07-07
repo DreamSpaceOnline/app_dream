@@ -5,14 +5,14 @@ import {CompanyModel} from "../../../services/services-generated";
 export class CompanyDetails {
     @bindable company: CompanyModel;
 
-    formatDate(date) {
-        let date1 = moment(date);
-        let date2 = moment(new Date());
+    formatDate(date: Date) {
+        const date1 = moment(date);
+        const date2 = moment(new Date());
 
-        let diff = date2.diff(date1);
-        let duration = moment.duration(diff);
-        let days = duration.asDays();
+        const diff = date2.diff(date1);
+        const duration = moment.duration(diff);
+        const days = duration.asDays();
 
-        return Math.round(days) + ' days ago';
+        return Math.round(days) + " days ago";
     }
 }

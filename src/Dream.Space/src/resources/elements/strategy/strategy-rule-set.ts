@@ -16,7 +16,7 @@ export class StrategyRuleSet {
         this.periods = settings.periods;
     }
 
-    rulesetChanged(newValue) {
+    rulesetChanged(newValue: VStrategyRuleSet) {
         if (newValue) {
         }
     }
@@ -35,7 +35,7 @@ export class StrategyRuleSet {
         this.expanded = true;
     }
 
-    setOptionalStatus(flag) {
+    setOptionalStatus(flag: boolean) {
         this.ruleset.ruleSetOptional = flag;
     }
 

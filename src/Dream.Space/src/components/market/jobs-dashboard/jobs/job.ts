@@ -16,7 +16,7 @@ export class Job {
     currentJob: ScheduledJob;
     jobUrl = "";
 
-    constructor(account: AccountService, private jobService: JobsApiClient, eventAggregator: EventAggregator) {
+    constructor(account: AccountService, private readonly jobService: JobsApiClient, eventAggregator: EventAggregator) {
         this.powerUser = account.currentUser.isAuthenticated;
 
         this.subscription = eventAggregator.subscribe("router:navigation:complete", () => {
@@ -24,7 +24,7 @@ export class Job {
         });
     }
 
-    activate(params, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params: any, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         if (params && routeconfig) {
 

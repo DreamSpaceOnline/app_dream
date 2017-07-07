@@ -166,7 +166,7 @@ export class RuleSet {
         } 
     }
 
-    moveRuleUp(rule) {
+    moveRuleUp(rule: RuleInfo) {
         if (rule && rule.ruleId) {
             let index = this.ruleSetInfo.rules.findIndex(item => item.ruleId === rule.ruleId);
             if (index > 0) {
@@ -175,7 +175,7 @@ export class RuleSet {
         }
     }
 
-    moveRuleDown(rule) {
+    moveRuleDown(rule: RuleInfo) {
         if (rule && rule.ruleId) {
             let index = this.ruleSetInfo.rules.findIndex(item => item.ruleId === rule.ruleId);
             if (index > -1 && index < this.ruleSetInfo.rules.length - 1) {
@@ -200,10 +200,10 @@ export class RuleSet {
     attached() {
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe('rule-set-item-up-' + this.ruleset.ruleSetId, rule => this.moveRuleUp(rule)));
+            this.eventAggregator.subscribe('rule-set-item-up-' + this.ruleset.ruleSetId, (rule:RuleInfo) => this.moveRuleUp(rule)));
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe('rule-set-item-down-' + this.ruleset.ruleSetId, rule => this.moveRuleDown(rule)));
+            this.eventAggregator.subscribe('rule-set-item-down-' + this.ruleset.ruleSetId, (rule: RuleInfo) => this.moveRuleDown(rule)));
 
     }
 

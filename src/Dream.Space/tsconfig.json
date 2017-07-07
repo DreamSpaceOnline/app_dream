@@ -1,11 +1,10 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "sourceMap": true,
     "target": "es5",
     "module": "amd",
     "declaration": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -23,8 +22,5 @@
     "./test/**/*.ts",
     "./custom_typings/**/*.d.ts",
     "./aurelia_project/environments/**/*.ts"
-  ],
-  "atom": {
-    "rewriteTsconfig": false
-  }
+  ]
 }

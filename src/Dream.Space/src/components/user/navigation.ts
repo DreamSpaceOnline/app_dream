@@ -1,11 +1,11 @@
-﻿import { Router } from "aurelia-router";
+﻿import { Router, RouterConfiguration } from "aurelia-router";
 
 export class Navigation {
 
     router: Router;
 
-    configureRouter(config, router) {
-        config.title = 'Login';
+    configureRouter(config: RouterConfiguration, router: Router) {
+        config.title = "Login";
 
         config.map([
             { route: ["", "login"], moduleId: "./login", name: "user-login", title: "Login", nav: false },

@@ -27,7 +27,7 @@ export class RuleSets {
         this.periods = this.globalSettings.periods;
     }
 
-    activate(params, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         this.routeName = routeConfig.name;
 
@@ -42,7 +42,7 @@ export class RuleSets {
 
     }
 
-    activatePeriod(periodUrl): IdName {
+    activatePeriod(periodUrl: string): IdName {
 
         this.periods.forEach(element => {
             element.active = false;
@@ -70,16 +70,16 @@ export class RuleSets {
         this.rulesets.push(ruleset);
     }
 
-    loadRuleSetsForPeriod(period) {
+    loadRuleSetsForPeriod(period:any) {
         let url = `/strategies/rule-sets/${period.url}`;
         this.router.navigate(url);
     }
 
-    isPeriodActive(period) {
+    isPeriodActive(period:any) {
         return period.id === this.activePeriod.id;
     }
 
-    async loadRuleSets(periodId) {
+    async loadRuleSets(periodId: number) {
         this.rulesets = await this.ruleSetService.getRuleSets(periodId);
     }
 

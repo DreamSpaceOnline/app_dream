@@ -33,7 +33,7 @@ export class SideNavigation {
     }
 
 
-    summaryNotFound(url) {
+    summaryNotFound(url: string) {
         let result = true;
 
         if (this.summaries && this.summaries.length > 0) {
@@ -44,7 +44,7 @@ export class SideNavigation {
     }
 
 
-    setActiveStrategy(url) {
+    setActiveStrategy(url: string) {
 
         if (this.summaryNotFound(url)) {
             this.navigateToDefaultStrategy();
@@ -68,7 +68,7 @@ export class SideNavigation {
         }
     }
 
-    navigateToStrategy(url) {
+    navigateToStrategy(url: string) {
         if (url && url.length > 0) {
             const strategyUrl = `/strategies/${this.currentModuleName}/${url}`;
             this.router.navigate(strategyUrl);

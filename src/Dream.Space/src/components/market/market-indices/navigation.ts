@@ -1,12 +1,12 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { Router } from "aurelia-router";
+import { Router, RouterConfiguration } from "aurelia-router";
 
 @autoinject
 export class Navigation {
 
     router: Router;
 
-    configureRouter(config: any, router: Router) {
+    configureRouter(config: RouterConfiguration, router: Router) {
         config.title = "Market Indices";
 
 

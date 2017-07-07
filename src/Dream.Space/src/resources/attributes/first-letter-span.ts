@@ -7,7 +7,7 @@ export class FirstLetterSpan {
 
     element: Element;
 
-    constructor(element) {
+    constructor(element: Element) {
         this.element = element;
         if (this.element.childElementCount === 0) {
             this.wrapFirstLetterInSpan();

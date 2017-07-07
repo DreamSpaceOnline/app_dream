@@ -19,7 +19,7 @@ export async function configure(aurelia: Aurelia) {
     const httpClient = aurelia.container.get(HttpClient) as HttpClient;
     const errorInterceptor = aurelia.container.get(ErrorInterceptor) as ErrorInterceptor;
 
-    httpClient.configure(config => {
+    httpClient.configure((config: any) => {
         config
             .useStandardConfiguration()
             .withInterceptor(errorInterceptor);
@@ -37,7 +37,7 @@ export async function configure(aurelia: Aurelia) {
         .instance("Settings", settings)
         .feature("resources")
         .plugin("aurelia-dialog",
-            config => {
+            (config: any) => {
                 config.useDefaults();
                 config.settings.lock = false;
                 config.settings.enableEscClose = true;

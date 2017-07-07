@@ -27,7 +27,7 @@ export class MarketIndex {
         this.loadIndex();
     }
 
-    activate(params, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params: any, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         if (params && routeconfig) {
 

@@ -32,7 +32,7 @@ export class Categories {
         this.sectionId = 0;
     }
 
-    async activate(params) {
+    async activate(params: any) {
 
         if (!params.section) {
             if (this.sections && this.sections.length > 0) {
@@ -47,8 +47,8 @@ export class Categories {
 
     }
 
-    getSectionUrl(section) {
-        return "/categories/" + section.SectionId;
+    getSectionUrl(section: any) {
+        return `/categories/${section.SectionId}`;
     }
 
 }

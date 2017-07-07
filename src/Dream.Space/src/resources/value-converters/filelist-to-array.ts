@@ -1,6 +1,6 @@
 export class FileListToArrayValueConverter {  
-    toView(fileList) {
-        let files = [];
+    toView(fileList: any) {
+        const files: any[] = [];
         if (!fileList) {
             return files;
         }

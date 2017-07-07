@@ -21,17 +21,17 @@ export class Strategy {
     routeName: string;
 
     constructor(
-        private eventAggregator: EventAggregator,
-        private strategyService: StrategiesApiClient,
+        private readonly eventAggregator: EventAggregator,
+        private readonly strategyService: StrategiesApiClient,
         account: AccountService,
-        private validation: ValidationController
+        private readonly validation: ValidationController
     ) {
         this.powerUser = account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
     }
 
-    async activate(params, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         this.routeName = routeConfig.name;
 
@@ -60,7 +60,7 @@ export class Strategy {
         }
     }
 
-    setActiveStatus(flag) {
+    setActiveStatus(flag: boolean) {
         this.strategy.active = flag;
         const summary = this.summaries.find(s => s.strategyId === this.strategy.strategyId);
         if (summary) {
@@ -68,7 +68,7 @@ export class Strategy {
         }
     }
 
-    navigateToStrategy(url) {
+    navigateToStrategy(url: string) {
         if (url && url.length > 0) {
             this.setEditMode(false);
             const strategyUrl = `/strategies/strategy/${url}`;
@@ -76,7 +76,7 @@ export class Strategy {
         }
     }
 
-    async loadStrategy(url) {
+    async loadStrategy(url: string) {
         if (url && url.length > 0) {
             try {
                 this.strategy = await this.strategyService.getStrategyByUrl(url);
@@ -92,7 +92,7 @@ export class Strategy {
         }
     }
 
-    selectActiveSummary(id) {
+    selectActiveSummary(id: number) {
         this.summaries.forEach(item => {
             if (item.strategyId === id) {
                 
@@ -109,7 +109,7 @@ export class Strategy {
         }
     }
 
-    setEditMode(editMode) {
+    setEditMode(editMode: boolean) {
         this.editMode = editMode;
         this.eventAggregator.publish("article-edit-mode-changed", editMode);
     }

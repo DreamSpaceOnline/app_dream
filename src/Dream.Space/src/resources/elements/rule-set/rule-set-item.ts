@@ -48,7 +48,7 @@ export class RuleSetItem {
         this.unsubscribe();
     }
 
-    setEditMode(flag) {
+    setEditMode(flag: boolean) {
         this.editMode = flag;
     }
 
@@ -63,10 +63,10 @@ export class RuleSetItem {
     attached() {
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, flag => this.setEditMode(flag)));
+            this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, (flag: boolean) => this.setEditMode(flag)));
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, flag => this.setEditMode(flag)));
+            this.eventAggregator.subscribe("rule-set-edit-mode-" + this.rule.ruleSetId, (flag: boolean) => this.setEditMode(flag)));
 
     }
 }

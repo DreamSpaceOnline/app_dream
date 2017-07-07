@@ -31,13 +31,13 @@ export class StrategyRuleSets {
 
     subscribe() {
         this.subscriptions.push(
-            this.eventAggregator.subscribe("strategy-rule-set-up", ruleSetId => this.moveRuleSetUp(ruleSetId)));
+            this.eventAggregator.subscribe("strategy-rule-set-up", (ruleSetId:number) => this.moveRuleSetUp(ruleSetId)));
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe("strategy-rule-set-down", ruleSetId => this.moveRuleSetDown(ruleSetId)));
+            this.eventAggregator.subscribe("strategy-rule-set-down", (ruleSetId: number) => this.moveRuleSetDown(ruleSetId)));
 
         this.subscriptions.push(
-            this.eventAggregator.subscribe("strategy-rule-set-detach", ruleSetId => this.detachRuleSet(ruleSetId)));
+            this.eventAggregator.subscribe("strategy-rule-set-detach", (ruleSetId: number) => this.detachRuleSet(ruleSetId)));
     }
 
     detached() {
@@ -48,28 +48,28 @@ export class StrategyRuleSets {
         }
     }
 
-    moveRuleSetUp(ruleSetId) {
+    moveRuleSetUp(ruleSetId: number) {
         const index = this.rulesets.findIndex(item => item.ruleSetId === ruleSetId);
         if (index > 0) {
             this.rulesets.splice(index - 1, 0, this.rulesets.splice(index, 1)[0]);
         }
     }
 
-    moveRuleSetDown(ruleSetId) {
+    moveRuleSetDown(ruleSetId: number) {
         const index = this.rulesets.findIndex(item => item.ruleSetId === ruleSetId);
         if (index > -1 && index < this.rulesets.length - 1) {
             this.rulesets.splice(index + 1, 0, this.rulesets.splice(index, 1)[0]);
         }
     }
 
-    detachRuleSet(ruleSetId) {
+    detachRuleSet(ruleSetId: number) {
         const index = this.rulesets.findIndex(item => item.ruleSetId === ruleSetId);
         if (index !== -1) {
             this.rulesets.splice(index, 1);
         }
     }
 
-    async activate(params) {
+    async activate(params: any) {
         if (params.strategyUrl) {
             try {
                 const strategy = await this.strategyService.getStrategySummaryByUrl(params.strategyUrl);
@@ -106,7 +106,7 @@ export class StrategyRuleSets {
         this.setEditMode(false);
     }
 
-    setEditMode(mode) {
+    setEditMode(mode: boolean) {
         this.editMode = mode;
 
         if (this.rulesets.length > 0) {
@@ -158,7 +158,7 @@ export class StrategyRuleSets {
         }
     }
 
-    validateRuleSet(ruleSet) {
+    validateRuleSet(ruleSet: any) {
         let result = true;
 
         if (ruleSet.ruleSetId > 0) {

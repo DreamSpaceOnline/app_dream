@@ -1,5 +1,5 @@
 ﻿import { autoinject } from "aurelia-framework";
-import { Router } from "aurelia-router";
+import { Router, RouterConfiguration } from "aurelia-router";
 import {SettingsService} from "../../services/settings-service";
 import {ArticlesApiClient, CategoryModel, SectionModel } from "../../services/services-generated";
 
@@ -23,12 +23,12 @@ export class Navigation {
         this.loadCategories(this.section.sectionId);
     }
 
-    async loadCategories(sectionId) {
+    async loadCategories(sectionId: number) {
         const categories = await this.articleService.getCategories(sectionId);
         this.menu.items = categories;
     }
 
-    configureRouter(config, router: Router) {
+    configureRouter(config: RouterConfiguration, router: Router) {
         config.title = this.section.title;
 
 
@@ -40,7 +40,7 @@ export class Navigation {
         this.router = router;
     }
 
-    selectMenuItem(categoryUrl) {
+    selectMenuItem(categoryUrl: string) {
         if (this.menu && this.menu.items) {
             this.menu.items.forEach(item => {
                 if (item.url === categoryUrl) {

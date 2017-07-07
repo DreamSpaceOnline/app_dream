@@ -32,7 +32,7 @@ export class StrategyPlayground {
         this.periods = this.settings.periods;
     }
 
-    async activate(params, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
         this.routeName = routeConfig.name;
 
@@ -70,7 +70,7 @@ export class StrategyPlayground {
         this.companies = await this.companyService.search(request);
     }
 
-    selectCompany(company) {
+    selectCompany(company: any) {
         const url = `/strategies/strategy-playground/${this.strategy.url}/${company.ticker.toLowerCase()}`;
         company.expanded = false;
         this.playgroundLoaded = false;
@@ -79,7 +79,7 @@ export class StrategyPlayground {
     }
 
 
-    async updateCompany(ticker) {
+    async updateCompany(ticker: string) {
         try {
             await this.stockService.updateQuotes(ticker);
             this.company = await this.companyService.getCompany(ticker);

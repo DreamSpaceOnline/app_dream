@@ -1,6 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { Router } from "aurelia-router";
+import { Router, RouterConfiguration } from "aurelia-router";
 
 @autoinject
 export class Navigation {
@@ -9,10 +9,10 @@ export class Navigation {
     section: string;
     url = "";
 
-    constructor(private eventAggregator: EventAggregator) {
+    constructor(private readonly eventAggregator: EventAggregator) {
     }
 
-    configureRouter(config: any, router: Router) {
+    configureRouter(config: RouterConfiguration, router: Router) {
         config.title = "Strategies";
 
 

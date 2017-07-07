@@ -9,7 +9,7 @@ export class StrategyNavigation {
     items: LinkInfo[] = [];
 
     constructor(private eventAggregator: EventAggregator) {
-        this.subscription = this.eventAggregator.subscribe("router:navigation:complete", (request) => {
+        this.subscription = this.eventAggregator.subscribe("router:navigation:complete", (request: any) => {
             this.onNavigatioComplete(request.instruction);
         });
     }

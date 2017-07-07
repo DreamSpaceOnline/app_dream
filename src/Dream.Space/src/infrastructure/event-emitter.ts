@@ -10,25 +10,25 @@ export class EventEmitter {
 
     }
 
-    publish(eventType: "ServerError", data: IServerError);
-    publish(eventType: "ValidationError", data: IValidationError);
-    publish(eventType: "LayoutIndicatorMoved", data: ILayoutIndicatorMoved);
-    publish(eventType: "Article-StartEdit", data?: IArticleEvent);
-    publish(eventType: "Article-CancelEdit", data?: IArticleEvent);
-    publish(eventType: "Article-Save", data?: IArticleEvent);
+    publish(eventType: "ServerError", data: IServerError): any;
+    publish(eventType: "ValidationError", data: IValidationError): any;
+    publish(eventType: "LayoutIndicatorMoved", data: ILayoutIndicatorMoved): any;
+    publish(eventType: "Article-StartEdit", data?: IArticleEvent): any;
+    publish(eventType: "Article-CancelEdit", data?: IArticleEvent): any;
+    publish(eventType: "Article-Save", data?: IArticleEvent): any;
 
-    publish(eventType: EventType, data?: any) {
+    publish(eventType: EventType, data?: any): any {
         this.eventAggregator.publish(eventType, data);
     }
 
-    subscribe(eventType: "ServerError", handler: (event: IServerError) => void);
-    subscribe(eventType: "ValidationError", handler: (event: IValidationError) => void);
-    subscribe(eventType: "LayoutIndicatorMoved", handler: (event: ILayoutIndicatorMoved) => void);
-    subscribe(eventType: "Article-StartEdit", handler: (event?: IArticleEvent) => void);
-    subscribe(eventType: "Article-CancelEdit", handler: (event?: IArticleEvent) => void);
-    subscribe(eventType: "Article-Save", handler: (event?: IArticleEvent) => void);
+    subscribe(eventType: "ServerError", handler: (event: IServerError) => void): any;
+    subscribe(eventType: "ValidationError", handler: (event: IValidationError) => void): any;
+    subscribe(eventType: "LayoutIndicatorMoved", handler: (event: ILayoutIndicatorMoved) => void): any;
+    subscribe(eventType: "Article-StartEdit", handler: (event?: IArticleEvent) => void): any;
+    subscribe(eventType: "Article-CancelEdit", handler: (event?: IArticleEvent) => void): any;
+    subscribe(eventType: "Article-Save", handler: (event?: IArticleEvent) => void): any;
 
-    subscribe(eventType: EventType, handler: (event?: any) => void) {
+    subscribe(eventType: EventType, handler: (event?: any) => void): any{
         return this.eventAggregator.subscribe(eventType, handler);
     }
 }

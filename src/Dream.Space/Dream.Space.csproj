@@ -28,7 +28,7 @@
     </NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Dream.Space/providers/microsoft.insights/components/Dream-Space</ApplicationInsightsResourceId>
     <TargetFrameworkProfile />
-    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2.1</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <WebGreaseLibPath>..\..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/46d12bf4-0629-476b-af7a-b41d0628b20f/resourcegroups/Dream.Space/providers/microsoft.insights/components/Dream-Space</ApplicationInsightsAnnotationResourceId>
@@ -470,7 +470,6 @@
     <TypeScriptCompile Include="aurelia_project\tasks\transpile.ts" />
     <TypeScriptCompile Include="custom_typings\anychart.d.ts" />
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
-    <TypeScriptCompile Include="custom_typings\URLSearchParams.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
@@ -673,7 +672,6 @@
   <ItemGroup>
     <Content Include="nswag.json" />
     <None Include="Properties\PublishProfiles\dream-space - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\DreamSpace - Web Deploy.pubxml" />
     <Content Include="karma.conf.js" />
     <Content Include="src\components\market\market-indices\market-indices.less" />
     <Content Include="src\components\market\jobs-dashboard\jobs\job.less" />

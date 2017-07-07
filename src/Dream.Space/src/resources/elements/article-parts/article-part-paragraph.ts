@@ -14,7 +14,7 @@ export class ArticlePartParagraph {
         this.subscriptions = [];
     }
 
-    editModeChanged(newVaue) {
+    editModeChanged(newVaue: boolean) {
         if (newVaue) {
             
         }

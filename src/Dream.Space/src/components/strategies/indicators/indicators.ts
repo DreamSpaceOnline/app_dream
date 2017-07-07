@@ -18,7 +18,7 @@ export class Indicators {
         this.periods = this.globalSettings.periods;
     }
 
-    activate(params, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params:any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
 
         this.routeName = routeConfig.name;
@@ -33,7 +33,7 @@ export class Indicators {
     }
 
 
-    activatePeriod(periodUrl) : IdName {
+    activatePeriod(periodUrl: string) : IdName {
 
         this.periods.forEach(element => {
             element.active = false;
@@ -61,16 +61,16 @@ export class Indicators {
         this.indicators.push(indicator);
     }
 
-    loadIndicatorsForPeriod(period) {
+    loadIndicatorsForPeriod(period:any) {
         const url = `/strategies/indicators/${period.url}`;
         this.router.navigate(url);
     }
 
-    isPeriodActive(period) {
+    isPeriodActive(period:any) {
         return period.id === this.activePeriod.id;
     }
 
-    async loadIndicators(periodId) {
+    async loadIndicators(periodId: number) {
         this.indicators = await this.indicatorService.getIndicatorsAll(periodId);
     }
 

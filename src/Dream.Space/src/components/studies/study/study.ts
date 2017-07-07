@@ -44,7 +44,7 @@ export class Study {
         this.subscriptions.forEach(item => item.dispose());
     }
 
-    activate(params, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params: any, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
 
         this.articleUrl = routeconfig.name;
@@ -66,7 +66,7 @@ export class Study {
         this.selectSideNavigationItem();
     }
 
-    async loadCategory(categoryUrl) {
+    async loadCategory(categoryUrl: string) {
         this.setEditMode(false);
 
         this.category = await this.articleService.getCategory(categoryUrl);
@@ -84,7 +84,7 @@ export class Study {
         }
     }
 
-    setEditMode(editMode) {
+    setEditMode(editMode: boolean) {
         this.editMode = editMode;
         this.navigation.menu.editMode = editMode;
     }
@@ -144,7 +144,7 @@ export class Study {
         }
     }
 
-    navigateToArticle(url) {
+    navigateToArticle(url: string) {
         if (url && url.length > 0) {
             this.setEditMode(false);
             const articleUrl = `/${this.navigation.section.url}/${this.category.url}/${url}`;
