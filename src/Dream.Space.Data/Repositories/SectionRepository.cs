@@ -29,7 +29,7 @@ namespace Dream.Space.Data.Repositories
 
         public async Task<Section> GetAsync(string sectionUrl)
         {
-            var record = await Dbset.FirstOrDefaultAsync(r => string.Equals(r.Url, sectionUrl, StringComparison.CurrentCultureIgnoreCase));
+            var record = await Dbset.FirstOrDefaultAsync(r => r.Url.ToLower() == sectionUrl.ToLower());
             return record;
         }
 

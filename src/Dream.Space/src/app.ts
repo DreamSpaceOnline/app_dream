@@ -1,25 +1,18 @@
 import { autoinject } from "aurelia-framework";
-import { Router, RouterConfiguration, RedirectToRoute, NavigationInstruction, Next } from "aurelia-router";
-import {AccountService} from "./services/account-service";
-import {SettingsService} from "./services/settings-service";
-import {UserInfo} from "./services/services-generated";
+import { Router, RouterConfiguration } from "aurelia-router";
+import { AuthorizePipelineStep } from "./authorize-pipeline-step";
 
 @autoinject
 export class App {
 
     router: Router;
-    user: UserInfo;
-
-    constructor(private readonly account: AccountService) {
-        this.user = this.account.currentUser;
-    }
 
     configureRouter(config: RouterConfiguration, router: Router) {
 
         config.title = "Dream Space";
         config.options.pushState = true;
         this.router = router;
-        config.addPipelineStep("authorize", AuthorizeStep);
+        config.addPipelineStep("authorize", AuthorizePipelineStep);
 
         config.map([
             { route: ["user"], moduleId: "./components/user/navigation", name: "user", title: "Login", nav: false },
@@ -35,32 +28,3 @@ export class App {
 
 }
 
-@autoinject
-class AuthorizeStep {
-
-    isAuthenticated: boolean;
-    homePage: string;
-
-    constructor(account: AccountService, settings: SettingsService) {
-        this.isAuthenticated = account.currentUser.isAuthenticated;
-        this.homePage = settings.homePage;
-    }
-
-    run(navigationInstruction: NavigationInstruction, next: Next) {
-        if (navigationInstruction.getAllInstructions().some(i => i.config.auth)) {
-
-            if (this.isAuthenticated) {
-                return next();
-            } else {
-                return next.cancel(new RedirectToRoute("user"));
-            }
-        } else {
-            if (navigationInstruction.getAllInstructions()
-                .some(i => i.config.name === "user-login" && this.isAuthenticated)) {
-                return next.cancel(new RedirectToRoute(this.homePage));
-            }
-            return next();
-        }
-    }
-
-}

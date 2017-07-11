@@ -1,6 +1,7 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { EventAggregator } from "aurelia-event-aggregator";
 import * as Enums from "../common/types/enums";
+import { NavigationInstruction } from "aurelia-router";
 
 
 @autoinject
@@ -27,6 +28,7 @@ export class EventEmitter {
     subscribe(eventType: "Article-StartEdit", handler: (event?: IArticleEvent) => void): any;
     subscribe(eventType: "Article-CancelEdit", handler: (event?: IArticleEvent) => void): any;
     subscribe(eventType: "Article-Save", handler: (event?: IArticleEvent) => void): any;
+    subscribe(eventType: "router:navigation:complete", handler: (event?: INavigationEvent) => void): any;
 
     subscribe(eventType: EventType, handler: (event?: any) => void): any{
         return this.eventAggregator.subscribe(eventType, handler);
@@ -40,8 +42,12 @@ type EventType =
     "LayoutIndicatorMoved" |
     "Article-StartEdit" |
     "Article-CancelEdit" |
-    "Article-Save";
+    "Article-Save" | 
+    "router:navigation:complete";
 
+export interface INavigationEvent {
+    instruction: NavigationInstruction
+}
 
 interface IValidationError {
     message: string[];

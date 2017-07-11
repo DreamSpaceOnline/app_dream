@@ -1,25 +1,24 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { Router } from "aurelia-router";
 import { DialogService } from "aurelia-dialog";
-import {AccountService} from "../../services/account-service";
-import {UserLogin, UserLoginModel } from "../../dialogs/login/user-login";
-import {UserInfo} from "../../services/services-generated";
+import { UserLogin, UserLoginModel } from "../../dialogs/login/user-login";
+import { UserInfo, AccountApiClient } from "../../services/services-generated";
 
 @autoinject
 export class DreamHeader {
-    @bindable router: Router;
+    @bindable
+    router: Router;
     user: UserInfo;
-    isAuthenticated: boolean;
     loginUrl: string;
 
 
-    constructor(private readonly account: AccountService, private readonly dialogService: DialogService) {
-        this.user = this.account.currentUser;
+    constructor(
+        private readonly account: AccountApiClient,
+        private readonly dialogService: DialogService) {
     }
 
-    attached() {
-        this.isAuthenticated = this.user.isAuthenticated;
-
+    async attached() {
+        this.user = await this.account.currentUser();
         this.loginUrl = this.router.generate("user") + "/profile";
     }
 
@@ -28,11 +27,12 @@ export class DreamHeader {
         window.location.href = "/";
     }
 
-    async login() {
+    login() {
         const model = new UserLoginModel();
-        const response = await this.dialogService.open({ viewModel: UserLogin, model: model });
-        if (!response.wasCancelled) {
-            window.location.reload();
-        }
+        this.dialogService.open({ viewModel: UserLogin, model: model }).whenClosed(response => {
+            if (!response.wasCancelled) {
+                window.location.reload();
+            }
+        });
     }
 }

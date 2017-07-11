@@ -343,10 +343,9 @@
     <Content Include="src\components\studies\study\study-actions\study-actions.html" />
     <Content Include="src\resources\elements\chart\chart-layout.html" />
     <Content Include="src\resources\elements\navigation\sub-nav.html" />
-    <Content Include="src\components\nav-menu\main-nav\main-nav.html" />
-    <Content Include="src\components\studies\category-nav\category-nav.html" />
+    <Content Include="src\components\main-nav\main-nav.html" />
     <Content Include="src\resources\elements\navigation\side-nav.html" />
-    <Content Include="src\components\nav-menu\sub-nav\sub-nav.html" />
+    <Content Include="src\components\sub-nav\sub-nav.html" />
     <Content Include="src\components\strategies\indicators\indicators.html" />
     <Content Include="src\components\strategies\navigation.html" />
     <Content Include="src\components\strategies\rules\rule-sets.html" />
@@ -471,6 +470,7 @@
     <TypeScriptCompile Include="custom_typings\anychart.d.ts" />
     <TypeScriptCompile Include="custom_typings\aurelia-protractor.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\authorize-pipeline-step.ts" />
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
@@ -496,10 +496,9 @@
     <TypeScriptCompile Include="src\components\studies\study\study-actions\study-actions.ts" />
     <TypeScriptCompile Include="src\resources\elements\chart\chart-layout.ts" />
     <TypeScriptCompile Include="src\resources\elements\navigation\sub-nav.ts" />
-    <TypeScriptCompile Include="src\components\nav-menu\main-nav\main-nav.ts" />
-    <TypeScriptCompile Include="src\components\studies\category-nav\category-nav.ts" />
+    <TypeScriptCompile Include="src\components\main-nav\main-nav.ts" />
     <TypeScriptCompile Include="src\resources\elements\navigation\side-nav.ts" />
-    <TypeScriptCompile Include="src\components\nav-menu\sub-nav\sub-nav.ts" />
+    <TypeScriptCompile Include="src\components\sub-nav\sub-nav.ts" />
     <TypeScriptCompile Include="src\components\strategies\indicators\indicators.ts" />
     <TypeScriptCompile Include="src\components\strategies\navigation.ts" />
     <TypeScriptCompile Include="src\components\strategies\rules\rule-sets.ts" />
@@ -535,6 +534,7 @@
     <TypeScriptCompile Include="src\services\account-service.ts" />
     <TypeScriptCompile Include="src\services\services-generated.ts" />
     <TypeScriptCompile Include="src\services\settings-service.ts" />
+    <TypeScriptCompile Include="src\startup.ts" />
     <TypeScriptCompile Include="test\unit\app.spec.ts" />
     <TypeScriptCompile Include="test\unit\setup.ts" />
   </ItemGroup>
@@ -586,10 +586,7 @@
     <Content Include="src\components\footer\dream-footer.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="src\components\nav-menu\main-nav\main-nav.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="src\components\studies\category-nav\category-nav.less" />
+    <Content Include="src\components\main-nav\main-nav.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="src\common\styles\_sub-nav.less" />

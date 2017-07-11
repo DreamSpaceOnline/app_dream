@@ -1,7 +1,6 @@
 ﻿import { autoinject } from "aurelia-framework";
 import { Router } from "aurelia-router";
 import { EventEmitter } from "../../../../infrastructure/event-emitter";
-import { AccountService } from "../../../../services/account-service";
 
 @autoinject()
 export class StudyActions {
@@ -9,10 +8,9 @@ export class StudyActions {
     editMode: boolean;
 
     constructor(private readonly eventEmitter: EventEmitter,
-        private readonly router: Router,
-        private readonly account: AccountService) {
+        private readonly router: Router) {
 
-        this.powerUser = this.account.currentUser.isAuthenticated;
+        this.powerUser = true;
     }
 
     startEdit() {

@@ -1,92 +1,72 @@
-﻿import * as toastr from "toastr";
-import { autoinject } from "aurelia-framework";
+﻿import { autoinject } from "aurelia-framework";
 import { Subscription } from "aurelia-event-aggregator";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { Navigation } from "../navigation"
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation";
-import {BootstrapFormRenderer} from "../../../form-validation/bootstrap-form-renderer";
-import {AccountService} from "../../../services/account-service";
-import {ArticlesApiClient, ArticleModel, CategoryModel, ArticleHeader } from "../../../services/services-generated";
-import {EventEmitter} from "../../../infrastructure/event-emitter";
+import { BootstrapFormRenderer } from "../../../form-validation/bootstrap-form-renderer";
+import { ArticlesApiClient, ArticleModel, CategoryModel, ArticleHeader } from "../../../services/services-generated";
+import { EventEmitter } from "../../../infrastructure/event-emitter";
 
 @autoinject
 export class Study {
 
     powerUser: boolean;
-    router: Router;
-    articleUrl: string;
-    subscriptions: Subscription[] = [];
     editMode: boolean;
     article: ArticleModel;
     category: CategoryModel;
     articles: ArticleHeader[];
-    originalArticle: ArticleModel;
+
+    private router: Router;
+    private articleUrl: string;
+    private readonly subscriptions: Subscription[] = [];
+    private originalArticle: ArticleModel;
 
     constructor(
         private readonly eventEmitter: EventEmitter,
         private readonly articleService: ArticlesApiClient,
         private readonly navigation: Navigation,
-        private readonly account: AccountService,
         private readonly validation: ValidationController) {
 
-        this.powerUser = this.account.currentUser.isAuthenticated;
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
 
         this.subscriptions.push(this.eventEmitter.subscribe("Article-StartEdit", () => this.startEdit()));
         this.subscriptions.push(this.eventEmitter.subscribe("Article-CancelEdit", () => this.cancelEdit()));
+        this.subscriptions.push(this.eventEmitter.subscribe("router:navigation:complete", () => this.onNavigatioComplete()));
 
-        this.subscriptions = [];
         this.editMode = false;
+    }
+
+    onNavigatioComplete() {
+        const categoryUrl = this.router.currentInstruction.config.name;
+        this.loadPage(categoryUrl);
     }
 
     detached() {
         this.subscriptions.forEach(item => item.dispose());
     }
 
-    activate(params: any, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
+    activate(params: IStudyParams, routeconfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.router = navigationInstruction.router;
 
-        this.articleUrl = routeconfig.name;
         this.articleUrl = "default";
-        
-        if (!params.category) {
-            params.category = "default";
+      
+        if (params.articleUrl && routeconfig) {
+            this.articleUrl = params.articleUrl;
         }
-
-        if (params.article) {
-            this.articleUrl = params.article;
-        }
-
-        this.loadCategory(params.category);
     }
 
-    async loadArticles(categoryId: number) {
-        this.articles = await this.articleService.getArticles(categoryId);
-        this.selectSideNavigationItem();
-    }
-
-    async loadCategory(categoryUrl: string) {
-        this.setEditMode(false);
-
+    async loadPage(categoryUrl: string) {
         this.category = await this.articleService.getCategory(categoryUrl);
-
-        if (this.category && this.category.categoryId > 0) {
-            this.navigation.selectMenuItem(this.category.url);
-
-            const result = await this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl);
-            if(result.articleId > 0) {
-                this.article = result;
-                this.setEditMode(false);
-                
-                await this.loadArticles(this.category.categoryId);
-            }
+        if (this.category) {
+            this.article = await this.articleService.getArticleByUrl(this.category.categoryId, this.articleUrl);
+            this.articles = await this.articleService.getArticles(this.category.categoryId);
+            this.selectSideNavigationItem();
         }
     }
 
     setEditMode(editMode: boolean) {
         this.editMode = editMode;
-        this.navigation.menu.editMode = editMode;
     }
 
     startEdit() {
@@ -147,7 +127,7 @@ export class Study {
     navigateToArticle(url: string) {
         if (url && url.length > 0) {
             this.setEditMode(false);
-            const articleUrl = `/${this.navigation.section.url}/${this.category.url}/${url}`;
+            const articleUrl = `/${this.navigation.section}/${this.category.url}/${url}`;
             this.router.navigate(articleUrl);
         }
     }
@@ -173,7 +153,7 @@ export class Study {
                     this.saveArticle();
 
                 } else {
-                    toastr.warning("Please correct validation errors.", "Validation Errors");
+                    //toastr.warning("Please correct validation errors.", "Validation Errors");
                 }
             });
     }
@@ -183,7 +163,7 @@ export class Study {
             const index = this.article.articleBlocks.findIndex(b => !b.valid);
             return index === -1;
         } else {
-            toastr.warning("Article is empty", "Validation Errors");
+            //toastr.warning("Article is empty", "Validation Errors");
             return false;
         }
     }
@@ -193,9 +173,14 @@ export class Study {
 
         const a = await this.articleService.saveArticle(this.article);
         if(a.url && a.url.length > 0) {
-            toastr.success(`Article staved successfully!`, "Strategy saved");
+            //toastr.success(`Article staved successfully!`, "Strategy saved");
             this.navigateToArticle(a.url);
         }
 
     }
+}
+
+
+interface IStudyParams {
+    articleUrl: string;
 }
