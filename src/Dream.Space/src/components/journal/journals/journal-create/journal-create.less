@@ -1,5 +1,29 @@
-﻿.journal-create {
-    .ticker {
-        width: 100px;
+﻿@import "../../../../common/styles/_variables";
+
+.journal-create {
+
+    abp-datetime-picker {
+        display: inline-block;
+
+        input {
+            width: 150px !important;
+        }
+    }
+
+    input.ticker {
+        width: 150px !important;
+        text-transform: uppercase;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    h5 {
+        border-bottom: solid 1px @border-color;
+        margin-left: 15px;
+        padding-left: 15px;
+        margin-bottom: 21px;
+        padding-bottom: 6px;
     }
 }

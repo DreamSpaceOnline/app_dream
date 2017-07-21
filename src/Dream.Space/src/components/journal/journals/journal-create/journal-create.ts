@@ -1,4 +1,4 @@
-﻿import { autoinject } from "aurelia-framework";
+﻿import { autoinject, bindable } from "aurelia-framework";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { EnumValues, IdName } from "../../../../common/helpers/enum-helper";
 import { JournalModel } from "../../../../services/services-generated";
@@ -8,6 +8,7 @@ import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-for
 export class JournalCreate {
     directions: IdName[];
     journal: JournalModel;
+    @bindable entryDatePicker: any;
 
     constructor(private readonly validation: ValidationController) {
 
