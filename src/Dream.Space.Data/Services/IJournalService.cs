@@ -8,6 +8,7 @@ namespace Dream.Space.Data.Services
     public interface IJournalService
     {
         Task<JournalModel> GetJournalAsync(int id);
+        Task<JournalModel> SaveJournalAsync(JournalModel model);
     }
 
     public class JournalService : IJournalService
@@ -27,6 +28,11 @@ namespace Dream.Space.Data.Services
                 var entity = await repository.GetExtendedAsync(id);
                 return entity;
             }
+        }
+
+        public Task<JournalModel> SaveJournalAsync(JournalModel model)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

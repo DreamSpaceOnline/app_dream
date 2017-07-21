@@ -257,6 +257,10 @@
     <Compile Include="Migrations\201706221554231_CreateJournal.Designer.cs">
       <DependentUpon>201706221554231_CreateJournal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707211129426_AlterJournal.cs" />
+    <Compile Include="Migrations\201707211129426_AlterJournal.Designer.cs">
+      <DependentUpon>201707211129426_AlterJournal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
@@ -447,6 +451,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706221554231_CreateJournal.resx">
       <DependentUpon>201706221554231_CreateJournal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707211129426_AlterJournal.resx">
+      <DependentUpon>201707211129426_AlterJournal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

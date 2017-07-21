@@ -16,8 +16,8 @@ export class Navigation {
         config.title = "Journal";
 
         config.map([
-            { route: ["",":period"], moduleId: "./journals/journals", name: "journals", title: "Journals", nav: false },
-            { route: ["create"], moduleId: "./journals/journal/journal", name: "create-journal", title: "Create Journal", nav: false },
+            { route: ["",":period"], moduleId: "./journals/journals", name: "journals", title: "Journals", nav: true },
+            { route: ["create"], moduleId: "./journals/journal-create/journal-create", name: "create-journal", title: "Create Journal", nav: true },
             { route: ["journal/:id"], moduleId: "./journals/journal/journal", name: "view-journal", title: "View Journal", nav: false },
             { route: ["journal/:id/edit"], moduleId: "./journals/journal/journal", name: "edit-journal", title: "Edit Journal", nav: false }
         ]);

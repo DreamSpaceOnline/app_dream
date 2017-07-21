@@ -1,0 +1,65 @@
+﻿<template>
+    <require from="./journal-create.css"></require>
+
+    <div class="journal-create">
+        <form submit.delegate="trySaveJournal()">
+            <fieldset class="row">
+                <div class="form-inline col-xs-12">
+                    <div class="form-group">
+                        <label for="txtTicker">Ticker</label>
+                        <input type="text" class="form-control ticker" id="txtTicker" value.bind="journal.ticker & validate"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="ddlDirection">Direction:</label>
+                        <select id="ddlDirection" class="form-control" value.bind="journal.tradeDirection">
+                            <option repeat.for="direction of directions" model.bind="direction.id">${direction.name}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDate">Entry Date:</label>
+                        <input type="text" class="form-control" id="txtDate" value.bind="journal.entryDate & validate"/>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-4">
+                    <h4>Trade setup</h4>
+                    <div class="form-inline-stack">
+                        <div class="form-group">
+                            <label for="txtEntryPrice">Entry price:</label>
+                            <input type="text" class="form-control" id="txtEntryPrice" value.bind="journal.entryPrice & validate"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtTargetPrice">Target price:</label>
+                            <input type="text" class="form-control" id="txtTargetPrice" value.bind="journal.takeProfitPrice & validate"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtStopPrice">Stop loss price:</label>
+                            <input type="text" class="form-control" id="txtStopPrice" value.bind="journal.stopLossPrice & validate"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-4">
+                    <h4>Risk management</h4>
+                    <div class="form-inline-stack">
+                        <div class="form-group">
+                            <label for="txtRiskValue">Risk value($):</label>
+                            <input type="text" class="form-control" id="txtRiskValue" value.bind="journal.maxRiskValuePrice & validate"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtRewardRatio">Reward / Risk ratio:</label>
+                            <input type="text" class="form-control" readonly id="txtRewardRatio" value.bind="journal.rewardRiskRatio & validate"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtMaxShares">Max shares count:</label>
+                            <input type="text" class="form-control" readonly id="txtMaxShares" value.bind="journal.maxSharesCount & validate"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="c_journal-actions">
+                <button type="submit" class="btn btn-danger">Save</button>
+                <button type="button" click.delegate="cancelEdit()" class="btn btn-default">Cancel</button>
+            </div>
+        </form>
+    </div>
+</template>

@@ -1,5 +1,5 @@
 ﻿import { TransformFunction, CompareOperator, ChartUpdateMode, QuoteType, RuleDataSource } from "../types/enums";
-import { QuotePeriod } from "../../services/services-generated";
+import { QuotePeriod, TradeDirection } from "../../services/services-generated";
 
 export class EnumHelper {
     static getNamesAndValues(e: any) {
@@ -130,6 +130,16 @@ export class EnumValues {
         return result;
     }
 
+    static getDirectionTypes(): IdName[] {
+        const values = EnumHelper.getNamesAndValues(TradeDirection);
+        const result: IdName[] = [];
+
+        values.forEach(item => {
+            result.push({ id: item.value, name: item.name });
+        });
+
+        return result;
+    }
 
 }
 

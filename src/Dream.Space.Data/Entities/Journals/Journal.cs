@@ -13,12 +13,14 @@ namespace Dream.Space.Data.Entities.Journals
         public string UserId { get; set; }
         public string Summary { get; set; }
         public string Ticker { get; set; }
-        public TradeType Trade { get; set; }
+        public TradeDirection TradeDirection { get; set; }
         public decimal EntryPrice { get; set; }
         public decimal StopLossPrice { get; set; }
         public decimal TakeProfitPrice { get; set; }
         public int AccountId { get; set; }
         public int StrategyId { get; set; }
-        public decimal MaxRisk { get; set; }
+        public decimal MaxRiskValuePrice { get; set; }
+        public decimal RewardRiskRatio { get; set; }
+        public int MaxSharesCount { get; set; }
     }
 }
