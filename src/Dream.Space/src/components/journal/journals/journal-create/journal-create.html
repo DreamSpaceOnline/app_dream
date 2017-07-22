@@ -1,5 +1,6 @@
 ﻿<template>
     <require from="./journal-create.css"></require>
+    <require from="../company-details/company-details"></require>
     
     <div class="journal-create">
 
@@ -10,7 +11,7 @@
         <form submit.delegate="trySaveJournal()">
             <fieldset >
                 <div class="row">
-                    <div class="form-inline col-xs-12 col-md-8">
+                    <div class="form-inline col-xs-12">
                         <div class="form-group">
                             <label for="txtTicker">Ticker</label>
                             <input type="text" class="form-control ticker" id="txtTicker" value.bind="journal.ticker & validate"/>
@@ -27,50 +28,58 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <h5>Trade setup</h5>
-                        <div class="form-horizontal">
-                            <div class="form-group">
-                                <label for="txtEntryPrice" class="col-sm-4 control-label">Entry price:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="txtEntryPrice" value.bind="journal.entryPrice & validate"/>
+                
+                <div if.bind="journal.ticker.length > 0">
+                    <h5>Company Information</h5>
+                    <div class="company-details">
+                        <company-details ticker.bind="journal.ticker"></company-details>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h5>Trade setup</h5>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="txtEntryPrice" class="col-sm-4 control-label">Entry price:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="txtEntryPrice" value.bind="journal.entryPrice & validate"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtTargetPrice" class="col-sm-4 control-label">Target price:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="txtTargetPrice" value.bind="journal.takeProfitPrice & validate"/>
+                                <div class="form-group">
+                                    <label for="txtTargetPrice" class="col-sm-4 control-label">Target price:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="txtTargetPrice" value.bind="journal.takeProfitPrice & validate"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtStopPrice" class="col-sm-4 control-label">Stop loss price:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="txtStopPrice" value.bind="journal.stopLossPrice & validate"/>
+                                <div class="form-group">
+                                    <label for="txtStopPrice" class="col-sm-4 control-label">Stop loss price:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="txtStopPrice" value.bind="journal.stopLossPrice & validate"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <h5>Risk management</h5>
-                        <div class="form-horizontal">
+                        <div class="col-xs-6">
+                            <h5>Risk management</h5>
+                            <div class="form-horizontal">
 
-                            <div class="form-group">
-                                <label for="txtRiskValue" class="col-sm-5 control-label">Risk value($):</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="txtRiskValue" value.bind="journal.maxRiskValuePrice & validate"/>
+                                <div class="form-group">
+                                    <label for="txtRiskValue" class="col-sm-5 control-label">Risk value($):</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="txtRiskValue" value.bind="journal.maxRiskValuePrice & validate"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtRewardRatio" class="col-sm-5 control-label">Reward / Risk ratio:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" readonly id="txtRewardRatio" value.bind="journal.rewardRiskRatio & validate"/>
+                                <div class="form-group">
+                                    <label for="txtRewardRatio" class="col-sm-5 control-label">Reward / Risk ratio:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" readonly id="txtRewardRatio" value.bind="journal.rewardRiskRatio & validate"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtMaxShares" class="col-sm-5 control-label">Max shares count:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" readonly id="txtMaxShares" value.bind="journal.maxSharesCount & validate"/>
+                                <div class="form-group">
+                                    <label for="txtMaxShares" class="col-sm-5 control-label">Max shares count:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" readonly id="txtMaxShares" value.bind="journal.maxSharesCount & validate"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +88,7 @@
             </fieldset>
 
             <div class="c_journal-actions">
-                <button type="submit" class="btn btn-danger">Save</button>
+                <button type="submit" class="btn btn-danger" if.bind="journal.ticker.length > 0">Save</button>
                 <button type="button" click.delegate="cancelEdit()" class="btn btn-default">Cancel</button>
             </div>
         </form>

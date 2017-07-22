@@ -62,7 +62,6 @@
     <Compile Include="Models\CompanyReaderModel.cs" />
     <Compile Include="Models\CompanyReaderModelMap.cs" />
     <Compile Include="Models\QuotesReaderModelMap.cs" />
-    <Compile Include="Models\QuotesReaderModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuotesFileReader.cs" />
     <Compile Include="Validators\FileReaderValidator.cs" />

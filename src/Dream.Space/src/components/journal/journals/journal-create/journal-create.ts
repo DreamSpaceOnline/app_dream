@@ -17,6 +17,7 @@ export class JournalCreate {
 
         this.directions = EnumValues.getDirectionTypes();
         this.journal = new JournalModel();
+        this.journal.entryDate = new Date();
 
         ValidationRules
             .ensure((m: JournalModel) => m.ticker).displayName("Ticker").required().withMessage(`\${$displayName} cannot be blank.`)

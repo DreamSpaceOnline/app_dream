@@ -1,0 +1,70 @@
+﻿<template>
+    <require from="./company-details.css"></require>
+    
+    <div class="loading" if.bind="isLoading">
+        <i class="fa fa-spinner fa-spin spin-normal"></i>
+    </div>
+
+    <form if.bind="company.ticker.length > 0 && !isLoading">
+        <fieldset>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Company name</label>
+                        <p class="form-control" readonly>${company.fullName}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Last Time Updated</label>
+                        <p class="form-control" readonly>${formatDate(company.lastUpdated)}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="button" click.delegate="updateCompany()" class="btn btn-danger update-quotes">Update Quotes</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Price</label>
+                        <p class="form-control" readonly>${company.price}</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Volume</label>
+                        <p class="form-control" readonly>${company.volume}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Lowest 52</label>
+                        <p class="form-control" readonly>${company.lowestPrice52}</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chaos</label>
+                        <p class="form-control" readonly>${company.chaosPercentage}%</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Highest 52</label>
+                        <p class="form-control" readonly>${company.highestPrice52}</p>
+                    </div>
+
+                </div>
+            </div>
+        </fieldset>
+
+    </form>
+    
+    <div if.bind="!!!company && ticker.length > 0 && !isLoading">
+        <p>Company ${ticker.toUpperCase()} not found in the database. Update?</p>
+    </div>
+</template>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Dream.Space.Cache;
@@ -43,7 +44,7 @@ namespace Dream.Space.Playground
                 if(!string.IsNullOrEmpty(csvQuotes))
                 {
                     var quotes = reader.Read(csvQuotes);
-                    return quotes;
+                    return quotes.Select(q => new QuotesModel(q)).ToList();
                 }
 
                 return new List<QuotesModel>();

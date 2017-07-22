@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Dream.Space.Reader.Models
+namespace Dream.Space.Models.Quotes
 {
     //"date","close","volume","open","high","low"
-    public class QuotesReaderModel
+    public class StockQuote
     {
         public DateTime Date { get; set; }
         public Decimal Close { get; set; }

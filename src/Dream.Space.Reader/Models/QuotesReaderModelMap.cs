@@ -4,7 +4,7 @@ using Dream.Space.Models.Quotes;
 
 namespace Dream.Space.Reader.Models
 {
-    public class QuotesReaderModelMap : CsvClassMap<QuotesReaderModel>
+    public class QuotesReaderModelMap : CsvClassMap<StockQuote>
     {
         public QuotesReaderModelMap()
         {

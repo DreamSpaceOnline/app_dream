@@ -23,6 +23,7 @@ using Dream.Space.Reader.Validators;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Yahoo.Client;
 using Dream.Space.Infrastructure.Processors.CompanyQuotes;
+using Dream.Space.Stock.Nasdaq.Client;
 
 namespace Dream.Space.Infrastructure.IoC
 {
@@ -124,7 +125,9 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<PlaygroundConfigurationLoader>();
 
             builder.Register(c => new YahooFinanceClientConfig() { Proxy = "" }).SingleInstance();
-            builder.RegisterType<YahooFinanceClient>().As<IMarketStockClient>();
+            builder.Register(c => new NasdaqStockClientConfig() { Proxy = "" }).SingleInstance();
+            builder.RegisterType<NasdaqStockClient>().As<IMarketStockClient>();
+            //builder.RegisterType<YahooFinanceClient>().As<IMarketStockClient>();
             builder.RegisterType<QuotesFileReader>().As<IQuotesFileReader>().InstancePerDependency();
             builder.RegisterType<FileReaderValidator>().As<IFileReaderValidator>().InstancePerDependency();
 

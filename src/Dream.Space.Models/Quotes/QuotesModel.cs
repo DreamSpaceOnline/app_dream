@@ -11,6 +11,16 @@ namespace Dream.Space.Models.Quotes
             Impulse = 0;
         }
 
+        public QuotesModel(StockQuote quote): this()
+        {
+            Date = quote.Date;
+            Close = quote.Close;
+            Open = quote.Open;
+            High = quote.High;
+            Low = quote.Low;
+            Volume = quote.Volume;
+        }
+
         public DateTime Date { get; set; }
         public Decimal Close { get; set; }
         public Decimal Volume { get; set;}

@@ -31,7 +31,6 @@ export function configure(config: FrameworkConfiguration) {
     ]);
 
     config.globalResources(["./elements/indicator/indicator"]);
-    config.globalResources(["./elements/company/company-details"]);
     config.globalResources(["./elements/chart/chart-layout"]);
     config.globalResources(["./elements/progress/s-progress"]);
 

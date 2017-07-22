@@ -298,6 +298,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\images\emma_bg_.jpg" />
     <Content Include="Content\images\logo.png" />
+    <Content Include="Content\images\spinner.gif" />
     <Content Include="Content\toastr.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -318,6 +319,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\app-bundle.js" />
     <Content Include="Scripts\vendor-bundle.js" />
+    <Content Include="src\components\journal\journals\company-details\company-details.html" />
     <Content Include="src\components\journal\journals\journal-create\journal-create.html" />
     <Content Include="src\components\journal\journals\journal-periods\journal-periods.html" />
     <Content Include="src\components\journal\journals\journals.html" />
@@ -475,6 +477,7 @@
     <TypeScriptCompile Include="src\common\helpers\date-helper.ts" />
     <TypeScriptCompile Include="src\common\types\enums.ts" />
     <TypeScriptCompile Include="src\common\types\job-models.ts" />
+    <TypeScriptCompile Include="src\components\journal\journals\company-details\company-details.ts" />
     <TypeScriptCompile Include="src\components\journal\journals\journal-create\journal-create.ts" />
     <TypeScriptCompile Include="src\components\journal\journals\journal-periods\journal-periods.ts" />
     <TypeScriptCompile Include="src\components\journal\journals\journal\journal.ts" />
@@ -679,6 +682,7 @@
     <Content Include="src\components\studies\study\category-studies\category-studies.less" />
     <Content Include="src\components\journal\journals\journals.less" />
     <Content Include="src\components\journal\journals\journal-create\journal-create.less" />
+    <Content Include="src\components\journal\journals\company-details\company-details.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

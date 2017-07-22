@@ -108,6 +108,7 @@
     <Compile Include="Playgrounds\StrategyRuleSetResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quotes\QuotesModel.cs" />
+    <Compile Include="Quotes\StockQuote.cs" />
     <Compile Include="Strategies\IStrategyEntity.cs" />
     <Compile Include="Strategies\IStrategyView.cs" />
     <Compile Include="Strategies\RuleSets\IStrategyRuleSetView.cs" />

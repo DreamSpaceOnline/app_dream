@@ -73,8 +73,14 @@ namespace Dream.Space.Infrastructure.Processors.CompanyQuotes
                 {
                     var csvQuotes =
                         Task.Run(() => _marketStockClient.GetStockHistory(historyRequest)).Result;
-                    quotes = _quotesFileReader.Read(csvQuotes);
-                    quotes = quotes.Merge(company.HistoryQuotes);
+
+                    var squotes = _quotesFileReader.Read(csvQuotes);
+                    if (squotes.Any())
+                    {
+                        var qmodels = squotes.Select(q => new QuotesModel(q)).ToList();
+                        quotes = qmodels.Merge(company.HistoryQuotes);
+                    }
+
 
                 }
                 catch (AggregateException ex)

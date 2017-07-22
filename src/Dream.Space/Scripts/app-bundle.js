@@ -5019,7 +5019,6 @@ define('resources/index',["require", "exports"], function (require, exports) {
             "./elements/strategy/strategy-rule-set"
         ]);
         config.globalResources(["./elements/indicator/indicator"]);
-        config.globalResources(["./elements/company/company-details"]);
         config.globalResources(["./elements/chart/chart-layout"]);
         config.globalResources(["./elements/progress/s-progress"]);
         config.globalResources(["./attributes/first-letter-span"]);
@@ -5295,104 +5294,6 @@ define('services/settings-service',["require", "exports", "tslib", "aurelia-fram
     exports.SettingsService = SettingsService;
 });
 
-define('common/helpers/date-helper',["require", "exports", "moment"], function (require, exports, moment) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var DateHelper = (function () {
-        function DateHelper() {
-        }
-        DateHelper.getUIDate = function (date) {
-            return moment(date).format("D-MMM-YYYY  HH:mm");
-        };
-        DateHelper.runTime = function (fromDate, toDate) {
-            var result = null;
-            if (fromDate != null && toDate != null) {
-                var diff = moment(toDate).diff(moment(fromDate));
-                var duration = moment.duration(diff);
-                var seconds = duration.asSeconds();
-                result = this.secondsToTime(seconds);
-            }
-            return result;
-        };
-        DateHelper.secondsToTime = function (secs) {
-            secs = Math.round(secs);
-            var hours = Math.floor(secs / (60 * 60));
-            var divisorForMinutes = secs % (60 * 60);
-            var minutes = Math.floor(divisorForMinutes / 60);
-            var divisorForSeconds = divisorForMinutes % 60;
-            var seconds = Math.ceil(divisorForSeconds);
-            if (hours > 0) {
-                return hours + "h " + minutes + "m";
-            }
-            if (minutes > 0) {
-                return minutes + "m " + seconds + "s";
-            }
-            return seconds + "s";
-        };
-        return DateHelper;
-    }());
-    exports.DateHelper = DateHelper;
-});
-
-define('common/types/job-models',["require", "exports", "../../services/services-generated"], function (require, exports, services_generated_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var JobInfoExtentions = (function () {
-        function JobInfoExtentions() {
-        }
-        JobInfoExtentions.getJobStatusName = function (status) {
-            switch (status) {
-                case services_generated_1.JobStatus.Cancelled: return "Cancelled";
-                case services_generated_1.JobStatus.Completed: return "Completed";
-                case services_generated_1.JobStatus.Error: return "Error";
-                case services_generated_1.JobStatus.InProgress: return "In Progress";
-                case services_generated_1.JobStatus.Paused: return "Paused";
-                case services_generated_1.JobStatus.Pending: return "In Progress";
-                default: return status + "";
-            }
-        };
-        JobInfoExtentions.getJobTypeName = function (jobType) {
-            switch (jobType) {
-                case services_generated_1.ScheduledJobType.All: return "All";
-                case services_generated_1.ScheduledJobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
-                case services_generated_1.ScheduledJobType.RefreshAllStocks: return "Refresh All Stocks";
-                case services_generated_1.ScheduledJobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
-                case services_generated_1.ScheduledJobType.RefreshIndices: return "Refresh Indices";
-                default: return jobType + "";
-            }
-        };
-        JobInfoExtentions.isJobInProgress = function (job) {
-            if (job && job.jobId > 0) {
-                return job.status === services_generated_1.JobStatus.InProgress
-                    || job.status === services_generated_1.JobStatus.Pending;
-            }
-            return false;
-        };
-        JobInfoExtentions.isJobPaused = function (job) {
-            if (job && job.jobId > 0) {
-                return job.status === services_generated_1.JobStatus.Paused;
-            }
-            return false;
-        };
-        JobInfoExtentions.getJobType = function (jobUrl) {
-            switch (jobUrl) {
-                case "recalculate-global-indicators":
-                    return services_generated_1.ScheduledJobType.CalculateGlobalIndicators;
-                case "refresh-sp500-stocks":
-                    return services_generated_1.ScheduledJobType.RefreshSP500Stocks;
-                case "refresh-all-stocks":
-                    return services_generated_1.ScheduledJobType.RefreshAllStocks;
-                case "refresh-indices":
-                    return services_generated_1.ScheduledJobType.RefreshIndices;
-                default:
-                    return 0;
-            }
-        };
-        return JobInfoExtentions;
-    }());
-    exports.JobInfoExtentions = JobInfoExtentions;
-});
-
 define('components/footer/dream-footer',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -5402,6 +5303,37 @@ define('components/footer/dream-footer',["require", "exports"], function (requir
         return DreamFooter;
     }());
     exports.DreamFooter = DreamFooter;
+});
+
+define('components/journal/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Navigation = (function () {
+        function Navigation(eventAggregator) {
+            this.eventAggregator = eventAggregator;
+            this.url = "";
+        }
+        Navigation.prototype.configureRouter = function (config, router) {
+            config.title = "Journal";
+            config.map([
+                { route: ["", ":period"], moduleId: "./journals/journals", name: "journals", title: "Journals", nav: true },
+                { route: ["create"], moduleId: "./journals/journal-create/journal-create", name: "create-journal", title: "Create Journal", nav: true },
+                { route: ["journal/:id"], moduleId: "./journals/journal/journal", name: "view-journal", title: "View Journal", nav: false },
+                { route: ["journal/:id/edit"], moduleId: "./journals/journal/journal", name: "edit-journal", title: "Edit Journal", nav: false }
+            ]);
+            this.router = router;
+            this.section = config.title;
+        };
+        Navigation.prototype.attached = function () {
+            this.eventAggregator.publish("this.journalChangedEvent", this.url);
+        };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], Navigation);
+        return Navigation;
+    }());
+    exports.Navigation = Navigation;
 });
 
 define('dialogs/login/user-login',["require", "exports", "tslib", "aurelia-framework", "aurelia-dialog", "aurelia-validation", "../../form-validation/bootstrap-form-renderer", "aurelia-binding", "../../services/account-service", "../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_dialog_1, aurelia_validation_1, bootstrap_form_renderer_1, aurelia_binding_1, account_service_1, services_generated_1) {
@@ -5550,37 +5482,6 @@ define('components/main-nav/main-nav',["require", "exports", "tslib", "aurelia-f
         return MainNav;
     }());
     exports.MainNav = MainNav;
-});
-
-define('components/journal/navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Navigation = (function () {
-        function Navigation(eventAggregator) {
-            this.eventAggregator = eventAggregator;
-            this.url = "";
-        }
-        Navigation.prototype.configureRouter = function (config, router) {
-            config.title = "Journal";
-            config.map([
-                { route: ["", ":period"], moduleId: "./journals/journals", name: "journals", title: "Journals", nav: true },
-                { route: ["create"], moduleId: "./journals/journal-create/journal-create", name: "create-journal", title: "Create Journal", nav: true },
-                { route: ["journal/:id"], moduleId: "./journals/journal/journal", name: "view-journal", title: "View Journal", nav: false },
-                { route: ["journal/:id/edit"], moduleId: "./journals/journal/journal", name: "edit-journal", title: "Edit Journal", nav: false }
-            ]);
-            this.router = router;
-            this.section = config.title;
-        };
-        Navigation.prototype.attached = function () {
-            this.eventAggregator.publish("this.journalChangedEvent", this.url);
-        };
-        Navigation = tslib_1.__decorate([
-            aurelia_framework_1.autoinject,
-            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-        ], Navigation);
-        return Navigation;
-    }());
-    exports.Navigation = Navigation;
 });
 
 define('components/market/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
@@ -6445,6 +6346,104 @@ define('components/user/profile',["require", "exports"], function (require, expo
     exports.Profile = Profile;
 });
 
+define('common/helpers/date-helper',["require", "exports", "moment"], function (require, exports, moment) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var DateHelper = (function () {
+        function DateHelper() {
+        }
+        DateHelper.getUIDate = function (date) {
+            return moment(date).format("D-MMM-YYYY  HH:mm");
+        };
+        DateHelper.runTime = function (fromDate, toDate) {
+            var result = null;
+            if (fromDate != null && toDate != null) {
+                var diff = moment(toDate).diff(moment(fromDate));
+                var duration = moment.duration(diff);
+                var seconds = duration.asSeconds();
+                result = this.secondsToTime(seconds);
+            }
+            return result;
+        };
+        DateHelper.secondsToTime = function (secs) {
+            secs = Math.round(secs);
+            var hours = Math.floor(secs / (60 * 60));
+            var divisorForMinutes = secs % (60 * 60);
+            var minutes = Math.floor(divisorForMinutes / 60);
+            var divisorForSeconds = divisorForMinutes % 60;
+            var seconds = Math.ceil(divisorForSeconds);
+            if (hours > 0) {
+                return hours + "h " + minutes + "m";
+            }
+            if (minutes > 0) {
+                return minutes + "m " + seconds + "s";
+            }
+            return seconds + "s";
+        };
+        return DateHelper;
+    }());
+    exports.DateHelper = DateHelper;
+});
+
+define('common/types/job-models',["require", "exports", "../../services/services-generated"], function (require, exports, services_generated_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var JobInfoExtentions = (function () {
+        function JobInfoExtentions() {
+        }
+        JobInfoExtentions.getJobStatusName = function (status) {
+            switch (status) {
+                case services_generated_1.JobStatus.Cancelled: return "Cancelled";
+                case services_generated_1.JobStatus.Completed: return "Completed";
+                case services_generated_1.JobStatus.Error: return "Error";
+                case services_generated_1.JobStatus.InProgress: return "In Progress";
+                case services_generated_1.JobStatus.Paused: return "Paused";
+                case services_generated_1.JobStatus.Pending: return "In Progress";
+                default: return status + "";
+            }
+        };
+        JobInfoExtentions.getJobTypeName = function (jobType) {
+            switch (jobType) {
+                case services_generated_1.ScheduledJobType.All: return "All";
+                case services_generated_1.ScheduledJobType.CalculateGlobalIndicators: return "Calculate Global Indicators";
+                case services_generated_1.ScheduledJobType.RefreshAllStocks: return "Refresh All Stocks";
+                case services_generated_1.ScheduledJobType.RefreshSP500Stocks: return "Refresh S&P 500 Stocks";
+                case services_generated_1.ScheduledJobType.RefreshIndices: return "Refresh Indices";
+                default: return jobType + "";
+            }
+        };
+        JobInfoExtentions.isJobInProgress = function (job) {
+            if (job && job.jobId > 0) {
+                return job.status === services_generated_1.JobStatus.InProgress
+                    || job.status === services_generated_1.JobStatus.Pending;
+            }
+            return false;
+        };
+        JobInfoExtentions.isJobPaused = function (job) {
+            if (job && job.jobId > 0) {
+                return job.status === services_generated_1.JobStatus.Paused;
+            }
+            return false;
+        };
+        JobInfoExtentions.getJobType = function (jobUrl) {
+            switch (jobUrl) {
+                case "recalculate-global-indicators":
+                    return services_generated_1.ScheduledJobType.CalculateGlobalIndicators;
+                case "refresh-sp500-stocks":
+                    return services_generated_1.ScheduledJobType.RefreshSP500Stocks;
+                case "refresh-all-stocks":
+                    return services_generated_1.ScheduledJobType.RefreshAllStocks;
+                case "refresh-indices":
+                    return services_generated_1.ScheduledJobType.RefreshIndices;
+                default:
+                    return 0;
+            }
+        };
+        return JobInfoExtentions;
+    }());
+    exports.JobInfoExtentions = JobInfoExtentions;
+});
+
 define('resources/attributes/first-letter-span',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -6518,29 +6517,6 @@ define('components/journal/journals/journals',["require", "exports"], function (
     exports.Journals = Journals;
 });
 
-define('components/market/chart-layouts/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Navigation = (function () {
-        function Navigation() {
-        }
-        Navigation.prototype.configureRouter = function (config, router) {
-            config.title = "Chart Layouts";
-            config.map([
-                { route: ["weekly"], moduleId: "./layouts/chart-layouts", name: "Weekly", title: "Weekly Chart Layouts", nav: true },
-                { route: ["daily"], moduleId: "./layouts/chart-layouts", name: "Daily", title: "Daily Chart Layouts", nav: true },
-                { route: "", redirect: "weekly" }
-            ]);
-            this.router = router;
-        };
-        Navigation = tslib_1.__decorate([
-            aurelia_framework_1.autoinject
-        ], Navigation);
-        return Navigation;
-    }());
-    exports.Navigation = Navigation;
-});
-
 define('components/market/jobs-dashboard/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -6555,6 +6531,29 @@ define('components/market/jobs-dashboard/navigation',["require", "exports", "tsl
                 { route: ["refresh-all-stocks"], moduleId: "./jobs/job", name: "refresh-all-stocks", title: "Refresh All Stocks", nav: true },
                 { route: ["refresh-indices"], moduleId: "./jobs/job", name: "refresh-indices", title: "Refresh Indices", nav: true },
                 { route: "", redirect: "recalculate-global-indicators" }
+            ]);
+            this.router = router;
+        };
+        Navigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject
+        ], Navigation);
+        return Navigation;
+    }());
+    exports.Navigation = Navigation;
+});
+
+define('components/market/chart-layouts/navigation',["require", "exports", "tslib", "aurelia-framework"], function (require, exports, tslib_1, aurelia_framework_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Navigation = (function () {
+        function Navigation() {
+        }
+        Navigation.prototype.configureRouter = function (config, router) {
+            config.title = "Chart Layouts";
+            config.map([
+                { route: ["weekly"], moduleId: "./layouts/chart-layouts", name: "Weekly", title: "Weekly Chart Layouts", nav: true },
+                { route: ["daily"], moduleId: "./layouts/chart-layouts", name: "Daily", title: "Daily Chart Layouts", nav: true },
+                { route: "", redirect: "weekly" }
             ]);
             this.router = router;
         };
@@ -7535,6 +7534,29 @@ define('resources/elements/article-parts/article-parts',["require", "exports", "
     exports.ArticleParts = ArticleParts;
 });
 
+define('resources/elements/company/company-details',["require", "exports", "tslib", "aurelia-framework", "moment", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, moment, services_generated_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var CompanyDetails = (function () {
+        function CompanyDetails() {
+        }
+        CompanyDetails.prototype.formatDate = function (date) {
+            var date1 = moment(date);
+            var date2 = moment(new Date());
+            var diff = date2.diff(date1);
+            var duration = moment.duration(diff);
+            var days = duration.asDays();
+            return Math.round(days) + " days ago";
+        };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.CompanyModel)
+        ], CompanyDetails.prototype, "company", void 0);
+        return CompanyDetails;
+    }());
+    exports.CompanyDetails = CompanyDetails;
+});
+
 define('resources/elements/chart/chart-layout',["require", "exports", "tslib", "aurelia-framework", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, services_generated_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -7679,29 +7701,6 @@ define('resources/elements/chart/chart-layout',["require", "exports", "tslib", "
         return ChartLayout;
     }());
     exports.ChartLayout = ChartLayout;
-});
-
-define('resources/elements/company/company-details',["require", "exports", "tslib", "aurelia-framework", "moment", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, moment, services_generated_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var CompanyDetails = (function () {
-        function CompanyDetails() {
-        }
-        CompanyDetails.prototype.formatDate = function (date) {
-            var date1 = moment(date);
-            var date2 = moment(new Date());
-            var diff = date2.diff(date1);
-            var duration = moment.duration(diff);
-            var days = duration.asDays();
-            return Math.round(days) + " days ago";
-        };
-        tslib_1.__decorate([
-            aurelia_framework_1.bindable,
-            tslib_1.__metadata("design:type", services_generated_1.CompanyModel)
-        ], CompanyDetails.prototype, "company", void 0);
-        return CompanyDetails;
-    }());
-    exports.CompanyDetails = CompanyDetails;
 });
 
 define('resources/elements/indicator/indicator',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-validation", "../../../form-validation/bootstrap-form-renderer", "../../../services/account-service", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_validation_1, bootstrap_form_renderer_1, account_service_1, settings_service_1, services_generated_1) {
@@ -8154,221 +8153,6 @@ define('resources/elements/rule/rule',["require", "exports", "tslib", "toastr", 
     exports.Rule = Rule;
 });
 
-define('resources/elements/strategy/side-navigation',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-router", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_router_1, services_generated_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var SideNavigation = (function () {
-        function SideNavigation(strategyService, router) {
-            this.strategyService = strategyService;
-            this.router = router;
-            this.summaries = [];
-            this.currentModuleName = this.router.currentInstruction.config.name;
-        }
-        SideNavigation.prototype.strategyurlChanged = function (newValue) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a, e_1;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            if (!(newValue && newValue.length > 0)) return [3, 6];
-                            if (!this.summaryNotFound(newValue)) return [3, 5];
-                            _b.label = 1;
-                        case 1:
-                            _b.trys.push([1, 3, , 4]);
-                            _a = this;
-                            return [4, this.strategyService.geStrategySummaries()];
-                        case 2:
-                            _a.summaries = _b.sent();
-                            this.setActiveStrategy(newValue);
-                            return [3, 4];
-                        case 3:
-                            e_1 = _b.sent();
-                            toastr.error("Failed to load summaries", "Load Summaries Failed");
-                            return [3, 4];
-                        case 4: return [3, 6];
-                        case 5:
-                            this.setActiveStrategy(newValue);
-                            _b.label = 6;
-                        case 6: return [2];
-                    }
-                });
-            });
-        };
-        SideNavigation.prototype.summaryNotFound = function (url) {
-            var result = true;
-            if (this.summaries && this.summaries.length > 0) {
-                result = this.summaries.findIndex(function (s) { return s.url.toLowerCase() === url.toLowerCase(); }) === -1;
-            }
-            return result;
-        };
-        SideNavigation.prototype.setActiveStrategy = function (url) {
-            if (this.summaryNotFound(url)) {
-                this.navigateToDefaultStrategy();
-            }
-            else {
-                if (this.summaries) {
-                    this.summaries.forEach(function (item) {
-                        if (item.url.toLowerCase() === url.toLowerCase()) {
-                        }
-                    });
-                }
-            }
-        };
-        SideNavigation.prototype.navigateToDefaultStrategy = function () {
-            if (this.summaries && this.summaries.length > 0) {
-                var strategyUrl = "/strategies/" + this.currentModuleName + "/" + this.summaries[0].url;
-                this.router.navigate(strategyUrl);
-            }
-        };
-        SideNavigation.prototype.navigateToStrategy = function (url) {
-            if (url && url.length > 0) {
-                var strategyUrl = "/strategies/" + this.currentModuleName + "/" + url;
-                this.router.navigate(strategyUrl);
-            }
-        };
-        tslib_1.__decorate([
-            aurelia_framework_1.bindable,
-            tslib_1.__metadata("design:type", String)
-        ], SideNavigation.prototype, "strategyurl", void 0);
-        SideNavigation = tslib_1.__decorate([
-            aurelia_framework_1.autoinject,
-            tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient, aurelia_router_1.Router])
-        ], SideNavigation);
-        return SideNavigation;
-    }());
-    exports.SideNavigation = SideNavigation;
-});
-
-define('resources/elements/strategy/strategy-admin',["require", "exports", "tslib", "aurelia-framework", "../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var StrategyAdmin = (function () {
-        function StrategyAdmin(account) {
-            this.powerUser = account.currentUser.isAuthenticated;
-        }
-        StrategyAdmin = tslib_1.__decorate([
-            aurelia_framework_1.autoinject,
-            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
-        ], StrategyAdmin);
-        return StrategyAdmin;
-    }());
-    exports.StrategyAdmin = StrategyAdmin;
-});
-
-define('resources/elements/strategy/strategy-navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var StrategyNavigation = (function () {
-        function StrategyNavigation(eventAggregator) {
-            var _this = this;
-            this.eventAggregator = eventAggregator;
-            this.subscription = null;
-            this.items = [];
-            this.subscription = this.eventAggregator.subscribe("router:navigation:complete", function (request) {
-                _this.onNavigatioComplete(request.instruction);
-            });
-        }
-        StrategyNavigation.prototype.detached = function () {
-            if (this.subscription) {
-                this.subscription.dispose();
-            }
-        };
-        StrategyNavigation.prototype.onNavigatioComplete = function (instruction) {
-            if (instruction.config.name !== "strategies")
-                return;
-            var currentUrl = window.location.pathname;
-            var page = "";
-            var fragments = currentUrl.split("/");
-            if (fragments.length > 3) {
-                page = fragments[3];
-            }
-            this.items = [];
-            var strategyMenuItem = {
-                isActive: currentUrl.startsWith("/strategies/strategy/"),
-                title: "Strategy Article",
-                url: "/strategies/strategy/" + page,
-                name: "strategy"
-            };
-            var rulesetsMenuItem = {
-                isActive: currentUrl.startsWith("/strategies/strategy-rule-sets/"),
-                title: "Strategy Rule Sets",
-                url: "/strategies/strategy-rule-sets/" + page,
-                name: "rule-sets"
-            };
-            var playgroundMenuItem = {
-                isActive: currentUrl.startsWith("/strategies/strategy-playground/"),
-                title: "Playground",
-                url: "/strategies/strategy-playground/" + page,
-                name: "strategy-playground"
-            };
-            this.items.push(strategyMenuItem);
-            this.items.push(rulesetsMenuItem);
-            this.items.push(playgroundMenuItem);
-        };
-        StrategyNavigation = tslib_1.__decorate([
-            aurelia_framework_1.autoinject,
-            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
-        ], StrategyNavigation);
-        return StrategyNavigation;
-    }());
-    exports.StrategyNavigation = StrategyNavigation;
-    var LinkInfo = (function () {
-        function LinkInfo() {
-            this.isActive = false;
-        }
-        return LinkInfo;
-    }());
-    exports.LinkInfo = LinkInfo;
-});
-
-define('resources/elements/strategy/strategy-rule-set',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, settings_service_1, services_generated_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var StrategyRuleSet = (function () {
-        function StrategyRuleSet(eventAggregator, settings) {
-            this.eventAggregator = eventAggregator;
-            this.periods = settings.periods;
-        }
-        StrategyRuleSet.prototype.rulesetChanged = function (newValue) {
-            if (newValue) {
-            }
-        };
-        StrategyRuleSet.prototype.onExpanded = function () {
-            this.expanded = !this.expanded;
-        };
-        StrategyRuleSet.prototype.cancelDelete = function () {
-            this.deleteMode = false;
-            this.expanded = false;
-        };
-        StrategyRuleSet.prototype.startDelete = function () {
-            this.deleteMode = true;
-            this.expanded = true;
-        };
-        StrategyRuleSet.prototype.setOptionalStatus = function (flag) {
-            this.ruleset.ruleSetOptional = flag;
-        };
-        StrategyRuleSet.prototype.onMoveUp = function () {
-            this.eventAggregator.publish("strategy-rule-set-up", this.ruleset.ruleSetId);
-        };
-        StrategyRuleSet.prototype.onMoveDown = function () {
-            this.eventAggregator.publish("strategy-rule-set-down", this.ruleset.ruleSetId);
-        };
-        StrategyRuleSet.prototype.confirmDelete = function () {
-            this.eventAggregator.publish("strategy-rule-set-detach", this.ruleset.ruleSetId);
-        };
-        tslib_1.__decorate([
-            aurelia_framework_1.bindable,
-            tslib_1.__metadata("design:type", services_generated_1.VStrategyRuleSet)
-        ], StrategyRuleSet.prototype, "ruleset", void 0);
-        StrategyRuleSet = tslib_1.__decorate([
-            aurelia_framework_1.autoinject,
-            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator, settings_service_1.SettingsService])
-        ], StrategyRuleSet);
-        return StrategyRuleSet;
-    }());
-    exports.StrategyRuleSet = StrategyRuleSet;
-});
-
 define('resources/elements/rule-set/rule-set-item',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, services_generated_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -8662,26 +8446,307 @@ define('resources/elements/rule-set/rule-set',["require", "exports", "tslib", "t
     exports.RuleSet = RuleSet;
 });
 
-define('components/journal/journals/journal/journal',["require", "exports"], function (require, exports) {
+define('resources/elements/strategy/side-navigation',["require", "exports", "tslib", "toastr", "aurelia-framework", "aurelia-router", "../../../services/services-generated"], function (require, exports, tslib_1, toastr, aurelia_framework_1, aurelia_router_1, services_generated_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var JournalEntry = (function () {
-        function JournalEntry() {
+    var SideNavigation = (function () {
+        function SideNavigation(strategyService, router) {
+            this.strategyService = strategyService;
+            this.router = router;
+            this.summaries = [];
+            this.currentModuleName = this.router.currentInstruction.config.name;
         }
-        return JournalEntry;
+        SideNavigation.prototype.strategyurlChanged = function (newValue) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a, e_1;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            if (!(newValue && newValue.length > 0)) return [3, 6];
+                            if (!this.summaryNotFound(newValue)) return [3, 5];
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 3, , 4]);
+                            _a = this;
+                            return [4, this.strategyService.geStrategySummaries()];
+                        case 2:
+                            _a.summaries = _b.sent();
+                            this.setActiveStrategy(newValue);
+                            return [3, 4];
+                        case 3:
+                            e_1 = _b.sent();
+                            toastr.error("Failed to load summaries", "Load Summaries Failed");
+                            return [3, 4];
+                        case 4: return [3, 6];
+                        case 5:
+                            this.setActiveStrategy(newValue);
+                            _b.label = 6;
+                        case 6: return [2];
+                    }
+                });
+            });
+        };
+        SideNavigation.prototype.summaryNotFound = function (url) {
+            var result = true;
+            if (this.summaries && this.summaries.length > 0) {
+                result = this.summaries.findIndex(function (s) { return s.url.toLowerCase() === url.toLowerCase(); }) === -1;
+            }
+            return result;
+        };
+        SideNavigation.prototype.setActiveStrategy = function (url) {
+            if (this.summaryNotFound(url)) {
+                this.navigateToDefaultStrategy();
+            }
+            else {
+                if (this.summaries) {
+                    this.summaries.forEach(function (item) {
+                        if (item.url.toLowerCase() === url.toLowerCase()) {
+                        }
+                    });
+                }
+            }
+        };
+        SideNavigation.prototype.navigateToDefaultStrategy = function () {
+            if (this.summaries && this.summaries.length > 0) {
+                var strategyUrl = "/strategies/" + this.currentModuleName + "/" + this.summaries[0].url;
+                this.router.navigate(strategyUrl);
+            }
+        };
+        SideNavigation.prototype.navigateToStrategy = function (url) {
+            if (url && url.length > 0) {
+                var strategyUrl = "/strategies/" + this.currentModuleName + "/" + url;
+                this.router.navigate(strategyUrl);
+            }
+        };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", String)
+        ], SideNavigation.prototype, "strategyurl", void 0);
+        SideNavigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.StrategiesApiClient, aurelia_router_1.Router])
+        ], SideNavigation);
+        return SideNavigation;
     }());
-    exports.JournalEntry = JournalEntry;
+    exports.SideNavigation = SideNavigation;
 });
 
-define('components/journal/journals/journal-periods/journal-periods',["require", "exports"], function (require, exports) {
+define('resources/elements/strategy/strategy-admin',["require", "exports", "tslib", "aurelia-framework", "../../../services/account-service"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var JournalPeriods = (function () {
-        function JournalPeriods() {
+    var StrategyAdmin = (function () {
+        function StrategyAdmin(account) {
+            this.powerUser = account.currentUser.isAuthenticated;
         }
-        return JournalPeriods;
+        StrategyAdmin = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService])
+        ], StrategyAdmin);
+        return StrategyAdmin;
     }());
-    exports.JournalPeriods = JournalPeriods;
+    exports.StrategyAdmin = StrategyAdmin;
+});
+
+define('resources/elements/strategy/strategy-navigation',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var StrategyNavigation = (function () {
+        function StrategyNavigation(eventAggregator) {
+            var _this = this;
+            this.eventAggregator = eventAggregator;
+            this.subscription = null;
+            this.items = [];
+            this.subscription = this.eventAggregator.subscribe("router:navigation:complete", function (request) {
+                _this.onNavigatioComplete(request.instruction);
+            });
+        }
+        StrategyNavigation.prototype.detached = function () {
+            if (this.subscription) {
+                this.subscription.dispose();
+            }
+        };
+        StrategyNavigation.prototype.onNavigatioComplete = function (instruction) {
+            if (instruction.config.name !== "strategies")
+                return;
+            var currentUrl = window.location.pathname;
+            var page = "";
+            var fragments = currentUrl.split("/");
+            if (fragments.length > 3) {
+                page = fragments[3];
+            }
+            this.items = [];
+            var strategyMenuItem = {
+                isActive: currentUrl.startsWith("/strategies/strategy/"),
+                title: "Strategy Article",
+                url: "/strategies/strategy/" + page,
+                name: "strategy"
+            };
+            var rulesetsMenuItem = {
+                isActive: currentUrl.startsWith("/strategies/strategy-rule-sets/"),
+                title: "Strategy Rule Sets",
+                url: "/strategies/strategy-rule-sets/" + page,
+                name: "rule-sets"
+            };
+            var playgroundMenuItem = {
+                isActive: currentUrl.startsWith("/strategies/strategy-playground/"),
+                title: "Playground",
+                url: "/strategies/strategy-playground/" + page,
+                name: "strategy-playground"
+            };
+            this.items.push(strategyMenuItem);
+            this.items.push(rulesetsMenuItem);
+            this.items.push(playgroundMenuItem);
+        };
+        StrategyNavigation = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator])
+        ], StrategyNavigation);
+        return StrategyNavigation;
+    }());
+    exports.StrategyNavigation = StrategyNavigation;
+    var LinkInfo = (function () {
+        function LinkInfo() {
+            this.isActive = false;
+        }
+        return LinkInfo;
+    }());
+    exports.LinkInfo = LinkInfo;
+});
+
+define('resources/elements/strategy/strategy-rule-set',["require", "exports", "tslib", "aurelia-framework", "aurelia-event-aggregator", "../../../services/settings-service", "../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_event_aggregator_1, settings_service_1, services_generated_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var StrategyRuleSet = (function () {
+        function StrategyRuleSet(eventAggregator, settings) {
+            this.eventAggregator = eventAggregator;
+            this.periods = settings.periods;
+        }
+        StrategyRuleSet.prototype.rulesetChanged = function (newValue) {
+            if (newValue) {
+            }
+        };
+        StrategyRuleSet.prototype.onExpanded = function () {
+            this.expanded = !this.expanded;
+        };
+        StrategyRuleSet.prototype.cancelDelete = function () {
+            this.deleteMode = false;
+            this.expanded = false;
+        };
+        StrategyRuleSet.prototype.startDelete = function () {
+            this.deleteMode = true;
+            this.expanded = true;
+        };
+        StrategyRuleSet.prototype.setOptionalStatus = function (flag) {
+            this.ruleset.ruleSetOptional = flag;
+        };
+        StrategyRuleSet.prototype.onMoveUp = function () {
+            this.eventAggregator.publish("strategy-rule-set-up", this.ruleset.ruleSetId);
+        };
+        StrategyRuleSet.prototype.onMoveDown = function () {
+            this.eventAggregator.publish("strategy-rule-set-down", this.ruleset.ruleSetId);
+        };
+        StrategyRuleSet.prototype.confirmDelete = function () {
+            this.eventAggregator.publish("strategy-rule-set-detach", this.ruleset.ruleSetId);
+        };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", services_generated_1.VStrategyRuleSet)
+        ], StrategyRuleSet.prototype, "ruleset", void 0);
+        StrategyRuleSet = tslib_1.__decorate([
+            aurelia_framework_1.autoinject,
+            tslib_1.__metadata("design:paramtypes", [aurelia_event_aggregator_1.EventAggregator, settings_service_1.SettingsService])
+        ], StrategyRuleSet);
+        return StrategyRuleSet;
+    }());
+    exports.StrategyRuleSet = StrategyRuleSet;
+});
+
+define('components/journal/journals/company-details/company-details',["require", "exports", "tslib", "aurelia-framework", "moment", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, moment, services_generated_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var CompanyDetails = (function () {
+        function CompanyDetails(companyService, stockService) {
+            this.companyService = companyService;
+            this.stockService = stockService;
+        }
+        CompanyDetails.prototype.tickerChanged = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a, e_1;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            this.company = null;
+                            this.isLoading = true;
+                            if (!(this.ticker && this.ticker.length > 0)) return [3, 4];
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 3, , 4]);
+                            _a = this;
+                            return [4, this.companyService.getCompany(this.ticker)];
+                        case 2:
+                            _a.company = _b.sent();
+                            return [3, 4];
+                        case 3:
+                            e_1 = _b.sent();
+                            return [3, 4];
+                        case 4:
+                            this.isLoading = false;
+                            return [2];
+                    }
+                });
+            });
+        };
+        CompanyDetails.prototype.updateCompany = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a, e_2;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            if (!this.company) {
+                                return [2];
+                            }
+                            this.isLoading = true;
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 4, , 5]);
+                            return [4, this.stockService.updateQuotes(this.company.ticker)];
+                        case 2:
+                            _b.sent();
+                            _a = this;
+                            return [4, this.companyService.getCompany(this.company.ticker)];
+                        case 3:
+                            _a.company = _b.sent();
+                            return [3, 5];
+                        case 4:
+                            e_2 = _b.sent();
+                            return [3, 5];
+                        case 5:
+                            this.isLoading = false;
+                            return [2];
+                    }
+                });
+            });
+        };
+        CompanyDetails.prototype.formatDate = function (date) {
+            var date1 = moment(date);
+            var date2 = moment(new Date());
+            var diff = date2.diff(date1);
+            var duration = moment.duration(diff);
+            var days = duration.asDays();
+            return Math.round(days) + " days ago";
+        };
+        tslib_1.__decorate([
+            aurelia_framework_1.bindable,
+            tslib_1.__metadata("design:type", String)
+        ], CompanyDetails.prototype, "ticker", void 0);
+        CompanyDetails = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [services_generated_1.CompaniesApiClient,
+                services_generated_1.StockApiClient])
+        ], CompanyDetails);
+        return CompanyDetails;
+    }());
+    exports.CompanyDetails = CompanyDetails;
 });
 
 define('components/journal/journals/journal-create/journal-create',["require", "exports", "tslib", "aurelia-framework", "aurelia-validation", "../../../../common/helpers/enum-helper", "../../../../services/services-generated", "../../../../form-validation/bootstrap-form-renderer"], function (require, exports, tslib_1, aurelia_framework_1, aurelia_validation_1, enum_helper_1, services_generated_1, bootstrap_form_renderer_1) {
@@ -8694,6 +8759,7 @@ define('components/journal/journals/journal-create/journal-create',["require", "
             this.validation.addRenderer(new bootstrap_form_renderer_1.BootstrapFormRenderer());
             this.directions = enum_helper_1.EnumValues.getDirectionTypes();
             this.journal = new services_generated_1.JournalModel();
+            this.journal.entryDate = new Date();
             aurelia_validation_1.ValidationRules
                 .ensure(function (m) { return m.ticker; }).displayName("Ticker").required().withMessage("${$displayName} cannot be blank.")
                 .ensure(function (m) { return m.entryDate; }).displayName("Entry date").required().withMessage("${$displayName} cannot be blank.")
@@ -8733,6 +8799,296 @@ define('components/journal/journals/journal-create/journal-create',["require", "
         return JournalCreate;
     }());
     exports.JournalCreate = JournalCreate;
+});
+
+define('components/journal/journals/journal/journal',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var JournalEntry = (function () {
+        function JournalEntry() {
+        }
+        return JournalEntry;
+    }());
+    exports.JournalEntry = JournalEntry;
+});
+
+define('components/journal/journals/journal-periods/journal-periods',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var JournalPeriods = (function () {
+        function JournalPeriods() {
+        }
+        return JournalPeriods;
+    }());
+    exports.JournalPeriods = JournalPeriods;
+});
+
+define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../common/helpers/date-helper", "../../../../services/services-generated", "../../../../common/types/job-models"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, date_helper_1, services_generated_1, job_models_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Job = (function () {
+        function Job(account, jobService, eventAggregator) {
+            var _this = this;
+            this.jobService = jobService;
+            this.powerUser = false;
+            this.title = "Job Dashboard";
+            this.jobs = [];
+            this.jobUrl = "";
+            this.powerUser = account.currentUser.isAuthenticated;
+            this.subscription = eventAggregator.subscribe("router:navigation:complete", function () {
+                _this.onNavigatioComplete();
+            });
+        }
+        Job.prototype.activate = function (params, routeconfig, navigationInstruction) {
+            this.router = navigationInstruction.router;
+            if (params && routeconfig) {
+            }
+        };
+        Job.prototype.detached = function () {
+            this.subscription.dispose();
+        };
+        Job.prototype.onNavigatioComplete = function () {
+            this.title = this.router.currentInstruction.config.title;
+            this.jobUrl = this.router.currentInstruction.config.name;
+            this.loadJobs();
+        };
+        Job.prototype.loadJobs = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4, this.loadCurrentJob()];
+                        case 1:
+                            _a.sent();
+                            return [4, this.loadHistory()];
+                        case 2:
+                            _a.sent();
+                            this.watchCurrentJob();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.loadHistory = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var jobType, _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            this.jobs = [];
+                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
+                            _a = this;
+                            return [4, this.jobService.getSheduledJobHistory(jobType)];
+                        case 1:
+                            _a.jobs = _b.sent();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.loadCurrentJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var jobType, _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
+                            _a = this;
+                            return [4, this.jobService.getCurrentJob(jobType)];
+                        case 1:
+                            _a.currentJob = _b.sent();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.deleteAll = function () {
+            this.jobs = [];
+        };
+        Job.prototype.startJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var jobType, _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
+                            _a = this;
+                            return [4, this.jobService.startScheduledJobs(jobType)];
+                        case 1:
+                            _a.currentJob = _b.sent();
+                            this.watchCurrentJob();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.watchCurrentJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!(this.currentJob != null && this.currentJob.jobId > 0)) return [3, 1];
+                            setTimeout(function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                return tslib_1.__generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4, this.loadCurrentJob()];
+                                        case 1:
+                                            _a.sent();
+                                            this.watchCurrentJob();
+                                            return [2];
+                                    }
+                                });
+                            }); }, 1000);
+                            return [3, 3];
+                        case 1: return [4, this.loadHistory()];
+                        case 2:
+                            _a.sent();
+                            _a.label = 3;
+                        case 3: return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.resumeJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, this.jobService.resumeScheduledJob(this.currentJob.jobId)];
+                        case 1:
+                            _b.sent();
+                            _a = this;
+                            return [4, this.jobService.getJob(this.currentJob.jobId)];
+                        case 2:
+                            _a.currentJob = _b.sent();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.pauseJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                var _a;
+                return tslib_1.__generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4, this.jobService.pauseScheduledJob(this.currentJob.jobId)];
+                        case 1:
+                            _b.sent();
+                            _a = this;
+                            return [4, this.jobService.getJob(this.currentJob.jobId)];
+                        case 2:
+                            _a.currentJob = _b.sent();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Job.prototype.cancelJob = function () {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4, this.jobService.cancelScheduledJob(this.currentJob.jobId)];
+                        case 1:
+                            _a.sent();
+                            return [4, this.loadJobs()];
+                        case 2:
+                            _a.sent();
+                            return [2];
+                    }
+                });
+            });
+        };
+        Object.defineProperty(Job.prototype, "currentJobInProgress", {
+            get: function () {
+                return job_models_1.JobInfoExtentions.isJobInProgress(this.currentJob);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "currentJobPaused", {
+            get: function () {
+                return job_models_1.JobInfoExtentions.isJobPaused(this.currentJob);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "currentJobStarted", {
+            get: function () {
+                if (this.currentJob && this.currentJob.jobId > 0) {
+                    return true;
+                }
+                return false;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "jobTypeName", {
+            get: function () {
+                if (this.currentJob) {
+                    return job_models_1.JobInfoExtentions.getJobTypeName(this.currentJob.jobType);
+                }
+                return "";
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "jobStatusName", {
+            get: function () {
+                if (this.currentJob) {
+                    return job_models_1.JobInfoExtentions.getJobStatusName(this.currentJob.status);
+                }
+                return "";
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Job.prototype, "startDate", {
+            get: function () {
+                if (this.currentJob) {
+                    return date_helper_1.DateHelper.getUIDate(this.currentJob.startDate);
+                }
+                return "";
+            },
+            enumerable: true,
+            configurable: true
+        });
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
+            tslib_1.__metadata("design:type", Boolean),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "currentJobInProgress", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
+            tslib_1.__metadata("design:type", Boolean),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "currentJobPaused", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobId"),
+            tslib_1.__metadata("design:type", Boolean),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "currentJobStarted", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.jobType"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "jobTypeName", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.status"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "jobStatusName", null);
+        tslib_1.__decorate([
+            aurelia_framework_1.computedFrom("currentJob.startDate"),
+            tslib_1.__metadata("design:type", String),
+            tslib_1.__metadata("design:paramtypes", [])
+        ], Job.prototype, "startDate", null);
+        Job = tslib_1.__decorate([
+            aurelia_framework_1.autoinject(),
+            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, services_generated_1.JobsApiClient, aurelia_event_aggregator_1.EventAggregator])
+        ], Job);
+        return Job;
+    }());
+    exports.Job = Job;
 });
 
 define('components/market/chart-layouts/layouts/chart-layout-indicator',["require", "exports", "tslib", "aurelia-framework", "../../../../infrastructure/event-emitter", "../../../../common/types/enums", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, event_emitter_1, Enums, services_generated_1) {
@@ -9029,274 +9385,6 @@ define('components/market/chart-layouts/layouts/chart-layouts',["require", "expo
         return ChartLayouts;
     }());
     exports.ChartLayouts = ChartLayouts;
-});
-
-define('components/market/jobs-dashboard/jobs/job',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../common/helpers/date-helper", "../../../../services/services-generated", "../../../../common/types/job-models"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, date_helper_1, services_generated_1, job_models_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Job = (function () {
-        function Job(account, jobService, eventAggregator) {
-            var _this = this;
-            this.jobService = jobService;
-            this.powerUser = false;
-            this.title = "Job Dashboard";
-            this.jobs = [];
-            this.jobUrl = "";
-            this.powerUser = account.currentUser.isAuthenticated;
-            this.subscription = eventAggregator.subscribe("router:navigation:complete", function () {
-                _this.onNavigatioComplete();
-            });
-        }
-        Job.prototype.activate = function (params, routeconfig, navigationInstruction) {
-            this.router = navigationInstruction.router;
-            if (params && routeconfig) {
-            }
-        };
-        Job.prototype.detached = function () {
-            this.subscription.dispose();
-        };
-        Job.prototype.onNavigatioComplete = function () {
-            this.title = this.router.currentInstruction.config.title;
-            this.jobUrl = this.router.currentInstruction.config.name;
-            this.loadJobs();
-        };
-        Job.prototype.loadJobs = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4, this.loadCurrentJob()];
-                        case 1:
-                            _a.sent();
-                            return [4, this.loadHistory()];
-                        case 2:
-                            _a.sent();
-                            this.watchCurrentJob();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.loadHistory = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var jobType, _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            this.jobs = [];
-                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
-                            _a = this;
-                            return [4, this.jobService.getSheduledJobHistory(jobType)];
-                        case 1:
-                            _a.jobs = _b.sent();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.loadCurrentJob = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var jobType, _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
-                            _a = this;
-                            return [4, this.jobService.getCurrentJob(jobType)];
-                        case 1:
-                            _a.currentJob = _b.sent();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.deleteAll = function () {
-            this.jobs = [];
-        };
-        Job.prototype.startJob = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var jobType, _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            jobType = job_models_1.JobInfoExtentions.getJobType(this.jobUrl);
-                            _a = this;
-                            return [4, this.jobService.startScheduledJobs(jobType)];
-                        case 1:
-                            _a.currentJob = _b.sent();
-                            this.watchCurrentJob();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.watchCurrentJob = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _this = this;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (!(this.currentJob != null && this.currentJob.jobId > 0)) return [3, 1];
-                            setTimeout(function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                return tslib_1.__generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4, this.loadCurrentJob()];
-                                        case 1:
-                                            _a.sent();
-                                            this.watchCurrentJob();
-                                            return [2];
-                                    }
-                                });
-                            }); }, 1000);
-                            return [3, 3];
-                        case 1: return [4, this.loadHistory()];
-                        case 2:
-                            _a.sent();
-                            _a.label = 3;
-                        case 3: return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.resumeJob = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, this.jobService.resumeScheduledJob(this.currentJob.jobId)];
-                        case 1:
-                            _b.sent();
-                            _a = this;
-                            return [4, this.jobService.getJob(this.currentJob.jobId)];
-                        case 2:
-                            _a.currentJob = _b.sent();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.pauseJob = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                var _a;
-                return tslib_1.__generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4, this.jobService.pauseScheduledJob(this.currentJob.jobId)];
-                        case 1:
-                            _b.sent();
-                            _a = this;
-                            return [4, this.jobService.getJob(this.currentJob.jobId)];
-                        case 2:
-                            _a.currentJob = _b.sent();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Job.prototype.cancelJob = function () {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4, this.jobService.cancelScheduledJob(this.currentJob.jobId)];
-                        case 1:
-                            _a.sent();
-                            return [4, this.loadJobs()];
-                        case 2:
-                            _a.sent();
-                            return [2];
-                    }
-                });
-            });
-        };
-        Object.defineProperty(Job.prototype, "currentJobInProgress", {
-            get: function () {
-                return job_models_1.JobInfoExtentions.isJobInProgress(this.currentJob);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Job.prototype, "currentJobPaused", {
-            get: function () {
-                return job_models_1.JobInfoExtentions.isJobPaused(this.currentJob);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Job.prototype, "currentJobStarted", {
-            get: function () {
-                if (this.currentJob && this.currentJob.jobId > 0) {
-                    return true;
-                }
-                return false;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Job.prototype, "jobTypeName", {
-            get: function () {
-                if (this.currentJob) {
-                    return job_models_1.JobInfoExtentions.getJobTypeName(this.currentJob.jobType);
-                }
-                return "";
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Job.prototype, "jobStatusName", {
-            get: function () {
-                if (this.currentJob) {
-                    return job_models_1.JobInfoExtentions.getJobStatusName(this.currentJob.status);
-                }
-                return "";
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Job.prototype, "startDate", {
-            get: function () {
-                if (this.currentJob) {
-                    return date_helper_1.DateHelper.getUIDate(this.currentJob.startDate);
-                }
-                return "";
-            },
-            enumerable: true,
-            configurable: true
-        });
-        tslib_1.__decorate([
-            aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
-            tslib_1.__metadata("design:type", Boolean),
-            tslib_1.__metadata("design:paramtypes", [])
-        ], Job.prototype, "currentJobInProgress", null);
-        tslib_1.__decorate([
-            aurelia_framework_1.computedFrom("currentJob.jobId", "currentJob.status"),
-            tslib_1.__metadata("design:type", Boolean),
-            tslib_1.__metadata("design:paramtypes", [])
-        ], Job.prototype, "currentJobPaused", null);
-        tslib_1.__decorate([
-            aurelia_framework_1.computedFrom("currentJob.jobId"),
-            tslib_1.__metadata("design:type", Boolean),
-            tslib_1.__metadata("design:paramtypes", [])
-        ], Job.prototype, "currentJobStarted", null);
-        tslib_1.__decorate([
-            aurelia_framework_1.computedFrom("currentJob.jobType"),
-            tslib_1.__metadata("design:type", String),
-            tslib_1.__metadata("design:paramtypes", [])
-        ], Job.prototype, "jobTypeName", null);
-        tslib_1.__decorate([
-            aurelia_framework_1.computedFrom("currentJob.status"),
-            tslib_1.__metadata("design:type", String),
-            tslib_1.__metadata("design:paramtypes", [])
-        ], Job.prototype, "jobStatusName", null);
-        tslib_1.__decorate([
-            aurelia_framework_1.computedFrom("currentJob.startDate"),
-            tslib_1.__metadata("design:type", String),
-            tslib_1.__metadata("design:paramtypes", [])
-        ], Job.prototype, "startDate", null);
-        Job = tslib_1.__decorate([
-            aurelia_framework_1.autoinject(),
-            tslib_1.__metadata("design:paramtypes", [account_service_1.AccountService, services_generated_1.JobsApiClient, aurelia_event_aggregator_1.EventAggregator])
-        ], Job);
-        return Job;
-    }());
-    exports.Job = Job;
 });
 
 define('components/market/market-indices/indices/market-index',["require", "exports", "tslib", "aurelia-framework", "../../../../services/account-service", "aurelia-event-aggregator", "../../../../services/services-generated"], function (require, exports, tslib_1, aurelia_framework_1, account_service_1, aurelia_event_aggregator_1, services_generated_1) {
@@ -12209,76 +12297,78 @@ define('text!common/styles/common.css', ['module'], function(module) { module.ex
 define('text!components/strategies/strategy.html', ['module'], function(module) { module.exports = "<template><require from=\"./strategy.css\"></require><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Article</a></li><li role=\"separator\" class=\"divider\"></li><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\" if.bind=\"editMode === true\"><button type=\"button\" click.delegate=\"trySaveArticle()\" class=\"btn btn-danger\">Apply Changes</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_strategy\"><header><h3>${strategy.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Strategy Name</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.title & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"strategy.summary & validate\"></textarea></div><div class=\"form-group\"><label>Strategy Url</label><input type=\"text\" class=\"form-control\" value.bind=\"strategy.url & validate\"></div><div class=\"form-group\"><label>Strategy Status:</label><div class=\"input-group\" style=\"width:40%\"><input type=\"text\" class=\"form-control\" disabled=\"disabled\" aria-label=\"...\" value=\"${strategy.active ? 'Active' : 'Inactive'}\"><div class=\"input-group-btn\"><button type=\"button\" click.delegate=\"setActiveStatus(true)\" if.bind=\"!strategy.active\" class=\"btn btn-danger\">Activate</button> <button type=\"button\" click.delegate=\"setActiveStatus(false)\" if.bind=\"strategy.active\" class=\"btn btn-danger\">Deactivate</button></div></div></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"strategy.blocks\"></article-parts></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''} ${summary.active ? '' : 'disabled'}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Strategies</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addStrategy()\">Register New Strategy</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Strategy</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteStrategy()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></div></div></template>"; });
 define('text!components/studies/navigation.html', ['module'], function(module) { module.exports = "<template><require from=\"../sub-nav/sub-nav\"></require><sub-nav router.bind=\"router\"></sub-nav><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!common/styles/_article.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
-define('text!components/sub-nav/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!components/user/login.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
 define('text!components/user/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"container page-content\"><router-view></router-view></div></template>"; });
 define('text!common/styles/_body.css', ['module'], function(module) { module.exports = "body {\n  width: 100%;\n  height: 100%;\n  font-family: 'Hind Vadodara', sans-serif;\n  font-size: 14px;\n  line-height: 1.6;\n  color: #333333;\n  background: linear-gradient(to top, rgba(255, 255, 255, 0.8) 100%, #ffffff 0%), url(/Content/Images/emma_bg.jpg) no-repeat 0 0;\n  background-size: 100%;\n  background-attachment: fixed;\n  background-position: top;\n}\nbody a,\nbody a:hover {\n  color: #e22004;\n}\nbody a[first-letter-span] {\n  color: #2d4945;\n}\nbody a[first-letter-span] span {\n  color: #e22004;\n}\nbody .aurelia-validation-message {\n  display: none;\n}\nbody .has-success .form-control {\n  border-color: #ccc;\n}\nbody .has-success .form-control:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n}\nbody .no-border {\n  border: 0!important;\n}\nbody .right {\n  text-align: right!important;\n}\nbody .uppercase {\n  text-transform: uppercase;\n}\nbody .pointer {\n  cursor: pointer!important;\n}\nbody a:hover {\n  cursor: pointer;\n}\nbody h5 {\n  font-size: 16px;\n}\n"; });
 define('text!components/user/profile.html', ['module'], function(module) { module.exports = "<template><h3>Login</h3></template>"; });
-define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
+define('text!components/sub-nav/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!common/styles/_button.css', ['module'], function(module) { module.exports = ".btn {\n  font-weight: normal;\n  font-size: 13px;\n  font-family: 'Open Sans', sans-serif;\n  border-radius: 0;\n  min-width: 70px;\n}\n.btn-group .btn,\n.btn-group-vertical .btn {\n  min-width: 10px;\n  margin-right: 0;\n}\n.btn-default {\n  color: #c9302c;\n  border-color: #c9302c;\n}\n.btn-default:active,\n.btn-default:focus {\n  color: #c9302c;\n  border-color: #c9302c;\n  background-color: white;\n}\n.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n.btn-danger {\n  background-color: #e22004;\n}\n.dropdown-menu > li > a {\n  font-family: 'Open Sans', sans-serif;\n}\n.btn.active.focus,\n.btn.active:focus,\n.btn.focus,\n.btn:active.focus,\n.btn:active:focus,\n.btn:focus {\n  outline-color: transparent;\n}\n.btn-default.active.focus,\n.btn-default.active:focus,\n.btn-default.active:hover,\n.btn-default:active.focus,\n.btn-default:active:focus,\n.btn-default:active:hover,\n.open > .dropdown-toggle.btn-default.focus,\n.open > .dropdown-toggle.btn-default:focus,\n.open > .dropdown-toggle.btn-default:hover {\n  color: #c9302c;\n  background-color: rgba(201, 48, 44, 0.05);\n  border-color: #c9302c;\n}\n"; });
+define('text!dialogs/login/user-login.html', ['module'], function(module) { module.exports = "<template><require from=\"./user-login.css\"></require><div class=\"user-login\"><ai-dialog><ai-dialog-body><h3>Login</h3><form class=\"form-horizontal\"><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Username / Email</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"model.email & validate\"></div></div><div class=\"form-group\"><label class=\"col-sm-12 control-label\">Password</label><div class=\"col-sm-12\"><input type=\"password\" class=\"form-control\" value.bind=\"model.password & validate\"></div></div><div class=\"form-group has-error\" if.bind=\"loginFailed\"><span class=\"help-block validation-message\">Your account or password is incorrect.</span></div></form></ai-dialog-body><ai-dialog-footer><button class=\"btn btn-primary\" click.trigger=\"tryLogin()\">Login</button> <button class=\"btn btn-default\" click.trigger=\"controller.cancel()\">Cancel</button></ai-dialog-footer></ai-dialog></div></template>"; });
 define('text!components/journal/journals/journals.html', ['module'], function(module) { module.exports = "<template><div class=\"journals\"></div></template>"; });
-define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
 define('text!common/styles/_dialog.css', ['module'], function(module) { module.exports = "ai-dialog {\n  border-radius: 0;\n}\nai-dialog ai-dialog-body {\n  padding: 15px 30px;\n}\nai-dialog ai-dialog-body h3 {\n  margin: -30px -30px 25px;\n  padding: 20px;\n  font-weight: 500;\n  text-align: center;\n  background-color: #f5f5f5;\n}\nai-dialog ai-dialog-footer {\n  padding-bottom: 20px;\n  border: none;\n  padding-right: 30px;\n}\nai-dialog ai-dialog-footer .btn {\n  margin-left: 14px;\n}\nai-dialog-overlay.active {\n  background-color: black;\n  opacity: .5;\n}\nai-dialog > ai-dialog-footer button.btn-primary,\nai-dialog > ai-dialog-footer button.btn-primary:hover,\nai-dialog > ai-dialog-footer button.btn-primary:hover:enabled {\n  background-color: #2771cd;\n  border: solid 1px #ffffff;\n  color: #ffffff;\n}\nai-dialog > ai-dialog-footer button.btn-default,\nai-dialog > ai-dialog-footer button.btn-default:hover,\nai-dialog > ai-dialog-footer button.btn-default:hover:enabled {\n  background-color: #ffffff;\n  border: solid 1px #2771cd;\n  color: #2771cd;\n}\n"; });
-define('text!components/market/jobs-dashboard/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
+define('text!components/market/chart-layouts/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_chart-layouts\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
 define('text!common/styles/_fonts.css', ['module'], function(module) { module.exports = "@import url(//fonts.googleapis.com/css?family=Ubuntu:400,500);\n@import url(//fonts.googleapis.com/css?family=Hind+Vadodara:300,400,500);\n@import url(//fonts.googleapis.com/css?family=Open+Sans:400|Roboto);\n@import url(//fonts.googleapis.com/css?family=Istok+Web:400,700);\n@import url(//fonts.googleapis.com/css?family=Inder);\n@import url(//fonts.googleapis.com/css?family=Raleway);\n@import url(//fonts.googleapis.com/css?family=PT+Sans);\n@import url(//fonts.googleapis.com/css?family=Lato);\n@font-face {\n  font-family: 'Glyphicons Halflings';\n  src: url('/fonts/glyphicons-halflings-regular.eot');\n  src: url('/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');\n}\n"; });
 define('text!components/market/market-indices/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_market-indices\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
+define('text!components/market/jobs-dashboard/navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_dashboard\"><router-view></router-view></div><div class=\"col-md-4 col-xs-12\"><side-nav router.bind=\"router\"></side-nav></div></div></template>"; });
 define('text!components/strategies/indicators/indicators.html', ['module'], function(module) { module.exports = "<template><require from=\"./indicators.css\"></require><strategy-admin></strategy-admin><div class=\"c_indicators-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_indicators\"><header><h3 first-letter-span>Manage Indicators</h3></header><div class=\"c_indicator-list\"><indicator repeat.for=\"indicator of indicators\" indicator.bind=\"indicator\"></indicator><div class=\"c_indicator c_indicator-add\" click.delegate=\"addIndicator()\"><div class=\"c_indicator-header\"><a>Register new indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadIndicatorsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Indicators</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
 define('text!common/styles/_form.css', ['module'], function(module) { module.exports = ".form-group {\n  margin-bottom: 14px;\n}\n.form-group label {\n  font-weight: 500;\n}\n.form-group.has-error label {\n  color: #333333;\n}\n.form-group.has-error input {\n  border-color: #d50525;\n}\n.form-group.has-error span.help-block {\n  margin-left: 18px;\n  color: #CA1D04;\n  display: inline-block;\n  margin-bottom: 0;\n}\n.form-group.has-error span.help-block.validation-message {\n  font-weight: 500;\n  margin-left: 15px;\n}\n.form-group.has-error .input-group-addon {\n  border-color: #d50525;\n  border-right: none;\n  color: #333333;\n  background-color: #f5f5f5;\n}\n.form-group .input-group-addon {\n  border-color: #cacaca;\n  border-radius: 2px;\n}\n.form-control {\n  border-radius: 2px;\n  box-shadow: none;\n  border-color: #cacaca;\n  padding: 6px 15px;\n  color: #4a4a4a;\n}\nselect.form-control {\n  padding: 6px 10px;\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  background-color: #f5f5f5;\n  opacity: 1;\n}\n.form-control {\n  font-size: 14px;\n  border-radius: 0;\n  box-shadow: none;\n  color: rgba(0, 0, 0, 0.82);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.form-control[disabled],\n.form-control[readonly],\nfieldset[disabled] .form-control {\n  cursor: default;\n  background-color: rgba(223, 223, 223, 0.13);\n  color: rgba(0, 0, 0, 0.82);\n  box-shadow: none;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\np.form-control {\n  min-height: 32px;\n  height: auto;\n}\nform {\n  margin-bottom: 10px;\n}\nform .form-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n  margin-left: 15px;\n}\nform label {\n  font-weight: normal;\n  font-family: 'Roboto', sans-serif;\n  font-size: 13px;\n  color: rgba(0, 0, 0, 0.55);\n  margin-bottom: -2px;\n  margin-left: 2px;\n  margin-right: 5px;\n}\nform label input[type=\"file\"] {\n  position: fixed;\n  top: -1000px;\n}\nform .form-group .form-actions {\n  text-align: right;\n  border: 0;\n  padding-top: 0px;\n}\nform .form-group .form-actions .btn {\n  padding: 2px 10px;\n}\nform .form-group .file {\n  background-color: rgba(223, 223, 223, 0.13);\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\nform .form-group .file label {\n  margin-left: -2px;\n}\nform .form-group .file span {\n  margin-top: 5px;\n  float: right;\n  margin-right: 10px;\n}\nform .form-group label {\n  margin-right: 5px;\n}\nform .form-group label.btn {\n  padding-top: 6px;\n}\nform .form-inline .form-group {\n  margin-right: 10px;\n}\nform textarea.html {\n  font-family: monospace;\n}\nform .validation-summary-error {\n  color: #CA1D04;\n}\nform .validation-summary-error .glyphicon {\n  font-size: 18px;\n  position: relative;\n}\nform .validation-summary-error .col-xs-1 {\n  width: 20px;\n}\nform .validation-summary-error ul {\n  padding-left: 0;\n}\nform .validation-summary-error ul li {\n  list-style: none;\n}\nform fieldset {\n  margin-bottom: 15px;\n}\n@media (min-width: 768px) {\n  .form-inline .form-control {\n    width: 100%;\n  }\n}\n"; });
 define('text!components/strategies/rules/rule-sets.html', ['module'], function(module) { module.exports = "<template><require from=\"./rule-sets.css\"></require><strategy-admin></strategy-admin><div class=\"c_rule_sets-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rule_sets\"><header><h3 first-letter-span>Manage Rule Sets</h3></header><div class=\"c_rule_set-list\"><rule-set repeat.for=\"ruleset of rulesets\" ruleset.bind=\"ruleset\"></rule-set><div class=\"c_rule_set c_rule_set-add\" click.delegate=\"addRuleSet()\"><div class=\"c_rule_set-header\"><a>Register new rule set</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRuleSetsForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
 define('text!components/strategies/rules/rules.html', ['module'], function(module) { module.exports = "<template><require from=\"./rules.css\"></require><strategy-admin></strategy-admin><div class=\"c_rules-content\"><div class=\"row\"><div class=\"col-md-8 col-xs-12 c_rules\"><header><h3 first-letter-span>Manage Rules</h3></header><div class=\"c_rule-list\"><rule repeat.for=\"rule of rules\" rule.bind=\"rule\"></rule><div class=\"c_rule c_rule-add\" click.delegate=\"addRule()\"><div class=\"c_rule-header\"><a>Register new rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div></div></div><div class=\"col-md-4 col-xs-12\"><div class=\"side-navigation\"><h3>Time Frame</h3><ul><li repeat.for=\"period of periods\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.loadRulesForPeriod(period)\" class=\"${period.active ? 'active' : ''}\">${period.name} Rules</a></li></ul></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul></div></template>"; });
-define('text!components/studies/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
 define('text!common/styles/_page.css', ['module'], function(module) { module.exports = ".page-content {\n  margin-top: 15px;\n  padding-left: 30px;\n  padding-bottom: 50px;\n}\n.page-content header {\n  margin-bottom: 15px;\n}\n.page-content header .btn {\n  float: right;\n  margin-left: 10px;\n  margin-top: 25px;\n}\n.page-content header h3 {\n  font-size: 22px;\n  margin-top: 18px;\n  display: inline-block;\n  color: #333333;\n}\n.page-content .actions {\n  float: right;\n  position: relative;\n  top: -39px;\n  margin-right: 0px;\n  margin-bottom: -25px;\n  z-index: 996;\n}\n.page-content .actions .btn {\n  border-radius: 4px 4px 0 0;\n  padding: 2px 12px;\n}\n"; });
+define('text!components/studies/categories/categories.html', ['module'], function(module) { module.exports = "<template><div class=\"row categories\"><div class=\"col-md-8\"><h2>${section.Title}</h2><div repeat.for=\"item of sortedCategories\" class=\"category\"><read-mode if.bind=\"editMode !== true\"><h4>${item.Title}</h4></read-mode><edit-mode class=\"form-horizontal\" if.bind=\"editMode === true\"><div if.bind=\"item.isDeleting !== true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.startDeleting(item)\" class=\"btn btn-danger btn-xs\">Delete</button> <button type=\"button\" click.delegate=\"$parent.moveUp(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" click.delegate=\"$parent.moveDown(item)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-down\" aria-hidden=\"true\"></span></button></div><div if.bind=\"item.isDeleting === true\" class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"$parent.confirmDelete(item)\" class=\"btn btn-danger btn-xs\">Delete Block</button> <button type=\"button\" click.delegate=\"$parent.cancelDelete(item)\" class=\"btn btn-default btn-xs\">Cancel</button></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Title</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Title\"></div></div><div class=\"form-group\"><label class=\"col-sm-2 control-label\">Url</label><div class=\"col-sm-10\"><input type=\"text\" class=\"form-control\" value.bind=\"item.Url\"></div></div></edit-mode></div><div if.bind=\"editMode === true\" class=\"block-actions\"><div class=\"btn-group\" role=\"group\" aria-label=\"Actions\"><button type=\"button\" click.delegate=\"addCategory()\" class=\"btn btn-primary btn-xs\">Add New Category</button></div></div></div><div class=\"col-md-4 side-navigation\"><h3>Sections</h3><ul><li repeat.for=\"item of sortedSections\"><a href.bind=\"$parent.getSectionUrl(item)\" class=\"${item.SectionId === $parent.sectionId ? 'active' : ''}\">${item.Title}</a></li></ul></div></div></template>"; });
 define('text!components/studies/study/study.html', ['module'], function(module) { module.exports = "<template><require from=\"./study.css\"></require><require from=\"./study-actions/study-actions\"></require><require from=\"./category-studies/category-studies\"></require><study-actions></study-actions><div class=\"row\"><div class=\"col-md-8 article\"><header><h3>${article.title}</h3></header><form if.bind=\"editMode === true\"><fieldset><div class=\"form-group\"><label>Article Name</label><input type=\"text\" class=\"form-control\" value.bind=\"article.title & validate\"></div><div class=\"form-group\"><label>Article Url</label><input type=\"text\" class=\"form-control\" value.bind=\"article.url & validate\"></div><div class=\"form-group\"><label>Summary</label><textarea rows=\"4\" class=\"form-control\" value.bind=\"article.summary & validate\"></textarea></div></fieldset><h4>Article Parts</h4></form><div class=\"c_article_parts ${editMode ? 'edit-mode' : ''}\"><article-parts parts.bind=\"article.articleBlocks\" edit-mode.bind=\"editMode\"></article-parts></div></div><div class=\"col-md-4\"><category-studies category.bind=\"category\"></category-studies></div></div></template>"; });
-define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
 define('text!common/styles/_progress.css', ['module'], function(module) { module.exports = ".s-progress {\n  overflow: hidden;\n  background-color: #f5f5f5;\n  border-radius: 3px;\n  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);\n  height: 5px;\n  margin-bottom: 5px;\n  margin-top: 5px;\n  display: block;\n}\n.s-progress .s-progress-bar {\n  height: 100%;\n  background-color: #5cb85c;\n}\n"; });
+define('text!resources/elements/article-parts/article-part-actions.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><div class=\"form-actions\"><button type=\"button\" click.delegate=\"remove()\" class=\"btn btn-danger\">Remove</button> <button type=\"button\" click.delegate=\"moveUp()\" class=\"btn btn-default\">Move Up</button> <button type=\"button\" click.delegate=\"moveDown()\" class=\"btn btn-default\">Move Down</button></div></form></template>"; });
 define('text!resources/elements/article-parts/article-part-heading.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define heading</h4><fieldset><div class=\"form-group ${!typeValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Type</label><div class=\"col-sm-5\"><select class=\"form-control\" change.delegate=\"onChange()\" value.bind=\"part.headingType\"><option>- Select heading type -</option><option repeat.for=\"heading of headingTypes\" value.bind=\"heading\">${heading}</option></select><span if.bind=\"!typeValid\" class=\"help-block validation-message\">Heading type not selected.</span></div></div><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Heading Text</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Heading text cannot be blank.</span></div></div></fieldset></form><span if.bind=\"!editMode\" class=\"${part.headingType}\">${part.text}</span></template>"; });
-define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"!editMode\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
 define('text!common/styles/_sub-nav.css', ['module'], function(module) { module.exports = ".sub-nav {\n  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);\n}\n.sub-nav .navbar {\n  background-color: white;\n  margin-bottom: 0;\n  min-height: 32px;\n  height: 32px;\n  z-index: 900;\n}\n.sub-nav .navbar .actions {\n  margin-top: 3px;\n  margin-right: -4px;\n  float: right;\n}\n.sub-nav .navbar .actions .btn {\n  padding: 4px 10px;\n  border-radius: 4px 4px 0 0;\n}\n.sub-nav .navbar-nav {\n  margin-bottom: -2px;\n}\n.sub-nav .navbar-nav > li {\n  margin-right: 20px;\n  padding: 0;\n}\n.sub-nav .navbar-nav > li a {\n  padding: 8px 0 3px 0;\n  color: #252d2c;\n  font: 13px/20px 'Istok Web';\n  text-transform: uppercase;\n}\n.sub-nav .navbar-nav > li:hover {\n  border-bottom: 3px solid rgba(226, 32, 4, 0.38);\n}\n.sub-nav .navbar-nav > li.active {\n  border-bottom: 3px solid #e22004;\n}\n.sub-nav .nav > li > a:hover,\n.sub-nav .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n}\n"; });
 define('text!common/styles/_variables.css', ['module'], function(module) { module.exports = ""; });
+define('text!resources/elements/article-parts/article-part-image.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Select Image</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Image Title</label><div class=\"col-sm-12\"><input type=\"text\" class=\"form-control\" value.bind=\"part.text\"> <span if.bind=\"!textValid\" class=\"help-block validation-message\">Image title cannot be blank.</span> <span if.bind=\"textValid\">&nbsp;</span></div></div><div class=\"form-group ${!imageValid ? 'has-error' : ''}\"><div class=\"col-sm-12\"><div class=\"file\"><label class=\"btn btn-danger\"><input type=\"file\" accept=\"image/*\" class=\"form-control\" change.delegate=\"uploadImage()\" files.bind=\"selectedFiles\"> Select Image</label><span if.bind=\"selectedFiles.length > 0\" repeat.for=\"file of selectedFiles | fileListToArray\">${file.name} [${file.size / 1000} kb]</span></div><span if.bind=\"!imageValid\" class=\"help-block validation-message\">Image is not selected.</span></div></div><div class=\"form-group\" if.bind=\"imageValid\"><label class=\"col-sm-10\">Active Image</label><div class=\"col-sm-12\"><img src.bind=\"part.imageUrl\"></div></div></fieldset></form><span if.bind=\"!editMode\"><img src.bind=\"part.imageUrl\"><p>${part.text}</p></span></template>"; });
 define('text!resources/elements/article-parts/article-part-list.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define List Items</h4><fieldset><div repeat.for=\"item of part.items\" class=\"form-group ${!item.valid ? 'has-error' : ''}\"><label class=\"col-sm-10\">${$index + 1}.</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"item.text\"></textarea><span if.bind=\"!item.valid\" class=\"help-block validation-message\">Text cannot be blank.</span><div class=\"form-actions\"><button type=\"button\" if.bind=\"$index+1 === $parent.part.items.length\" click.delegate=\"$parent.addItem($index)\" class=\"btn btn-success\">New Item</button> <button type=\"button\" click.delegate=\"$parent.deleteItem($index)\" class=\"btn btn-danger\">Delete Item</button></div></div></div></fieldset></form><ol class=\"f\" if.bind=\"!editMode && part.items && part.items.length > 0\"><li repeat.for=\"item of part.items\">${item.text}</li></ol></template>"; });
+define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
 define('text!resources/elements/article-parts/article-part-new.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Add new part</h4><fieldset><div class=\"form-group\"><label class=\"col-sm-10 control-label\">Part Type</label><div class=\"col-sm-6\"><select class=\"form-control\" change.delegate=\"onTypeChange()\" value.bind=\"selectedType\"><option>- Select part type -</option><option repeat.for=\"type of partTypes\" value.bind=\"type\">${type}</option></select></div></div></fieldset><div class=\"form-actions\"><button type=\"button\" show.bind=\"canAdd\" click.delegate=\"add()\" class=\"btn btn-danger au-target\" au-target-id=\"97\">Add</button> <button type=\"button\" click.delegate=\"cancel()\" class=\"btn btn-default au-target\" au-target-id=\"97\">Cancel</button></div></form></template>"; });
 define('text!resources/elements/article-parts/article-part-paragraph.html', ['module'], function(module) { module.exports = "<template><form if.bind=\"editMode\"><h4>Define Paragraph</h4><fieldset><div class=\"form-group ${!textValid ? 'has-error' : ''}\"><label class=\"col-sm-10\">Paragraph Text</label><div class=\"col-sm-12\"><textarea rows=\"4\" class=\"form-control\" value.bind=\"part.text\"></textarea><span if.bind=\"!textValid\" class=\"help-block validation-message\">Paragraph text cannot be blank.</span></div></div></fieldset></form><p if.bind=\"!editMode\">${part.text}</p></template>"; });
-define('text!components/footer/dream-footer.css', ['module'], function(module) { module.exports = "dream-footer {\n  display: block;\n  padding-bottom: 30px;\n}\n"; });
 define('text!resources/elements/article-parts/article-parts.html', ['module'], function(module) { module.exports = "<template><div class=\"c_article_part\" repeat.for=\"part of parts\"><article-part-paragraph part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isParagraph(part)\"></article-part-paragraph><article-part-heading part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isHeading(part)\"></article-part-heading><article-part-image part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isImage(part)\"></article-part-image><article-part-list part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isList(part)\"></article-part-list><article-part-new part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"isUnset(part)\"></article-part-new><article-part-actions part.bind=\"part\" edit-mode.bind=\"editMode\" if.bind=\"!isUnset(part)\"></article-part-actions></div><div class=\"c_article_part-add\" click.delegate=\"addPart()\" if.bind=\"editMode\"><a>Add new part</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></template>"; });
+define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
 define('text!resources/elements/chart/chart-layout.html', ['module'], function(module) { module.exports = "<template><div id=\"container-weekly\" class=\"o_chart-container\"></div><div id=\"container-daily\" class=\"o_chart-container\"></div></template>"; });
 define('text!resources/elements/company/company-details.html', ['module'], function(module) { module.exports = "<template><form><fieldset disabled=\"disabled\"><div class=\"row\"><div class=\"col-md-6\"><div class=\"form-group\"><label>Sector</label><p class=\"form-control\" readonly=\"readonly\">${company.sectorName}</p></div></div><div class=\"col-md-6\"><div class=\"form-group\"><label>Industry</label><p class=\"form-control\" readonly=\"readonly\">${company.industryName}</p></div></div></div><div class=\"row\"><div class=\"col-md-4\"><div class=\"form-group\"><label>Price</label><p class=\"form-control\" readonly=\"readonly\">${company.price}</p></div><div class=\"form-group\"><label>Volume</label><p class=\"form-control\" readonly=\"readonly\">${company.volume}</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Lowest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.lowestPrice52}</p></div><div class=\"form-group\"><label>Chaos</label><p class=\"form-control\" readonly=\"readonly\">${company.chaosPercentage}%</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Highest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.highestPrice52}</p></div><div class=\"form-group\"><label>Last Time Updated</label><p class=\"form-control\" readonly=\"readonly\">${formatDate(company.lastUpdated)}</p></div></div></div></fieldset></form></template>"; });
-define('text!components/header/dream-header.css', ['module'], function(module) { module.exports = "dream-header {\n  font-family: 'Arial', \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  top: 0px;\n  z-index: 999;\n  left: 0px;\n  right: 0px;\n  margin: 0px auto;\n  background: #ffffff;\n  padding: 0;\n}\ndream-header .nav .open > a,\ndream-header .nav .open > a:hover,\ndream-header .nav .open > a:focus {\n  background-color: transparent;\n}\ndream-header .navbar-nav > li > a.dropdown-toggle {\n  padding-top: 0px;\n  padding-bottom: 0px;\n  margin-top: 24px;\n}\ndream-header .nav > li > a:hover,\ndream-header .nav > li > a:focus {\n  text-decoration: none;\n  background-color: transparent;\n  color: #e22004;\n}\ndream-header .nav > li > a:hover {\n  text-decoration: underline;\n}\ndream-header .navbar-brand {\n  margin: 0;\n  padding: 0;\n  float: left;\n  font-size: 26px;\n  line-height: 52px;\n  cursor: pointer;\n}\ndream-header .navbar-brand img.logo {\n  margin-right: -2px;\n  top: -2px;\n  position: relative;\n  display: inline-block;\n  width: 47px;\n  opacity: 0.96;\n}\ndream-header .navbar-brand span.pound {\n  color: #e22004;\n  font-weight: bold;\n  font-size: 46px;\n  line-height: 25px;\n  position: relative;\n  top: 6px;\n}\ndream-header .navbar-brand a,\ndream-header .navbar-brand a:hover {\n  text-decoration: none;\n}\n"; });
-define('text!resources/elements/indicator/indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_indicator\" if.bind=\"indicatorInfo.deleted !== true\"><div class=\"c_indicator-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"indicatorInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${indicatorInfo.description}</span> <a class=\"chevron\"><span if.bind=\"indicatorInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"indicatorInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_indicator-details\" if.bind=\"indicatorInfo.expanded === true\"><form submit.delegate=\"trySaveIndicator()\" if.bind=\"indicatorInfo.deleteMode !== true\"><fieldset disabled.bind=\"indicatorInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${indicatorInfo.indicatorId}\">Indicator Name</label><input type=\"text\" class=\"form-control\" id=\"txtDescription-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.description & validate\"></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${indicatorInfo.indicatorId}\">Period:</label><select id=\"ddlPeriod-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlFormula-${indicatorInfo.indicatorId}\">Formula:</label><select id=\"ddlFormula-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.name\" change.delegate=\"onFormulaChange()\"><option repeat.for=\"formula of formulaes\" value.bind=\"formula.name\">${formula.name}</option></select></div></div><div class=\"col-md-6\"><h4>Chart Properties</h4><div class=\"form-inline-stack\"><div class=\"form-group\"><label for=\"ddlChartType-${indicatorInfo.indicatorId}\">Chart Type:</label><select id=\"ddlChartType-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartType\"><option repeat.for=\"chartType of chartTypes\" model.bind=\"chartType.id\">${chartType.name}</option></select></div><div class=\"form-group\"><label for=\"txtChartPlot-${indicatorInfo.indicatorId}\">Plot Number:</label><select id=\"txtChartPlot-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartPlotNumber\"><option repeat.for=\"plotNumber of plotNumbers\" model.bind=\"plotNumber\">${plotNumber}</option></select></div><div class=\"form-group\"><label for=\"txtChartColor-${indicatorInfo.indicatorId}\">Line Color:</label><input type=\"text\" class=\"form-control\" id=\"txtChartColor-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.chartColor & validate\"></div></div></div><div class=\"col-md-6\"><h4>Formula Parameters</h4><div class=\"form-inline-stack\"><div class=\"form-group\" repeat.for=\"param of indicatorInfo.params\"><label for=\"txtParam-${param.paramName}\">${param.paramName}:</label><input type=\"text\" class=\"form-control\" id=\"txtParam-${param.paramName}\" value.bind=\"param.value\"></div></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_indicator-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"indicatorInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"indicatorInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"indicatorInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_indicator-actions\" if.bind=\"indicatorInfo.deleteMode === true\"><p><br>I'll try to delete the indicator, however, if this indicator is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!resources/elements/navigation/side-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></div></template>"; });
 define('text!components/main-nav/main-nav.css', ['module'], function(module) { module.exports = "@media (min-width: 768px) {\n  main-nav .navbar-nav {\n    float: none;\n  }\n}\nmain-nav .main-nav-items {\n  background-color: rgba(161, 161, 161, 0.2);\n}\nmain-nav ul.nav li {\n  float: left;\n  padding: 0;\n  position: relative;\n  margin-left: 1px;\n}\nmain-nav ul.nav li:first-child {\n  margin-left: 0;\n}\nmain-nav ul.nav li a {\n  position: relative;\n  padding: 0 20px;\n  text-align: center;\n  font: 14px/40px 'Istok Web';\n  text-transform: uppercase;\n  background: transparent;\n  color: #333333;\n  -webkit-transition: all 0.35s ease;\n  transition: all 0.35s ease;\n}\nmain-nav ul.nav li:hover a {\n  background: rgba(226, 32, 4, 0.38);\n}\nmain-nav ul.nav li.active a {\n  color: #ffffff;\n  background: #e22004;\n}\nmain-nav nav.navbar {\n  background: none;\n  border: none;\n  padding: 0;\n  margin: 14px 0;\n  min-height: 0;\n  border-color: #e7e7e7;\n}\nmain-nav nav.navbar ul.navbar-nav {\n  top: 5px;\n}\n"; });
+define('text!resources/elements/navigation/side-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>${router.title}</h3><ul><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a href.bind=\"row.href\">${row.title}</a></li></ul></div></template>"; });
 define('text!resources/elements/navigation/sub-nav.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'active' : ''}\"><a href.bind=\"row.href\">${row.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!resources/elements/progress/s-progress.html', ['module'], function(module) { module.exports = "<template class=\"s-progress\" style=\"width:100%\"><div class=\"s-progress-bar\"></div></template>"; });
 define('text!components/strategies/strategy-playground.css', ['module'], function(module) { module.exports = ".c_playground-content .c_playground {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_strategy-runner form .form-group {\n  margin-bottom: 15px;\n}\n.c_strategy-runner form .form-group .checkbox,\n.c_strategy-runner form .form-group .radio {\n  margin-top: 0;\n}\n.c_strategy-runner form .form-group .col-sm-12 {\n  float: none;\n}\n.c_strategy-runner .c_strategy-runner--progress {\n  margin-bottom: 30px;\n}\n.c_strategy-runner .c_strategy-runner--options {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  text-align: center;\n  margin-bottom: 15px;\n  background-color: rgba(223, 223, 223, 0.13);\n}\n.c_strategy-runner .c_strategy-runner--options header {\n  background-color: #f5f5f5;\n  z-index: 100;\n  position: relative;\n  top: -13px;\n  font-size: 13px;\n  padding: 0 5px;\n  display: inline;\n}\n.o_chart-content {\n  margin-top: 15px;\n}\n.o_chart-content .o_chart {\n  z-index: 100;\n  margin-right: -15px;\n  margin-left: -15px;\n}\n.c_company_list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_company {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add,\n.c_company .c_company-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_company.c_company-add .glyphicon,\n.c_company .c_company-add .glyphicon {\n  color: green;\n}\n.c_company .c_company-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_company .c_company-header .chevron {\n  float: right;\n}\n.c_company .c_company-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_company-details {\n  padding-top: 10px;\n}\n.c_company-details form {\n  padding-top: 10px;\n}\n.c_company-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_company-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n.c_company-details .c_company-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.form-group .c_company-details {\n  padding: 15px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  border-top: 0;\n}\n"; });
+define('text!resources/elements/indicator/indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_indicator\" if.bind=\"indicatorInfo.deleted !== true\"><div class=\"c_indicator-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"indicatorInfo.expanded !== true\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${indicatorInfo.description}</span> <a class=\"chevron\"><span if.bind=\"indicatorInfo.expanded === true\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"indicatorInfo.expanded !== true\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_indicator-details\" if.bind=\"indicatorInfo.expanded === true\"><form submit.delegate=\"trySaveIndicator()\" if.bind=\"indicatorInfo.deleteMode !== true\"><fieldset disabled.bind=\"indicatorInfo.editMode !== true\"><div class=\"form-group\"><label for=\"txtDescription-${indicatorInfo.indicatorId}\">Indicator Name</label><input type=\"text\" class=\"form-control\" id=\"txtDescription-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.description & validate\"></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${indicatorInfo.indicatorId}\">Period:</label><select id=\"ddlPeriod-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlFormula-${indicatorInfo.indicatorId}\">Formula:</label><select id=\"ddlFormula-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.name\" change.delegate=\"onFormulaChange()\"><option repeat.for=\"formula of formulaes\" value.bind=\"formula.name\">${formula.name}</option></select></div></div><div class=\"col-md-6\"><h4>Chart Properties</h4><div class=\"form-inline-stack\"><div class=\"form-group\"><label for=\"ddlChartType-${indicatorInfo.indicatorId}\">Chart Type:</label><select id=\"ddlChartType-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartType\"><option repeat.for=\"chartType of chartTypes\" model.bind=\"chartType.id\">${chartType.name}</option></select></div><div class=\"form-group\"><label for=\"txtChartPlot-${indicatorInfo.indicatorId}\">Plot Number:</label><select id=\"txtChartPlot-${indicatorInfo.indicatorId}\" class=\"form-control\" value.bind=\"indicatorInfo.chartPlotNumber\"><option repeat.for=\"plotNumber of plotNumbers\" model.bind=\"plotNumber\">${plotNumber}</option></select></div><div class=\"form-group\"><label for=\"txtChartColor-${indicatorInfo.indicatorId}\">Line Color:</label><input type=\"text\" class=\"form-control\" id=\"txtChartColor-${indicatorInfo.indicatorId}\" value.bind=\"indicatorInfo.chartColor & validate\"></div></div></div><div class=\"col-md-6\"><h4>Formula Parameters</h4><div class=\"form-inline-stack\"><div class=\"form-group\" repeat.for=\"param of indicatorInfo.params\"><label for=\"txtParam-${param.paramName}\">${param.paramName}:</label><input type=\"text\" class=\"form-control\" id=\"txtParam-${param.paramName}\" value.bind=\"param.value\"></div></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_indicator-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"indicatorInfo.editMode === true\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"indicatorInfo.editMode === true\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"indicatorInfo.editMode !== true\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_indicator-actions\" if.bind=\"indicatorInfo.deleteMode === true\"><p><br>I'll try to delete the indicator, however, if this indicator is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!resources/elements/progress/s-progress.html', ['module'], function(module) { module.exports = "<template class=\"s-progress\" style=\"width:100%\"><div class=\"s-progress-bar\"></div></template>"; });
 define('text!resources/elements/rule/rule.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule\" if.bind=\"ruleInfo.deleted !== true\"><div class=\"c_rule-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span><span>${ruleInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></span></div><div class=\"c_rule-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRule()\" if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleInfo.ruleId}\">Rule Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleInfo.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleInfo.ruleId}\">Period:</label><select id=\"ddlPeriod-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.period\" change.delegate=\"onPeriodChange()\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label for=\"ddlCondition-${ruleInfo.ruleId}\">Compare operator:</label><select id=\"ddlCondition-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.condition\"><option repeat.for=\"compareType of compareTypes\" model.bind=\"compareType.id\">${compareType.name}</option></select></div></div><div class=\"col-md-6\"><h4>Compare What</h4><div class=\"form-group\"><label for=\"ddlDataSourceV1-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV1\" change.delegate=\"onDataSourceV1Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlDataSeriesV1-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV1\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV1\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 === 2\"><label for=\"txtConstV1-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV1\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtSkipItemsV1-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"txtTakeItemsV1-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV1-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV1 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV1 !== 2\"><label for=\"ddlTransformItemsV1-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV1-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV1\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></div><div class=\"col-md-6\"><h4>Compare With</h4><div class=\"form-group\"><label for=\"ddlDataSourceV2-${ruleInfo.ruleId}\">Data Source:</label><select id=\"ddlDataSourceV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSourceV2\" change.delegate=\"onDataSourceV2Change()\"><option repeat.for=\"dataSource of dataSources\" model.bind=\"dataSource.id\">${dataSource.name}</option></select></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlDataSeriesV2-${ruleInfo.ruleId}\">Data Series:</label><select id=\"ddlDataSeriesV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.dataSeriesV2\"><option repeat.for=\"dataSeries of ruleInfo.dataSeriesOptionsV2\" model.bind=\"dataSeries.id\">${dataSeries.name}</option></select></div><div class=\"form-inline-stack\"><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 === 2\"><label for=\"txtConstV2-${ruleInfo.ruleId}\">Constant:</label><input type=\"text\" class=\"form-control\" id=\"txtConstV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.constV2\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtSkipItemsV2-${ruleInfo.ruleId}\">Skip:</label><input type=\"text\" class=\"form-control\" id=\"txtSkipItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.skipItemsV2 & validate\"></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"txtTakeItemsV2-${ruleInfo.ruleId}\">Take:</label><input type=\"text\" class=\"form-control\" id=\"txtTakeItemsV2-${ruleInfo.ruleId}\" value.bind=\"ruleInfo.takeItemsV2 & validate\"></div></div><div class=\"form-group\" if.bind=\"ruleInfo.dataSourceV2 !== 2\"><label for=\"ddlTransformItemsV2-${ruleInfo.ruleId}\">Data Transform:</label><select id=\"ddlTransformItemsV2-${ruleInfo.ruleId}\" class=\"form-control\" value.bind=\"ruleInfo.transformItemsV2\"><option repeat.for=\"transformFunction of transformFunctions\" model.bind=\"transformFunction.id\">${transformFunction.name}</option></select></div></div></fieldset><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule, however, if this rule is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!resources/elements/rule-set/rule-set-item.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"rule.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${rule.name}</span><div class=\"chevron\"><a><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtDescription-${rule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${rule.ruleId}\" value.bind=\"rule.description\"></textarea></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
-define('text!resources/elements/rule-set/rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleSetInfo.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span>${ruleSetInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRuleSet()\" if.bind=\"!ruleSetInfo.deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleSetInfo.ruleSetId}\">Rule Set Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleSetInfo.ruleSetId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlPeriod-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"ruleSetInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div></div></fieldset><h4>Set of Rules:</h4><div class=\"c_rule_set-list\"><rule-set-item class=\"c_rule_set-item\" repeat.for=\"rule of ruleSetInfo.rules\" rule.bind=\"rule\"></rule-set-item><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRule()\"><a>Attach rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div><div class=\"c_rule_set-details\" if.bind=\"addMode && editMode\"><div class=\"form-group\"><label for=\"ddlRules-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlRules-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"attachedRuleId\" change.delegate=\"onRuleChange()\"><option repeat.for=\"rule of rules\" model.bind=\"rule.ruleId\">${rule.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRule.ruleId > 0\"><label for=\"txtRuleDescription-${attachedRule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" readonly=\"readonly\" id=\"txtRuleDescription-${attachedRule.ruleId}\" value.bind=\"attachedRule.description\"></textarea></div><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRule()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRule()\" class=\"btn btn-default\">Cancel</button></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule_set-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
 define('text!components/strategies/strategy.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.c_strategy {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n"; });
-define('text!resources/elements/strategy/side-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul></div></template>"; });
+define('text!resources/elements/rule-set/rule-set-item.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"rule.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${rule.name}</span><div class=\"chevron\"><a><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtDescription-${rule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${rule.ruleId}\" value.bind=\"rule.description\"></textarea></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
 define('text!dialogs/login/user-login.css', ['module'], function(module) { module.exports = ".user-login ai-dialog {\n  width: 400px;\n}\n.user-login .form-horizontal {\n  margin-bottom: 15px;\n}\n.user-login .form-horizontal .control-label {\n  text-align: left;\n  margin-bottom: 4px;\n}\n.user-login .col-left {\n  padding-right: 7px;\n}\n.user-login .col-right {\n  padding-left: 7px;\n}\n.user-login ai-dialog-footer .btn {\n  width: 162px;\n}\n.user-login .form-group {\n  margin-bottom: 3px;\n}\n"; });
 define('text!components/journal/journals/journals.css', ['module'], function(module) { module.exports = ""; });
-define('text!resources/elements/strategy/strategy-admin.html', ['module'], function(module) { module.exports = "<template><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div></div></template>"; });
-define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
-define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"!ruleset.deleted\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!resources/elements/rule-set/rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"ruleSetInfo.deleted !== true\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded\" click.delegate=\"startDelete()\" class=\"btn btn-danger btn-xs\">Delete</button> <span>${ruleSetInfo.name}</span> <a class=\"chevron\"><span if.bind=\"expanded\" class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span> <span if.bind=\"!expanded\" class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span></a></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form submit.delegate=\"trySaveRuleSet()\" if.bind=\"!ruleSetInfo.deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label for=\"txtName-${ruleSetInfo.ruleSetId}\">Rule Set Name</label><input type=\"text\" class=\"form-control\" id=\"txtName-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.name & validate\"></div><div class=\"form-group\"><label for=\"txtDescription-${ruleSetInfo.ruleSetId}\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription-${ruleSetInfo.ruleSetId}\" value.bind=\"ruleSetInfo.description & validate\"></textarea></div><div class=\"form-inline\"><div class=\"form-group\"><label for=\"ddlPeriod-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlPeriod-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"ruleSetInfo.period\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div></div></fieldset><h4>Set of Rules:</h4><div class=\"c_rule_set-list\"><rule-set-item class=\"c_rule_set-item\" repeat.for=\"rule of ruleSetInfo.rules\" rule.bind=\"rule\"></rule-set-item><div class=\"c_rule_set c_rule_set-add\" show.bind=\"editMode\"><div class=\"c_rule_set-header\" click.delegate=\"addRule()\"><a>Attach rule</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div></div><div class=\"c_rule_set-details\" if.bind=\"addMode && editMode\"><div class=\"form-group\"><label for=\"ddlRules-${ruleSetInfo.ruleSetId}\">Period:</label><select id=\"ddlRules-${ruleSetInfo.ruleSetId}\" class=\"form-control\" value.bind=\"attachedRuleId\" change.delegate=\"onRuleChange()\"><option repeat.for=\"rule of rules\" model.bind=\"rule.ruleId\">${rule.name}</option></select></div><div class=\"form-group\" if.bind=\"attachedRule.ruleId > 0\"><label for=\"txtRuleDescription-${attachedRule.ruleId}\">Description</label><textarea rows=\"4\" class=\"form-control\" readonly=\"readonly\" id=\"txtRuleDescription-${attachedRule.ruleId}\" value.bind=\"attachedRule.description\"></textarea></div><div class=\"c_rule-actions\"><button type=\"button\" click.delegate=\"confirmAddRule()\" class=\"btn btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddRule()\" class=\"btn btn-default\">Cancel</button></div></div></div><ul if.bind=\"errors.length > 0\"><li repeat.for=\"error of errors\">${error}</li></ul><div class=\"c_rule_set-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"editMode\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" if.bind=\"editMode\" class=\"btn btn-default\">Cancel</button> <button type=\"button\" click.delegate=\"startEdit()\" if.bind=\"!editMode\" class=\"btn btn-danger\">Edit</button></div></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>I'll try to delete the rule set, however, if this rule set is used anywhere else then delete will be cancelled.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-danger\">Delete</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!resources/elements/strategy/side-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"side-navigation\"><h3>Defined Strategies</h3><ul><li repeat.for=\"summary of summaries\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"$parent.navigateToStrategy(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul></div></template>"; });
 define('text!components/market/chart-layouts/chart-layouts.css', ['module'], function(module) { module.exports = "chart-layout,\nchart-layout-indicator,\nchart-layout-plot {\n  display: block;\n}\n.c_layouts-content {\n  padding-bottom: 30px;\n}\n.c_layouts-content .c_layouts {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_layouts-content .c_layout-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout .ordered-chevron {\n  float: right;\n  position: relative;\n  top: -26px;\n  left: 12px;\n}\n.c_layouts-content .c_layout .ordered-chevron .glyphicon {\n  top: 1px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical {\n  margin-left: 5px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .btn-xs {\n  padding: 0px 4px;\n  height: 16px;\n}\n.c_layouts-content .c_layout .ordered-chevron .btn-group-vertical .glyphicon {\n  font-size: 8px;\n  top: -3px;\n}\n.c_layouts-content .c_layout.c_layout-add,\n.c_layouts-content .c_layout .c_layout-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_layouts-content .c_layout.c_layout-add .glyphicon,\n.c_layouts-content .c_layout .c_layout-add .glyphicon {\n  color: green;\n}\n.c_layouts-content .c_layout .c_layout-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_layouts-content .c_layout .c_layout-header .chevron {\n  float: right;\n}\n.c_layouts-content .c_layout .c_layout-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_layouts-content .c_layout .c_layout-header .btn-group .btn,\n.c_layouts-content .c_layout .c_layout-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_layouts-content .c_layout .c_layout-details {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form {\n  padding-top: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details .c_layout-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_layouts-content .c_layout .c_layout-details h4 {\n  margin-top: 25px;\n}\n.c_layouts-content .c_layout-list,\n.c_layouts-content .c_layout_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_layouts-content .c_layout-list .no-border .c_layout,\n.c_layouts-content .c_layout_indicator-list .no-border .c_layout {\n  border-bottom: 0;\n}\n"; });
 define('text!components/market/market-indices/market-indices.css', ['module'], function(module) { module.exports = ""; });
-define('text!components/journal/journals/journal/journal.html', ['module'], function(module) { module.exports = "<template><div class=\"journal\"></div></template>"; });
-define('text!components/journal/journals/journal-create/journal-create.html', ['module'], function(module) { module.exports = "<template><require from=\"./journal-create.css\"></require><div class=\"journal-create\"><header><h3>Create journal entry</h3></header><form submit.delegate=\"trySaveJournal()\"><fieldset><div class=\"row\"><div class=\"form-inline col-xs-12 col-md-8\"><div class=\"form-group\"><label for=\"txtTicker\">Ticker</label><input type=\"text\" class=\"form-control ticker\" id=\"txtTicker\" value.bind=\"journal.ticker & validate\"></div><div class=\"form-group\"><label for=\"ddlDirection\">Direction:</label><select id=\"ddlDirection\" class=\"form-control\" value.bind=\"journal.tradeDirection\"><option repeat.for=\"direction of directions\" model.bind=\"direction.id\">${direction.name}</option></select></div><div class=\"form-group\"><label for=\"txtDate\">Entry Date:</label><abp-datetime-picker model.bind=\"journal.entryDate & validate\" id=\"txtDate\" element.bind=\"entryDatePicker\"></abp-datetime-picker></div></div></div><div class=\"row\"><div class=\"col-xs-6\"><h5>Trade setup</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label for=\"txtEntryPrice\" class=\"col-sm-4 control-label\">Entry price:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtEntryPrice\" value.bind=\"journal.entryPrice & validate\"></div></div><div class=\"form-group\"><label for=\"txtTargetPrice\" class=\"col-sm-4 control-label\">Target price:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtTargetPrice\" value.bind=\"journal.takeProfitPrice & validate\"></div></div><div class=\"form-group\"><label for=\"txtStopPrice\" class=\"col-sm-4 control-label\">Stop loss price:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtStopPrice\" value.bind=\"journal.stopLossPrice & validate\"></div></div></div></div><div class=\"col-xs-6\"><h5>Risk management</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label for=\"txtRiskValue\" class=\"col-sm-5 control-label\">Risk value($):</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtRiskValue\" value.bind=\"journal.maxRiskValuePrice & validate\"></div></div><div class=\"form-group\"><label for=\"txtRewardRatio\" class=\"col-sm-5 control-label\">Reward / Risk ratio:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" readonly=\"readonly\" id=\"txtRewardRatio\" value.bind=\"journal.rewardRiskRatio & validate\"></div></div><div class=\"form-group\"><label for=\"txtMaxShares\" class=\"col-sm-5 control-label\">Max shares count:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" readonly=\"readonly\" id=\"txtMaxShares\" value.bind=\"journal.maxSharesCount & validate\"></div></div></div></div></div></fieldset><div class=\"c_journal-actions\"><button type=\"submit\" class=\"btn btn-danger\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
+define('text!resources/elements/strategy/strategy-admin.html', ['module'], function(module) { module.exports = "<template><div class=\"actions\" if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a href=\"/strategies/rules\">Manage Rules</a></li><li><a href=\"/strategies/rule-sets\">Manage Rule Sets</a></li><li><a href=\"/strategies/indicators\">Manage Indicators</a></li></ul></div></div></template>"; });
+define('text!resources/elements/strategy/strategy-navigation.html', ['module'], function(module) { module.exports = "<template><div class=\"sub-nav\"><nav class=\"navbar navbar\"><div class=\"container\"><nav class=\"navbar\"><ul class=\"nav navbar-nav\"><li repeat.for=\"item of items\" class=\"${item.isActive ? 'active' : ''}\"><a href.bind=\"item.url\">${item.title}</a></li></ul></nav></div></nav></div></template>"; });
 define('text!components/strategies/indicators/indicators.css', ['module'], function(module) { module.exports = ".c_indicators-content .c_indicators {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_indicators-content .c_indicator-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add,\n.c_indicators-content .c_indicator .c_indicator-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_indicators-content .c_indicator.c_indicator-add .glyphicon,\n.c_indicators-content .c_indicator .c_indicator-add .glyphicon {\n  color: green;\n}\n.c_indicators-content .c_indicator .c_indicator-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_indicators-content .c_indicator .c_indicator-header .chevron {\n  float: right;\n}\n.c_indicators-content .c_indicator .c_indicator-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_indicators-content .c_indicator .c_indicator-details {\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_indicators-content .c_indicator .c_indicator-details .form-inline {\n  margin-top: 10px;\n  margin-bottom: 15px;\n}\n.c_indicators-content .c_indicator .c_indicator-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
-define('text!components/journal/journals/journal-periods/journal-periods.html', ['module'], function(module) { module.exports = "<template></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
+define('text!resources/elements/strategy/strategy-rule-set.html', ['module'], function(module) { module.exports = "<template><div class=\"c_rule_set\" if.bind=\"!ruleset.deleted\"><div class=\"c_rule_set-header\" click.trigger=\"onExpanded()\"><button type=\"button\" show.bind=\"!expanded && editMode\" click.delegate=\"startDelete()\" class=\"btn btn-warning btn-xs\">Detach</button> <span>${ruleset.ruleSetName}</span><div class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div></div><div class=\"c_rule_set-details\" if.bind=\"expanded\"><form if.bind=\"!deleteMode\"><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\"><label>Description</label><p class=\"form-control\" readonly=\"readonly\">${ruleset.ruleSetDescription}</p></div><div class=\"form-inline\"><div class=\"form-group\"><label>Period:</label><select readonly=\"readonly\" class=\"form-control\" value.bind=\"ruleset.ruleSetPeriod\"><option repeat.for=\"period of periods\" model.bind=\"period.id\">${period.name}</option></select></div><div class=\"form-group\"><label>RuleSet Optional:</label><div class=\"input-group\"><input type=\"text\" class=\"form-control\" aria-label=\"...\" value=\"${ruleset.ruleSetOptional ? 'Optional' : 'Required'}\"><div class=\"input-group-btn\" if.bind=\"ruleset.editMode\"><button type=\"button\" click.delegate=\"setOptionalStatus(true)\" if.bind=\"!ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Optional</button> <button type=\"button\" click.delegate=\"setOptionalStatus(false)\" if.bind=\"ruleset.ruleSetOptional\" class=\"btn btn-danger\">Make Required</button></div></div></div></div></fieldset></form><div class=\"c_rule_set-actions\" if.bind=\"deleteMode\"><p><br>Rule set will be detached from the rule set. You can add it later at any time.<br></p><button type=\"button\" click.delegate=\"confirmDelete()\" class=\"btn btn-warning\">Detach</button> <button type=\"button\" click.delegate=\"cancelDelete()\" class=\"btn btn-default\">Cancel</button></div></div></div></template>"; });
+define('text!components/journal/journals/company-details/company-details.html', ['module'], function(module) { module.exports = "<template><require from=\"./company-details.css\"></require><div class=\"loading\" if.bind=\"isLoading\"><i class=\"fa fa-spinner fa-spin spin-normal\"></i></div><form if.bind=\"company.ticker.length > 0 && !isLoading\"><fieldset><div class=\"row\"><div class=\"col-md-5\"><div class=\"form-group\"><label>Company name</label><p class=\"form-control\" readonly=\"readonly\">${company.fullName}</p></div></div><div class=\"col-md-3\"><div class=\"form-group\"><label>Last Time Updated</label><p class=\"form-control\" readonly=\"readonly\">${formatDate(company.lastUpdated)}</p></div></div><div class=\"col-md-2\"><button type=\"button\" click.delegate=\"updateCompany()\" class=\"btn btn-danger update-quotes\">Update Quotes</button></div></div><div class=\"row\"><div class=\"col-md-4\"><div class=\"form-group\"><label>Price</label><p class=\"form-control\" readonly=\"readonly\">${company.price}</p></div><div class=\"form-group\"><label>Volume</label><p class=\"form-control\" readonly=\"readonly\">${company.volume}</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Lowest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.lowestPrice52}</p></div><div class=\"form-group\"><label>Chaos</label><p class=\"form-control\" readonly=\"readonly\">${company.chaosPercentage}%</p></div></div><div class=\"col-md-4\"><div class=\"form-group\"><label>Highest 52</label><p class=\"form-control\" readonly=\"readonly\">${company.highestPrice52}</p></div></div></div></fieldset></form><div if.bind=\"!!!company && ticker.length > 0 && !isLoading\"><p>Company ${ticker.toUpperCase()} not found in the database. Update?</p></div></template>"; });
 define('text!components/strategies/rules/rule-sets.css', ['module'], function(module) { module.exports = ".c_rule_sets-content {\n  padding-bottom: 30px;\n}\n.c_rule_sets-content .c_rule_sets {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add,\n.c_rule_sets-content .c_rule_set .c_rule_set-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rule_sets-content .c_rule_set.c_rule_set-add .glyphicon,\n.c_rule_sets-content .c_rule_set .c_rule_set-add .glyphicon {\n  color: green;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .chevron {\n  float: right;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group .btn,\n.c_rule_sets-content .c_rule_set .c_rule_set-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details {\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule_set-list {\n  margin-left: 14px;\n  margin-top: 30px;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details .c_rule-actions {\n  text-align: right;\n  margin-bottom: 20px;\n}\n.c_rule_sets-content .c_rule_set .c_rule_set-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_rule_sets-content .c_rule_set-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rule_sets-content .c_rule_set-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n"; });
-define('text!components/market/chart-layouts/layouts/chart-layout-plot.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${plot.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of plot.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></div></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-plot\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
-define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
+define('text!components/journal/journals/journal/journal.html', ['module'], function(module) { module.exports = "<template><div class=\"journal\"></div></template>"; });
+define('text!components/journal/journals/journal-create/journal-create.html', ['module'], function(module) { module.exports = "<template><require from=\"./journal-create.css\"></require><require from=\"../company-details/company-details\"></require><div class=\"journal-create\"><header><h3>Create journal entry</h3></header><form submit.delegate=\"trySaveJournal()\"><fieldset><div class=\"row\"><div class=\"form-inline col-xs-12\"><div class=\"form-group\"><label for=\"txtTicker\">Ticker</label><input type=\"text\" class=\"form-control ticker\" id=\"txtTicker\" value.bind=\"journal.ticker & validate\"></div><div class=\"form-group\"><label for=\"ddlDirection\">Direction:</label><select id=\"ddlDirection\" class=\"form-control\" value.bind=\"journal.tradeDirection\"><option repeat.for=\"direction of directions\" model.bind=\"direction.id\">${direction.name}</option></select></div><div class=\"form-group\"><label for=\"txtDate\">Entry Date:</label><abp-datetime-picker model.bind=\"journal.entryDate & validate\" id=\"txtDate\" element.bind=\"entryDatePicker\"></abp-datetime-picker></div></div></div><div if.bind=\"journal.ticker.length > 0\"><h5>Company Information</h5><div class=\"company-details\"><company-details ticker.bind=\"journal.ticker\"></company-details></div><div class=\"row\"><div class=\"col-xs-6\"><h5>Trade setup</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label for=\"txtEntryPrice\" class=\"col-sm-4 control-label\">Entry price:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtEntryPrice\" value.bind=\"journal.entryPrice & validate\"></div></div><div class=\"form-group\"><label for=\"txtTargetPrice\" class=\"col-sm-4 control-label\">Target price:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtTargetPrice\" value.bind=\"journal.takeProfitPrice & validate\"></div></div><div class=\"form-group\"><label for=\"txtStopPrice\" class=\"col-sm-4 control-label\">Stop loss price:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtStopPrice\" value.bind=\"journal.stopLossPrice & validate\"></div></div></div></div><div class=\"col-xs-6\"><h5>Risk management</h5><div class=\"form-horizontal\"><div class=\"form-group\"><label for=\"txtRiskValue\" class=\"col-sm-5 control-label\">Risk value($):</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" id=\"txtRiskValue\" value.bind=\"journal.maxRiskValuePrice & validate\"></div></div><div class=\"form-group\"><label for=\"txtRewardRatio\" class=\"col-sm-5 control-label\">Reward / Risk ratio:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" readonly=\"readonly\" id=\"txtRewardRatio\" value.bind=\"journal.rewardRiskRatio & validate\"></div></div><div class=\"form-group\"><label for=\"txtMaxShares\" class=\"col-sm-5 control-label\">Max shares count:</label><div class=\"col-sm-6\"><input type=\"text\" class=\"form-control\" readonly=\"readonly\" id=\"txtMaxShares\" value.bind=\"journal.maxSharesCount & validate\"></div></div></div></div></div></div></fieldset><div class=\"c_journal-actions\"><button type=\"submit\" class=\"btn btn-danger\" if.bind=\"journal.ticker.length > 0\">Save</button> <button type=\"button\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
 define('text!components/strategies/rules/rules.css', ['module'], function(module) { module.exports = ".c_rules-content .c_rules {\n  background-color: rgba(255, 255, 255, 0.7);\n}\n.c_rules-content .c_rule-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_rules-content .c_rule {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add,\n.c_rules-content .c_rule .c_rule-add {\n  cursor: pointer;\n  border-bottom: 0px solid rgba(204, 204, 204, 0.36);\n}\n.c_rules-content .c_rule.c_rule-add .glyphicon,\n.c_rules-content .c_rule .c_rule-add .glyphicon {\n  color: green;\n}\n.c_rules-content .c_rule .c_rule-actions {\n  text-align: right;\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_rules-content .c_rule .c_rule-header .chevron {\n  float: right;\n}\n.c_rules-content .c_rule .c_rule-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_rules-content .c_rule .c_rule-details {\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form {\n  border-top: 1px solid #e22004;\n  padding-top: 10px;\n}\n.c_rules-content .c_rule .c_rule-details form fieldset {\n  padding-bottom: 10px;\n}\n.c_rules-content .c_rule .c_rule-details h4 {\n  border-bottom: 1px solid #e22004;\n}\n"; });
 define('text!components/studies/categories/categories.css', ['module'], function(module) { module.exports = ""; });
-define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div class=\"form-horizontal form-current-job\"><fieldset if.bind=\"currentJobStarted\"><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Job Number</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">#000000${currentJob.jobId}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Started Date</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${startDate}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Status</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${jobStatusName}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Progress</label><div class=\"col-sm-8 col-progress\"><span>${currentJob.progress}%</span><s-progress progress.bind=\"currentJob.progress\"></s-progress></div></div><div class=\"c_job-actions\"><button type=\"button\" if.bind=\"currentJobPaused\" click.delegate=\"resumeJob()\" class=\"btn btn-default\">Resume job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"cancelJob()\" class=\"btn btn-danger\">Cancel Job</button> <button type=\"button\" if.bind=\"currentJobInProgress\" click.delegate=\"pauseJob()\" class=\"btn btn-warning\">Pause job</button></div></fieldset></div><div class=\"c_job-actions\" if.bind=\"!currentJobStarted\"><button type=\"button\" click.delegate=\"startJob()\" class=\"btn btn-danger\">Start new job</button></div><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning\">Clear history</button></div></div></div></div></template>"; });
-define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
-define('text!components/studies/study/category-studies/category-studies.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-studies.css\"></require><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></template>"; });
+define('text!components/journal/journals/journal-periods/journal-periods.html', ['module'], function(module) { module.exports = "<template></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout-indicator.html', ['module'], function(module) { module.exports = "<template><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${indicator.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-inline\"><div class=\"form-group\"><label for=\"txtColor\">Chart color</label><input type=\"text\" class=\"form-control\" id=\"txtColor\" value.bind=\"indicator.lineColor\"></div></div></fieldset></form></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout-plot.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-indicator\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${plot.name}</span></div><div class=\"ordered-chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span><div class=\"btn-group-vertical\" role=\"group\" aria-label=\"...\" show.bind=\"editMode\"><button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveUp()\"><span class=\"glyphicon glyphicon-menu-up\" aria-hidden=\"true\"></span></button> <button type=\"button\" class=\"btn btn-xs btn-default\" click.trigger=\"onMoveDown()\"><span class=\"glyphicon glyphicon-menu-down\" aria-hidden=\"true\"></span></button></div></div><div class=\"c_layout-details\" show.bind=\"expanded\"><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of plot.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></div></template>"; });
+define('text!components/market/chart-layouts/layouts/chart-layout.html', ['module'], function(module) { module.exports = "<template><require from=\"./chart-layout-plot\"></require><div class=\"c_layout-header\" click.delegate=\"toggleExpand()\"><span>${layout.title}</span> <a class=\"chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down' : 'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"expanded\"><form><fieldset disabled.bind=\"!editMode\"><div class=\"form-group\" show.bind=\"editMode\"><label for=\"txtName\">Layout name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"layout.title & validate\"></div><div class=\"form-group\"><label show.bind=\"editMode\" for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"layout.description & validate\"></textarea></div><h4>Indicators</h4><div class=\"c_layout_indicator-list\"><chart-layout-indicator class=\"c_layout ${$last && !editMode ? 'no-border':''} ${editMode ? 'edit-mode' : ''}\" repeat.for=\"indicator of layout.indicators\" indicator.bind=\"indicator\" edit-mode.bind=\"editMode\"></chart-layout-indicator><div class=\"c_layout c_layout-add\" show.bind=\"editMode\"><div class=\"c_layout-header\" click.delegate=\"addIndicator()\"><a>Attach Indicator</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode && editMode\"><div class=\"form-group\"><label for=\"ddlIndicators\">Select Indicator</label><select id=\"ddlIndicators\" class=\"form-control\" value.bind=\"newIndicatorId\"><option repeat.for=\"item of definedIndicators\" model.bind=\"item.id\">${item.name}</option></select></div><div class=\"c_layout-actions no-border\"><button type=\"button\" click.delegate=\"confirmAddIndicator()\" class=\"btn btn-xs btn-warning\">Attach</button> <button type=\"button\" click.delegate=\"cancelAddIndicator()\" class=\"btn btn-xs btn-default\">Cancel</button></div></div></div></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" if.bind=\"!editMode\" click.delegate=\"startEdit()\" class=\"btn btn-danger\">Edit</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"confirmSave()\" class=\"btn btn-danger\">Save</button> <button type=\"button\" if.bind=\"editMode\" click.delegate=\"cancelSave()\" class=\"btn btn-default\">Cancel</button></div></form></div></template>"; });
 define('text!components/studies/study/study.css', ['module'], function(module) { module.exports = ".article {\n  background-color: rgba(255, 255, 255, 0.7);\n  min-height: 50px;\n}\n.article ol li,\n.article ul li {\n  border-bottom: 1px dotted #777;\n  padding: 6px 0;\n  font-size: 14px;\n}\n.article .form-horizontal {\n  margin-top: 18px;\n  display: block;\n  margin-bottom: 25px;\n}\n.article article-image {\n  display: block;\n  text-align: center;\n  margin-bottom: 10px;\n  margin-top: 15px;\n}\n.article article-image img {\n  max-width: 100%;\n}\n.article article-image p {\n  color: #333333;\n  padding-bottom: 0px;\n  margin-top: 5px;\n  font-size: 11px;\n}\n.article article-part.edit-mode {\n  display: block;\n  background-color: #F8F8F8;\n  padding: 2px 10px 10px 10px;\n  margin-bottom: 25px;\n  border-radius: 5px;\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.article article-part.edit-mode li {\n  border: none;\n}\n.article article-part.edit-mode li .col-xs-10,\n.article article-part.edit-mode li col-xs-2 {\n  padding: 0;\n  margin: 0;\n}\n.article article-part textarea {\n  width: 100%;\n  padding: 5px;\n  border-radius: 5px;\n  border: solid 1px #ccc;\n}\n.article .block-actions {\n  text-align: right;\n  position: relative;\n  top: -12px;\n  left: 2px;\n  margin-bottom: -3px;\n}\n.article ordered-list-block {\n  display: block;\n}\n.article ordered-list-block edit-mode {\n  display: block;\n  text-align: right;\n}\n.article ordered-list-block edit-mode li button {\n  margin-bottom: 5px;\n}\n.article heading-block read-mode {\n  display: block;\n  font-family: \"PT Sans\";\n  font-size: 17px;\n  font-weight: 400;\n  color: #000000;\n  padding-bottom: 10px;\n  padding-top: 10px;\n}\n.article heading-block .col-xs-10 {\n  padding-left: 0;\n}\n.article image-block edit-mode {\n  margin-top: 9px;\n  display: block;\n}\n.article image-block edit-mode img {\n  max-width: 100%;\n}\n.article image-block edit-mode .col-xs-3 {\n  text-align: right;\n  padding-top: 7px;\n}\n.article image-block edit-mode .col-xs-9 {\n  padding-left: 0;\n}\n.article image-block edit-mode .row {\n  margin-bottom: 10px;\n}\n.c_article_parts.edit-mode {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_article_parts.edit-mode .c_article_part {\n  border-bottom: solid 1px rgba(204, 204, 204, 0.36);\n}\n.c_article_part {\n  padding-top: 10px;\n  padding-bottom: 0px;\n}\n.c_article_part form h4 {\n  margin-top: 2px;\n  border: 0;\n  color: #333333;\n  margin-bottom: 5px;\n}\n.c_article_part img {\n  width: 100%;\n}\n.c_article_part .form-group {\n  margin-bottom: 10px;\n}\n.c_article_part .form-group .form-control {\n  background-color: rgba(255, 255, 255, 0.4);\n}\n.c_article_part .form-group label {\n  padding-top: 10px;\n}\n.c_article_part article-part-list fieldset {\n  margin-bottom: 30px;\n}\n.c_article_part-add {\n  cursor: pointer;\n  padding-bottom: 10px;\n  padding-left: 5px;\n  padding-top: 10px;\n}\n.c_article_part-add .chevron {\n  float: right;\n  color: #008000;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n"; });
-define('text!components/studies/study/study-actions/study-actions.html', ['module'], function(module) { module.exports = "<template><div if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a click.delegate=\"manageCategories()\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div></template>"; });
-define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"deleteJob()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
-define('text!components/journal/journals/journal-create/journal-create.css', ['module'], function(module) { module.exports = ".journal-create abp-datetime-picker {\n  display: inline-block;\n}\n.journal-create abp-datetime-picker input {\n  width: 150px !important;\n}\n.journal-create input.ticker {\n  width: 150px !important;\n  text-transform: uppercase;\n}\n.journal-create .row {\n  margin-bottom: 20px;\n}\n.journal-create h5 {\n  border-bottom: solid 1px #cbcbcb;\n  margin-left: 15px;\n  padding-left: 15px;\n  margin-bottom: 21px;\n  padding-bottom: 6px;\n}\n"; });
+define('text!components/journal/journals/company-details/company-details.css', ['module'], function(module) { module.exports = "company-details .loading {\n  min-height: 150px;\n  width: 100%;\n  height: 100%;\n  display: table;\n  background: url(/Content/images/spinner.gif) center center no-repeat;\n  opacity: .5;\n}\ncompany-details .loading i {\n  display: table-cell;\n  vertical-align: middle;\n  text-align: center;\n}\ncompany-details .update-quotes {\n  margin-top: 22px;\n}\n"; });
+define('text!components/market/chart-layouts/layouts/chart-layouts.html', ['module'], function(module) { module.exports = "<template><require from=\"../chart-layouts.css\"></require><require from=\"./chart-layout\"></require><div class=\"c_layouts-content\"><header><h3>${title}</h3></header><div class=\"c_layout-list\"><chart-layout class=\"c_layout\" repeat.for=\"layout of layouts\" layout.bind=\"layout\"></chart-layout><div class=\"c_layout c_layout-add\" show.bind=\"true\"><div class=\"c_layout-header\" click.delegate=\"addLayout()\"><a>Create New Layout</a> <a class=\"chevron\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></a></div><div class=\"c_layout-details\" show.bind=\"addingMode === true && editMode\"><form><fieldset><div class=\"form-group\"><label for=\"txtName\">Layout Name</label><input type=\"text\" class=\"form-control\" id=\"txtName\" value.bind=\"newLayout.title & validate\"></div><div class=\"form-group\"><label for=\"txtDescription\">Description</label><textarea rows=\"4\" class=\"form-control\" id=\"txtDescription\" value.bind=\"newLayout.description & validate\"></textarea></div></fieldset><div class=\"c_layout-actions\"><button type=\"button\" click.delegate=\"confirmAddLayout()\" class=\"btn btn-danger\">Create</button> <button type=\"button\" click.delegate=\"cancelAddLayout()\" class=\"btn btn-default\">Cancel</button></div></form></div></div></div></div></template>"; });
+define('text!components/market/market-indices/indices/market-index.html', ['module'], function(module) { module.exports = "<template><require from=\"../market-indices.css\"></require><header><h3>${title}</h3></header></template>"; });
+define('text!components/journal/journals/journal-create/journal-create.css', ['module'], function(module) { module.exports = ".journal-create {\n  /*@media (min-width: 768px) {\n        .form-inline .form-control {\n            width: 150px !important;\n        }\n    }*/\n}\n.journal-create abp-datetime-picker {\n  display: inline-block;\n}\n.journal-create abp-datetime-picker input {\n  width: 110px !important;\n}\n.journal-create input.ticker {\n  width: 80px !important;\n  text-transform: uppercase;\n}\n.journal-create .row {\n  margin-bottom: 20px;\n}\n.journal-create h5 {\n  border-bottom: solid 1px #cbcbcb;\n  margin-left: 15px;\n  padding-left: 15px;\n  margin-bottom: 21px;\n  padding-bottom: 6px;\n}\n.journal-create #ddlDirection {\n  width: 100px !important;\n}\n.journal-create .company-details {\n  padding: 0 30px 0 40px;\n}\n"; });
+define('text!components/market/jobs-dashboard/jobs/job.html', ['module'], function(module) { module.exports = "<template><require from=\"./job.css\"></require><require from=\"./job-details/job-details\"></require><header><h3>${title}</h3></header><h4>Current Job</h4><div class=\"form-horizontal form-current-job\"><fieldset if.bind=\"currentJobStarted\"><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Job Number</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">#000000${currentJob.jobId}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Started Date</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${startDate}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Status</label><div class=\"col-sm-8\"><p class=\"form-control\" readonly=\"readonly\">${jobStatusName}</p></div></div><div class=\"form-group\"><label class=\"col-sm-3 control-label\">Progress</label><div class=\"col-sm-8 col-progress\"><span>${currentJob.progress}%</span><s-progress progress.bind=\"currentJob.progress\"></s-progress></div></div><div class=\"c_job-actions\"><button type=\"button\" if.bind=\"currentJobPaused\" click.delegate=\"resumeJob()\" class=\"btn btn-default\">Resume job</button> <button type=\"button\" if.bind=\"currentJobStarted\" click.delegate=\"cancelJob()\" class=\"btn btn-danger\">Cancel Job</button> <button type=\"button\" if.bind=\"currentJobInProgress\" click.delegate=\"pauseJob()\" class=\"btn btn-warning\">Pause job</button></div></fieldset></div><div class=\"c_job-actions\" if.bind=\"!currentJobStarted\"><button type=\"button\" click.delegate=\"startJob()\" class=\"btn btn-danger\">Start new job</button></div><div if.bind=\"jobs.length > 0\"><h4>History</h4><div class=\"c_job-details-list\"><job-details repeat.for=\"job of jobs\" job.bind=\"job\"></job-details><div class=\"c_jod_details no-border\"><div class=\"c_jod_details-header right\"><button type=\"button\" click.delegate=\"deleteAll()\" class=\"btn btn-warning\">Clear history</button></div></div></div></div></template>"; });
+define('text!components/studies/study/category-studies/category-studies.html', ['module'], function(module) { module.exports = "<template><require from=\"./category-studies.css\"></require><div class=\"side-navigation\"><h3>${category.title}</h3><ul><li repeat.for=\"summary of articles\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\"></span> <a click.delegate=\"navigateToArticle(summary.url)\" title=\"${summary.summary}\" class=\"${summary.selected ? 'active' : ''}\">${summary.title} Rules</a></li></ul><div if.bind=\"editMode\"><h3>Add / Remove Articles</h3><ul><li class=\"side-navigation-add\"><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span> <a click.delegate=\"addArticle()\">Add New Article</a></li><li class=\"side-navigation-delete\"><form><span class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span> <a click.delegate=\"deleting = true\">Delete Loaded Article</a><div class=\"form-actions no-border\" if.bind=\"deleting \"><input class=\"btn btn-danger\" type=\"button\" click.delegate=\"deleteArticle()\" value=\"Delete\"> <input class=\"btn btn-default\" type=\"button\" click.delegate=\"deleting = false\" value=\"Cancel\"></div></form></li></ul></div></div></template>"; });
 define('text!components/market/jobs-dashboard/jobs/job.css', ['module'], function(module) { module.exports = ".c_dashboard {\n  background-color: rgba(255, 255, 255, 0.7);\n  padding-bottom: 15px;\n}\n.c_job-details-list {\n  border: 1px solid rgba(204, 204, 204, 0.36);\n  padding: 0 10px;\n  margin-bottom: 15px;\n}\n.c_job-details-list .no-border .c_rule_set {\n  border-bottom: 0;\n}\n.c_job-details-list .c_jod_details {\n  padding: 10px 10px;\n  border-bottom: 1px solid rgba(204, 204, 204, 0.36);\n}\n.c_job-details-list .c_jod_details .c_jod_details-header {\n  cursor: pointer;\n  text-transform: capitalize;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .chevron {\n  float: right;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn {\n  margin-right: 10px;\n  z-index: 100;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical {\n  margin-top: -3px;\n  margin-right: -3px;\n  margin-left: 6px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group .btn,\n.c_job-details-list .c_jod_details .c_jod_details-header .btn-group-vertical .btn {\n  margin-right: 0;\n  font-size: 8px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details {\n  padding-top: 10px;\n}\n.c_job-details-list .c_jod_details .c_jod_details-details h4 {\n  margin-top: 25px;\n  margin-left: 14px;\n  border-bottom: 1px solid #e22004;\n}\n.c_job-actions {\n  padding-top: 12px;\n  padding-right: 20px;\n  text-align: right;\n  border-top: solid 1px rgba(204, 204, 204, 0.36);\n}\n.job-staus-2 {\n  color: #5cb85c;\n}\n.job-staus-3 {\n  color: #f59f25;\n}\n.job-staus-99,\n.chevron {\n  color: #CA1D04;\n}\n.label {\n  font-weight: 300;\n  font-size: 13px;\n  padding: 4px 8px;\n}\n.form-current-job fieldset {\n  border: solid 1px rgba(204, 204, 204, 0.36);\n  padding: 20px 0 12px;\n}\n.monospace {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  margin-top: 2px;\n}\n.form-group.exception .form-control {\n  font-family: \"Courier New\", Courier, \"Lucida Sans Typewriter\", \"Lucida Typewriter\", monospace;\n  font-size: 13px;\n  font-style: normal;\n  font-variant: normal;\n  font-weight: 400;\n  line-height: 19px;\n  color: rgba(0, 0, 0, 0.55);\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n}\n.form-group.error .form-control {\n  color: #CA1D04;\n}\n.col-progress {\n  text-align: center;\n}\n.col-progress span {\n  font-size: 13px;\n  position: relative;\n  color: #5cb85c;\n  font-weight: 500;\n}\n.col-progress s-progress {\n  position: relative;\n  top: -8px;\n}\n"; });
 define('text!components/studies/study/category-studies/category-studies.css', ['module'], function(module) { module.exports = ""; });
+define('text!components/studies/study/study-actions/study-actions.html', ['module'], function(module) { module.exports = "<template><div if.bind=\"powerUser\"><div if.bind=\"editMode !== true\" class=\"btn-group\" role=\"group\"><button type=\"button\" class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Administration <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li><a click.delegate=\"startEdit()\">Edit Page</a></li><li role=\"separator\" class=\"divider\"></li><li><a click.delegate=\"manageCategories()\">Manage Categories</a></li></ul></div><div class=\"btn-group\" role=\"group\" aria-label=\"...\"><button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"saveArticle()\" class=\"btn btn-success\">Apply Changes</button> <button type=\"button\" if.bind=\"editMode === true\" click.delegate=\"cancelEdit()\" class=\"btn btn-default\">Cancel</button></div></div></template>"; });
+define('text!components/market/jobs-dashboard/jobs/job-details/job-details.html', ['module'], function(module) { module.exports = "<template><div class=\"c_jod_details\" if.bind=\"!deleted\"><div class=\"c_jod_details-header\" click.trigger=\"expand()\"><div class=\"row\"><div class=\"col-xs-3 monospace\">${completed}</div><div class=\"col-xs-3 job-staus-${job.status}\">${status} <span if.bind=\"job.status === 2\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span></div><div class=\"col-xs-3 monospace\"><span if.bind=\"runTime() != null\" class=\"label label-info\">${runTime()}</span></div><div class=\"col-xs-1 chevron\"><span class=\"glyphicon ${expanded ? 'glyphicon-menu-down':'glyphicon-menu-left'}\" aria-hidden=\"true\"></span></div></div></div><div class=\"c_jod_details-details\" if.bind=\"expanded\"><form><div repeat.for=\"log of jobLogs\"><div class=\"form-group ${log.level.toLowerCase()}\"><label>${log.level}</label><p class=\"form-control\">${log.message}</p></div><div class=\"form-group exception\" if.bind=\"log.exception.length > 0\"><label>Exception</label><p class=\"form-control\">${log.exception}</p></div></div></form><div class=\"c_job-actions\"><button type=\"button\" click.delegate=\"deleteJob()\" class=\"btn btn-warning\">Delete log</button></div></div></div></template>"; });
 //# sourceMappingURL=app-bundle.js.map

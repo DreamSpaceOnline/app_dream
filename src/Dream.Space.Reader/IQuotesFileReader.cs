@@ -5,6 +5,6 @@ namespace Dream.Space.Reader
 {
     public interface IQuotesFileReader
     {
-        List<QuotesModel> Read(string filePath);
+        List<StockQuote> Read(string filePath);
     }
 }

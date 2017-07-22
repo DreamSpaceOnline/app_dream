@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Dream.Space.Data.Extensions;
-using Dream.Space.Data.Models;
 using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
 using Dream.Space.Models.Companies;
+using Dream.Space.Models.Quotes;
 using Dream.Space.Reader;
 using Dream.Space.Stock;
 using Dream.Space.Stock.Requests;
@@ -53,9 +54,12 @@ namespace Dream.Space.Controllers
 
                 var csvQuotes = await _stockClient.GetStockHistory(request);
                 var quotes = _fileReader.Read(csvQuotes);
-                quotes = quotes.Merge(update.HistoryQuotes).Where(q => q.Date > DateTime.Today.AddYears(-1)).ToList();
-
-                _companyService.UpdateQuotes(new UpdateQuotesRequest(company.Ticker, quotes));
+                if (quotes.Any())
+                {
+                    var qmodels = quotes.Select(q => new QuotesModel(q)).ToList();
+                    qmodels = qmodels.Merge(update.HistoryQuotes).Where(q => q.Date > DateTime.Today.AddYears(-1)).ToList();
+                    _companyService.UpdateQuotes(new UpdateQuotesRequest(company.Ticker, qmodels));
+                }
             }
 
             return Ok();
