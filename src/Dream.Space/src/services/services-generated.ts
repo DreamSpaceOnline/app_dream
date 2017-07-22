@@ -1486,6 +1486,7 @@ export class JobsApiClient implements IJobsApiClient {
 
 export interface IJournalApiClient {
     getJournal(id: number): Promise<JournalModel | null>;
+    saveJournal(model: JournalModel): Promise<Blob | null>;
 }
 
 @inject(String, HttpClient)
@@ -1534,6 +1535,37 @@ export class JournalApiClient implements IJournalApiClient {
             });
         }
         return Promise.resolve<JournalModel | null>(<any>null);
+    }
+
+    saveJournal(model: JournalModel): Promise<Blob | null> {
+        let url_ = this.baseUrl + "/api/journal";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(model ? model.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSaveJournal(_response);
+        });
+    }
+
+    protected processSaveJournal(response: Response): Promise<Blob | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.blob();
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<Blob | null>(<any>null);
     }
 }
 
@@ -3833,13 +3865,16 @@ export class JournalHeader implements IJournalHeader {
     journalId: number;
     ticker: string | null;
     accountId: number;
+    maxSharesCount: number;
     accountName: string | null;
     created: Date;
     userId: string | null;
-    trade: TradeType;
+    tradeDirection: TradeDirection;
     entryPrice: number;
     stopLossPrice: number;
     takeProfitPrice: number;
+    maxRiskValuePrice: number;
+    rewardRiskRatio: number;
 
     constructor(data?: IJournalHeader) {
         if (data) {
@@ -3855,13 +3890,16 @@ export class JournalHeader implements IJournalHeader {
             this.journalId = data["journalId"] !== undefined ? data["journalId"] : <any>null;
             this.ticker = data["ticker"] !== undefined ? data["ticker"] : <any>null;
             this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.maxSharesCount = data["maxSharesCount"] !== undefined ? data["maxSharesCount"] : <any>null;
             this.accountName = data["accountName"] !== undefined ? data["accountName"] : <any>null;
             this.created = data["created"] ? new Date(data["created"].toString()) : <any>null;
             this.userId = data["userId"] !== undefined ? data["userId"] : <any>null;
-            this.trade = data["trade"] !== undefined ? data["trade"] : <any>null;
+            this.tradeDirection = data["tradeDirection"] !== undefined ? data["tradeDirection"] : <any>null;
             this.entryPrice = data["entryPrice"] !== undefined ? data["entryPrice"] : <any>null;
             this.stopLossPrice = data["stopLossPrice"] !== undefined ? data["stopLossPrice"] : <any>null;
             this.takeProfitPrice = data["takeProfitPrice"] !== undefined ? data["takeProfitPrice"] : <any>null;
+            this.maxRiskValuePrice = data["maxRiskValuePrice"] !== undefined ? data["maxRiskValuePrice"] : <any>null;
+            this.rewardRiskRatio = data["rewardRiskRatio"] !== undefined ? data["rewardRiskRatio"] : <any>null;
         }
     }
 
@@ -3876,13 +3914,16 @@ export class JournalHeader implements IJournalHeader {
         data["journalId"] = this.journalId !== undefined ? this.journalId : <any>null;
         data["ticker"] = this.ticker !== undefined ? this.ticker : <any>null;
         data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["maxSharesCount"] = this.maxSharesCount !== undefined ? this.maxSharesCount : <any>null;
         data["accountName"] = this.accountName !== undefined ? this.accountName : <any>null;
         data["created"] = this.created ? this.created.toISOString() : <any>null;
         data["userId"] = this.userId !== undefined ? this.userId : <any>null;
-        data["trade"] = this.trade !== undefined ? this.trade : <any>null;
+        data["tradeDirection"] = this.tradeDirection !== undefined ? this.tradeDirection : <any>null;
         data["entryPrice"] = this.entryPrice !== undefined ? this.entryPrice : <any>null;
         data["stopLossPrice"] = this.stopLossPrice !== undefined ? this.stopLossPrice : <any>null;
         data["takeProfitPrice"] = this.takeProfitPrice !== undefined ? this.takeProfitPrice : <any>null;
+        data["maxRiskValuePrice"] = this.maxRiskValuePrice !== undefined ? this.maxRiskValuePrice : <any>null;
+        data["rewardRiskRatio"] = this.rewardRiskRatio !== undefined ? this.rewardRiskRatio : <any>null;
         return data; 
     }
 }
@@ -3891,13 +3932,16 @@ export interface IJournalHeader {
     journalId: number;
     ticker: string | null;
     accountId: number;
+    maxSharesCount: number;
     accountName: string | null;
     created: Date;
     userId: string | null;
-    trade: TradeType;
+    tradeDirection: TradeDirection;
     entryPrice: number;
     stopLossPrice: number;
     takeProfitPrice: number;
+    maxRiskValuePrice: number;
+    rewardRiskRatio: number;
 }
 
 export class JournalModel extends JournalHeader implements IJournalModel {
@@ -4023,9 +4067,9 @@ export interface ITradeOrder {
     tradeOrderId: number;
 }
 
-export enum TradeType {
-    Buy = <any>"Buy", 
-    Sell = <any>"Sell", 
+export enum TradeDirection {
+    Short = <any>"Short", 
+    Long = <any>"Long", 
 }
 
 export class ChartLayoutModel implements IChartLayoutModel {

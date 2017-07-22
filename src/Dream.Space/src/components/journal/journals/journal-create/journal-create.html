@@ -1,0 +1,87 @@
+﻿<template>
+    <require from="./journal-create.css"></require>
+    
+    <div class="journal-create">
+
+        <header>
+            <h3>Create journal entry</h3>
+        </header>
+        
+        <form submit.delegate="trySaveJournal()">
+            <fieldset >
+                <div class="row">
+                    <div class="form-inline col-xs-12 col-md-8">
+                        <div class="form-group">
+                            <label for="txtTicker">Ticker</label>
+                            <input type="text" class="form-control ticker" id="txtTicker" value.bind="journal.ticker & validate"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="ddlDirection">Direction:</label>
+                            <select id="ddlDirection" class="form-control" value.bind="journal.tradeDirection">
+                                <option repeat.for="direction of directions" model.bind="direction.id">${direction.name}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtDate">Entry Date:</label>
+                            <abp-datetime-picker model.bind="journal.entryDate & validate" id="txtDate" element.bind="entryDatePicker"></abp-datetime-picker>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h5>Trade setup</h5>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="txtEntryPrice" class="col-sm-4 control-label">Entry price:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="txtEntryPrice" value.bind="journal.entryPrice & validate"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtTargetPrice" class="col-sm-4 control-label">Target price:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="txtTargetPrice" value.bind="journal.takeProfitPrice & validate"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtStopPrice" class="col-sm-4 control-label">Stop loss price:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="txtStopPrice" value.bind="journal.stopLossPrice & validate"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <h5>Risk management</h5>
+                        <div class="form-horizontal">
+
+                            <div class="form-group">
+                                <label for="txtRiskValue" class="col-sm-5 control-label">Risk value($):</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="txtRiskValue" value.bind="journal.maxRiskValuePrice & validate"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtRewardRatio" class="col-sm-5 control-label">Reward / Risk ratio:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" readonly id="txtRewardRatio" value.bind="journal.rewardRiskRatio & validate"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtMaxShares" class="col-sm-5 control-label">Max shares count:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" readonly id="txtMaxShares" value.bind="journal.maxSharesCount & validate"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="c_journal-actions">
+                <button type="submit" class="btn btn-danger">Save</button>
+                <button type="button" click.delegate="cancelEdit()" class="btn btn-default">Cancel</button>
+            </div>
+        </form>
+    </div>
+</template>

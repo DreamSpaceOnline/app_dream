@@ -1005,6 +1005,33 @@
         }
       }
     },
+    "/api/journal": {
+      "post": {
+        "tags": [
+          "JournalApi"
+        ],
+        "operationId": "JournalApi_SaveJournal",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/JournalModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
     "/api/layout/period/{period}": {
       "get": {
         "tags": [
@@ -2617,11 +2644,14 @@
       "required": [
         "journalId",
         "accountId",
+        "maxSharesCount",
         "created",
-        "trade",
+        "tradeDirection",
         "entryPrice",
         "stopLossPrice",
-        "takeProfitPrice"
+        "takeProfitPrice",
+        "maxRiskValuePrice",
+        "rewardRiskRatio"
       ],
       "properties": {
         "journalId": {
@@ -2635,6 +2665,10 @@
           "type": "integer",
           "format": "int32"
         },
+        "maxSharesCount": {
+          "type": "integer",
+          "format": "int32"
+        },
         "accountName": {
           "type": "string"
         },
@@ -2645,8 +2679,8 @@
         "userId": {
           "type": "string"
         },
-        "trade": {
-          "$ref": "#/definitions/TradeType"
+        "tradeDirection": {
+          "$ref": "#/definitions/TradeDirection"
         },
         "entryPrice": {
           "type": "number",
@@ -2659,18 +2693,26 @@
         "takeProfitPrice": {
           "type": "number",
           "format": "decimal"
+        },
+        "maxRiskValuePrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "rewardRiskRatio": {
+          "type": "number",
+          "format": "decimal"
         }
       }
     },
-    "TradeType": {
+    "TradeDirection": {
       "type": "string",
       "x-enumNames": [
-        "Buy",
-        "Sell"
+        "Short",
+        "Long"
       ],
       "enum": [
-        "Buy",
-        "Sell"
+        "Short",
+        "Long"
       ],
       "description": ""
     },

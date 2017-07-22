@@ -25,5 +25,15 @@ namespace Dream.Space.Controllers
 
             return Ok(journal);
         }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<IHttpActionResult> SaveJournal([FromBody] JournalModel model)
+        {
+            await _service.SaveJournalAsync(model);
+
+            return Ok();
+        }
+
     }
 }
