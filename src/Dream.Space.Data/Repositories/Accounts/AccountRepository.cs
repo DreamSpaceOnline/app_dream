@@ -24,5 +24,11 @@ namespace Dream.Space.Data.Repositories.Accounts
             var records = await Dbset.OrderBy(r => r.Name).ToListAsync();
             return records;
         }
+
+        public async Task<List<AccountEntity>> GetAllAsync(string userId)
+        {
+            var records = await Dbset.Where(a => a.UserId == userId).OrderBy(r => r.Name).ToListAsync();
+            return records;
+        }
     }
 }

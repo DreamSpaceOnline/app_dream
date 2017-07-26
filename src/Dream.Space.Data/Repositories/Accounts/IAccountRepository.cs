@@ -9,5 +9,8 @@ namespace Dream.Space.Data.Repositories.Accounts
         Task<AccountEntity> GetAsync(int id);
         Task<List<AccountEntity>> GetAllAsync();
 
+        AccountEntity Add(AccountEntity accountEntity);
+        Task CommitAsync();
+        Task<List<AccountEntity>> GetAllAsync(string userId);
     }
 }

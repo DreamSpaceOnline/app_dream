@@ -10,7 +10,7 @@ namespace Dream.Space.Models.Accounts
         decimal EntryPrice { get; set; }
         TradeDirection Direction { get; set; }
         DateTime EntryDate { get; set; }
-        DateTime CloseDate { get; set; }
+        DateTime? CloseDate { get; set; }
         int SharesCount { get; set; }
         decimal ClosePrice { get; set; }
     }

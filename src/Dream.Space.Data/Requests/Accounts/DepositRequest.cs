@@ -6,6 +6,6 @@ namespace Dream.Space.Data.Requests.Accounts
     {
         public int AccountId { get; set; }
         public decimal Amount { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime TransferDate { get; set; }
     }
 }

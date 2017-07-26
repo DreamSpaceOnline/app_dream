@@ -16,6 +16,8 @@ namespace Dream.Space.Data.Services
         Task CloseTradePartially(CloseTradePartiallyRequest request);
         Task<decimal> GetOverallBalance(int accountId, DateTime date);
         Task<decimal> GetBalanceFromTrades(int accountId, DateTime date);
-        Task<List<AccountModel>> GetAccounts();
+        Task<List<AccountModel>> GetAccounts(string userId);
+
+        Task<AccountModel> CreateAccount(CreateAccountRequest request);
     }
 }

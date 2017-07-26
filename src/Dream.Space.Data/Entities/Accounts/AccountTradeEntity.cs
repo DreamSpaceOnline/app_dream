@@ -22,7 +22,7 @@ namespace Dream.Space.Data.Entities.Accounts
         [Required]
         public DateTime EntryDate { get; set; }
 
-        public DateTime CloseDate { get; set; }
+        public DateTime? CloseDate { get; set; }
         [Required]
         public int SharesCount { get; set; }
 

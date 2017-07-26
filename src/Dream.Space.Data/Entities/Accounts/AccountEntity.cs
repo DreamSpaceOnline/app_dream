@@ -11,9 +11,15 @@ namespace Dream.Space.Data.Entities.Accounts
         [Key]
         public int AccountId { get; set; }
 
-        [Required, MaxLength(100), MinLength(2)]
+        [Required, StringLength(100)]
+        [Index("IX_NameUserId", 1, IsUnique = true)]
         public string Name { get; set; }
-        [Required]
+
+        [Required, StringLength(100)]
+        [Index("IX_NameUserId", 2, IsUnique = true)]
         public string UserId { get; set; }
+
+        public decimal RiskPerTrade { get; set; }
+        public decimal RiskPerMonth { get; set; }
     }
 }
