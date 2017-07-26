@@ -11,9 +11,9 @@ namespace Dream.Space.Data.Services
         Task Deposit(DepositRequest request);
         Task Withdraw(WithdrawRequest request);
         Task<decimal> GetMaxRiskValue(int accountId,  DateTime date);
-        Task CreateTrade(CreateTradeRequest request);
-        Task CloseTrade(CloseTradeRequest request);
-        Task CloseTradePartially(CloseTradePartiallyRequest request);
+        Task<AccountTradeModel> CreateTrade(CreateTradeRequest request);
+        Task<AccountTradeModel> CloseTrade(CloseTradeRequest request);
+        Task<AccountTradeModel> CloseTradePartially(CloseTradePartiallyRequest request);
         Task<decimal> GetOverallBalance(int accountId, DateTime date);
         Task<decimal> GetBalanceFromTrades(int accountId, DateTime date);
         Task<List<AccountModel>> GetAccounts(string userId);

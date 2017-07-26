@@ -80,7 +80,7 @@ namespace Dream.Space.Data.Services
             }
         }
 
-        public async Task CreateTrade(CreateTradeRequest request)
+        public async Task<AccountTradeModel> CreateTrade(CreateTradeRequest request)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -95,10 +95,12 @@ namespace Dream.Space.Data.Services
                 entity.SharesCount = request.SharesCount;
 
                 await repository.CommitAsync();
+
+                return new AccountTradeModel(entity);
             }
         }
 
-        public async Task CloseTrade(CloseTradeRequest request)
+        public async Task<AccountTradeModel> CloseTrade(CloseTradeRequest request)
         {
             using (var scope = _container.BeginLifetimeScope())
             {
@@ -120,8 +122,11 @@ namespace Dream.Space.Data.Services
                     };
 
                     await Transfer(transferRequest, TransferType.Trade);
+
+                    return new AccountTradeModel(entity);
                 }
 
+                return null;
             }
         }
 
@@ -140,9 +145,43 @@ namespace Dream.Space.Data.Services
             return result;
         }
 
-        public Task CloseTradePartially(CloseTradePartiallyRequest request)
+        public async Task<AccountTradeModel> CloseTradePartially(CloseTradePartiallyRequest request)
         {
-            throw new NotImplementedException();
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var tradeRepository = scope.Resolve<IAccountTradeRepository>();
+                var trade = await tradeRepository.GetAsync(request.TradeId);
+                if (trade != null && trade.AccountId == request.AccountId)
+                {
+                    if (trade.SharesCount > request.SharesCount)
+                    {
+                        trade.SharesCount -= request.SharesCount;
+                        await tradeRepository.CommitAsync();
+
+                        var createTradeRequest = new CreateTradeRequest
+                        {
+                            AccountId = request.AccountId,
+                            EntryDate = trade.EntryDate,
+                            EntryPrice = trade.EntryPrice,
+                            Direction = trade.Direction,
+                            SharesCount = request.SharesCount
+                        };
+
+                        var completedTrade = await CreateTrade(createTradeRequest);
+
+                        var closeTradeRequest = new CloseTradeRequest
+                        {
+                            AccountId = request.AccountId,
+                            TradeId = completedTrade.TradeId,
+                            CloseDate = request.CloseDate,
+                            ClosePrice = request.ClosePrice
+                        };
+
+                        return await CloseTrade(closeTradeRequest);
+                    }
+                }
+                return null;
+            }
         }
 
         public async Task<decimal> GetOverallBalance(int accountId, DateTime date)

@@ -1808,6 +1808,281 @@
           }
         }
       }
+    },
+    "/api/trade-account/deposit": {
+      "post": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_Deposit",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/DepositRequest"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account/withdraw": {
+      "post": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_Withdraw",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/WithdrawRequest"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account//all/{userId}": {
+      "get": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_GetAccounts",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AccountModel"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account/create-trade": {
+      "post": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_CreateTrade",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateTradeRequest"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/AccountTradeModel"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account/close-trade": {
+      "post": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_CloseTrade",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CloseTradeRequest"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/AccountTradeModel"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account/close-partially": {
+      "post": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_CloseTradePartially",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CloseTradePartiallyRequest"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/AccountTradeModel"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account/create-account": {
+      "post": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_CreateAccount",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateAccountRequest"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/AccountModel"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/trade-account//max-trade-risk/{accountId}": {
+      "get": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_GetMaxRiskValue",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "x-nullable": false
+          }
+        }
+      }
+    },
+    "/api/trade-account//overall-balance/{accountId}": {
+      "get": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_GetOverallBalance",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "x-nullable": false
+          }
+        }
+      }
+    },
+    "/api/trade-account//trade-balance/{accountId}": {
+      "get": {
+        "tags": [
+          "TradeAccountApi"
+        ],
+        "operationId": "TradeAccountApi_GetBalanceFromTrades",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "x-nullable": false
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -3530,6 +3805,215 @@
         },
         "active": {
           "type": "boolean"
+        }
+      }
+    },
+    "DepositRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accountId",
+        "amount",
+        "transferDate"
+      ],
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amount": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "transferDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "WithdrawRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/definitions/DepositRequest"
+        }
+      ]
+    },
+    "AccountModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accountId",
+        "riskPerTrade",
+        "riskPerMonth"
+      ],
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "riskPerTrade": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "riskPerMonth": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "CreateTradeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accountId",
+        "entryDate",
+        "entryPrice",
+        "direction",
+        "sharesCount"
+      ],
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "entryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "entryPrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "direction": {
+          "$ref": "#/definitions/TradeDirection"
+        },
+        "sharesCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "AccountTradeModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tradeId",
+        "accountId",
+        "entryPrice",
+        "direction",
+        "entryDate",
+        "sharesCount",
+        "closePrice"
+      ],
+      "properties": {
+        "tradeId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "entryPrice": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "direction": {
+          "$ref": "#/definitions/TradeDirection"
+        },
+        "entryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "closeDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sharesCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "closePrice": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "CloseTradeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accountId",
+        "tradeId",
+        "closeDate",
+        "closePrice"
+      ],
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tradeId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "closeDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "closePrice": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "CloseTradePartiallyRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sharesCount"
+      ],
+      "properties": {
+        "sharesCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/CloseTradeRequest"
+        }
+      ]
+    },
+    "CreateAccountRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "riskPerTrade",
+        "riskPerMonth"
+      ],
+      "properties": {
+        "accountName": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "riskPerTrade": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "riskPerMonth": {
+          "type": "number",
+          "format": "decimal"
         }
       }
     }

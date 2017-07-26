@@ -2720,6 +2720,393 @@ export class StrategiesApiClient implements IStrategiesApiClient {
     }
 }
 
+export interface ITradeAccountApiClient {
+    deposit(request: DepositRequest): Promise<Blob | null>;
+    withdraw(request: WithdrawRequest): Promise<Blob | null>;
+    getAccounts(userId: string): Promise<AccountModel[] | null>;
+    createTrade(request: CreateTradeRequest): Promise<AccountTradeModel | null>;
+    closeTrade(request: CloseTradeRequest): Promise<AccountTradeModel | null>;
+    closeTradePartially(request: CloseTradePartiallyRequest): Promise<AccountTradeModel | null>;
+    createAccount(request: CreateAccountRequest): Promise<AccountModel | null>;
+    getMaxRiskValue(accountId: number): Promise<number | null>;
+    getOverallBalance(accountId: number): Promise<number | null>;
+    getBalanceFromTrades(accountId: number): Promise<number | null>;
+}
+
+@inject(String, HttpClient)
+export class TradeAccountApiClient implements ITradeAccountApiClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.baseUrl = baseUrl ? baseUrl : "";
+        this.http = http ? http : <any>window;
+    }
+
+    deposit(request: DepositRequest): Promise<Blob | null> {
+        let url_ = this.baseUrl + "/api/trade-account/deposit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request ? request.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeposit(_response);
+        });
+    }
+
+    protected processDeposit(response: Response): Promise<Blob | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.blob();
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<Blob | null>(<any>null);
+    }
+
+    withdraw(request: WithdrawRequest): Promise<Blob | null> {
+        let url_ = this.baseUrl + "/api/trade-account/withdraw";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request ? request.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processWithdraw(_response);
+        });
+    }
+
+    protected processWithdraw(response: Response): Promise<Blob | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.blob();
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<Blob | null>(<any>null);
+    }
+
+    getAccounts(userId: string): Promise<AccountModel[] | null> {
+        let url_ = this.baseUrl + "/api/trade-account//all/{userId}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAccounts(_response);
+        });
+    }
+
+    protected processGetAccounts(response: Response): Promise<AccountModel[] | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: AccountModel[] | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [];
+                for (let item of resultData200)
+                    result200.push(AccountModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<AccountModel[] | null>(<any>null);
+    }
+
+    createTrade(request: CreateTradeRequest): Promise<AccountTradeModel | null> {
+        let url_ = this.baseUrl + "/api/trade-account/create-trade";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request ? request.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateTrade(_response);
+        });
+    }
+
+    protected processCreateTrade(response: Response): Promise<AccountTradeModel | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: AccountTradeModel | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AccountTradeModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<AccountTradeModel | null>(<any>null);
+    }
+
+    closeTrade(request: CloseTradeRequest): Promise<AccountTradeModel | null> {
+        let url_ = this.baseUrl + "/api/trade-account/close-trade";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request ? request.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCloseTrade(_response);
+        });
+    }
+
+    protected processCloseTrade(response: Response): Promise<AccountTradeModel | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: AccountTradeModel | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AccountTradeModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<AccountTradeModel | null>(<any>null);
+    }
+
+    closeTradePartially(request: CloseTradePartiallyRequest): Promise<AccountTradeModel | null> {
+        let url_ = this.baseUrl + "/api/trade-account/close-partially";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request ? request.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCloseTradePartially(_response);
+        });
+    }
+
+    protected processCloseTradePartially(response: Response): Promise<AccountTradeModel | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: AccountTradeModel | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AccountTradeModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<AccountTradeModel | null>(<any>null);
+    }
+
+    createAccount(request: CreateAccountRequest): Promise<AccountModel | null> {
+        let url_ = this.baseUrl + "/api/trade-account/create-account";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request ? request.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateAccount(_response);
+        });
+    }
+
+    protected processCreateAccount(response: Response): Promise<AccountModel | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: AccountModel | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AccountModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<AccountModel | null>(<any>null);
+    }
+
+    getMaxRiskValue(accountId: number): Promise<number | null> {
+        let url_ = this.baseUrl + "/api/trade-account//max-trade-risk/{accountId}";
+        if (accountId === undefined || accountId === null)
+            throw new Error("The parameter 'accountId' must be defined.");
+        url_ = url_.replace("{accountId}", encodeURIComponent("" + accountId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMaxRiskValue(_response);
+        });
+    }
+
+    protected processGetMaxRiskValue(response: Response): Promise<number | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: number | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<number | null>(<any>null);
+    }
+
+    getOverallBalance(accountId: number): Promise<number | null> {
+        let url_ = this.baseUrl + "/api/trade-account//overall-balance/{accountId}";
+        if (accountId === undefined || accountId === null)
+            throw new Error("The parameter 'accountId' must be defined.");
+        url_ = url_.replace("{accountId}", encodeURIComponent("" + accountId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetOverallBalance(_response);
+        });
+    }
+
+    protected processGetOverallBalance(response: Response): Promise<number | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: number | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<number | null>(<any>null);
+    }
+
+    getBalanceFromTrades(accountId: number): Promise<number | null> {
+        let url_ = this.baseUrl + "/api/trade-account//trade-balance/{accountId}";
+        if (accountId === undefined || accountId === null)
+            throw new Error("The parameter 'accountId' must be defined.");
+        url_ = url_.replace("{accountId}", encodeURIComponent("" + accountId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetBalanceFromTrades(_response);
+        });
+    }
+
+    protected processGetBalanceFromTrades(response: Response): Promise<number | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: number | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<number | null>(<any>null);
+    }
+}
+
 export class UserInfo implements IUserInfo {
     username: string | null;
     isAuthenticated: boolean;
@@ -5502,6 +5889,368 @@ export interface IStrategy {
     description: string | null;
     deleted: boolean;
     active: boolean;
+}
+
+export class DepositRequest implements IDepositRequest {
+    accountId: number;
+    amount: number;
+    transferDate: Date;
+
+    constructor(data?: IDepositRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.amount = data["amount"] !== undefined ? data["amount"] : <any>null;
+            this.transferDate = data["transferDate"] ? new Date(data["transferDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DepositRequest {
+        let result = new DepositRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        data["transferDate"] = this.transferDate ? this.transferDate.toISOString() : <any>null;
+        return data; 
+    }
+}
+
+export interface IDepositRequest {
+    accountId: number;
+    amount: number;
+    transferDate: Date;
+}
+
+export class WithdrawRequest extends DepositRequest implements IWithdrawRequest {
+
+    constructor(data?: IWithdrawRequest) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
+        }
+    }
+
+    static fromJS(data: any): WithdrawRequest {
+        let result = new WithdrawRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IWithdrawRequest extends IDepositRequest {
+}
+
+export class AccountModel implements IAccountModel {
+    accountId: number;
+    name: string | null;
+    userId: string | null;
+    riskPerTrade: number;
+    riskPerMonth: number;
+
+    constructor(data?: IAccountModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.name = data["name"] !== undefined ? data["name"] : <any>null;
+            this.userId = data["userId"] !== undefined ? data["userId"] : <any>null;
+            this.riskPerTrade = data["riskPerTrade"] !== undefined ? data["riskPerTrade"] : <any>null;
+            this.riskPerMonth = data["riskPerMonth"] !== undefined ? data["riskPerMonth"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AccountModel {
+        let result = new AccountModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["riskPerTrade"] = this.riskPerTrade !== undefined ? this.riskPerTrade : <any>null;
+        data["riskPerMonth"] = this.riskPerMonth !== undefined ? this.riskPerMonth : <any>null;
+        return data; 
+    }
+}
+
+export interface IAccountModel {
+    accountId: number;
+    name: string | null;
+    userId: string | null;
+    riskPerTrade: number;
+    riskPerMonth: number;
+}
+
+export class CreateTradeRequest implements ICreateTradeRequest {
+    accountId: number;
+    entryDate: Date;
+    entryPrice: number;
+    direction: TradeDirection;
+    sharesCount: number;
+
+    constructor(data?: ICreateTradeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.entryDate = data["entryDate"] ? new Date(data["entryDate"].toString()) : <any>null;
+            this.entryPrice = data["entryPrice"] !== undefined ? data["entryPrice"] : <any>null;
+            this.direction = data["direction"] !== undefined ? data["direction"] : <any>null;
+            this.sharesCount = data["sharesCount"] !== undefined ? data["sharesCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateTradeRequest {
+        let result = new CreateTradeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["entryDate"] = this.entryDate ? this.entryDate.toISOString() : <any>null;
+        data["entryPrice"] = this.entryPrice !== undefined ? this.entryPrice : <any>null;
+        data["direction"] = this.direction !== undefined ? this.direction : <any>null;
+        data["sharesCount"] = this.sharesCount !== undefined ? this.sharesCount : <any>null;
+        return data; 
+    }
+}
+
+export interface ICreateTradeRequest {
+    accountId: number;
+    entryDate: Date;
+    entryPrice: number;
+    direction: TradeDirection;
+    sharesCount: number;
+}
+
+export class AccountTradeModel implements IAccountTradeModel {
+    tradeId: number;
+    accountId: number;
+    entryPrice: number;
+    direction: TradeDirection;
+    entryDate: Date;
+    closeDate: Date | null;
+    sharesCount: number;
+    closePrice: number;
+
+    constructor(data?: IAccountTradeModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.tradeId = data["tradeId"] !== undefined ? data["tradeId"] : <any>null;
+            this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.entryPrice = data["entryPrice"] !== undefined ? data["entryPrice"] : <any>null;
+            this.direction = data["direction"] !== undefined ? data["direction"] : <any>null;
+            this.entryDate = data["entryDate"] ? new Date(data["entryDate"].toString()) : <any>null;
+            this.closeDate = data["closeDate"] ? new Date(data["closeDate"].toString()) : <any>null;
+            this.sharesCount = data["sharesCount"] !== undefined ? data["sharesCount"] : <any>null;
+            this.closePrice = data["closePrice"] !== undefined ? data["closePrice"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AccountTradeModel {
+        let result = new AccountTradeModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tradeId"] = this.tradeId !== undefined ? this.tradeId : <any>null;
+        data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["entryPrice"] = this.entryPrice !== undefined ? this.entryPrice : <any>null;
+        data["direction"] = this.direction !== undefined ? this.direction : <any>null;
+        data["entryDate"] = this.entryDate ? this.entryDate.toISOString() : <any>null;
+        data["closeDate"] = this.closeDate ? this.closeDate.toISOString() : <any>null;
+        data["sharesCount"] = this.sharesCount !== undefined ? this.sharesCount : <any>null;
+        data["closePrice"] = this.closePrice !== undefined ? this.closePrice : <any>null;
+        return data; 
+    }
+}
+
+export interface IAccountTradeModel {
+    tradeId: number;
+    accountId: number;
+    entryPrice: number;
+    direction: TradeDirection;
+    entryDate: Date;
+    closeDate: Date | null;
+    sharesCount: number;
+    closePrice: number;
+}
+
+export class CloseTradeRequest implements ICloseTradeRequest {
+    accountId: number;
+    tradeId: number;
+    closeDate: Date;
+    closePrice: number;
+
+    constructor(data?: ICloseTradeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.accountId = data["accountId"] !== undefined ? data["accountId"] : <any>null;
+            this.tradeId = data["tradeId"] !== undefined ? data["tradeId"] : <any>null;
+            this.closeDate = data["closeDate"] ? new Date(data["closeDate"].toString()) : <any>null;
+            this.closePrice = data["closePrice"] !== undefined ? data["closePrice"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CloseTradeRequest {
+        let result = new CloseTradeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accountId"] = this.accountId !== undefined ? this.accountId : <any>null;
+        data["tradeId"] = this.tradeId !== undefined ? this.tradeId : <any>null;
+        data["closeDate"] = this.closeDate ? this.closeDate.toISOString() : <any>null;
+        data["closePrice"] = this.closePrice !== undefined ? this.closePrice : <any>null;
+        return data; 
+    }
+}
+
+export interface ICloseTradeRequest {
+    accountId: number;
+    tradeId: number;
+    closeDate: Date;
+    closePrice: number;
+}
+
+export class CloseTradePartiallyRequest extends CloseTradeRequest implements ICloseTradePartiallyRequest {
+    sharesCount: number;
+
+    constructor(data?: ICloseTradePartiallyRequest) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
+            this.sharesCount = data["sharesCount"] !== undefined ? data["sharesCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CloseTradePartiallyRequest {
+        let result = new CloseTradePartiallyRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sharesCount"] = this.sharesCount !== undefined ? this.sharesCount : <any>null;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface ICloseTradePartiallyRequest extends ICloseTradeRequest {
+    sharesCount: number;
+}
+
+export class CreateAccountRequest implements ICreateAccountRequest {
+    accountName: string | null;
+    userId: string | null;
+    riskPerTrade: number;
+    riskPerMonth: number;
+
+    constructor(data?: ICreateAccountRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.accountName = data["accountName"] !== undefined ? data["accountName"] : <any>null;
+            this.userId = data["userId"] !== undefined ? data["userId"] : <any>null;
+            this.riskPerTrade = data["riskPerTrade"] !== undefined ? data["riskPerTrade"] : <any>null;
+            this.riskPerMonth = data["riskPerMonth"] !== undefined ? data["riskPerMonth"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateAccountRequest {
+        let result = new CreateAccountRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accountName"] = this.accountName !== undefined ? this.accountName : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["riskPerTrade"] = this.riskPerTrade !== undefined ? this.riskPerTrade : <any>null;
+        data["riskPerMonth"] = this.riskPerMonth !== undefined ? this.riskPerMonth : <any>null;
+        return data; 
+    }
+}
+
+export interface ICreateAccountRequest {
+    accountName: string | null;
+    userId: string | null;
+    riskPerTrade: number;
+    riskPerMonth: number;
 }
 
 export class SwaggerException extends Error {
