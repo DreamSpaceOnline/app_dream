@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.Entity.SqlServer;
+using Dream.Space.Data.Entities.Accounts;
 using Dream.Space.Data.Entities.Articles;
 using Dream.Space.Data.Entities.Companies;
 using Dream.Space.Data.Entities.Indicators;
@@ -174,5 +175,8 @@ namespace Dream.Space.Data
         public virtual DbSet<ChartPlot> ChartPlots { get; set; }
         public virtual DbSet<Journal> Journals { get; set; }
         public virtual DbSet<TradeOrder> TradeOrders { get; set; }
+        public DbSet<AccountEntity> Accounts { get; set; }
+        public DbSet<AccountTradeEntity> AccountTrades { get; set; }
+        public DbSet<AccountTransferEntity> AccountTransfers { get; set; }
     }
 }

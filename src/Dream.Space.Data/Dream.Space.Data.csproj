@@ -89,6 +89,9 @@
     <Compile Include="Azure\StorageAccountConfiguration.cs" />
     <Compile Include="DreamDbContext.cs" />
     <Compile Include="DreamDbInitializer.cs" />
+    <Compile Include="Entities\Accounts\AccountEntity.cs" />
+    <Compile Include="Entities\Accounts\AccountTradeEntity.cs" />
+    <Compile Include="Entities\Accounts\AccountTransferEntity.cs" />
     <Compile Include="Entities\Articles\Article.cs" />
     <Compile Include="Entities\Articles\Category.cs" />
     <Compile Include="Entities\Articles\Section.cs" />
@@ -261,9 +264,19 @@
     <Compile Include="Migrations\201707211129426_AlterJournal.Designer.cs">
       <DependentUpon>201707211129426_AlterJournal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707261117115_Accounts.cs" />
+    <Compile Include="Migrations\201707261117115_Accounts.Designer.cs">
+      <DependentUpon>201707261117115_Accounts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BlobContainer.cs" />
     <Compile Include="Models\FileCategory.cs" />
     <Compile Include="MsSqlDbMigrator.cs" />
+    <Compile Include="Repositories\Accounts\AccountTransferRepository.cs" />
+    <Compile Include="Repositories\Accounts\AccountTradeRepository.cs" />
+    <Compile Include="Repositories\Accounts\AccountRepository.cs" />
+    <Compile Include="Repositories\Accounts\IAccountRepository.cs" />
+    <Compile Include="Repositories\Accounts\IAccountTradeRepository.cs" />
+    <Compile Include="Repositories\Accounts\IAccountTransferRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\ChartIndicatorRepository.cs" />
     <Compile Include="Repositories\CompanyRuleSetRepository.cs" />
@@ -303,10 +316,16 @@
     <Compile Include="Requests\GetChartLayoutDataRequest.cs" />
     <Compile Include="Requests\UpdateMetricsFailedRequest.cs" />
     <Compile Include="Requests\UpdateMetricsRequest.cs" />
+    <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ArticleService.cs" />
     <Compile Include="Services\ArticleStorageService.cs" />
+    <Compile Include="Requests\Accounts\CloseTradePartiallyRequest.cs" />
+    <Compile Include="Requests\Accounts\CloseTradeRequest.cs" />
     <Compile Include="Services\CompanyIndicatorService.cs" />
     <Compile Include="Requests\CompleteJobRequest.cs" />
+    <Compile Include="Requests\Accounts\CreateTradeRequest.cs" />
+    <Compile Include="Requests\Accounts\DepositRequest.cs" />
+    <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\IChartLayoutService.cs" />
     <Compile Include="Services\IJournalService.cs" />
     <Compile Include="Services\ProcessorLogService.cs" />
@@ -328,6 +347,7 @@
     <Compile Include="Services\ScheduledJobsService.cs" />
     <Compile Include="Services\StrategyService.cs" />
     <Compile Include="Entities\Strategies\vRuleSet.cs" />
+    <Compile Include="Requests\Accounts\WithdrawRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -454,6 +474,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707211129426_AlterJournal.resx">
       <DependentUpon>201707211129426_AlterJournal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707261117115_Accounts.resx">
+      <DependentUpon>201707261117115_Accounts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -44,6 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounts\AccountModel.cs" />
+    <Compile Include="Accounts\AccountTradeModel.cs" />
+    <Compile Include="Accounts\IAccountEntity.cs" />
+    <Compile Include="Accounts\IAccountTradeEntity.cs" />
+    <Compile Include="Accounts\IAccountTransferEntity.cs" />
     <Compile Include="Articles\ArticleBlock.cs" />
     <Compile Include="Articles\ArticleHeader.cs" />
     <Compile Include="Articles\ArticleModel.cs" />
@@ -57,6 +62,7 @@
     <Compile Include="Charts\ChartDataResult.cs" />
     <Compile Include="Charts\ChartIndicator.cs" />
     <Compile Include="Companies\CompanyModel.cs" />
+    <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\ValueKind.cs" />
     <Compile Include="Indicators\IndicatorValueItem.cs" />
     <Compile Include="Indicators\IndicatorValueItemExtensions.cs" />

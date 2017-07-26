@@ -10,6 +10,7 @@ using Dream.Space.Calculators.IndicatorProcessor;
 using Dream.Space.Data;
 using Dream.Space.Data.Azure;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Data.Repositories.Accounts;
 using Dream.Space.Data.Services;
 using Dream.Space.Infrastructure.Loggers;
 using Dream.Space.Infrastructure.Processors;
@@ -95,6 +96,9 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<ChartIndicatorRepository>().As<IChartIndicatorRepository>().InstancePerDependency();
             builder.RegisterType<ChartPlotRepository>().As<IChartPlotRepository>().InstancePerDependency();
             builder.RegisterType<JournalRepository>().As<IJournalRepository>().InstancePerDependency();
+            builder.RegisterType<AccountRepository>().As<IAccountRepository>().InstancePerDependency();
+            builder.RegisterType<AccountTradeRepository>().As<IAccountTradeRepository>().InstancePerDependency();
+            builder.RegisterType<AccountTransferRepository>().As<IAccountTransferRepository>().InstancePerDependency();
 
             builder.RegisterType<DreamDbContext>().InstancePerDependency();
 
@@ -117,6 +121,7 @@ namespace Dream.Space.Infrastructure.IoC
             builder.RegisterType<PlaygroundService>().As<IPlaygroundService>();
             builder.RegisterType<CompanyManagerService>().As<ICompanyService>();
             builder.RegisterType<JournalService>().As<IJournalService>();
+            builder.RegisterType<AccountService>().As<IAccountService>();
 
             builder.RegisterType<FileReaderConfiguration>().SingleInstance();
             builder.RegisterType<CalculatorFactory>().SingleInstance();
