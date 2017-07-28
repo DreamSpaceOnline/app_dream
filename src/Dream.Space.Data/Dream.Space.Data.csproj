@@ -332,6 +332,7 @@
     <Compile Include="Requests\GetChartLayoutDataRequest.cs" />
     <Compile Include="Requests\UpdateMetricsFailedRequest.cs" />
     <Compile Include="Requests\UpdateMetricsRequest.cs" />
+    <Compile Include="Requests\ValidateTradeRequest.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\ArticleService.cs" />
     <Compile Include="Services\ArticleStorageService.cs" />

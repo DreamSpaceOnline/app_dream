@@ -1,7 +1,8 @@
 ﻿import { autoinject, bindable } from "aurelia-framework";
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { EnumValues, IdName } from "../../../../common/helpers/enum-helper";
-import { JournalModel } from "../../../../services/services-generated";
+import { JournalModel, TradeAccountApiClient, AccountModel, StrategiesApiClient, StrategySummary, RuleSetsApiClient,
+    VStrategyRuleSet } from "../../../../services/services-generated";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
 
 @autoinject()
@@ -10,7 +11,20 @@ export class JournalCreate {
     journal: JournalModel;
     @bindable entryDatePicker: any;
 
-    constructor(private readonly validation: ValidationController) {
+    accounts: AccountModel[] = [];
+    account: AccountModel;
+    strategies: StrategySummary[] = [];
+    ruleSets: VStrategyRuleSet[] = [];
+    strategy: StrategySummary;
+    maxRiskValue: number;
+    maxSharesCount: number;
+
+    constructor(
+        private readonly validation: ValidationController,
+        private readonly accountService: TradeAccountApiClient,
+        private readonly strategiesService: StrategiesApiClient,
+        private readonly ruleSetService: RuleSetsApiClient,
+    ) {
 
         this.validation.validateTrigger = validateTrigger.change;
         this.validation.addRenderer(new BootstrapFormRenderer());
@@ -32,7 +46,10 @@ export class JournalCreate {
             .on(this.journal);
     }
 
-
+    async activate() {
+        this.accounts = await this.accountService.getAccounts();
+        this.strategies = await this.strategiesService.geStrategySummaries();
+    }
 
     async trySaveJournal() {
         const response = await this.validation.validate();
@@ -40,7 +57,32 @@ export class JournalCreate {
         }
     }
 
+    async onAccountSelected(accountId: number) {
+        this.account = null;
+        if (accountId && accountId > 0) {
+            this.account = this.accounts.find(item => item.accountId === accountId);
+        }
+    }
+
+    async onStrategySelected(strategyId: number) {
+        this.strategy = null;
+
+        if (strategyId && strategyId > 0) {
+            this.strategy = this.strategies.find(item => item.strategyId === strategyId);
+            if (this.strategy != null) {
+                await this.loadStrategyRules(strategyId);
+            }
+        }
+    }
+
+    async loadStrategyRules(strategyId: number) {
+        if (strategyId > 0) {
+            this.ruleSets = await this.ruleSetService.getStrategyRuleSets(strategyId);
+        }
+    }
+
     cancelEdit() {
         
     }
+
 }

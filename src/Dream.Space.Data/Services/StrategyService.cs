@@ -5,6 +5,7 @@ using Autofac;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Models;
 using Dream.Space.Data.Repositories;
+using Dream.Space.Data.Requests;
 using Dream.Space.Models.Strategies;
 using Newtonsoft.Json;
 
@@ -108,5 +109,9 @@ namespace Dream.Space.Data.Services
             }
         }
 
+        public Task<ValidateTradeResult> ValidateTrade(ValidateTradeRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Dream.Space.Data.Entities.Strategies;
+using Dream.Space.Data.Requests;
 using Dream.Space.Data.Services;
 using Dream.Space.Models.Strategies;
 
@@ -71,6 +72,16 @@ namespace Dream.Space.Controllers
         {
             await _service.DeleteStrategyAsync(id);
             return Ok();
+        }
+
+
+        [HttpPost]
+        [Route("validate-trade")]
+        [ResponseType(typeof(ValidateTradeResult))]
+        public async Task<IHttpActionResult> ValidateTrade([FromBody] ValidateTradeRequest model)
+        {
+            var result = await _service.ValidateTrade(model);
+            return Ok(result);
         }
     }
 }

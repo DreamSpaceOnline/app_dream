@@ -125,6 +125,7 @@
     <Compile Include="Strategies\StrategyModel.cs" />
     <Compile Include="Strategies\StrategyRuleSetModel.cs" />
     <Compile Include="Strategies\StrategySummary.cs" />
+    <Compile Include="Strategies\ValidateTradeResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

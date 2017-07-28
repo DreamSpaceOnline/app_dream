@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Dream.Space.Data.Entities.Strategies;
 using Dream.Space.Data.Models;
+using Dream.Space.Data.Requests;
 using Dream.Space.Models.Strategies;
 
 namespace Dream.Space.Data.Services
@@ -14,5 +15,7 @@ namespace Dream.Space.Data.Services
         Task<Strategy> GetStrategyAsync(int id);
         Task DeleteStrategyAsync(int id);
         Task<StrategySummary> GetSummaryByUrlAsync(string url);
+
+        Task<ValidateTradeResult> ValidateTrade(ValidateTradeRequest request);
     }
 }

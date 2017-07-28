@@ -37,10 +37,11 @@ namespace Dream.Space.Controllers
 
 
         [HttpGet]
-        [Route("/all/{userId}")]
+        [Route("all")]
         [ResponseType(typeof(List<AccountModel>))]
-        public async Task<IHttpActionResult> GetAccounts(string userId)
+        public async Task<IHttpActionResult> GetAccounts()
         {
+            var userId = User.Identity.Name;
             var accounts = await _accountService.GetAccounts(userId);
             return Ok(accounts);
         }
@@ -82,7 +83,7 @@ namespace Dream.Space.Controllers
         }
 
         [HttpGet]
-        [Route("/max-trade-risk/{accountId}")]
+        [Route("max-trade-risk/{accountId}")]
         [ResponseType(typeof(decimal))]
         public async Task<IHttpActionResult> GetMaxRiskValue(int accountId)
         {
@@ -91,7 +92,7 @@ namespace Dream.Space.Controllers
         }
 
         [HttpGet]
-        [Route("/overall-balance/{accountId}")]
+        [Route("overall-balance/{accountId}")]
         [ResponseType(typeof(decimal))]
         public async Task<IHttpActionResult> GetOverallBalance(int accountId)
         {
@@ -100,7 +101,7 @@ namespace Dream.Space.Controllers
         }
 
         [HttpGet]
-        [Route("/trade-balance/{accountId}")]
+        [Route("trade-balance/{accountId}")]
         [ResponseType(typeof(decimal))]
         public async Task<IHttpActionResult> GetBalanceFromTrades(int accountId)
         {

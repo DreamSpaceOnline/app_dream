@@ -2486,6 +2486,7 @@ export interface IStrategiesApiClient {
     getStrategyById(id: number): Promise<Strategy | null>;
     saveStrategy(model: StrategyModel): Promise<StrategyModel | null>;
     deleteStrategy(id: number): Promise<Blob | null>;
+    validateTrade(model: ValidateTradeRequest): Promise<ValidateTradeResult | null>;
 }
 
 @inject(String, HttpClient)
@@ -2718,12 +2719,49 @@ export class StrategiesApiClient implements IStrategiesApiClient {
         }
         return Promise.resolve<Blob | null>(<any>null);
     }
+
+    validateTrade(model: ValidateTradeRequest): Promise<ValidateTradeResult | null> {
+        let url_ = this.baseUrl + "/api/strategy/validate-trade";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(model ? model.toJSON() : null);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8", 
+                "Accept": "application/json; charset=UTF-8"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processValidateTrade(_response);
+        });
+    }
+
+    protected processValidateTrade(response: Response): Promise<ValidateTradeResult | null> {
+        const status = response.status;
+        if (status === 200) {
+            return response.text().then((responseText) => {
+            let result200: ValidateTradeResult | null = null;
+            let resultData200 = responseText === "" ? null : JSON.parse(responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ValidateTradeResult.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((responseText) => {
+            return throwException("An unexpected server error occurred.", status, responseText);
+            });
+        }
+        return Promise.resolve<ValidateTradeResult | null>(<any>null);
+    }
 }
 
 export interface ITradeAccountApiClient {
     deposit(request: DepositRequest): Promise<Blob | null>;
     withdraw(request: WithdrawRequest): Promise<Blob | null>;
-    getAccounts(userId: string): Promise<AccountModel[] | null>;
+    getAccounts(): Promise<AccountModel[] | null>;
     createTrade(request: CreateTradeRequest): Promise<AccountTradeModel | null>;
     closeTrade(request: CloseTradeRequest): Promise<AccountTradeModel | null>;
     closeTradePartially(request: CloseTradePartiallyRequest): Promise<AccountTradeModel | null>;
@@ -2806,11 +2844,8 @@ export class TradeAccountApiClient implements ITradeAccountApiClient {
         return Promise.resolve<Blob | null>(<any>null);
     }
 
-    getAccounts(userId: string): Promise<AccountModel[] | null> {
-        let url_ = this.baseUrl + "/api/trade-account//all/{userId}";
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{userId}", encodeURIComponent("" + userId)); 
+    getAccounts(): Promise<AccountModel[] | null> {
+        let url_ = this.baseUrl + "/api/trade-account/all";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -2996,7 +3031,7 @@ export class TradeAccountApiClient implements ITradeAccountApiClient {
     }
 
     getMaxRiskValue(accountId: number): Promise<number | null> {
-        let url_ = this.baseUrl + "/api/trade-account//max-trade-risk/{accountId}";
+        let url_ = this.baseUrl + "/api/trade-account/max-trade-risk/{accountId}";
         if (accountId === undefined || accountId === null)
             throw new Error("The parameter 'accountId' must be defined.");
         url_ = url_.replace("{accountId}", encodeURIComponent("" + accountId)); 
@@ -3033,7 +3068,7 @@ export class TradeAccountApiClient implements ITradeAccountApiClient {
     }
 
     getOverallBalance(accountId: number): Promise<number | null> {
-        let url_ = this.baseUrl + "/api/trade-account//overall-balance/{accountId}";
+        let url_ = this.baseUrl + "/api/trade-account/overall-balance/{accountId}";
         if (accountId === undefined || accountId === null)
             throw new Error("The parameter 'accountId' must be defined.");
         url_ = url_.replace("{accountId}", encodeURIComponent("" + accountId)); 
@@ -3070,7 +3105,7 @@ export class TradeAccountApiClient implements ITradeAccountApiClient {
     }
 
     getBalanceFromTrades(accountId: number): Promise<number | null> {
-        let url_ = this.baseUrl + "/api/trade-account//trade-balance/{accountId}";
+        let url_ = this.baseUrl + "/api/trade-account/trade-balance/{accountId}";
         if (accountId === undefined || accountId === null)
             throw new Error("The parameter 'accountId' must be defined.");
         url_ = url_.replace("{accountId}", encodeURIComponent("" + accountId)); 
@@ -5889,6 +5924,182 @@ export interface IStrategy {
     description: string | null;
     deleted: boolean;
     active: boolean;
+}
+
+export class ValidateTradeRequest implements IValidateTradeRequest {
+
+    constructor(data?: IValidateTradeRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+        }
+    }
+
+    static fromJS(data: any): ValidateTradeRequest {
+        let result = new ValidateTradeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+}
+
+export interface IValidateTradeRequest {
+}
+
+export class ValidateTradeResult implements IValidateTradeResult {
+    strategyId: number;
+    isValid: boolean;
+    ruleSets: RuleSetValidationResult[] | null;
+
+    constructor(data?: IValidateTradeResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
+            this.isValid = data["isValid"] !== undefined ? data["isValid"] : <any>null;
+            if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
+                this.ruleSets = [];
+                for (let item of data["ruleSets"])
+                    this.ruleSets.push(RuleSetValidationResult.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ValidateTradeResult {
+        let result = new ValidateTradeResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
+        data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
+        if (this.ruleSets && this.ruleSets.constructor === Array) {
+            data["ruleSets"] = [];
+            for (let item of this.ruleSets)
+                data["ruleSets"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IValidateTradeResult {
+    strategyId: number;
+    isValid: boolean;
+    ruleSets: RuleSetValidationResult[] | null;
+}
+
+export class RuleSetValidationResult implements IRuleSetValidationResult {
+    ruleSetId: number;
+    isValid: boolean;
+    rules: RuleValidationResult[] | null;
+
+    constructor(data?: IRuleSetValidationResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
+            this.isValid = data["isValid"] !== undefined ? data["isValid"] : <any>null;
+            if (data["rules"] && data["rules"].constructor === Array) {
+                this.rules = [];
+                for (let item of data["rules"])
+                    this.rules.push(RuleValidationResult.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RuleSetValidationResult {
+        let result = new RuleSetValidationResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
+        data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
+        if (this.rules && this.rules.constructor === Array) {
+            data["rules"] = [];
+            for (let item of this.rules)
+                data["rules"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRuleSetValidationResult {
+    ruleSetId: number;
+    isValid: boolean;
+    rules: RuleValidationResult[] | null;
+}
+
+export class RuleValidationResult implements IRuleValidationResult {
+    ruleId: number;
+    isValid: boolean;
+    message: string | null;
+
+    constructor(data?: IRuleValidationResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : <any>null;
+            this.isValid = data["isValid"] !== undefined ? data["isValid"] : <any>null;
+            this.message = data["message"] !== undefined ? data["message"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): RuleValidationResult {
+        let result = new RuleValidationResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ruleId"] = this.ruleId !== undefined ? this.ruleId : <any>null;
+        data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        return data; 
+    }
+}
+
+export interface IRuleValidationResult {
+    ruleId: number;
+    isValid: boolean;
+    message: string | null;
 }
 
 export class DepositRequest implements IDepositRequest {
