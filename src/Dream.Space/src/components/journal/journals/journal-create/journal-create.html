@@ -131,7 +131,14 @@
 
                     <h4>Strategy Rules</h4>
                     <div class="row">
-                            
+                        <div class="form-horizontal">
+                            <div class="form-group" repeat.for="ruleSet of ruleSets">
+                                <label class="col-sm-6 control-label">Rule:</label>
+                                <div class="col-sm-5">
+                                    <p type="text" class="form-control">${ruleSet.ruleSetName}}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

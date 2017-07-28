@@ -3843,6 +3843,9 @@
           "type": "integer",
           "format": "int32"
         },
+        "strategyName": {
+          "type": "string"
+        },
         "isValid": {
           "type": "boolean"
         },
@@ -3866,6 +3869,9 @@
           "type": "integer",
           "format": "int32"
         },
+        "ruleSetName": {
+          "type": "string"
+        },
         "isValid": {
           "type": "boolean"
         },
@@ -3888,6 +3894,9 @@
         "ruleId": {
           "type": "integer",
           "format": "int32"
+        },
+        "ruleName": {
+          "type": "string"
         },
         "isValid": {
           "type": "boolean"

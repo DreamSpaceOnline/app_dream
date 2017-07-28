@@ -2,7 +2,7 @@
 import { ValidationRules, ValidationController, validateTrigger } from "aurelia-validation"
 import { EnumValues, IdName } from "../../../../common/helpers/enum-helper";
 import { JournalModel, TradeAccountApiClient, AccountModel, StrategiesApiClient, StrategySummary, RuleSetsApiClient,
-    VStrategyRuleSet } from "../../../../services/services-generated";
+    RuleSetValidationResult } from "../../../../services/services-generated";
 import { BootstrapFormRenderer } from "../../../../form-validation/bootstrap-form-renderer";
 
 @autoinject()
@@ -14,7 +14,7 @@ export class JournalCreate {
     accounts: AccountModel[] = [];
     account: AccountModel;
     strategies: StrategySummary[] = [];
-    ruleSets: VStrategyRuleSet[] = [];
+    ruleSets: RuleSetValidationResult[] = [];
     strategy: StrategySummary;
     maxRiskValue: number;
     maxSharesCount: number;
@@ -76,8 +76,18 @@ export class JournalCreate {
     }
 
     async loadStrategyRules(strategyId: number) {
+        this.ruleSets = [];
         if (strategyId > 0) {
-            this.ruleSets = await this.ruleSetService.getStrategyRuleSets(strategyId);
+            let ruleSets = await this.ruleSetService.getStrategyRuleSets(strategyId);
+            if (ruleSets && ruleSets.length > 0) {
+                ruleSets.forEach(item => {
+                    let ruleset = new RuleSetValidationResult();
+                    ruleset.ruleSetId = item.ruleSetId;
+                    ruleset.ruleSetName = item.ruleSetName;
+
+                    this.ruleSets.push(ruleset);
+                });
+            }
         }
     }
 

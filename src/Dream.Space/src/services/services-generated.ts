@@ -5959,6 +5959,7 @@ export interface IValidateTradeRequest {
 
 export class ValidateTradeResult implements IValidateTradeResult {
     strategyId: number;
+    strategyName: string | null;
     isValid: boolean;
     ruleSets: RuleSetValidationResult[] | null;
 
@@ -5974,6 +5975,7 @@ export class ValidateTradeResult implements IValidateTradeResult {
     init(data?: any) {
         if (data) {
             this.strategyId = data["strategyId"] !== undefined ? data["strategyId"] : <any>null;
+            this.strategyName = data["strategyName"] !== undefined ? data["strategyName"] : <any>null;
             this.isValid = data["isValid"] !== undefined ? data["isValid"] : <any>null;
             if (data["ruleSets"] && data["ruleSets"].constructor === Array) {
                 this.ruleSets = [];
@@ -5992,6 +5994,7 @@ export class ValidateTradeResult implements IValidateTradeResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["strategyId"] = this.strategyId !== undefined ? this.strategyId : <any>null;
+        data["strategyName"] = this.strategyName !== undefined ? this.strategyName : <any>null;
         data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
         if (this.ruleSets && this.ruleSets.constructor === Array) {
             data["ruleSets"] = [];
@@ -6004,12 +6007,14 @@ export class ValidateTradeResult implements IValidateTradeResult {
 
 export interface IValidateTradeResult {
     strategyId: number;
+    strategyName: string | null;
     isValid: boolean;
     ruleSets: RuleSetValidationResult[] | null;
 }
 
 export class RuleSetValidationResult implements IRuleSetValidationResult {
     ruleSetId: number;
+    ruleSetName: string | null;
     isValid: boolean;
     rules: RuleValidationResult[] | null;
 
@@ -6025,6 +6030,7 @@ export class RuleSetValidationResult implements IRuleSetValidationResult {
     init(data?: any) {
         if (data) {
             this.ruleSetId = data["ruleSetId"] !== undefined ? data["ruleSetId"] : <any>null;
+            this.ruleSetName = data["ruleSetName"] !== undefined ? data["ruleSetName"] : <any>null;
             this.isValid = data["isValid"] !== undefined ? data["isValid"] : <any>null;
             if (data["rules"] && data["rules"].constructor === Array) {
                 this.rules = [];
@@ -6043,6 +6049,7 @@ export class RuleSetValidationResult implements IRuleSetValidationResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["ruleSetId"] = this.ruleSetId !== undefined ? this.ruleSetId : <any>null;
+        data["ruleSetName"] = this.ruleSetName !== undefined ? this.ruleSetName : <any>null;
         data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
         if (this.rules && this.rules.constructor === Array) {
             data["rules"] = [];
@@ -6055,12 +6062,14 @@ export class RuleSetValidationResult implements IRuleSetValidationResult {
 
 export interface IRuleSetValidationResult {
     ruleSetId: number;
+    ruleSetName: string | null;
     isValid: boolean;
     rules: RuleValidationResult[] | null;
 }
 
 export class RuleValidationResult implements IRuleValidationResult {
     ruleId: number;
+    ruleName: string | null;
     isValid: boolean;
     message: string | null;
 
@@ -6076,6 +6085,7 @@ export class RuleValidationResult implements IRuleValidationResult {
     init(data?: any) {
         if (data) {
             this.ruleId = data["ruleId"] !== undefined ? data["ruleId"] : <any>null;
+            this.ruleName = data["ruleName"] !== undefined ? data["ruleName"] : <any>null;
             this.isValid = data["isValid"] !== undefined ? data["isValid"] : <any>null;
             this.message = data["message"] !== undefined ? data["message"] : <any>null;
         }
@@ -6090,6 +6100,7 @@ export class RuleValidationResult implements IRuleValidationResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["ruleId"] = this.ruleId !== undefined ? this.ruleId : <any>null;
+        data["ruleName"] = this.ruleName !== undefined ? this.ruleName : <any>null;
         data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
         data["message"] = this.message !== undefined ? this.message : <any>null;
         return data; 
@@ -6098,6 +6109,7 @@ export class RuleValidationResult implements IRuleValidationResult {
 
 export interface IRuleValidationResult {
     ruleId: number;
+    ruleName: string | null;
     isValid: boolean;
     message: string | null;
 }
