@@ -16,12 +16,7 @@
                             <label for="txtTicker">Ticker</label>
                             <input type="text" class="form-control ticker" id="txtTicker" value.bind="journal.ticker & validate"/>
                         </div>
-                        <div class="form-group">
-                            <label for="ddlAccount">Account:</label>
-                            <select id="ddlAccount" class="form-control" value.bind="journal.accountId" change.delegate="onAccountSelected(journal.accountId)">
-                                <option repeat.for="account of accounts" model.bind="account.accountId">${account.name}</option>
-                            </select>
-                        </div>
+
                         <div class="form-group">
                             <label for="ddlDirection">Direction:</label>
                             <select id="ddlDirection" class="form-control" value.bind="journal.tradeDirection">
@@ -42,105 +37,133 @@
                     </div>
                 
                     <div class="row">
-                        <div class="col-xs-4">
-                            <h5>Trade setup</h5>
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="txtEntryPrice" class="col-sm-4 control-label">Entry price:</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="txtEntryPrice" value.bind="journal.entryPrice & validate" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txtTargetPrice" class="col-sm-4 control-label">Target price:</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="txtTargetPrice" value.bind="journal.takeProfitPrice & validate" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txtStopPrice" class="col-sm-4 control-label">Stop loss price:</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="txtStopPrice" value.bind="journal.stopLossPrice & validate" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <h5>Risk management</h5>
-                            <div class="form-horizontal">
+                        <div class="form-inline col-xs-12">
 
-                                <div class="form-group">
-                                    <label for="txtRiskValue" class="col-sm-5 control-label">Risk value($):</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="txtRiskValue" value.bind="journal.maxRiskValuePrice & validate" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txtRewardRatio" class="col-sm-5 control-label">Reward / Risk ratio:</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" readonly id="txtRewardRatio" value.bind="journal.rewardRiskRatio & validate" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txtMaxShares" class="col-sm-5 control-label">Max shares count:</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" readonly id="txtMaxShares" value.bind="journal.maxSharesCount & validate" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <h5>Risk limits</h5>
-                            <div class="form-horizontal">
-
-                                <div class="form-group">
-                                    <label for="txtMaxRiskValue" class="col-sm-5 control-label">Risk value($):</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="txtMaxRiskValue" readonly value.bind="maxRiskValue" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txtMaxSharesCount" class="col-sm-5 control-label">Reward / Risk ratio:</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" readonly id="txtMaxSharesCount" value.bind="maxSharesCount" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4>Strategy Information</h4>
-                    <div class="row">
-                        <div class="form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-4 control-label" for="ddlStrategy">Select Strategy:</label>
-                                <div class="col-sm-6">
-                                    <select id="ddlStrategy" class="form-control" value.bind="journal.strategyId" change.delegate="onStrategySelected(journal.strategyId)">
-                                        <option repeat.for="s of strategies" model.bind="s.strategyId">${s.title}</option>
-                                    </select>
+                                <label for="ddlAccount">Account:</label>
+                                <select id="ddlAccount" class="form-control" value.bind="journal.accountId" change.delegate="onAccountSelected(journal.accountId)">
+                                    <option> - Select Account -</option>
+                                    <option repeat.for="account of accounts" model.bind="account.accountId">${account.name}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" if.bind="journal.accountId > 0">
+                                <label for="txtRiskPerTrade">Risk per trade (%)</label>
+                                <p class="form-control" id="txtRiskPerTrade" readonly>${account.riskPerTrade}%</p>
+                            </div>
+
+                            <div class="form-group" if.bind="journal.accountId > 0">
+                                <label for="txtRiskPerMonth">Risk per month (%)</label>
+                                <p class="form-control" id="txtRiskPerMonth" readonly>${account.riskPerMonth}%</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div if.bind="journal.accountId > 0">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <h5>Trade setup</h5>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="txtEntryPrice" class="col-sm-4 control-label">Entry price:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="txtEntryPrice" value.bind="journal.entryPrice & validate" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtTargetPrice" class="col-sm-4 control-label">Target price:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="txtTargetPrice" value.bind="journal.takeProfitPrice & validate" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtStopPrice" class="col-sm-4 control-label">Stop loss price:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="txtStopPrice" value.bind="journal.stopLossPrice & validate" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label">Summary:</label>
-                                <div class="col-sm-6">
-                                    <p class="form-control">${strategy.summary}</p>
+                            <div class="col-xs-4">
+                                <h5>Risk management</h5>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="txtRiskValue" class="col-sm-5 control-label">Risk value($):</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="txtRiskValue" value.bind="journal.maxRiskValuePrice & validate" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtRewardRatio" class="col-sm-5 control-label">Reward / Risk ratio:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" readonly id="txtRewardRatio" value.bind="journal.rewardRiskRatio & validate" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtMaxShares" class="col-sm-5 control-label">Max shares count:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" readonly id="txtMaxShares" value.bind="journal.maxSharesCount & validate" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <h5>Risk limits</h5>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="txtMaxRiskPerTrade" class="col-sm-5 control-label">Max risk per trade($):</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="txtMaxRiskPerTrade" readonly value.bind="maxRiskPerTrade" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtMaxRiskPerMonth" class="col-sm-5 control-label">Max risk per month($)</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" readonly id="txtMaxRiskPerMonth" value.bind="maxRiskPerMonth" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtMaxSharesCount" class="col-sm-5 control-label">Max Shares to trade</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" readonly id="txtMaxSharesCount" value.bind="maxSharesCount" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Strategy Information</h4>
+                        <div class="row">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="ddlStrategy">Select Strategy:</label>
+                                    <div class="col-sm-6">
+                                        <select id="ddlStrategy" class="form-control" value.bind="journal.strategyId" change.delegate="onStrategySelected(journal.strategyId)">
+                                            <option> - Select Strategy -</option>
+                                            <option repeat.for="s of strategies" model.bind="s.strategyId">${s.title}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Summary:</label>
+                                    <div class="col-sm-6">
+                                        <p class="form-control">${strategy.summary}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Strategy Rules</h4>
+                        <div class="row">
+                            <div class="form-horizontal">
+                                <div class="form-group" repeat.for="ruleSet of ruleSets">
+                                    <label class="col-sm-6 control-label">Rule:</label>
+                                    <div class="col-sm-5">
+                                        <p type="text" class="form-control">${ruleSet.ruleSetName}}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <h4>Strategy Rules</h4>
-                    <div class="row">
-                        <div class="form-horizontal">
-                            <div class="form-group" repeat.for="ruleSet of ruleSets">
-                                <label class="col-sm-6 control-label">Rule:</label>
-                                <div class="col-sm-5">
-                                    <p type="text" class="form-control">${ruleSet.ruleSetName}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </fieldset>
 

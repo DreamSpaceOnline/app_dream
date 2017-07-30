@@ -16,7 +16,8 @@ export class JournalCreate {
     strategies: StrategySummary[] = [];
     ruleSets: RuleSetValidationResult[] = [];
     strategy: StrategySummary;
-    maxRiskValue: number;
+    maxRiskPerTrade: number;
+    maxRiskPerMonth: number;
     maxSharesCount: number;
 
     constructor(
